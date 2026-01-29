@@ -1,0 +1,187 @@
+"use client";
+
+import { useState } from "react";
+import { Substep } from "@/types";
+import { formatCurrency } from "@/lib/storage";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+interface SubstepCardProps {
+  substep: Substep;
+  onToggle: () => void;
+  onUpdate: (updates: Partial<Substep>) => void;
+  onDelete: () => void;
+  isDragging?: boolean;
+}
+
+export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging }: SubstepCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(substep.title);
+  const [editCost, setEditCost] = useState(substep.cost?.toString() || "");
+  const [editNotes, setEditNotes] = useState(substep.notes || "");
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging: isSortableDragging,
+  } = useSortable({ id: substep.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isSortableDragging ? 0.5 : 1,
+  };
+
+  const handleSave = () => {
+    onUpdate({
+      title: editTitle,
+      cost: editCost ? parseFloat(editCost) : undefined,
+      notes: editNotes || undefined,
+    });
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditTitle(substep.title);
+    setEditCost(substep.cost?.toString() || "");
+    setEditNotes(substep.notes || "");
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-2">
+        <input
+          type="text"
+          value={editTitle}
+          onChange={(e) => setEditTitle(e.target.value)}
+          className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Substep title"
+          autoFocus
+        />
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <span className="absolute left-2 top-1.5 text-gray-500 text-sm">$</span>
+            <input
+              type="number"
+              value={editCost}
+              onChange={(e) => setEditCost(e.target.value)}
+              className="w-full pl-6 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Cost"
+            />
+          </div>
+          <input
+            type="text"
+            value={editNotes}
+            onChange={(e) => setEditNotes(e.target.value)}
+            className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Notes"
+          />
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handleSave}
+            disabled={!editTitle.trim()}
+            className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+          >
+            Save
+          </button>
+          <button
+            onClick={handleCancel}
+            className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded-md"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`group flex items-center gap-2 p-2 rounded-lg transition-all ${
+        substep.completed
+          ? "bg-green-50 border border-green-100"
+          : "bg-gray-50 border border-gray-100 hover:bg-gray-100"
+      }`}
+    >
+      {/* Drag Handle */}
+      <button
+        {...attributes}
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+        title="Drag to reorder"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+        </svg>
+      </button>
+
+      {/* Checkbox */}
+      <button
+        onClick={onToggle}
+        className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+          substep.completed
+            ? "bg-green-500 border-green-500 text-white"
+            : "border-gray-300 hover:border-green-500"
+        }`}
+      >
+        {substep.completed && (
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+          </svg>
+        )}
+      </button>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <p
+          className={`text-sm ${
+            substep.completed ? "text-gray-500 line-through" : "text-gray-700"
+          }`}
+        >
+          {substep.title}
+        </p>
+        <div className="flex items-center gap-2 mt-0.5">
+          {substep.cost !== undefined && substep.cost > 0 && (
+            <span className="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">
+              {formatCurrency(substep.cost)}
+            </span>
+          )}
+          {substep.notes && (
+            <span className="text-xs text-gray-400 truncate max-w-24" title={substep.notes}>
+              {substep.notes}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={() => setIsEditing(true)}
+          className="p-1 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded transition-colors"
+          title="Edit"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </button>
+        <button
+          onClick={onDelete}
+          className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+          title="Delete"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
