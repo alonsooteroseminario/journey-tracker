@@ -81,7 +81,7 @@ export default function Home() {
   const globalAnalytics = getAnalytics();
 
   return (
-    <main className="min-h-screen pb-20">
+    <main className="min-h-screen pb-4 md:pb-20">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 py-4">
@@ -162,7 +162,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-8">
         {/* Global Analytics (Toggleable) */}
         {showGlobalAnalytics && goals.length > 0 && (
           <div className="mb-8">

@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '375px',    // iPhone SE and small devices
+        'fold': '600px',  // Foldable devices
+      },
       colors: {
         streak: {
           fire: "#FF9600",
@@ -25,6 +29,7 @@ const config: Config = {
         "bounce-subtle": "bounce 2s infinite",
         "glow": "glow 2s ease-in-out infinite alternate",
         "confetti": "confetti 0.5s ease-out forwards",
+        "slide-up": "slideUp 0.3s ease-out",
       },
       keyframes: {
         glow: {
@@ -34,6 +39,10 @@ const config: Config = {
         confetti: {
           "0%": { transform: "scale(0) rotate(0deg)", opacity: "1" },
           "100%": { transform: "scale(1) rotate(180deg)", opacity: "0" },
+        },
+        slideUp: {
+          "0%": { transform: "translateY(100%)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
         },
       },
     },

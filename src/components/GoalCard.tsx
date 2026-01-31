@@ -130,8 +130,9 @@ export function GoalCard({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-white/50 rounded-lg transition-colors"
+              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-white/50 rounded-lg transition-colors"
               title={isExpanded ? "Collapse" : "Expand"}
+              aria-label={isExpanded ? "Collapse" : "Expand"}
             >
               <svg
                 className={`w-5 h-5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
@@ -144,8 +145,9 @@ export function GoalCard({
             </button>
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="p-2 text-gray-400 hover:text-red-500 hover:bg-white/50 rounded-lg transition-colors"
+              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white/50 rounded-lg transition-colors"
               title="Delete goal"
+              aria-label="Delete goal"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -165,50 +167,50 @@ export function GoalCard({
           <ProgressBar progress={progress} showPercentage={true} size="lg" />
         </div>
 
-        {/* View Mode Tabs */}
-        <div className="mt-4 flex gap-2 flex-wrap">
+        {/* View Mode Tabs - Responsive Grid on Mobile */}
+        <div className="mt-4 grid grid-cols-2 sm:flex gap-2">
           {hasExtendedData && (
             <button
               onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 viewMode === "phases" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
               }`}
             >
-              📊 Phases
+              📊 <span className="hidden xs:inline">Phases</span>
             </button>
           )}
           <button
             onClick={() => { setViewMode("tasks"); setSelectedPhase(null); }}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
               viewMode === "tasks" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
-            ✅ Tasks
+            ✅ <span className="hidden xs:inline">Tasks</span>
           </button>
           <button
             onClick={() => setViewMode("calendar")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
               viewMode === "calendar" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
-            📅 Calendar
+            📅 <span className="hidden xs:inline">Calendar</span>
           </button>
           <button
             onClick={() => setViewMode("analytics")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
               viewMode === "analytics" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
-            📈 Analytics
+            📈 <span className="hidden xs:inline">Analytics</span>
           </button>
           {hasExtendedData && (
             <button
               onClick={() => setViewMode("info")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 viewMode === "info" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
               }`}
             >
-              ℹ️ Resources
+              ℹ️ <span className="hidden xs:inline">Resources</span>
             </button>
           )}
         </div>

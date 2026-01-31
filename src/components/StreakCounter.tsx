@@ -122,7 +122,7 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
             }`}
           >
             {/* Day Letter */}
-            <span className="text-[10px] sm:text-xs text-gray-500 font-medium leading-none">
+            <span className="text-xs sm:text-sm text-gray-500 font-medium leading-none">
               {day.dayName}
             </span>
             
