@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useGoals } from "@/hooks/useGoals";
 import { UserProfile } from "@/types";
@@ -12,6 +12,12 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
   const [imagePreview, setImagePreview] = useState(profile.profileImage || "");
+
+  // Sync editedProfile when profile loads from API
+  useEffect(() => {
+    setEditedProfile(profile);
+    setImagePreview(profile.profileImage || "");
+  }, [profile]);
 
   if (!isLoaded) {
     return (

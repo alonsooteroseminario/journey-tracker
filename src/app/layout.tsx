@@ -1,3 +1,5 @@
+import { ClerkProvider } from "@clerk/nextjs";
+import { AppShell } from "@/components/AppShell";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -14,10 +16,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body 
+          className="antialiased min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
+          suppressHydrationWarning
+        >
+          <AppShell>
+            {children}
+          </AppShell>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

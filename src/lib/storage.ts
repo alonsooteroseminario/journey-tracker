@@ -1,4 +1,4 @@
-import { AppState, StreakData, UserProfile } from "@/types";
+import { AppState, StreakData, UserProfile, Friend } from "@/types";
 
 const STORAGE_KEY = "journey-tracker-state";
 
@@ -24,13 +24,145 @@ const defaultProfile: UserProfile = {
   joinedDate: getToday(),
 };
 
+// Default example friends with contrasting stats
+const defaultFriends: Friend[] = [
+  {
+    id: "friend-001",
+    profileId: "FRIEND001",
+    name: "Alex Johnson",
+    profileImage: undefined,
+    currentStreak: 42,
+    longestStreak: 89,
+    totalGoals: 1,
+    completedGoals: 0,
+    addedDate: "2025-12-15", // Older friend
+    sharedData: {
+      streak: {
+        currentStreak: 42,
+        longestStreak: 89,
+        lastActivityDate: getToday(),
+        streakHistory: Array(42).fill(0).map((_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (41 - i));
+          return d.toISOString().split("T")[0];
+        }),
+      },
+      goals: [
+        {
+          id: "alex-goal-1",
+          title: "Run a Marathon",
+          progress: 68,
+          startDate: "2025-11-01",
+          targetDate: "2026-04-15",
+        }
+      ],
+      recentActivity: [],
+    },
+  },
+  {
+    id: "friend-002",
+    profileId: "FRIEND002",
+    name: "Maria Garcia",
+    profileImage: undefined,
+    currentStreak: 3,
+    longestStreak: 12,
+    totalGoals: 1,
+    completedGoals: 0,
+    addedDate: "2026-01-20", // Recent friend
+    sharedData: {
+      streak: {
+        currentStreak: 3,
+        longestStreak: 12,
+        lastActivityDate: getToday(),
+        streakHistory: Array(3).fill(0).map((_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (2 - i));
+          return d.toISOString().split("T")[0];
+        }),
+      },
+      goals: [
+        {
+          id: "maria-goal-1",
+          title: "Learn Japanese",
+          progress: 15,
+          startDate: "2026-01-15",
+          targetDate: "2026-12-31",
+        }
+      ],
+      recentActivity: [],
+    },
+  },
+  {
+    id: "friend-003",
+    profileId: "FRIEND003",
+    name: "David Chen",
+    profileImage: undefined,
+    currentStreak: 0,
+    longestStreak: 156,
+    totalGoals: 1,
+    completedGoals: 1,
+    addedDate: "2025-10-01", // Oldest friend
+    sharedData: {
+      streak: {
+        currentStreak: 0,
+        longestStreak: 156,
+        lastActivityDate: "2026-01-20", // Lost streak 8 days ago
+        streakHistory: [],
+      },
+      goals: [
+        {
+          id: "david-goal-1",
+          title: "Write a Novel",
+          progress: 100,
+          startDate: "2025-06-01",
+          targetDate: "2026-01-15",
+        }
+      ],
+      recentActivity: [],
+    },
+  },
+  {
+    id: "friend-004",
+    profileId: "FRIEND004",
+    name: "Sarah Williams",
+    profileImage: undefined,
+    currentStreak: 21,
+    longestStreak: 21,
+    totalGoals: 1,
+    completedGoals: 0,
+    addedDate: "2026-01-08",
+    sharedData: {
+      streak: {
+        currentStreak: 21,
+        longestStreak: 21,
+        lastActivityDate: getToday(),
+        streakHistory: Array(21).fill(0).map((_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (20 - i));
+          return d.toISOString().split("T")[0];
+        }),
+      },
+      goals: [
+        {
+          id: "sarah-goal-1",
+          title: "Master Guitar",
+          progress: 45,
+          startDate: "2026-01-01",
+          targetDate: "2026-06-30",
+        }
+      ],
+      recentActivity: [],
+    },
+  },
+];
+
 const defaultState: AppState = {
   goals: [],
   streak: defaultStreak,
   notificationsEnabled: false,
   activityLog: [],
   profile: defaultProfile,
-  friends: [],
+  friends: defaultFriends,
   invitations: [],
   socialShares: [],
 };

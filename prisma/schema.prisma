@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ============== User Model ==============
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId       String   @unique
+  email         String   @unique
+  name          String
+  profileImage  String?
+  bio           String?
+  location      String?
+  timezone      String?
+  joinedDate    DateTime @default(now())
+  lastLoginDate DateTime @default(now())
+
+  // Relations
+  goals        Goal[]
+  streakData   StreakData?
+  friendships  Friendship[] @relation("UserFriendships")
+  friendOf     Friendship[] @relation("FriendOfUser")
+  invitations  Invitation[]
+  socialShares SocialShare[]
+  activityLog  ActivityLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// ============== Goal Model ==============
+model Goal {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String @db.ObjectId
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+
+  // Tasks stored as embedded JSON (preserves existing nested structure)
+  tasks Json // Array of Task objects with nested substeps
+
+  // Rich metadata stored as JSON
+  phases    Json? // Array of Phase objects
+  budget    Json? // BudgetSummary object
+  timeline  Json? // TimelineComparison object
+  documents Json? // Array of DocumentItem objects
+  resources Json? // Array of ResourceCategory objects
+
+  // Dates
+  startDate  DateTime?
+  targetDate DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Full transparency for friends
+  isPublic Boolean @default(true)
+
+  @@index([userId])
+  @@map("goals")
+}
+
+// ============== Streak Data Model ==============
+model StreakData {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String    @unique @db.ObjectId
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  currentStreak    Int       @default(0)
+  longestStreak    Int       @default(0)
+  lastActivityDate DateTime?
+  streakHistory    String[] // Array of ISO date strings (YYYY-MM-DD)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("streaks")
+}
+
+// ============== Friendship Model ==============
+model Friendship {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId   String @db.ObjectId
+  user     User   @relation("UserFriendships", fields: [userId], references: [id], onDelete: Cascade)
+
+  friendId String @db.ObjectId
+  friend   User   @relation("FriendOfUser", fields: [friendId], references: [id], onDelete: Cascade)
+
+  status    String   @default("accepted") // "pending" | "accepted" | "rejected"
+  addedDate DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, friendId])
+  @@index([userId])
+  @@index([friendId])
+  @@map("friendships")
+}
+
+// ============== Invitation Model ==============
+model Invitation {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  code      String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  usedBy    String? // Clerk ID of the user who used it
+  usedAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@map("invitations")
+}
+
+// ============== Social Share Model ==============
+model SocialShare {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  platform      String // "twitter" | "facebook" | "linkedin" | "whatsapp"
+  message       String
+  streakAtTime  Int      @default(0)
+  timestamp     DateTime @default(now())
+
+  @@index([userId])
+  @@map("social_shares")
+}
+
+// ============== Activity Log Model ==============
+model ActivityLog {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        String // "task_completed" | "goal_created" | "streak_milestone" | etc.
+  action      String // Human-readable description
+  goalId      String? // Reference to goal (stored as string, not relation for flexibility)
+  taskId      String?
+  substepId   String?
+  metadata    Json? // Additional data
+  timestamp   DateTime @default(now())
+
+  @@index([userId, timestamp])
+  @@map("activity_logs")
+}

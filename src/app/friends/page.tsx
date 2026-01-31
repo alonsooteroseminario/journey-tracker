@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useGoals } from "@/hooks/useGoals";
 import { Friend } from "@/types";
 import { generateId, getToday } from "@/lib/storage";
@@ -63,8 +64,8 @@ export default function FriendsPage() {
     setInviteCode("");
   };
 
-  const handleGenerateInvite = () => {
-    const invitation = createInvitation();
+  const handleGenerateInvite = async () => {
+    const invitation = await createInvitation();
     setGeneratedInvite(invitation.code);
     setShowInviteModal(true);
   };
@@ -201,37 +202,45 @@ export default function FriendsPage() {
               };
 
               return (
-                <div key={friend.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                  <div className="flex items-center gap-4 mb-6">
-                    {/* Friend Avatar */}
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
-                      {friend.profileImage ? (
-                        <img src={friend.profileImage} alt={friend.name} className="w-full h-full object-cover" />
-                      ) : (
-                        friend.name.charAt(0).toUpperCase()
-                      )}
-                    </div>
+                <div key={friend.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all group">
+                  {/* Clickable Header Section */}
+                  <Link href={`/friends/${friend.id}`} className="block p-6 pb-4">
+                    <div className="flex items-center gap-4">
+                      {/* Friend Avatar */}
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white text-2xl font-bold overflow-hidden group-hover:scale-105 transition-transform">
+                        {friend.profileImage ? (
+                          <img src={friend.profileImage} alt={friend.name} className="w-full h-full object-cover" />
+                        ) : (
+                          friend.name.charAt(0).toUpperCase()
+                        )}
+                      </div>
 
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-800">{friend.name}</h3>
-                      <p className="text-gray-600 text-sm">
-                        Friends since {new Date(friend.addedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </p>
-                    </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
+                          {friend.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm">
+                          Friends since {new Date(friend.addedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </p>
+                      </div>
 
-                    <button
-                      onClick={() => removeFriend(friend.id)}
-                      className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Remove friend"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
+                      {/* View Profile Indicator */}
+                      <div className="text-gray-400 group-hover:text-purple-600 transition-colors">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* Non-clickable comparison section */}
+                  <div className="px-6 pb-2">
+                    <p className="text-xs text-gray-500 mb-2">Click to view full profile</p>
                   </div>
 
                   {/* Comparison Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <div className="px-6 pb-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     {/* Current Streak */}
                     <div className={`text-center p-4 rounded-xl ${isAhead.streak ? 'bg-orange-50 border-2 border-orange-300' : 'bg-gray-50'}`}>
                       <p className="text-xs text-gray-600 mb-2">Current Streak</p>
@@ -309,6 +318,7 @@ export default function FriendsPage() {
                       <span>🔥</span>
                       Challenge Streak
                     </button>
+                  </div>
                   </div>
                 </div>
               );

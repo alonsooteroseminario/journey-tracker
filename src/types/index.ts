@@ -141,7 +141,7 @@ export interface AppState {
 export interface ActivityLogEntry {
   id: string;
   date: string;
-  type: 'task_completed' | 'task_started' | 'substep_completed' | 'cost_added' | 'note_added' | 'goal_created';
+  type: 'task_completed' | 'task_uncompleted' | 'task_started' | 'substep_completed' | 'substep_uncompleted' | 'cost_added' | 'note_added' | 'goal_created';
   goalId: string;
   taskId?: string;
   substepId?: string;
