@@ -30,7 +30,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl p-4 sm:p-6 text-white">
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <span>📊</span>
           Analytics Dashboard
@@ -71,9 +71,9 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
       </div>
 
       {/* Main Charts Row */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-4 sm:p-6">
         {/* Circular Progress */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6">
           <h3 className="font-bold text-gray-800 mb-4">Overall Progress</h3>
           <div className="flex items-center justify-center">
             <div className="relative w-40 h-40">
@@ -128,7 +128,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
         </div>
 
         {/* Projection Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6">
           <h3 className="font-bold text-gray-800 mb-4">Projected Completion</h3>
           <div className="text-center py-4">
             <div className="text-5xl mb-2">🎯</div>
@@ -163,7 +163,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
 
       {/* Weekly Progress Chart */}
       {analytics.weeklyProgress.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6">
           <h3 className="font-bold text-gray-800 mb-4">Weekly Progress</h3>
           <div className="space-y-3">
             {analytics.weeklyProgress.slice(-8).map((week) => (
@@ -206,7 +206,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
 
       {/* Cost by Phase */}
       {analytics.costByPhase.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6">
           <h3 className="font-bold text-gray-800 mb-4">Budget by Phase</h3>
           <div className="space-y-4">
             {analytics.costByPhase.map((phase) => (
@@ -259,9 +259,9 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
 
       {/* Substeps Overview */}
       {analytics.totalSubsteps > 0 && (
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6">
           <h3 className="font-bold text-gray-800 mb-4">Substeps Overview</h3>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:p-6">
             <div className="flex-1">
               <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
                 <div

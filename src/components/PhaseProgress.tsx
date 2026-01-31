@@ -80,13 +80,14 @@ export function PhaseProgress({ phases, tasks, onPhaseClick }: PhaseProgressProp
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-      <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <span className="text-2xl">🗺️</span>
-        Journey Phases
+    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-2 sm:p-4">
+      <h3 className="text-sm sm:text-lg font-bold text-gray-800 mb-2 flex items-center gap-1">
+        <span className="text-base sm:text-xl">🗺️</span>
+        <span className="hidden sm:inline">Phases</span>
+        <span className="sm:hidden">Ph</span>
       </h3>
 
-      <div className="space-y-3">
+      <div className="space-y-1 sm:space-y-2">
         {phases.map((phase, index) => {
           const progress = getPhaseProgress(phase);
           const stats = getPhaseStats(phase);
@@ -96,9 +97,9 @@ export function PhaseProgress({ phases, tasks, onPhaseClick }: PhaseProgressProp
           return (
             <div
               key={phase.id}
-              className={`relative p-4 rounded-xl transition-all cursor-pointer ${
+              className={`relative p-1.5 sm:p-3 rounded-md transition-all cursor-pointer ${
                 isCurrent
-                  ? "bg-blue-50 border-2 border-blue-300 shadow-md"
+                  ? "bg-blue-50 border border-blue-300"
                   : isComplete
                   ? "bg-green-50 border border-green-200"
                   : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
@@ -106,9 +107,9 @@ export function PhaseProgress({ phases, tasks, onPhaseClick }: PhaseProgressProp
               onClick={() => onPhaseClick?.(phase.id)}
             >
               {/* Phase Header */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5 sm:gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-xl ${
+                  className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm sm:text-xl flex-shrink-0 ${
                     isComplete
                       ? "bg-green-500 text-white"
                       : isCurrent
@@ -118,22 +119,22 @@ export function PhaseProgress({ phases, tasks, onPhaseClick }: PhaseProgressProp
                 >
                   {isComplete ? "✓" : phaseEmojis[phase.id] || (index + 1)}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-bold text-gray-800 text-sm truncate">
+                <div className="flex-1 min-w-0 overflow-hidden">
+                  <div className="flex items-center gap-1">
+                    <h4 className="font-bold text-gray-800 text-xs sm:text-sm truncate">
                       {phase.name}
                     </h4>
                     {isCurrent && (
-                      <span className="px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full">
+                      <span className="hidden sm:inline px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full flex-shrink-0">
                         Current
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500 truncate">{phase.description}</p>
+                  <p className="hidden sm:block text-xs text-gray-500 truncate">{phase.description}</p>
                 </div>
-                <div className="text-right">
+                <div className="text-right flex-shrink-0">
                   <span
-                    className={`text-lg font-bold ${
+                    className={`text-sm sm:text-lg font-bold ${
                       isComplete
                         ? "text-green-600"
                         : isCurrent
@@ -150,7 +151,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick }: PhaseProgressProp
               </div>
 
               {/* Progress Bar */}
-              <div className="mt-3 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="mt-1.5 sm:mt-3 h-1.5 sm:h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
                     isComplete
@@ -166,7 +167,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick }: PhaseProgressProp
               {/* Connection Line */}
               {index < phases.length - 1 && (
                 <div
-                  className={`absolute left-9 top-full w-0.5 h-3 ${
+                  className={`absolute left-3.5 sm:left-5 top-full w-0.5 h-2 ${
                     isComplete ? "bg-green-300" : "bg-gray-200"
                   }`}
                   style={{ transform: "translateX(-50%)" }}
@@ -178,16 +179,19 @@ export function PhaseProgress({ phases, tasks, onPhaseClick }: PhaseProgressProp
       </div>
 
       {/* Overall Progress */}
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-gray-600">Overall Journey Progress</span>
-          <span className="text-lg font-bold text-blue-600">
+      <div className="mt-3 sm:mt-6 pt-2 sm:pt-4 border-t border-gray-200">
+        <div className="flex justify-between items-center mb-1 sm:mb-2">
+          <span className="text-xs sm:text-sm font-medium text-gray-600">
+            <span className="hidden sm:inline">Overall Progress</span>
+            <span className="sm:hidden">Total</span>
+          </span>
+          <span className="text-sm sm:text-lg font-bold text-blue-600">
             {Math.round(
               phases.reduce((acc, phase) => acc + getPhaseProgress(phase), 0) / phases.length
             )}%
           </span>
         </div>
-        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-2 sm:h-3 bg-gray-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full transition-all duration-500"
             style={{

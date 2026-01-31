@@ -105,37 +105,37 @@ export function GoalCard({
     >
       {/* Header */}
       <div
-        className={`p-6 ${
+        className={`p-3 sm:p-6 ${
           progress === 100
             ? "bg-gradient-to-r from-green-50 to-emerald-50"
             : "bg-gradient-to-r from-red-50 via-white to-red-50"
         }`}
       >
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <span className="text-3xl">🍁</span>
-              <h3 className="text-xl font-bold text-gray-800">{goal.title}</h3>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="text-2xl sm:text-3xl flex-shrink-0">🍁</span>
+              <h3 className="text-base sm:text-xl font-bold text-gray-800 truncate">{goal.title}</h3>
               {progress === 100 && (
-                <span className="text-2xl" title="Goal completed!">
+                <span className="text-xl sm:text-2xl flex-shrink-0" title="Goal completed!">
                   🎉
                 </span>
               )}
             </div>
             {goal.description && (
-              <p className="text-gray-600 mt-1">{goal.description}</p>
+              <p className="text-sm sm:text-base text-gray-600 mt-1 line-clamp-2">{goal.description}</p>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-white/50 rounded-lg transition-colors"
+              className="p-2 sm:p-3 min-w-[40px] sm:min-w-[48px] min-h-[40px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-white/50 rounded-lg transition-colors"
               title={isExpanded ? "Collapse" : "Expand"}
               aria-label={isExpanded ? "Collapse" : "Expand"}
             >
               <svg
-                className={`w-5 h-5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -145,11 +145,11 @@ export function GoalCard({
             </button>
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="p-3 min-w-[48px] min-h-[48px] flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white/50 rounded-lg transition-colors"
+              className="p-2 sm:p-3 min-w-[40px] sm:min-w-[48px] min-h-[40px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white/50 rounded-lg transition-colors"
               title="Delete goal"
               aria-label="Delete goal"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
@@ -157,60 +157,65 @@ export function GoalCard({
         </div>
 
         {/* Progress Section */}
-        <div className="mt-4">
-          <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-            <span>{completedCount} of {totalCount} steps completed</span>
+        <div className="mt-3 sm:mt-4">
+          <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600 mb-2">
+            <span className="truncate">{completedCount} of {totalCount} steps</span>
             {progress === 100 && (
-              <span className="text-green-600 font-semibold">Complete!</span>
+              <span className="text-green-600 font-semibold text-xs sm:text-sm flex-shrink-0 ml-2">Complete!</span>
             )}
           </div>
-          <ProgressBar progress={progress} showPercentage={true} size="lg" />
+          <ProgressBar progress={progress} showPercentage={true} size="md" />
         </div>
 
         {/* View Mode Tabs - Responsive Grid on Mobile */}
-        <div className="mt-4 grid grid-cols-2 sm:flex gap-2">
+        <div className="mt-3 sm:mt-4 grid grid-cols-2 sm:grid-cols-3 md:flex gap-1.5 sm:gap-2">
           {hasExtendedData && (
             <button
               onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
-              className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
                 viewMode === "phases" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
               }`}
             >
-              📊 <span className="hidden xs:inline">Phases</span>
+              <span className="block sm:hidden">📊</span>
+              <span className="hidden sm:inline">📊 Phases</span>
             </button>
           )}
           <button
             onClick={() => { setViewMode("tasks"); setSelectedPhase(null); }}
-            className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
               viewMode === "tasks" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
-            ✅ <span className="hidden xs:inline">Tasks</span>
+            <span className="block sm:hidden">✅</span>
+            <span className="hidden sm:inline">✅ Tasks</span>
           </button>
           <button
             onClick={() => setViewMode("calendar")}
-            className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
               viewMode === "calendar" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
-            📅 <span className="hidden xs:inline">Calendar</span>
+            <span className="block sm:hidden">📅</span>
+            <span className="hidden sm:inline">📅 Calendar</span>
           </button>
           <button
             onClick={() => setViewMode("analytics")}
-            className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
               viewMode === "analytics" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
-            📈 <span className="hidden xs:inline">Analytics</span>
+            <span className="block sm:hidden">📈</span>
+            <span className="hidden sm:inline">📈 Analytics</span>
           </button>
           {hasExtendedData && (
             <button
               onClick={() => setViewMode("info")}
-              className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
                 viewMode === "info" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
               }`}
             >
-              ℹ️ <span className="hidden xs:inline">Resources</span>
+              <span className="block sm:hidden">ℹ️</span>
+              <span className="hidden sm:inline">ℹ️ Resources</span>
             </button>
           )}
         </div>
@@ -218,7 +223,7 @@ export function GoalCard({
 
       {/* Content Section */}
       {isExpanded && (
-        <div className="p-6 border-t border-gray-100">
+        <div className="p-3 sm:p-6 border-t border-gray-100">
           {/* Phase View */}
           {viewMode === "phases" && hasExtendedData && goal.phases && (
             <div className="space-y-6">
@@ -330,17 +335,17 @@ export function GoalCard({
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 max-w-sm mx-4 shadow-2xl">
-            <h4 className="text-lg font-bold text-gray-800 mb-2">Delete Goal?</h4>
-            <p className="text-gray-600 mb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-sm w-full shadow-2xl">
+            <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-2">Delete Goal?</h4>
+            <p className="text-sm sm:text-base text-gray-600 mb-4">
               Are you sure you want to delete &quot;{goal.title}&quot;? This will also
               delete all {totalCount} tasks. This action cannot be undone.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                className="flex-1 py-2 px-3 sm:px-4 border border-gray-300 rounded-lg text-sm sm:text-base text-gray-700 hover:bg-gray-50 transition-colors min-h-[44px]"
               >
                 Cancel
               </button>
@@ -349,7 +354,7 @@ export function GoalCard({
                   onDeleteGoal(goal.id);
                   setShowDeleteConfirm(false);
                 }}
-                className="flex-1 py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                className="flex-1 py-2 px-3 sm:px-4 bg-red-500 text-white rounded-lg text-sm sm:text-base hover:bg-red-600 transition-colors min-h-[44px]"
               >
                 Delete
               </button>

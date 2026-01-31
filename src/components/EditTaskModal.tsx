@@ -56,7 +56,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-white">Edit Task</h2>

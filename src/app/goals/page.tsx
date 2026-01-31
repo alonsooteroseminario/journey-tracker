@@ -48,7 +48,7 @@ export default function GoalsPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
@@ -82,12 +82,12 @@ export default function GoalsPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-8">
+      <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8 pb-24 md:pb-8">
         {/* Goals List */}
         {goals.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
-            <div className="text-8xl mb-6">🎯</div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-12 text-center">
+            <div className="text-6xl sm:text-8xl mb-4 sm:mb-6">🎯</div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
               No goals yet
             </h2>
             <p className="text-gray-600 mb-8 text-lg">
@@ -95,7 +95,7 @@ export default function GoalsPage() {
             </p>
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all font-medium shadow-lg shadow-blue-500/25 text-lg"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all font-medium shadow-lg shadow-blue-500/25 text-lg"
             >
               Create Your First Goal
             </button>

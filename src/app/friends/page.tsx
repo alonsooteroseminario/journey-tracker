@@ -124,7 +124,7 @@ export default function FriendsPage() {
                 </svg>
               </button>
               <div className="flex items-center gap-3">
-                <span className="text-3xl">👥</span>
+                <span className="text-2xl sm:text-3xl">👥</span>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-800">Friends Comparison</h1>
                   <p className="text-sm text-gray-500">Motivate each other to succeed</p>
@@ -176,9 +176,9 @@ export default function FriendsPage() {
 
         {/* Friends List */}
         {friends.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
-            <div className="text-8xl mb-6">👥</div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-12 text-center">
+            <div className="text-6xl sm:text-8xl mb-6">👥</div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
               No friends added yet
             </h2>
             <p className="text-gray-600 mb-8 text-lg">
@@ -186,7 +186,7 @@ export default function FriendsPage() {
             </p>
             <button
               onClick={handleGenerateInvite}
-              className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all font-medium shadow-lg shadow-blue-500/25 text-lg"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all font-medium shadow-lg shadow-blue-500/25 text-lg"
             >
               Generate Invite Code
             </button>
@@ -328,7 +328,7 @@ export default function FriendsPage() {
 
         {/* Motivational Banner */}
         <div className="mt-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl p-8 text-center shadow-lg">
-          <h3 className="text-3xl font-bold mb-3">Keep Each Other Motivated! 💪</h3>
+          <h3 className="text-2xl sm:text-3xl font-bold mb-3">Keep Each Other Motivated! 💪</h3>
           <p className="text-purple-100 text-lg mb-4">
             Friends who track together, achieve together.
           </p>

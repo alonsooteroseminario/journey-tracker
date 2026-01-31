@@ -41,11 +41,11 @@ export function CreateGoalModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[85vh] overflow-y-auto animate-slide-up sm:animate-none">
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full mx-2 sm:mx-0 shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[85vh] overflow-y-auto animate-slide-up sm:animate-none">
         {/* Header - Sticky on scroll */}
-        <div className="bg-gradient-to-r from-red-500 via-white to-red-500 p-4 sm:p-6 sticky top-0 z-10">
+        <div className="bg-gradient-to-r from-red-500 via-white to-red-500 p-3 sm:p-6 sticky top-0 z-10">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Create New Goal</h2>
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-800">Create New Goal</h2>
             <button
               onClick={onClose}
               className="text-gray-600 hover:text-gray-800 p-3 min-w-[48px] min-h-[48px] flex items-center justify-center transition-colors"
@@ -72,7 +72,7 @@ export function CreateGoalModal({
         </div>
 
         {/* Content - Scrollable Area */}
-        <div className="p-4 sm:p-6 pb-safe">
+        <div className="p-3 sm:p-6 pb-safe">
           {/* Template Option */}
           {showTemplates && (
             <div className="mb-6">
@@ -81,10 +81,10 @@ export function CreateGoalModal({
               </h3>
               <button
                 onClick={handleLoadTemplate}
-                className="w-full p-4 sm:p-5 bg-gradient-to-r from-red-50 via-white to-red-50 border-2 border-red-200 rounded-xl text-left hover:shadow-lg hover:border-red-300 transition-all group min-h-[48px]"
+                className="w-full p-3 sm:p-5 bg-gradient-to-r from-red-50 via-white to-red-50 border-2 border-red-200 rounded-xl text-left hover:shadow-lg hover:border-red-300 transition-all group min-h-[48px]"
               >
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <span className="text-3xl sm:text-4xl">🍁</span>
+                <div className="flex items-start gap-2 sm:gap-4">
+                  <span className="text-2xl sm:text-4xl flex-shrink-0">🍁</span>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-bold text-gray-800 group-hover:text-red-600 transition-colors text-base sm:text-lg">
                       BC PNP to Permanent Residence

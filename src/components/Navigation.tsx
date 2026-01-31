@@ -28,12 +28,12 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
     <>
       {/* Desktop Navigation - Top Bar */}
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo/Brand */}
-            <Link href="/" className="flex items-center gap-2 min-h-[48px]">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">🚀</span>
+            <Link href="/" className="flex items-center gap-1.5 sm:gap-2 min-h-[48px]">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <span className="text-xl sm:text-2xl">🚀</span>
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -72,16 +72,16 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
               {/* Profile Avatar - Increased Touch Target */}
               <Link
                 href="/profile"
-                className="flex items-center gap-2 p-2 min-w-[48px] min-h-[48px] rounded-full hover:bg-gray-100 transition-colors"
+                className="flex items-center gap-2 p-1.5 sm:p-2 min-w-[40px] sm:min-w-[48px] min-h-[40px] sm:min-h-[48px] rounded-full hover:bg-gray-100 transition-colors"
               >
                 {profile.profileImage ? (
                   <img
                     src={profile.profileImage}
                     alt={profile.name}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-gray-200"
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
                     {profile.name.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -96,18 +96,18 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
 
       {/* Mobile Navigation - Fixed Bottom (Thumb Zone) */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-50 shadow-lg safe-area-inset-bottom">
-        <div className="flex items-center justify-around py-2 px-2">
+        <div className="flex items-center justify-around py-1.5 px-1">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-1 px-3 py-2 min-w-[64px] min-h-[56px] rounded-lg transition-all ${
+              className={`flex flex-col items-center gap-0.5 px-2 py-1.5 min-w-[56px] min-h-[52px] rounded-lg transition-all ${
                 isActive(item.href)
                   ? "bg-blue-100 text-blue-700"
                   : "text-gray-600 active:bg-gray-100"
               }`}
             >
-              <span className="text-2xl">{item.icon}</span>
+              <span className="text-xl">{item.icon}</span>
               <span className="text-xs font-medium">{item.label}</span>
             </Link>
           ))}

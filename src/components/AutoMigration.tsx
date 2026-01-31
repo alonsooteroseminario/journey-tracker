@@ -83,7 +83,7 @@ export function AutoMigration() {
   if (migrationStatus === "migrating" && isLoading) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
-        <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+        <div className="bg-white rounded-2xl p-4 sm:p-8 max-w-md mx-4 shadow-2xl">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
