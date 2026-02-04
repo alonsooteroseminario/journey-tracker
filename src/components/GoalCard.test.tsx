@@ -383,7 +383,7 @@ describe('GoalCard', () => {
       expect(screen.getByText('ℹ️ Resources')).toBeInTheDocument();
     });
 
-    it('should not show phases tab for goals without phases', () => {
+    it('should show phases tab and empty state for goals without phases', () => {
       render(
         <GoalCard
           goal={mockGoal}
@@ -395,7 +395,17 @@ describe('GoalCard', () => {
         />
       );
 
-      expect(screen.queryByText('📊 Phases')).not.toBeInTheDocument();
+      // Phases tab is always visible
+      expect(screen.getByText('📊 Phases')).toBeInTheDocument();
+
+      // Expand card and click Phases tab to see empty state
+      const expandBtn = screen.getByTitle('Expand');
+      fireEvent.click(expandBtn);
+
+      const phasesTab = screen.getByText('📊 Phases');
+      fireEvent.click(phasesTab);
+
+      expect(screen.getByText('No phases yet')).toBeInTheDocument();
     });
   });
 });

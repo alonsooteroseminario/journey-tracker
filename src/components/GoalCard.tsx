@@ -52,9 +52,9 @@ export function GoalCard({
   onUpdateDocumentStatus,
   onReorderTasks,
 }: GoalCardProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>("phases");
+  const [viewMode, setViewMode] = useState<ViewMode>(goal.phases && goal.phases.length > 0 ? "phases" : "tasks");
   const [selectedPhase, setSelectedPhase] = useState<string | null>(null);
 
   // Calculate completed and total counts including substeps
@@ -74,8 +74,6 @@ export function GoalCard({
       completedCount += task.completed ? 1 : 0;
     }
   });
-
-  const hasExtendedData = goal.phases && goal.phases.length > 0;
 
   // Get tasks for a specific phase
   const getTasksForPhase = (phaseId: string): Task[] => {
@@ -114,7 +112,7 @@ export function GoalCard({
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="text-2xl sm:text-3xl flex-shrink-0">🍁</span>
+              <span className="text-2xl sm:text-3xl flex-shrink-0">{goal.icon || '🎯'}</span>
               <h3 className="text-base sm:text-xl font-bold text-gray-800 truncate">{goal.title}</h3>
               {progress === 100 && (
                 <span className="text-xl sm:text-2xl flex-shrink-0" title="Goal completed!">
@@ -168,18 +166,16 @@ export function GoalCard({
         </div>
 
         {/* View Mode Tabs - Responsive Grid on Mobile */}
-        <div className="mt-3 sm:mt-4 grid grid-cols-2 sm:grid-cols-3 md:flex gap-1.5 sm:gap-2">
-          {hasExtendedData && (
-            <button
-              onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
-              className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
-                viewMode === "phases" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
-              }`}
-            >
-              <span className="block sm:hidden">📊</span>
-              <span className="hidden sm:inline">📊 Phases</span>
-            </button>
-          )}
+        <div className="mt-3 sm:mt-4 grid grid-cols-3 sm:grid-cols-3 md:flex gap-1.5 sm:gap-2">
+          <button
+            onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
+            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
+              viewMode === "phases" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+            }`}
+          >
+            <span className="block sm:hidden">📊</span>
+            <span className="hidden sm:inline">📊 Phases</span>
+          </button>
           <button
             onClick={() => { setViewMode("tasks"); setSelectedPhase(null); }}
             className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
@@ -207,17 +203,15 @@ export function GoalCard({
             <span className="block sm:hidden">📈</span>
             <span className="hidden sm:inline">📈 Analytics</span>
           </button>
-          {hasExtendedData && (
-            <button
-              onClick={() => setViewMode("info")}
-              className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
-                viewMode === "info" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
-              }`}
-            >
-              <span className="block sm:hidden">ℹ️</span>
-              <span className="hidden sm:inline">ℹ️ Resources</span>
-            </button>
-          )}
+          <button
+            onClick={() => setViewMode("info")}
+            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
+              viewMode === "info" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+            }`}
+          >
+            <span className="block sm:hidden">ℹ️</span>
+            <span className="hidden sm:inline">ℹ️ Resources</span>
+          </button>
         </div>
       </div>
 
@@ -225,48 +219,58 @@ export function GoalCard({
       {isExpanded && (
         <div className="p-3 sm:p-6 border-t border-gray-100">
           {/* Phase View */}
-          {viewMode === "phases" && hasExtendedData && goal.phases && (
-            <div className="space-y-6">
-              {!selectedPhase ? (
-                <PhaseProgress
-                  phases={goal.phases}
-                  tasks={goal.tasks}
-                  onPhaseClick={(phaseId) => setSelectedPhase(phaseId)}
-                />
-              ) : (
-                <div>
-                  <button
-                    onClick={() => setSelectedPhase(null)}
-                    className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 font-medium"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Back to Phases
-                  </button>
-
-                  <div className="mb-4 p-4 bg-blue-50 rounded-xl">
-                    <h4 className="font-bold text-blue-800">{selectedPhaseName}</h4>
-                    <p className="text-sm text-blue-600">
-                      {displayedTasks.filter((t) => t.completed).length} of {displayedTasks.length} tasks completed
-                    </p>
-                  </div>
-
-                  <TaskList
-                    tasks={displayedTasks}
-                    onToggleTask={(taskId) => onToggleTask(goal.id, taskId)}
-                    onUpdateTask={(taskId, updates) => onUpdateTask(goal.id, taskId, updates)}
-                    onDeleteTask={(taskId) => onDeleteTask(goal.id, taskId)}
-                    onAddTask={(title, desc) => onAddTask(goal.id, title, desc)}
-                    onAddSubstep={(taskId, title, desc) => onAddSubstep(goal.id, taskId, title, desc)}
-                    onUpdateSubstep={(taskId, substepId, updates) => onUpdateSubstep(goal.id, taskId, substepId, updates)}
-                    onToggleSubstep={(taskId, substepId) => onToggleSubstep(goal.id, taskId, substepId)}
-                    onDeleteSubstep={(taskId, substepId) => onDeleteSubstep(goal.id, taskId, substepId)}
-                    onReorderTasks={(tasks) => onReorderTasks?.(goal.id, tasks)}
+          {viewMode === "phases" && (
+            goal.phases && goal.phases.length > 0 ? (
+              <div className="space-y-6">
+                {!selectedPhase ? (
+                  <PhaseProgress
+                    phases={goal.phases}
+                    tasks={goal.tasks}
+                    onPhaseClick={(phaseId) => setSelectedPhase(phaseId)}
                   />
-                </div>
-              )}
-            </div>
+                ) : (
+                  <div>
+                    <button
+                      onClick={() => setSelectedPhase(null)}
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 font-medium"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                      Back to Phases
+                    </button>
+
+                    <div className="mb-4 p-4 bg-blue-50 rounded-xl">
+                      <h4 className="font-bold text-blue-800">{selectedPhaseName}</h4>
+                      <p className="text-sm text-blue-600">
+                        {displayedTasks.filter((t) => t.completed).length} of {displayedTasks.length} tasks completed
+                      </p>
+                    </div>
+
+                    <TaskList
+                      tasks={displayedTasks}
+                      onToggleTask={(taskId) => onToggleTask(goal.id, taskId)}
+                      onUpdateTask={(taskId, updates) => onUpdateTask(goal.id, taskId, updates)}
+                      onDeleteTask={(taskId) => onDeleteTask(goal.id, taskId)}
+                      onAddTask={(title, desc) => onAddTask(goal.id, title, desc)}
+                      onAddSubstep={(taskId, title, desc) => onAddSubstep(goal.id, taskId, title, desc)}
+                      onUpdateSubstep={(taskId, substepId, updates) => onUpdateSubstep(goal.id, taskId, substepId, updates)}
+                      onToggleSubstep={(taskId, substepId) => onToggleSubstep(goal.id, taskId, substepId)}
+                      onDeleteSubstep={(taskId, substepId) => onDeleteSubstep(goal.id, taskId, substepId)}
+                      onReorderTasks={(tasks) => onReorderTasks?.(goal.id, tasks)}
+                    />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-blue-50/50 rounded-xl border border-blue-100 border-dashed">
+                <span className="text-3xl mb-2">📊</span>
+                <p className="text-sm font-semibold text-gray-700">No phases yet</p>
+                <p className="text-xs text-gray-500 mt-1 max-w-[260px]">
+                  Phases help you break your goal into milestones. Create a new goal with phases enabled, or ask the chatbot to help you set them up.
+                </p>
+              </div>
+            )
           )}
 
           {/* Tasks View */}
@@ -298,37 +302,31 @@ export function GoalCard({
             <AnalyticsDashboard analytics={analytics} goalTitle={goal.title} />
           )}
 
-          {/* Info View */}
-          {viewMode === "info" && hasExtendedData && (
-            <div className="space-y-6">
-              {goal.budget && <BudgetSummary budget={goal.budget} />}
-              {goal.timeline && <TimelineComparison timeline={goal.timeline} />}
-              {goal.documents && (
-                <DocumentChecklist
-                  documents={goal.documents}
-                  onUpdateStatus={(docId, status) =>
-                    onUpdateDocumentStatus?.(goal.id, docId, status)
-                  }
-                />
-              )}
-              {goal.resources && <ResourcesPanel resources={goal.resources} />}
-            </div>
-          )}
-
-          {/* Simple task view for non-extended goals when phases selected */}
-          {!hasExtendedData && viewMode === "phases" && (
-            <TaskList
-              tasks={goal.tasks}
-              onToggleTask={(taskId) => onToggleTask(goal.id, taskId)}
-              onUpdateTask={(taskId, updates) => onUpdateTask(goal.id, taskId, updates)}
-              onDeleteTask={(taskId) => onDeleteTask(goal.id, taskId)}
-              onAddTask={(title, desc) => onAddTask(goal.id, title, desc)}
-              onAddSubstep={(taskId, title, desc) => onAddSubstep(goal.id, taskId, title, desc)}
-              onUpdateSubstep={(taskId, substepId, updates) => onUpdateSubstep(goal.id, taskId, substepId, updates)}
-              onToggleSubstep={(taskId, substepId) => onToggleSubstep(goal.id, taskId, substepId)}
-              onDeleteSubstep={(taskId, substepId) => onDeleteSubstep(goal.id, taskId, substepId)}
-              onReorderTasks={(tasks) => onReorderTasks?.(goal.id, tasks)}
-            />
+          {/* Info / Resources View */}
+          {viewMode === "info" && (
+            goal.budget || goal.timeline || goal.documents || goal.resources ? (
+              <div className="space-y-6">
+                {goal.budget && <BudgetSummary budget={goal.budget} />}
+                {goal.timeline && <TimelineComparison timeline={goal.timeline} />}
+                {goal.documents && (
+                  <DocumentChecklist
+                    documents={goal.documents}
+                    onUpdateStatus={(docId, status) =>
+                      onUpdateDocumentStatus?.(goal.id, docId, status)
+                    }
+                  />
+                )}
+                {goal.resources && <ResourcesPanel resources={goal.resources} />}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-purple-50/50 rounded-xl border border-purple-100 border-dashed">
+                <span className="text-3xl mb-2">📦</span>
+                <p className="text-sm font-semibold text-gray-700">No resources yet</p>
+                <p className="text-xs text-gray-500 mt-1 max-w-[260px]">
+                  Resources include budget tracking, timelines, document checklists, and reference links. Ask the chatbot to help you add them.
+                </p>
+              </div>
+            )
           )}
         </div>
       )}

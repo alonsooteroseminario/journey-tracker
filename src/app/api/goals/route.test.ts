@@ -9,6 +9,10 @@ vi.mock('@/lib/auth', () => ({
   getCurrentUser: vi.fn(),
 }));
 
+vi.mock('@/lib/agent/pickGoalIcon', () => ({
+  pickGoalIcon: vi.fn().mockResolvedValue('🎯'),
+}));
+
 describe('POST /api/goals', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -66,6 +70,7 @@ describe('POST /api/goals', () => {
       id: 'goal-123',
       title: 'Test Goal',
       description: 'Test description',
+      icon: undefined,
       tasks: [],
       phases: null,
       budget: null,
@@ -83,6 +88,7 @@ describe('POST /api/goals', () => {
         userId: 'user-123',
         title: 'Test Goal',
         description: 'Test description',
+        icon: '🎯',
         tasks: [],
         phases: undefined,
         budget: undefined,

@@ -131,8 +131,8 @@ export default function GoalsPage() {
       <CreateGoalModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        onCreateGoal={async (title, description) => {
-          await addGoal(title, description);
+        onCreateGoal={async (title, description, phases) => {
+          await addGoal(title, description, phases);
           setIsCreateModalOpen(false);
         }}
         onAddGoalWithTasks={(goal) => {

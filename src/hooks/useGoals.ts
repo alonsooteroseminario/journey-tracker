@@ -190,12 +190,13 @@ export function useGoals() {
   // Goal Management
   // ==========================================
   const addGoal = useCallback(
-    async (title: string, description?: string): Promise<Goal> => {
+    async (title: string, description?: string, phases?: Goal["phases"]): Promise<Goal> => {
       const result = await createGoalMutation({
         title,
         description,
         tasks: [],
         startDate: getToday(),
+        phases,
       }).unwrap();
 
       return result as Goal;

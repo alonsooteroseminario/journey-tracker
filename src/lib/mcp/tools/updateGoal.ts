@@ -35,6 +35,10 @@ export const toolDefinition: ToolDefinition = {
         type: 'string',
         description: 'New target date in YYYY-MM-DD format (optional)',
       },
+      isPublic: {
+        type: 'boolean',
+        description: 'Whether the goal is visible to friends (optional)',
+      },
     },
     required: ['goalId'],
   },
@@ -106,6 +110,7 @@ export async function executeUpdateGoal(
     if (validatedData.targetDate !== undefined) {
       updateObject.targetDate = validatedData.targetDate ? new Date(validatedData.targetDate) : null;
     }
+    if (args.isPublic !== undefined) updateObject.isPublic = args.isPublic;
 
     // Update goal
     const goal = await prisma.goal.update({

@@ -43,6 +43,7 @@ model Goal {
 
   title       String
   description String?
+  icon        String?
 
   // Tasks stored as embedded JSON (preserves existing nested structure)
   tasks Json // Array of Task objects with nested substeps

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Goal } from "@/types";
+import { Goal, Phase } from "@/types";
 import { createBCPNPtoPRChecklist } from "@/lib/sampleData";
 
 interface CreateGoalModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateGoal: (title: string, description?: string) => void;
+  onCreateGoal: (title: string, description?: string, phases?: Phase[]) => void;
   onAddGoalWithTasks: (goal: Goal) => void;
 }
 
@@ -20,15 +20,43 @@ export function CreateGoalModal({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [showTemplates, setShowTemplates] = useState(true);
+  const [usePhases, setUsePhases] = useState(false);
+  const [phases, setPhases] = useState<{ name: string; description: string }[]>([]);
+  const [newPhaseName, setNewPhaseName] = useState("");
+  const [newPhaseDesc, setNewPhaseDesc] = useState("");
 
   if (!isOpen) return null;
+
+  const addPhase = () => {
+    if (newPhaseName.trim()) {
+      setPhases((prev) => [...prev, { name: newPhaseName.trim(), description: newPhaseDesc.trim() }]);
+      setNewPhaseName("");
+      setNewPhaseDesc("");
+    }
+  };
+
+  const removePhase = (index: number) => {
+    setPhases((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (title.trim()) {
-      onCreateGoal(title.trim(), description.trim() || undefined);
+      const phaseObjects: Phase[] | undefined =
+        usePhases && phases.length > 0
+          ? phases.map((p, i) => ({
+              id: `phase${i + 1}`,
+              name: `Phase ${i + 1}: ${p.name}`,
+              description: p.description,
+              taskIds: [] as string[],
+            }))
+          : undefined;
+
+      onCreateGoal(title.trim(), description.trim() || undefined, phaseObjects);
       setTitle("");
       setDescription("");
+      setPhases([]);
+      setUsePhases(false);
       onClose();
     }
   };
@@ -157,6 +185,85 @@ export function CreateGoalModal({
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
               />
             </div>
+
+            {/* Phases toggle */}
+            <div className="flex items-center gap-3 pt-1">
+              <input
+                type="checkbox"
+                id="usePhases"
+                checked={usePhases}
+                onChange={(e) => setUsePhases(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+              />
+              <label htmlFor="usePhases" className="text-sm text-gray-700 cursor-pointer select-none">
+                Organize tasks with Phases
+              </label>
+            </div>
+
+            {/* Phases input section */}
+            {usePhases && (
+              <div className="border border-blue-200 rounded-xl p-4 bg-blue-50/40 space-y-3">
+                <p className="text-xs text-blue-600 font-medium">
+                  Add phases to break your goal into milestones. You can assign tasks to phases after creation.
+                </p>
+
+                {/* Phase name + description inputs */}
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={newPhaseName}
+                    onChange={(e) => setNewPhaseName(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addPhase(); } }}
+                    placeholder="Phase name (e.g. Preparation)"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <input
+                    type="text"
+                    value={newPhaseDesc}
+                    onChange={(e) => setNewPhaseDesc(e.target.value)}
+                    placeholder="Description (optional, e.g. Weeks 1–4)"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <button
+                    type="button"
+                    onClick={addPhase}
+                    disabled={!newPhaseName.trim()}
+                    className="w-full py-2 min-h-[40px] bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    + Add Phase
+                  </button>
+                </div>
+
+                {/* Phase list */}
+                {phases.length > 0 && (
+                  <div className="space-y-1.5">
+                    {phases.map((phase, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start justify-between gap-2 bg-white border border-blue-200 rounded-lg px-3 py-2"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-800">
+                            Phase {i + 1}: {phase.name}
+                          </p>
+                          {phase.description && (
+                            <p className="text-xs text-gray-500 truncate">{phase.description}</p>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removePhase(i)}
+                          className="text-gray-400 hover:text-red-500 transition-colors p-1 flex-shrink-0"
+                          aria-label={`Remove phase ${i + 1}`}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="flex gap-3 pt-2">
               <button

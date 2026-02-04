@@ -52,6 +52,7 @@ const TaskSchema = z.object({
 export const CreateGoalSchema = z.object({
   title: z.string().min(1, "Goal title is required").max(200, "Title too long"),
   description: z.string().max(2000, "Description too long").optional(),
+  icon: z.string().max(10, "Icon too long").optional(),
   tasks: z.array(TaskSchema).default([]),
   startDate: isoDateString.optional(),
   targetDate: isoDateString.optional(),
@@ -67,6 +68,7 @@ export const CreateGoalSchema = z.object({
 export const UpdateGoalSchema = z.object({
   title: z.string().min(1).max(200).optional(),
   description: z.string().max(2000).optional(),
+  icon: z.string().max(10).optional(),
   tasks: z.array(TaskSchema).optional(),
   startDate: isoDateString.nullable().optional(),
   targetDate: isoDateString.nullable().optional(),

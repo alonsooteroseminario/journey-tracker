@@ -45,7 +45,7 @@ export function TaskMiniCard({
   onDeleteSubstep,
   isDragging,
 }: TaskMiniCardProps) {
-  const [isExpanded, setIsExpanded] = useState(true); // Always expanded by default
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingSubstep, setIsAddingSubstep] = useState(false);
   const [newSubstepTitle, setNewSubstepTitle] = useState("");

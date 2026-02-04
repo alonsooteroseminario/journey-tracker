@@ -161,7 +161,7 @@ describe('CreateGoalModal', () => {
       const submitButton = screen.getByText('Create Goal');
       fireEvent.click(submitButton);
 
-      expect(mockOnCreateGoal).toHaveBeenCalledWith('Learn React', undefined);
+      expect(mockOnCreateGoal).toHaveBeenCalledWith('Learn React', undefined, undefined);
     });
 
     it('should call onCreateGoal with title and description when both filled', () => {
@@ -183,7 +183,7 @@ describe('CreateGoalModal', () => {
       const submitButton = screen.getByText('Create Goal');
       fireEvent.click(submitButton);
 
-      expect(mockOnCreateGoal).toHaveBeenCalledWith('Learn React', 'Master hooks');
+      expect(mockOnCreateGoal).toHaveBeenCalledWith('Learn React', 'Master hooks', undefined);
     });
 
     it('should close modal after submitting', () => {
@@ -224,7 +224,7 @@ describe('CreateGoalModal', () => {
       const submitButton = screen.getByText('Create Goal');
       fireEvent.click(submitButton);
 
-      expect(mockOnCreateGoal).toHaveBeenCalledWith('Learn React', 'Master hooks');
+      expect(mockOnCreateGoal).toHaveBeenCalledWith('Learn React', 'Master hooks', undefined);
     });
 
     it('should not submit when title is only whitespace', () => {
@@ -295,7 +295,7 @@ describe('CreateGoalModal', () => {
         />
       );
 
-      const closeButton = screen.getByRole('button', { name: '' }); // X button has no text
+      const closeButton = screen.getByRole('button', { name: 'Close modal' });
       fireEvent.click(closeButton);
 
       expect(mockOnClose).toHaveBeenCalled();

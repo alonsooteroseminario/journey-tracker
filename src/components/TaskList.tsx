@@ -46,7 +46,7 @@ export function TaskList({
   const [isAdding, setIsAdding] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
-  const [showCompleted, setShowCompleted] = useState(true);
+  const [showCompleted, setShowCompleted] = useState(false);
   const [viewMode, setViewMode] = useState<"cards" | "list">("cards");
 
   const completedTasks = tasks.filter((t) => t.completed);

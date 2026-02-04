@@ -235,6 +235,17 @@ async function runAgentLoop(
   while (iterations < MAX_TOOL_ITERATIONS) {
     iterations++;
 
+    // Trim intermediate tool messages to prevent context bloat during bulk
+    // operations.  Keep the original user message (index 0) plus the most
+    // recent 6 messages (3 assistant+user round-trips).  This keeps the
+    // context small enough that Claude always has room for a full final reply.
+    if (currentMessages.length > 8) {
+      currentMessages = [
+        currentMessages[0],
+        ...currentMessages.slice(-6),
+      ];
+    }
+
     // Call Claude
     const response = await getAnthropicClient().messages.create({
       model: AGENT_MODEL,
@@ -258,13 +269,14 @@ async function runAgentLoop(
       return { content, toolUsed: lastToolUsed, toolResult: lastToolResult };
     }
 
-    if (response.stop_reason === 'tool_use') {
-      // Claude may return multiple tool_use blocks (parallel calls).
-      // ALL must get a tool_result in the next message or the API returns 400.
-      const toolUseBlocks = response.content.filter(
-        (block): block is Anthropic.Messages.ToolUseBlock => block.type === 'tool_use'
-      );
+    // Extract tool_use blocks — used by both 'tool_use' and 'max_tokens'
+    // paths, because Claude can emit complete tool_use blocks even when
+    // generation is cut short by the token limit.
+    const toolUseBlocks = response.content.filter(
+      (block): block is Anthropic.Messages.ToolUseBlock => block.type === 'tool_use'
+    );
 
+    if (response.stop_reason === 'tool_use' || (response.stop_reason === 'max_tokens' && toolUseBlocks.length > 0)) {
       if (toolUseBlocks.length === 0) {
         throw new Error('Tool use block not found in response');
       }
@@ -334,7 +346,7 @@ async function runAgentLoop(
       continue;
     }
 
-    // Handle max_tokens stop reason
+    // Handle max_tokens with no actionable tool_use blocks — return what we have
     if (response.stop_reason === 'max_tokens') {
       const textBlock = response.content.find((block) => block.type === 'text');
       const content = textBlock && 'text' in textBlock ? textBlock.text : '';

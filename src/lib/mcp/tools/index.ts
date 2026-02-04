@@ -19,6 +19,15 @@ import { toolDefinition as getStreaksDefinition, executeGetStreaks } from './get
 import { toolDefinition as getActivityDefinition, executeGetActivity } from './getActivity';
 import { toolDefinition as getFriendsDefinition, executeGetFriends } from './getFriends';
 import { toolDefinition as getContextDefinition, executeGetContext } from './getContext';
+import { toolDefinition as updateGoalIconDefinition, executeUpdateGoalIcon } from './updateGoalIcon';
+import { toolDefinition as deleteTaskDefinition, executeDeleteTask } from './deleteTask';
+import { toolDefinition as deleteSubstepDefinition, executeDeleteSubstep } from './deleteSubstep';
+import { toolDefinition as getProfileDefinition, executeGetProfile } from './getProfile';
+import { toolDefinition as updateProfileDefinition, executeUpdateProfile } from './updateProfile';
+import { toolDefinition as getFriendProfileDefinition, executeGetFriendProfile } from './getFriendProfile';
+import { toolDefinition as removeFriendDefinition, executeRemoveFriend } from './removeFriend';
+import { toolDefinition as createInvitationDefinition, executeCreateInvitation } from './createInvitation';
+import { toolDefinition as getInvitationsDefinition, executeGetInvitations } from './getInvitations';
 
 /**
  * Array of all tool definitions
@@ -38,6 +47,15 @@ export const tools: ToolDefinition[] = [
   getActivityDefinition,
   getFriendsDefinition,
   getContextDefinition,
+  updateGoalIconDefinition,
+  deleteTaskDefinition,
+  deleteSubstepDefinition,
+  getProfileDefinition,
+  updateProfileDefinition,
+  getFriendProfileDefinition,
+  removeFriendDefinition,
+  createInvitationDefinition,
+  getInvitationsDefinition,
 ];
 
 /**
@@ -99,6 +117,42 @@ export const toolExecutors: ToolRegistry = {
   'get-conversation-context': {
     definition: getContextDefinition,
     executor: executeGetContext,
+  },
+  'update-goal-icon': {
+    definition: updateGoalIconDefinition,
+    executor: executeUpdateGoalIcon,
+  },
+  'delete-task': {
+    definition: deleteTaskDefinition,
+    executor: executeDeleteTask,
+  },
+  'delete-substep': {
+    definition: deleteSubstepDefinition,
+    executor: executeDeleteSubstep,
+  },
+  'get-profile': {
+    definition: getProfileDefinition,
+    executor: executeGetProfile,
+  },
+  'update-profile': {
+    definition: updateProfileDefinition,
+    executor: executeUpdateProfile,
+  },
+  'get-friend-profile': {
+    definition: getFriendProfileDefinition,
+    executor: executeGetFriendProfile,
+  },
+  'remove-friend': {
+    definition: removeFriendDefinition,
+    executor: executeRemoveFriend,
+  },
+  'create-invitation': {
+    definition: createInvitationDefinition,
+    executor: executeCreateInvitation,
+  },
+  'get-invitations': {
+    definition: getInvitationsDefinition,
+    executor: executeGetInvitations,
   },
 };
 

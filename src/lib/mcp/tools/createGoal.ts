@@ -8,6 +8,7 @@ import { resolveUser } from '@/lib/agent/resolveUser';
 import { CreateGoalSchema, validateRequest } from '@/lib/validations';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
+import { pickGoalIcon } from '@/lib/agent/pickGoalIcon';
 import { randomUUID } from 'crypto';
 
 export const toolDefinition: ToolDefinition = {
@@ -102,12 +103,16 @@ export async function executeCreateGoal(
       })),
     }));
 
+    // Pick icon via AI
+    const icon = await pickGoalIcon(validatedData.title, validatedData.description);
+
     // Create goal
     const goal = await prisma.goal.create({
       data: {
         userId: user.id,
         title: validatedData.title,
         description: validatedData.description || null,
+        icon,
         tasks: tasksWithIds,
         startDate: validatedData.startDate ? new Date(validatedData.startDate) : null,
         targetDate: validatedData.targetDate ? new Date(validatedData.targetDate) : null,
@@ -130,6 +135,7 @@ export async function executeCreateGoal(
         id: goal.id,
         title: goal.title,
         description: goal.description,
+        icon: goal.icon,
         tasks: goal.tasks,
         startDate: goal.startDate?.toISOString().split('T')[0],
         targetDate: goal.targetDate?.toISOString().split('T')[0],

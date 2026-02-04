@@ -120,6 +120,31 @@ class AuditLogger {
       timestamp: new Date(),
     });
   }
+
+  /**
+   * Log profile updated
+   */
+  logProfileUpdated(userId: string, details?: Record<string, any>): void {
+    this.log({
+      action: AuditAction.PROFILE_UPDATED,
+      userId,
+      timestamp: new Date(),
+      details,
+    });
+  }
+
+  /**
+   * Log friend removed
+   */
+  logFriendRemoved(userId: string, friendId: string, details?: Record<string, any>): void {
+    this.log({
+      action: AuditAction.FRIEND_REMOVED,
+      userId,
+      resourceId: friendId,
+      timestamp: new Date(),
+      details,
+    });
+  }
 }
 
 // Singleton instance

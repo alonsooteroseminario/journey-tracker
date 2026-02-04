@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { CreateGoalSchema, validateRequest } from "@/lib/validations";
+import { pickGoalIcon } from "@/lib/agent/pickGoalIcon";
 
 // GET /api/goals - Get all goals for current user
 export async function GET() {
@@ -21,6 +22,7 @@ export async function GET() {
       id: goal.id,
       title: goal.title,
       description: goal.description,
+      icon: goal.icon,
       tasks: (goal.tasks as any[]) || [],
       phases: goal.phases || undefined,
       budget: goal.budget || undefined,
@@ -62,11 +64,15 @@ export async function POST(req: NextRequest) {
 
     const validatedData = validation.data;
 
+    // Pick icon via AI if not already provided
+    const icon = validatedData.icon || (await pickGoalIcon(validatedData.title, validatedData.description));
+
     const goal = await prisma.goal.create({
       data: {
         userId: user.id,
         title: validatedData.title,
         description: validatedData.description || null,
+        icon,
         tasks: validatedData.tasks || [],
         phases: validatedData.phases || undefined,
         budget: validatedData.budget || undefined,
@@ -84,6 +90,7 @@ export async function POST(req: NextRequest) {
         id: goal.id,
         title: goal.title,
         description: goal.description,
+        icon: goal.icon,
         tasks: goal.tasks,
         phases: goal.phases,
         budget: goal.budget,

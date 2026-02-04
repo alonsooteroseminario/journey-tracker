@@ -37,6 +37,7 @@ export interface Goal {
   id: string;
   title: string;
   description?: string;
+  icon?: string;
   tasks: Task[];
   createdAt: string;
   updatedAt: string;

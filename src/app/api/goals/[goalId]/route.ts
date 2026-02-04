@@ -28,6 +28,7 @@ export async function GET(
       id: goal.id,
       title: goal.title,
       description: goal.description,
+      icon: goal.icon,
       tasks: goal.tasks,
       phases: goal.phases,
       budget: goal.budget,
@@ -84,6 +85,7 @@ export async function PATCH(
     const updateData: Record<string, unknown> = {};
     if (validatedData.title !== undefined) updateData.title = validatedData.title;
     if (validatedData.description !== undefined) updateData.description = validatedData.description;
+    if (validatedData.icon !== undefined) updateData.icon = validatedData.icon;
     if (validatedData.tasks !== undefined) updateData.tasks = validatedData.tasks;
     if (validatedData.phases !== undefined) updateData.phases = validatedData.phases;
     if (validatedData.budget !== undefined) updateData.budget = validatedData.budget;
@@ -105,6 +107,7 @@ export async function PATCH(
       id: goal.id,
       title: goal.title,
       description: goal.description,
+      icon: goal.icon,
       tasks: goal.tasks,
       startDate: goal.startDate?.toISOString().split("T")[0],
       targetDate: goal.targetDate?.toISOString().split("T")[0],
