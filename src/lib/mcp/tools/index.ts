@@ -10,6 +10,7 @@ import { toolDefinition as getGoalByIdDefinition, executeGetGoalById } from './g
 import { toolDefinition as createGoalDefinition, executeCreateGoal } from './createGoal';
 import { toolDefinition as updateGoalDefinition, executeUpdateGoal } from './updateGoal';
 import { toolDefinition as deleteGoalDefinition, executeDeleteGoal } from './deleteGoal';
+import { toolDefinition as createTaskDefinition, executeCreateTask } from './createTask';
 import { toolDefinition as updateTaskDefinition, executeUpdateTask } from './updateTask';
 import { toolDefinition as completeTaskDefinition, executeCompleteTask } from './completeTask';
 import { toolDefinition as addSubstepDefinition, executeAddSubstep } from './addSubstep';
@@ -28,6 +29,7 @@ export const tools: ToolDefinition[] = [
   createGoalDefinition,
   updateGoalDefinition,
   deleteGoalDefinition,
+  createTaskDefinition,
   updateTaskDefinition,
   completeTaskDefinition,
   addSubstepDefinition,
@@ -61,6 +63,10 @@ export const toolExecutors: ToolRegistry = {
   'delete-goal': {
     definition: deleteGoalDefinition,
     executor: executeDeleteGoal,
+  },
+  'create-task': {
+    definition: createTaskDefinition,
+    executor: executeCreateTask,
   },
   'update-task': {
     definition: updateTaskDefinition,

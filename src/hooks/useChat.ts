@@ -134,7 +134,7 @@ export function useChat(): UseChatReturn {
         setMessages((prev) => [...prev, assistantMessage!]);
 
         // Invalidate RTK Query cache if mutating tools were used
-        const mutatingTools = ['create-goal', 'update-goal', 'delete-goal', 'complete-task', 'update-task', 'add-substep', 'complete-substep'];
+        const mutatingTools = ['create-goal', 'update-goal', 'delete-goal', 'create-task', 'complete-task', 'update-task', 'add-substep', 'complete-substep'];
         if (toolsUsed.some((tool) => mutatingTools.includes(tool))) {
           dispatch(goalsApi.util.invalidateTags(['Goal']));
           dispatch(streaksApi.util.invalidateTags(['Streak']));
