@@ -2,6 +2,7 @@
 
 import { ReduxProvider } from "@/store/provider";
 import { AutoMigration } from "@/components/AutoMigration";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 /**
  * AppShell - Client-side wrapper that provides Redux + auto-migration.
@@ -12,6 +13,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <ReduxProvider>
       <AutoMigration />
       {children}
+      <ChatWidget />
     </ReduxProvider>
   );
 }

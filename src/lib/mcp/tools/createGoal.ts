@@ -1,0 +1,148 @@
+/**
+ * Create a new goal
+ */
+
+import { prisma } from '@/lib/prisma';
+import { ToolDefinition, ToolResult } from '@/types/agent';
+import { resolveUser } from '@/lib/agent/resolveUser';
+import { CreateGoalSchema, validateRequest } from '@/lib/validations';
+import { auditLogger } from '@/lib/agent/auditLog';
+import { conversationStore } from '@/lib/agent/conversationStore';
+import { randomUUID } from 'crypto';
+
+export const toolDefinition: ToolDefinition = {
+  name: 'create-goal',
+  description: 'Creates a new goal with optional tasks and metadata.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      title: {
+        type: 'string',
+        description: 'Goal title (required)',
+      },
+      description: {
+        type: 'string',
+        description: 'Goal description (optional)',
+      },
+      tasks: {
+        type: 'array',
+        description: 'Array of task objects (optional)',
+        items: {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            description: { type: 'string' },
+            order: { type: 'number' },
+            priority: { type: 'string', enum: ['low', 'medium', 'high', 'critical'] },
+            dueDate: { type: 'string' },
+          },
+        },
+      },
+      startDate: {
+        type: 'string',
+        description: 'Start date in YYYY-MM-DD format (optional)',
+      },
+      targetDate: {
+        type: 'string',
+        description: 'Target completion date in YYYY-MM-DD format (optional)',
+      },
+      isPublic: {
+        type: 'boolean',
+        description: 'Whether goal is visible to friends (default: true)',
+      },
+    },
+    required: ['title'],
+  },
+};
+
+export async function executeCreateGoal(
+  args: Record<string, any>,
+  userId?: string
+): Promise<ToolResult> {
+  try {
+    if (!userId) {
+      return {
+        success: false,
+        error: 'Unauthorized',
+        message: 'User ID is required',
+      };
+    }
+
+    // Resolve Clerk userId to MongoDB user
+    const user = await resolveUser(userId);
+    if (!user) {
+      return {
+        success: false,
+        error: 'User not found',
+        message: 'Could not find user in database',
+      };
+    }
+
+    // Validate input
+    const validation = validateRequest(CreateGoalSchema, args);
+    if (!validation.success) {
+      return {
+        success: false,
+        error: 'Validation error',
+        message: validation.error,
+      };
+    }
+
+    const validatedData = validation.data;
+
+    // Generate IDs for tasks if not provided
+    const tasksWithIds = (validatedData.tasks || []).map((task: any) => ({
+      ...task,
+      id: task.id || randomUUID(),
+      completed: task.completed || false,
+      substeps: (task.substeps || []).map((substep: any) => ({
+        ...substep,
+        id: substep.id || randomUUID(),
+        completed: substep.completed || false,
+      })),
+    }));
+
+    // Create goal
+    const goal = await prisma.goal.create({
+      data: {
+        userId: user.id,
+        title: validatedData.title,
+        description: validatedData.description || null,
+        tasks: tasksWithIds,
+        startDate: validatedData.startDate ? new Date(validatedData.startDate) : null,
+        targetDate: validatedData.targetDate ? new Date(validatedData.targetDate) : null,
+        isPublic: validatedData.isPublic ?? true,
+      },
+    });
+
+    // Update conversation context
+    conversationStore.setLastGoal(userId, goal.id);
+
+    // Audit log
+    auditLogger.logGoalCreated(userId, goal.id, {
+      title: goal.title,
+      taskCount: tasksWithIds.length,
+    });
+
+    return {
+      success: true,
+      data: {
+        id: goal.id,
+        title: goal.title,
+        description: goal.description,
+        tasks: goal.tasks,
+        startDate: goal.startDate?.toISOString().split('T')[0],
+        targetDate: goal.targetDate?.toISOString().split('T')[0],
+        createdAt: goal.createdAt.toISOString(),
+      },
+      message: `Created goal: ${goal.title}`,
+    };
+  } catch (error) {
+    console.error('Error in executeCreateGoal:', error);
+    return {
+      success: false,
+      error: 'Database error',
+      message: 'Failed to create goal',
+    };
+  }
+}

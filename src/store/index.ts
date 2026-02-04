@@ -3,6 +3,7 @@ import goalsReducer, { goalsApi } from "./slices/goalsSlice";
 import profileReducer, { profileApi } from "./slices/profileSlice";
 import friendsReducer, { friendsApi } from "./slices/friendsSlice";
 import streaksReducer, { streaksApi } from "./slices/streaksSlice";
+import chatReducer from "./slices/chatSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     profile: profileReducer,
     friends: friendsReducer,
     streaks: streaksReducer,
+    chat: chatReducer,
     // RTK Query API slices (cache + auto-fetching)
     [goalsApi.reducerPath]: goalsApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
