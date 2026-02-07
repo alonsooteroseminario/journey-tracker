@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Task, Substep } from "@/types";
 import { formatCurrency } from "@/lib/storage";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface EditTaskModalProps {
   task: Task;
@@ -30,6 +31,17 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
     setPriority(task.priority || "medium");
   }, [task]);
 
+  const focusTrapRef = useFocusTrap(isOpen);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleSave = () => {
@@ -53,13 +65,18 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-task-title"
+    >
+      <div ref={focusTrapRef} className="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-white">Edit Task</h2>
+              <h2 id="edit-task-title" className="text-xl font-bold text-white">Edit Task</h2>
               {task.stepNumber && (
                 <span className="text-blue-100 text-sm">Step {task.stepNumber}</span>
               )}
@@ -67,6 +84,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
             <button
               onClick={onClose}
               className="text-white/80 hover:text-white p-1 transition-colors"
+              aria-label="Close edit task modal"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

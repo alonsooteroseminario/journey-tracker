@@ -38,7 +38,8 @@ describe('executeUpdateGoal', () => {
     );
 
     expect(result.success).toBe(true);
-    expect(result.data.title).toBe('Updated Title');
+    const data = result.data as any;
+    expect(data.title).toBe('Updated Title');
     expect(auditLogger.logGoalUpdated).toHaveBeenCalled();
   });
 

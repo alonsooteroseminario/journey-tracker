@@ -27,8 +27,9 @@ describe('executeGetStreaks', () => {
     const result = await executeGetStreaks({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data.currentStreak).toBe(5);
-    expect(result.data.longestStreak).toBe(10);
+    const data = result.data as any;
+    expect(data.currentStreak).toBe(5);
+    expect(data.longestStreak).toBe(10);
   });
 
   it('should return default data when no streak exists', async () => {
@@ -40,8 +41,9 @@ describe('executeGetStreaks', () => {
     const result = await executeGetStreaks({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data.currentStreak).toBe(0);
-    expect(result.data.longestStreak).toBe(0);
+    const data = result.data as any;
+    expect(data.currentStreak).toBe(0);
+    expect(data.longestStreak).toBe(0);
   });
 
   it('should return error when userId is missing', async () => {

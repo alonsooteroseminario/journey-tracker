@@ -37,22 +37,22 @@ export interface ToolDefinition {
   description: string;
   input_schema: {
     type: 'object';
-    properties: Record<string, any>;
+    properties: Record<string, unknown>;
     required?: string[];
   };
 }
 
 export interface ToolResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   message?: string;
 }
 
-export type ToolExecutor = (args: any, userId?: string) => Promise<ToolResult>;
+export type ToolExecutor = (args: Record<string, unknown>, userId?: string) => Promise<ToolResult>;
 
 export type AsyncToolExecutor = (
-  args: any,
+  args: Record<string, unknown>,
   userId?: string
 ) => Promise<ToolResult>;
 
@@ -68,7 +68,7 @@ export type ToolRegistry = Record<string, {
 export interface SkillDefinition {
   name: string;
   description: string;
-  execute: (args: any, userId?: string) => Promise<ToolResult>;
+  execute: (args: Record<string, unknown>, userId?: string) => Promise<ToolResult>;
 }
 
 // ==========================================
@@ -101,7 +101,7 @@ export class AgentError extends Error {
   constructor(
     message: string,
     public code: string,
-    public details?: any
+    public details?: Record<string, unknown>
   ) {
     super(message);
     this.name = 'AgentError';
@@ -112,7 +112,7 @@ export class ToolExecutionError extends Error {
   constructor(
     message: string,
     public toolName: string,
-    public details?: any
+    public details?: Record<string, unknown>
   ) {
     super(message);
     this.name = 'ToolExecutionError';
@@ -143,7 +143,7 @@ export interface UpdateGoalInput {
   goalId: string;
   title?: string;
   description?: string;
-  tasks?: any[];
+  tasks?: unknown[];
   startDate?: string;
   targetDate?: string;
 }
@@ -208,7 +208,7 @@ export interface AgentErrorInfo {
   userMessage: string;
   recoverable: boolean;
   retryable: boolean;
-  details?: any;
+  details?: Record<string, unknown>;
 }
 
 // ==========================================
@@ -233,5 +233,5 @@ export interface AuditEntry {
   userId: string;
   resourceId?: string;
   timestamp: Date;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }

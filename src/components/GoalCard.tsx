@@ -130,7 +130,8 @@ export function GoalCard({
               onClick={() => setIsExpanded(!isExpanded)}
               className="p-2 sm:p-3 min-w-[40px] sm:min-w-[48px] min-h-[40px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-white/50 rounded-lg transition-colors"
               title={isExpanded ? "Collapse" : "Expand"}
-              aria-label={isExpanded ? "Collapse" : "Expand"}
+              aria-label={isExpanded ? "Collapse goal" : "Expand goal"}
+              aria-expanded={isExpanded}
             >
               <svg
                 className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
@@ -166,8 +167,10 @@ export function GoalCard({
         </div>
 
         {/* View Mode Tabs - Responsive Grid on Mobile */}
-        <div className="mt-3 sm:mt-4 grid grid-cols-3 sm:grid-cols-3 md:flex gap-1.5 sm:gap-2">
+        <div role="tablist" className="mt-3 sm:mt-4 grid grid-cols-3 sm:grid-cols-3 md:flex gap-1.5 sm:gap-2">
           <button
+            role="tab"
+            aria-selected={viewMode === "phases"}
             onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
             className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
               viewMode === "phases" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
@@ -177,6 +180,8 @@ export function GoalCard({
             <span className="hidden sm:inline">📊 Phases</span>
           </button>
           <button
+            role="tab"
+            aria-selected={viewMode === "tasks"}
             onClick={() => { setViewMode("tasks"); setSelectedPhase(null); }}
             className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
               viewMode === "tasks" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
@@ -186,6 +191,8 @@ export function GoalCard({
             <span className="hidden sm:inline">✅ Tasks</span>
           </button>
           <button
+            role="tab"
+            aria-selected={viewMode === "calendar"}
             onClick={() => setViewMode("calendar")}
             className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
               viewMode === "calendar" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
@@ -195,6 +202,8 @@ export function GoalCard({
             <span className="hidden sm:inline">📅 Calendar</span>
           </button>
           <button
+            role="tab"
+            aria-selected={viewMode === "analytics"}
             onClick={() => setViewMode("analytics")}
             className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
               viewMode === "analytics" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
@@ -204,6 +213,8 @@ export function GoalCard({
             <span className="hidden sm:inline">📈 Analytics</span>
           </button>
           <button
+            role="tab"
+            aria-selected={viewMode === "info"}
             onClick={() => setViewMode("info")}
             className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
               viewMode === "info" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
@@ -333,9 +344,14 @@ export function GoalCard({
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-goal-title"
+        >
           <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-sm w-full shadow-2xl">
-            <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-2">Delete Goal?</h4>
+            <h4 id="delete-goal-title" className="text-base sm:text-lg font-bold text-gray-800 mb-2">Delete Goal?</h4>
             <p className="text-sm sm:text-base text-gray-600 mb-4">
               Are you sure you want to delete &quot;{goal.title}&quot;? This will also
               delete all {totalCount} tasks. This action cannot be undone.

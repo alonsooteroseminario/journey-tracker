@@ -64,6 +64,8 @@ export async function GET() {
       longestStreak: streakData.longestStreak,
       lastActivityDate: lastDate,
       streakHistory: streakData.streakHistory,
+    }, {
+      headers: { 'Cache-Control': 'private, no-cache' },
     });
   } catch (error) {
     console.error("GET /api/streaks error:", error);

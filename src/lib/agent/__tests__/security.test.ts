@@ -60,29 +60,6 @@ describe('securityGuard', () => {
     });
   });
 
-  describe('sanitizeInput', () => {
-    it('should remove script tags', () => {
-      const input = 'Hello <script>alert("xss")</script> world';
-      const sanitized = securityGuard.sanitizeInput(input);
-
-      expect(sanitized).toBe('Hello  world');
-    });
-
-    it('should remove SQL injection patterns', () => {
-      const input = 'test SELECT * FROM users';
-      const sanitized = securityGuard.sanitizeInput(input);
-
-      expect(sanitized).not.toContain('SELECT');
-    });
-
-    it('should trim whitespace', () => {
-      const input = '  test  ';
-      const sanitized = securityGuard.sanitizeInput(input);
-
-      expect(sanitized).toBe('test');
-    });
-  });
-
   describe('verifyOwnership', () => {
     it('should return true when user owns resource', async () => {
       vi.mocked(prisma.goal.findFirst).mockResolvedValue({

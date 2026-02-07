@@ -53,13 +53,14 @@ describe('goalSummary skill', () => {
     const result = await skillDefinition.execute({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data.overview.totalGoals).toBe(3);
-    expect(result.data.overview.totalTasks).toBe(23);
-    expect(result.data.overview.completedTasks).toBe(10);
-    expect(result.data.overview.currentStreak).toBe(7);
-    expect(result.data.goalBreakdown.completed).toBe(1);
-    expect(result.data.goalBreakdown.inProgress).toBe(1);
-    expect(result.data.goalBreakdown.notStarted).toBe(1);
+    const data = result.data as any;
+    expect(data.overview.totalGoals).toBe(3);
+    expect(data.overview.totalTasks).toBe(23);
+    expect(data.overview.completedTasks).toBe(10);
+    expect(data.overview.currentStreak).toBe(7);
+    expect(data.goalBreakdown.completed).toBe(1);
+    expect(data.goalBreakdown.inProgress).toBe(1);
+    expect(data.goalBreakdown.notStarted).toBe(1);
     expect(result.message).toContain('Goal Summary Report');
   });
 
@@ -85,7 +86,8 @@ describe('goalSummary skill', () => {
     const result = await skillDefinition.execute({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data.overview.totalGoals).toBe(0);
+    const data = result.data as any;
+    expect(data.overview.totalGoals).toBe(0);
   });
 
   it('should return error when getGoals fails', async () => {

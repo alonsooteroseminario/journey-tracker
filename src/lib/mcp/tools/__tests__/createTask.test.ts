@@ -35,11 +35,12 @@ describe('executeCreateTask', () => {
     );
 
     expect(result.success).toBe(true);
-    expect(result.data.title).toBe('New Task');
-    expect(result.data.completed).toBe(false);
-    expect(result.data.order).toBe(1); // appended after existing task at order 0
-    expect(result.data.substeps).toEqual([]);
-    expect(result.data.id).toBeDefined();
+    const data = result.data as any;
+    expect(data.title).toBe('New Task');
+    expect(data.completed).toBe(false);
+    expect(data.order).toBe(1); // appended after existing task at order 0
+    expect(data.substeps).toEqual([]);
+    expect(data.id).toBeDefined();
     expect(result.message).toBe('Created task: New Task');
     expect(prisma.goal.update).toHaveBeenCalled();
   });
@@ -66,11 +67,12 @@ describe('executeCreateTask', () => {
     );
 
     expect(result.success).toBe(true);
-    expect(result.data.title).toBe('Full Task');
-    expect(result.data.description).toBe('A detailed description');
-    expect(result.data.priority).toBe('high');
-    expect(result.data.dueDate).toBe('2026-03-15');
-    expect(result.data.notes).toBe('Some notes');
+    const data = result.data as any;
+    expect(data.title).toBe('Full Task');
+    expect(data.description).toBe('A detailed description');
+    expect(data.priority).toBe('high');
+    expect(data.dueDate).toBe('2026-03-15');
+    expect(data.notes).toBe('Some notes');
   });
 
   it('should create a task on a goal with no existing tasks', async () => {
@@ -88,7 +90,8 @@ describe('executeCreateTask', () => {
     );
 
     expect(result.success).toBe(true);
-    expect(result.data.order).toBe(0);
+    const data = result.data as any;
+    expect(data.order).toBe(0);
   });
 
   it('should strip goal_ prefix from goalId', async () => {
@@ -223,6 +226,7 @@ describe('executeCreateTask', () => {
 
     expect(result.success).toBe(true);
     expect(conversationStore.setLastGoal).toHaveBeenCalledWith('clerk-123', 'goal-1');
-    expect(conversationStore.setLastTask).toHaveBeenCalledWith('clerk-123', result.data.id);
+    const data = result.data as any;
+    expect(conversationStore.setLastTask).toHaveBeenCalledWith('clerk-123', data.id);
   });
 });

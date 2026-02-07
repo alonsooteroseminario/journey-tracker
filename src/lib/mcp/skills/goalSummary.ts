@@ -9,7 +9,7 @@ import { executeGetStreaks } from '../tools/getStreaks';
 export const skillDefinition: SkillDefinition = {
   name: 'generate-goal-summary',
   description: 'Generates a comprehensive summary of all goals including progress, upcoming tasks, and milestones.',
-  execute: async (args: Record<string, any>, userId?: string): Promise<ToolResult> => {
+  execute: async (_args: Record<string, unknown>, userId?: string): Promise<ToolResult> => {
     try {
       if (!userId) {
         return {
@@ -31,8 +31,10 @@ export const skillDefinition: SkillDefinition = {
         return streaksResult;
       }
 
-      const goals = goalsResult.data || [];
-      const streakData = streaksResult.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const goals = (goalsResult.data || []) as any[];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const streakData = streaksResult.data as any;
 
       // Calculate aggregate statistics
       const totalGoals = goals.length;

@@ -44,8 +44,9 @@ describe('executeGetActivity', () => {
     const result = await executeGetActivity({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data).toHaveLength(2);
-    expect(result.data[0].type).toBe('task_completed');
+    const data = result.data as any;
+    expect(data).toHaveLength(2);
+    expect(data[0].type).toBe('task_completed');
   });
 
   it('should respect limit parameter', async () => {

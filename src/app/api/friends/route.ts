@@ -66,7 +66,9 @@ export async function GET() {
       })
     );
 
-    return NextResponse.json(friends);
+    return NextResponse.json(friends, {
+      headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=120' },
+    });
   } catch (error) {
     console.error("GET /api/friends error:", error);
     return NextResponse.json(

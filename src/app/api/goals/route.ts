@@ -36,7 +36,9 @@ export async function GET() {
       isPublic: goal.isPublic,
     }));
 
-    return NextResponse.json(transformed);
+    return NextResponse.json(transformed, {
+      headers: { 'Cache-Control': 'private, no-cache' },
+    });
   } catch (error) {
     console.error("GET /api/goals error:", error);
     return NextResponse.json(

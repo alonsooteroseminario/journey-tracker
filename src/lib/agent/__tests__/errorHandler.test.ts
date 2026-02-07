@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { errorHandler } from '../errorHandler';
 import { AgentError, ErrorType } from '@/types/agent';
 

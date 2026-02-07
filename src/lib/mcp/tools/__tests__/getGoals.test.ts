@@ -44,8 +44,9 @@ describe('executeGetGoals', () => {
     const result = await executeGetGoals({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data).toHaveLength(2);
-    expect(result.data[0]).toMatchObject({
+    const data = result.data as any;
+    expect(data).toHaveLength(2);
+    expect(data[0]).toMatchObject({
       id: 'goal-1',
       title: 'Goal 1',
       totalTasks: 2,

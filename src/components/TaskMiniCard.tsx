@@ -166,6 +166,9 @@ export function TaskMiniCard({
             {/* Checkbox */}
             <button
               onClick={onToggle}
+              role="checkbox"
+              aria-checked={task.completed}
+              aria-label={`Mark task "${task.title}" as ${task.completed ? "incomplete" : "complete"}`}
               className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all mt-0.5 ${
                 task.completed
                   ? "bg-green-500 border-green-500 text-white"

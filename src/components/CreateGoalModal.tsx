@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Goal, Phase } from "@/types";
 import { createBCPNPtoPRChecklist } from "@/lib/sampleData";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface CreateGoalModalProps {
   isOpen: boolean;
@@ -24,6 +25,17 @@ export function CreateGoalModal({
   const [phases, setPhases] = useState<{ name: string; description: string }[]>([]);
   const [newPhaseName, setNewPhaseName] = useState("");
   const [newPhaseDesc, setNewPhaseDesc] = useState("");
+
+  const focusTrapRef = useFocusTrap(isOpen);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -68,12 +80,17 @@ export function CreateGoalModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full mx-2 sm:mx-0 shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[85vh] overflow-y-auto animate-slide-up sm:animate-none">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-goal-title"
+    >
+      <div ref={focusTrapRef} className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full mx-2 sm:mx-0 shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[85vh] overflow-y-auto animate-slide-up sm:animate-none">
         {/* Header - Sticky on scroll */}
         <div className="bg-gradient-to-r from-red-500 via-white to-red-500 p-3 sm:p-6 sticky top-0 z-10">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg sm:text-2xl font-bold text-gray-800">Create New Goal</h2>
+            <h2 id="create-goal-title" className="text-lg sm:text-2xl font-bold text-gray-800">Create New Goal</h2>
             <button
               onClick={onClose}
               className="text-gray-600 hover:text-gray-800 p-3 min-w-[48px] min-h-[48px] flex items-center justify-center transition-colors"

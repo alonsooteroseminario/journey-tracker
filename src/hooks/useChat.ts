@@ -2,7 +2,7 @@
  * Chat hook - Manages chat state and SSE communication
  */
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Message } from '@/types/agent';
 import { useAppDispatch } from '@/store/hooks';
 import { goalsApi } from '@/store/slices/goalsSlice';
@@ -24,13 +24,22 @@ export interface UseChatReturn {
   currentTool: string | null;
   processingLog: ProcessingEvent[];
   sendMessage: (content: string) => Promise<void>;
+  cancelRequest: () => void;
   clearMessages: () => void;
   isOpen: boolean;
   toggleOpen: () => void;
 }
 
+// Tools that mutate data — shared between route and client for cache invalidation
+const MUTATING_TOOLS = [
+  'create-goal', 'update-goal', 'delete-goal', 'create-task',
+  'complete-task', 'update-task', 'add-substep', 'complete-substep',
+  'update-goal-icon', 'delete-task', 'delete-substep', 'update-profile',
+  'remove-friend', 'create-invitation',
+];
+
 // Summarise tool input for display: show up to 3 key-value pairs, values truncated
-function summariseInput(input: Record<string, any>): string {
+function summariseInput(input: Record<string, unknown>): string {
   const entries = Object.entries(input);
   if (entries.length === 0) return '';
   return entries
@@ -40,7 +49,7 @@ function summariseInput(input: Record<string, any>): string {
 }
 
 // Summarise tool result for display
-function summariseResult(data: Record<string, any>): string {
+function summariseResult(data: Record<string, unknown>): string {
   if (data?.message) return String(data.message).slice(0, 60);
   if (data?.error) return `Error: ${data.error}`;
   if (data?.success) return 'OK';
@@ -57,17 +66,31 @@ export function useChat(): UseChatReturn {
 
   // Ref to accumulate events inside the async loop without stale closures
   const logRef = useRef<ProcessingEvent[]>([]);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
 
-  const clearMessages = useCallback(() => {
-    setMessages([]);
+  const cancelRequest = useCallback(() => {
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
     setStatus('idle');
     setCurrentTool(null);
+  }, []);
+
+  const clearMessages = useCallback(() => {
+    cancelRequest();
+    setMessages([]);
     setProcessingLog([]);
     logRef.current = [];
+  }, [cancelRequest]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
   }, []);
 
   const sendMessage = useCallback(async (content: string) => {
@@ -90,10 +113,16 @@ export function useChat(): UseChatReturn {
         .filter((m) => m.role !== 'system')
         .map((m) => ({ role: m.role, content: m.content }));
 
+      // Cancel any in-flight request
+      abortControllerRef.current?.abort();
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       const response = await fetch('/api/agent/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: apiMessages, stream: true }),
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -117,7 +146,12 @@ export function useChat(): UseChatReturn {
 
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue;
-          const data = JSON.parse(line.slice(6));
+          let data;
+          try {
+            data = JSON.parse(line.slice(6));
+          } catch {
+            continue; // Skip malformed SSE lines
+          }
 
           if (data.type === 'status') {
             if (data.status === 'thinking') {
@@ -203,13 +237,7 @@ export function useChat(): UseChatReturn {
       if (batch.length > 0) setMessages((prev) => [...prev, ...batch]);
 
       // Invalidate RTK Query cache if mutating tools were used
-      const mutatingTools = [
-        'create-goal', 'update-goal', 'delete-goal', 'create-task',
-        'complete-task', 'update-task', 'add-substep', 'complete-substep',
-        'update-goal-icon', 'delete-task', 'delete-substep', 'update-profile',
-        'remove-friend', 'create-invitation',
-      ];
-      if (toolsUsed.some((t) => mutatingTools.includes(t))) {
+      if (toolsUsed.some((t) => MUTATING_TOOLS.includes(t))) {
         dispatch(goalsApi.util.invalidateTags(['Goal']));
         dispatch(streaksApi.util.invalidateTags(['Streak']));
       }
@@ -222,6 +250,13 @@ export function useChat(): UseChatReturn {
       setProcessingLog([]);
       logRef.current = [];
     } catch (error) {
+      // Don't show error for intentional cancellation
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        setStatus('idle');
+        setCurrentTool(null);
+        return;
+      }
+
       console.error('Chat error:', error);
       setMessages((prev) => [
         ...prev,
@@ -245,6 +280,7 @@ export function useChat(): UseChatReturn {
     currentTool,
     processingLog,
     sendMessage,
+    cancelRequest,
     clearMessages,
     isOpen,
     toggleOpen,

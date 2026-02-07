@@ -20,6 +20,8 @@ export async function GET() {
       location: user.location,
       timezone: user.timezone,
       joinedDate: user.joinedDate.toISOString().split("T")[0],
+    }, {
+      headers: { 'Cache-Control': 'private, max-age=60, stale-while-revalidate=300' },
     });
   } catch (error) {
     console.error("GET /api/profile error:", error);

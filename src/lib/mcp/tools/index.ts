@@ -61,7 +61,10 @@ export const tools: ToolDefinition[] = [
 /**
  * Tool registry mapping tool names to executors
  */
-export const toolExecutors: ToolRegistry = {
+// Tool executors have specifically-typed args internally; the registry uses a
+// generic Record<string, unknown> signature. Runtime validation is handled by
+// the JSON schema on each tool definition, so the cast is safe.
+export const toolExecutors = {
   'get-goals': {
     definition: getGoalsDefinition,
     executor: executeGetGoals,
@@ -154,7 +157,7 @@ export const toolExecutors: ToolRegistry = {
     definition: getInvitationsDefinition,
     executor: executeGetInvitations,
   },
-};
+} as unknown as ToolRegistry;
 
 /**
  * Get tool executor by name

@@ -38,9 +38,10 @@ describe('executeGetFriends', () => {
     const result = await executeGetFriends({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data).toHaveLength(1);
-    expect(result.data[0].name).toBe('Friend 1');
-    expect(result.data[0].currentStreak).toBe(3);
+    const data = result.data as any;
+    expect(data).toHaveLength(1);
+    expect(data[0].name).toBe('Friend 1');
+    expect(data[0].currentStreak).toBe(3);
   });
 
   it('should return empty list when no friends', async () => {

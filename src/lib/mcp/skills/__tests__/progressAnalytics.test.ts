@@ -48,9 +48,10 @@ describe('progressAnalytics skill', () => {
     const result = await skillDefinition.execute({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data.velocity).toBeGreaterThan(0);
-    expect(result.data.remainingTasks).toBe(5);
-    expect(result.data.projectedCompletion.days).toBeGreaterThan(0);
+    const data = result.data as any;
+    expect(data.velocity).toBeGreaterThan(0);
+    expect(data.remainingTasks).toBe(5);
+    expect(data.projectedCompletion.days).toBeGreaterThan(0);
     expect(result.message).toContain('Progress Analytics');
   });
 
@@ -71,8 +72,9 @@ describe('progressAnalytics skill', () => {
     const result = await skillDefinition.execute({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data.velocity).toBe(0);
-    expect(result.data.projectedCompletion.date).toBeNull();
+    const data = result.data as any;
+    expect(data.velocity).toBe(0);
+    expect(data.projectedCompletion.date).toBeNull();
   });
 
   it('should handle completed goals', async () => {
@@ -92,7 +94,8 @@ describe('progressAnalytics skill', () => {
     const result = await skillDefinition.execute({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data.remainingTasks).toBe(0);
+    const data = result.data as any;
+    expect(data.remainingTasks).toBe(0);
     expect(result.message).toContain('All tasks completed');
   });
 });

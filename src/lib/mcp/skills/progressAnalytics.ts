@@ -9,7 +9,7 @@ import { executeGetActivity } from '../tools/getActivity';
 export const skillDefinition: SkillDefinition = {
   name: 'analyze-progress',
   description: 'Analyzes goal progress and provides insights, velocity trends, and projections.',
-  execute: async (args: Record<string, any>, userId?: string): Promise<ToolResult> => {
+  execute: async (_args: Record<string, unknown>, userId?: string): Promise<ToolResult> => {
     try {
       if (!userId) {
         return {
@@ -31,8 +31,10 @@ export const skillDefinition: SkillDefinition = {
         return activityResult;
       }
 
-      const goals = goalsResult.data || [];
-      const activities = activityResult.data || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const goals = (goalsResult.data || []) as any[];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const activities = (activityResult.data || []) as any[];
 
       // Calculate completion velocity (tasks completed per day)
       const completedActivities = activities.filter((a: any) =>

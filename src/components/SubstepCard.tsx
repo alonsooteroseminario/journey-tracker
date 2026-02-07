@@ -125,6 +125,9 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
       {/* Checkbox */}
       <button
         onClick={onToggle}
+        role="checkbox"
+        aria-checked={substep.completed}
+        aria-label={`Mark substep "${substep.title}" as ${substep.completed ? "incomplete" : "complete"}`}
         className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
           substep.completed
             ? "bg-green-500 border-green-500 text-white"

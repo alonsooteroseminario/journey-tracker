@@ -92,9 +92,10 @@ export async function POST(req: NextRequest) {
     // Rate limit check
     if (!securityGuard.checkRateLimit(userId)) {
       auditLogger.logRateLimitExceeded(userId);
+      const rateLimitHeaders = securityGuard.getRateLimitHeaders(userId);
       return NextResponse.json(
         { error: 'Rate limit exceeded. Please wait a moment and try again.' },
-        { status: 429 }
+        { status: 429, headers: rateLimitHeaders }
       );
     }
 
@@ -126,7 +127,7 @@ export async function POST(req: NextRequest) {
 
     // If streaming, return SSE response
     if (stream) {
-      return createSSEResponse(anthropicMessages, tools, userId);
+      return createSSEResponse(anthropicMessages, tools, userId, req.signal);
     }
 
     // Non-streaming response
@@ -154,19 +155,29 @@ export async function POST(req: NextRequest) {
  */
 function createSSEResponse(
   messages: Anthropic.Messages.MessageParam[],
-  tools: any[],
-  userId: string
+  tools: unknown[],
+  userId: string,
+  signal: AbortSignal
 ): Response {
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
     async start(controller) {
+      // Send periodic keepalive comments to prevent connection timeouts
+      const keepaliveInterval = setInterval(() => {
+        try {
+          controller.enqueue(encoder.encode(': keepalive\n\n'));
+        } catch {
+          clearInterval(keepaliveInterval);
+        }
+      }, 15000);
+
       try {
         // Send thinking status
         sendSSE(controller, encoder, { type: 'status', status: 'thinking' });
 
-        // Run agent loop
-        const response = await runAgentLoop(messages, tools, userId,
+        // Run agent loop with abort signal
+        const response = await runAgentLoop(messages, tools, userId, signal,
           (status, toolName) => {
             sendSSE(controller, encoder, { type: 'status', status, toolName });
           },
@@ -184,8 +195,16 @@ function createSSEResponse(
           toolResult: response.toolResult,
         });
 
+        clearInterval(keepaliveInterval);
         controller.close();
       } catch (error) {
+        clearInterval(keepaliveInterval);
+
+        if (signal.aborted) {
+          try { controller.close(); } catch { /* already closed */ }
+          return;
+        }
+
         console.error('SSE stream error:', error);
         const errorInfo = errorHandler.handleError(error);
 
@@ -214,7 +233,7 @@ function createSSEResponse(
 function sendSSE(
   controller: ReadableStreamDefaultController,
   encoder: TextEncoder,
-  data: any
+  data: Record<string, unknown>
 ): void {
   try {
     const message = `data: ${JSON.stringify(data)}\n\n`;
@@ -251,8 +270,8 @@ function partitionForExecution(
     if (!WRITE_TOOLS.has(block.name)) {
       readOnly.push(block);
     } else {
-      const input = block.input as Record<string, any>;
-      const goalId: string | null = input.goalId ?? input.goal_id ?? null;
+      const input = block.input as Record<string, unknown>;
+      const goalId = (input.goalId ?? input.goal_id ?? null) as string | null;
       if (goalId) {
         if (!writeByGoal.has(goalId)) writeByGoal.set(goalId, []);
         writeByGoal.get(goalId)!.push(block);
@@ -274,20 +293,26 @@ function partitionForExecution(
  */
 async function runAgentLoop(
   messages: Anthropic.Messages.MessageParam[],
-  tools: any[],
+  tools: unknown[],
   userId: string,
+  signal?: AbortSignal,
   onStatus?: (status: string, toolName?: string) => void,
-  onToolEvent?: (event: 'input' | 'result', toolName: string, data: Record<string, any>) => void
-): Promise<{ content: string; toolUsed?: string; toolResult?: any }> {
+  onToolEvent?: (event: 'input' | 'result', toolName: string, data: Record<string, unknown>) => void
+): Promise<{ content: string; toolUsed?: string; toolResult?: unknown }> {
   const server = getMCPServer();
   // eslint-disable-next-line prefer-const
   let currentMessages = [...messages];
   let iterations = 0;
   let lastToolUsed: string | undefined;
-  let lastToolResult: any;
+  let lastToolResult: unknown;
 
   while (iterations < MAX_TOOL_ITERATIONS) {
     iterations++;
+
+    // Check if client disconnected
+    if (signal?.aborted) {
+      throw new Error('Request aborted by client');
+    }
 
     // Trim intermediate tool messages to prevent context bloat during bulk
     // operations.  Keep the original user message (index 0) plus the most
@@ -306,11 +331,8 @@ async function runAgentLoop(
       temperature: AGENT_TEMPERATURE,
       system: SYSTEM_PROMPT,
       messages: currentMessages,
-      tools: tools.map((t) => ({
-        name: t.name,
-        description: t.description,
-        input_schema: t.input_schema,
-      })),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tools: tools as any[],
     });
 
     // Check stop reason
@@ -344,7 +366,7 @@ async function runAgentLoop(
       await Promise.all(groups.map(async (group) => {
         for (const block of group) {
           const toolName = block.name;
-          const toolInput = block.input as Record<string, any>;
+          const toolInput = block.input as Record<string, unknown>;
 
           if (onStatus) onStatus('using_tool', toolName);
 
@@ -367,8 +389,9 @@ async function runAgentLoop(
 
           if (toolResult.success && toolResult.data) {
             if (toolName === 'get-goal-by-id' || toolName === 'create-goal') {
-              if (toolResult.data.id) {
-                conversationStore.setLastGoal(userId, toolResult.data.id);
+              const data = toolResult.data as Record<string, unknown>;
+              if (data.id) {
+                conversationStore.setLastGoal(userId, data.id as string);
               }
             }
           }

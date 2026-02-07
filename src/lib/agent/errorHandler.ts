@@ -30,7 +30,7 @@ class AgentErrorHandler {
         userMessage: this.formatUserMessageFromType(type, error.message),
         recoverable: type !== ErrorType.AUTHENTICATION,
         retryable: type === ErrorType.NETWORK || type === ErrorType.API_ERROR,
-        details: error,
+        details: { message: error.message, name: error.name, stack: error.stack },
       };
     }
 
@@ -138,7 +138,7 @@ class AgentErrorHandler {
   /**
    * Log error with context
    */
-  logError(error: unknown, context?: Record<string, any>): void {
+  logError(error: unknown, context?: Record<string, unknown>): void {
     const errorInfo = this.handleError(error);
     console.error('Agent error:', {
       ...errorInfo,

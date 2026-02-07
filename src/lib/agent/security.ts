@@ -1,11 +1,15 @@
 /**
  * Security utilities for the agent
- * Handles rate limiting, input sanitization, and ownership verification
+ * Handles rate limiting and ownership verification.
+ *
+ * NOTE: Rate limiting uses an in-memory Map. On serverless platforms
+ * (e.g. Vercel), each cold start resets the store. This provides
+ * per-instance protection but is NOT a globally consistent rate limiter.
+ * For strict global rate limiting, replace with Redis (e.g. Vercel KV).
  */
 
 import { prisma } from '@/lib/prisma';
 
-// Rate limit: 30 requests per minute per user
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute in ms
 const RATE_LIMIT_MAX = 30;
 
@@ -30,14 +34,14 @@ class SecurityGuard {
 
     // Check if limit exceeded
     if (entry.timestamps.length >= RATE_LIMIT_MAX) {
-      return false; // Rate limit exceeded
+      return false;
     }
 
     // Add current request
     entry.timestamps.push(now);
     this.rateLimitStore.set(userId, entry);
 
-    return true; // Within limit
+    return true;
   }
 
   /**
@@ -50,7 +54,6 @@ class SecurityGuard {
     const now = Date.now();
     const entry = this.rateLimitStore.get(userId) || { timestamps: [] };
 
-    // Remove old timestamps
     entry.timestamps = entry.timestamps.filter(
       (timestamp) => now - timestamp < RATE_LIMIT_WINDOW
     );
@@ -63,16 +66,15 @@ class SecurityGuard {
   }
 
   /**
-   * Sanitize user input to prevent injection attacks
+   * Get standard rate limit response headers
    */
-  sanitizeInput(input: string): string {
-    // Remove script tags
-    let sanitized = input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-
-    // Remove SQL injection patterns (basic)
-    sanitized = sanitized.replace(/(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE)\b)/gi, '');
-
-    return sanitized.trim();
+  getRateLimitHeaders(userId: string): Record<string, string> {
+    const status = this.getRateLimitStatus(userId);
+    return {
+      'X-RateLimit-Limit': String(RATE_LIMIT_MAX),
+      'X-RateLimit-Remaining': String(status.remaining),
+      'X-RateLimit-Reset': String(Math.ceil(status.resetTime.getTime() / 1000)),
+    };
   }
 
   /**

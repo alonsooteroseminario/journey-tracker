@@ -26,9 +26,10 @@ describe('executeGetContext', () => {
     const result = await executeGetContext({}, 'clerk-123');
 
     expect(result.success).toBe(true);
-    expect(result.data.lastGoalId).toBe('goal-1');
-    expect(result.data.messageCount).toBe(5);
-    expect(result.data.recentGoals).toHaveLength(2);
+    const data = result.data as any;
+    expect(data.lastGoalId).toBe('goal-1');
+    expect(data.messageCount).toBe(5);
+    expect(data.recentGoals).toHaveLength(2);
   });
 
   it('should return error when userId is missing', async () => {

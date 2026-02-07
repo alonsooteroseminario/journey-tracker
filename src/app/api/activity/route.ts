@@ -42,7 +42,8 @@ export async function GET(req: NextRequest) {
         substepId: a.substepId,
         description: a.action,
         metadata: a.metadata,
-      }))
+      })),
+      { headers: { 'Cache-Control': 'private, max-age=10, stale-while-revalidate=60' } }
     );
   } catch (error) {
     console.error("GET /api/activity error:", error);

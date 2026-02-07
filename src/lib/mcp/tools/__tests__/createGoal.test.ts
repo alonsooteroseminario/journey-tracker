@@ -86,7 +86,7 @@ describe('executeCreateGoal', () => {
 
     expect(result.success).toBe(true);
     const createCall = vi.mocked(prisma.goal.create).mock.calls[0][0];
-    expect(createCall.data.tasks[0]).toHaveProperty('id');
+    expect((createCall.data.tasks as any)[0]).toHaveProperty('id');
   });
 
   it('should handle database errors', async () => {

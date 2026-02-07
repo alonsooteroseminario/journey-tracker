@@ -46,8 +46,9 @@ describe('executeCompleteTask', () => {
     );
 
     expect(result.success).toBe(true);
-    expect(result.data.completed).toBe(true);
-    expect(result.data.completedAt).toBeDefined();
+    const data = result.data as any;
+    expect(data.completed).toBe(true);
+    expect(data.completedAt).toBeDefined();
     expect(prisma.activityLog.create).toHaveBeenCalled();
   });
 
@@ -70,8 +71,9 @@ describe('executeCompleteTask', () => {
     );
 
     expect(result.success).toBe(true);
-    expect(result.data.completed).toBe(false);
-    expect(result.data.completedAt).toBeUndefined();
+    const data = result.data as any;
+    expect(data.completed).toBe(false);
+    expect(data.completedAt).toBeUndefined();
   });
 
   it('should return error when task not found', async () => {
