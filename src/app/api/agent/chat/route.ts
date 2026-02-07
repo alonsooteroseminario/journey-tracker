@@ -42,10 +42,11 @@ Use the available tools to access and modify user data. Never make up data.
 If you need a goal ID or task ID and the user hasn't specified one, ask them or use the
 get-goals tool to find the right one.`;
 
-// Maximum iterations for tool use loop.
-// Bulk operations (e.g. adding substeps to every task) can consume many iterations:
-// 2 setup calls (get-goals + get-goal-by-id) + 1 batch per task = N+2.
-const MAX_TOOL_ITERATIONS = 25;
+// Maximum iterations for tool use loop.  With parallel tool execution each
+// iteration can complete multiple independent calls simultaneously, so the
+// effective throughput is much higher than the raw count.  Bulk operations
+// still consume one iteration per Claude round-trip.
+const MAX_TOOL_ITERATIONS = 40;
 
 /**
  * GET handler - Return agent status
@@ -115,11 +116,13 @@ export async function POST(req: NextRequest) {
     const server = getMCPServer();
     const tools = server.getAllTools();
 
-    // Convert messages to Anthropic format
-    const anthropicMessages: Anthropic.Messages.MessageParam[] = messages.map((msg) => ({
-      role: msg.role,
-      content: msg.content,
-    }));
+    // Convert messages to Anthropic format (filter out system messages - they're client-only)
+    const anthropicMessages: Anthropic.Messages.MessageParam[] = messages
+      .filter((msg) => msg.role !== 'system')
+      .map((msg) => ({
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content,
+      }));
 
     // If streaming, return SSE response
     if (stream) {
@@ -163,9 +166,14 @@ function createSSEResponse(
         sendSSE(controller, encoder, { type: 'status', status: 'thinking' });
 
         // Run agent loop
-        const response = await runAgentLoop(messages, tools, userId, (status, toolName) => {
-          sendSSE(controller, encoder, { type: 'status', status, toolName });
-        });
+        const response = await runAgentLoop(messages, tools, userId,
+          (status, toolName) => {
+            sendSSE(controller, encoder, { type: 'status', status, toolName });
+          },
+          (event, toolName, data) => {
+            sendSSE(controller, encoder, { type: 'tool_event', event, toolName, data });
+          }
+        );
 
         // Send final response
         sendSSE(controller, encoder, {
@@ -216,6 +224,51 @@ function sendSSE(
   }
 }
 
+// Tools that mutate data — writes to the same goalId must be sequential.
+const WRITE_TOOLS = new Set([
+  'create-goal', 'update-goal', 'delete-goal', 'create-task',
+  'complete-task', 'update-task', 'add-substep', 'complete-substep',
+  'update-goal-icon', 'delete-task', 'delete-substep', 'update-profile',
+  'remove-friend', 'create-invitation',
+]);
+
+/**
+ * Partition tool-use blocks into groups that can run in parallel.
+ * – Read-only tools share one group (all run concurrently).
+ * – Write tools are grouped by goalId; blocks within each group run sequentially
+ *   to preserve read-modify-write consistency, but groups for different goalIds
+ *   run concurrently with each other.
+ * – Write tools with no goalId each get their own singleton group.
+ */
+function partitionForExecution(
+  blocks: Anthropic.Messages.ToolUseBlock[]
+): Anthropic.Messages.ToolUseBlock[][] {
+  const readOnly: Anthropic.Messages.ToolUseBlock[] = [];
+  const writeByGoal = new Map<string, Anthropic.Messages.ToolUseBlock[]>();
+  const writeNoGoal: Anthropic.Messages.ToolUseBlock[] = [];
+
+  for (const block of blocks) {
+    if (!WRITE_TOOLS.has(block.name)) {
+      readOnly.push(block);
+    } else {
+      const input = block.input as Record<string, any>;
+      const goalId: string | null = input.goalId ?? input.goal_id ?? null;
+      if (goalId) {
+        if (!writeByGoal.has(goalId)) writeByGoal.set(goalId, []);
+        writeByGoal.get(goalId)!.push(block);
+      } else {
+        writeNoGoal.push(block);
+      }
+    }
+  }
+
+  const groups: Anthropic.Messages.ToolUseBlock[][] = [];
+  if (readOnly.length > 0) groups.push(readOnly);
+  for (const group of writeByGoal.values()) groups.push(group);
+  for (const block of writeNoGoal) groups.push([block]);
+  return groups;
+}
+
 /**
  * Run the agent loop with tool execution
  */
@@ -223,7 +276,8 @@ async function runAgentLoop(
   messages: Anthropic.Messages.MessageParam[],
   tools: any[],
   userId: string,
-  onStatus?: (status: string, toolName?: string) => void
+  onStatus?: (status: string, toolName?: string) => void,
+  onToolEvent?: (event: 'input' | 'result', toolName: string, data: Record<string, any>) => void
 ): Promise<{ content: string; toolUsed?: string; toolResult?: any }> {
   const server = getMCPServer();
   // eslint-disable-next-line prefer-const
@@ -237,12 +291,11 @@ async function runAgentLoop(
 
     // Trim intermediate tool messages to prevent context bloat during bulk
     // operations.  Keep the original user message (index 0) plus the most
-    // recent 6 messages (3 assistant+user round-trips).  This keeps the
-    // context small enough that Claude always has room for a full final reply.
-    if (currentMessages.length > 8) {
+    // recent 12 messages (6 assistant+user round-trips).
+    if (currentMessages.length > 14) {
       currentMessages = [
         currentMessages[0],
-        ...currentMessages.slice(-6),
+        ...currentMessages.slice(-12),
       ];
     }
 
@@ -281,47 +334,55 @@ async function runAgentLoop(
         throw new Error('Tool use block not found in response');
       }
 
-      // Execute tools sequentially — many tools do read-modify-write on the
-      // same goal row, so parallel execution would cause last-write-wins data loss.
-      const toolResults: Array<{ tool_use_id: string; content: string }> = [];
+      // Partition into conflict-free groups and execute groups in parallel.
+      // Within each group tools run sequentially to protect read-modify-write
+      // consistency on the same goalId.  Groups for different goalIds (and all
+      // read-only tools) run concurrently.
+      const resultMap = new Map<string, { tool_use_id: string; content: string }>();
+      const groups = partitionForExecution(toolUseBlocks);
 
-      for (const block of toolUseBlocks) {
-        const toolName = block.name;
-        const toolInput = block.input as Record<string, any>;
+      await Promise.all(groups.map(async (group) => {
+        for (const block of group) {
+          const toolName = block.name;
+          const toolInput = block.input as Record<string, any>;
 
-        lastToolUsed = toolName;
+          if (onStatus) onStatus('using_tool', toolName);
 
-        if (onStatus) {
-          onStatus('using_tool', toolName);
-        }
+          const executor = server.getToolExecutor(toolName);
 
-        const executor = server.getToolExecutor(toolName);
+          if (!executor) {
+            if (onToolEvent) onToolEvent('input', toolName, { input: toolInput });
+            if (onToolEvent) onToolEvent('result', toolName, { success: false, error: 'Tool not found' });
+            resultMap.set(block.id, {
+              tool_use_id: block.id,
+              content: JSON.stringify({ success: false, error: 'Tool not found', message: `No executor for: ${toolName}` }),
+            });
+            continue;
+          }
 
-        if (!executor) {
-          toolResults.push({
-            tool_use_id: block.id,
-            content: JSON.stringify({ success: false, error: 'Tool not found', message: `No executor for: ${toolName}` }),
-          });
-          continue;
-        }
+          if (onToolEvent) onToolEvent('input', toolName, { input: toolInput });
+          const toolResult = await executor(toolInput, userId);
+          if (onToolEvent) onToolEvent('result', toolName, { success: toolResult.success, message: toolResult.message, error: toolResult.error });
+          lastToolResult = toolResult;
 
-        const toolResult = await executor(toolInput, userId);
-        lastToolResult = toolResult;
-
-        // Update conversation context based on tool result
-        if (toolResult.success && toolResult.data) {
-          if (toolName === 'get-goal-by-id' || toolName === 'create-goal') {
-            if (toolResult.data.id) {
-              conversationStore.setLastGoal(userId, toolResult.data.id);
+          if (toolResult.success && toolResult.data) {
+            if (toolName === 'get-goal-by-id' || toolName === 'create-goal') {
+              if (toolResult.data.id) {
+                conversationStore.setLastGoal(userId, toolResult.data.id);
+              }
             }
           }
-        }
 
-        toolResults.push({
-          tool_use_id: block.id,
-          content: JSON.stringify(toolResult),
-        });
-      }
+          resultMap.set(block.id, {
+            tool_use_id: block.id,
+            content: JSON.stringify(toolResult),
+          });
+        }
+      }));
+
+      // Preserve original block order for the API response
+      lastToolUsed = toolUseBlocks[toolUseBlocks.length - 1].name;
+      const toolResults = toolUseBlocks.map((block) => resultMap.get(block.id)!);
 
       // Add assistant message with all tool_use blocks
       currentMessages.push({

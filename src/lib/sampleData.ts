@@ -1,4 +1,4 @@
-import { Goal, Task, Substep, Phase, BudgetSummary, TimelineComparison, DocumentItem, ResourceCategory } from "@/types";
+import { Goal, Task, Phase, BudgetSummary, TimelineComparison, DocumentItem, ResourceCategory } from "@/types";
 import { generateId, getToday } from "./storage";
 import { enhanceTaskWithSubsteps } from "./substepParser";
 
@@ -1149,8 +1149,7 @@ CONGRATULATIONS! 🇨🇦`,
   };
 }
 
-// Budget Summary Data
-export function getBudgetSummary(): BudgetSummary {
+function getBudgetSummary(): BudgetSummary {
   return {
     items: [
       { phase: "Phase 1", item: "WES ECA Application", cost: "$256", timing: "Week 1", notes: "Educational credential assessment" },
@@ -1175,8 +1174,7 @@ export function getBudgetSummary(): BudgetSummary {
   };
 }
 
-// Timeline Comparison Data
-export function getTimelineComparison(): TimelineComparison {
+function getTimelineComparison(): TimelineComparison {
   return {
     phases: [
       { phase: "Preparation", baseOption: "~14 weeks", expressOption: "~14 weeks", timeSaved: "Same" },
@@ -1194,8 +1192,7 @@ export function getTimelineComparison(): TimelineComparison {
   };
 }
 
-// Document Checklist Data
-export function getDocumentChecklist(): DocumentItem[] {
+function getDocumentChecklist(): DocumentItem[] {
   return [
     { id: generateId(), name: "WES ECA Report", requiredFor: "BC PNP", whenNeeded: "Week 9-10", status: "pending", notes: "Valid 5 years" },
     { id: generateId(), name: "CELPIP Test Results", requiredFor: "BC PNP & Federal", whenNeeded: "Week 13-14", status: "pending", notes: "Valid 2 years" },
@@ -1225,8 +1222,7 @@ export function getDocumentChecklist(): DocumentItem[] {
   ];
 }
 
-// Official Resources Data
-export function getOfficialResources(): ResourceCategory[] {
+function getOfficialResources(): ResourceCategory[] {
   return [
     {
       category: "BC PNP",
@@ -1296,9 +1292,4 @@ export function getOfficialResources(): ResourceCategory[] {
       ],
     },
   ];
-}
-
-// Legacy function for backwards compatibility
-export function createTRtoPRChecklist(): Goal {
-  return createBCPNPtoPRChecklist();
 }

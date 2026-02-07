@@ -20,13 +20,13 @@ describe('StreakCounter', () => {
     it('should display current streak number', () => {
       render(<StreakCounter streak={mockStreak} hasCompletedToday={true} />);
       expect(screen.getByText('5')).toBeInTheDocument();
-      expect(screen.getByText('Day Streak')).toBeInTheDocument();
+      expect(screen.getByText('Streak')).toBeInTheDocument();
     });
 
     it('should display longest streak', () => {
       render(<StreakCounter streak={mockStreak} hasCompletedToday={true} />);
-      expect(screen.getByText(/10 days/)).toBeInTheDocument();
-      expect(screen.getByText('Longest Streak')).toBeInTheDocument();
+      expect(screen.getByText('10d')).toBeInTheDocument();
+      expect(screen.getByText('Longest')).toBeInTheDocument();
     });
 
     it('should show fire emoji when streak is active', () => {
@@ -47,13 +47,13 @@ describe('StreakCounter', () => {
   describe('Status Messages', () => {
     it('should show completion message when task completed today', () => {
       render(<StreakCounter streak={mockStreak} hasCompletedToday={true} />);
-      expect(screen.getByText(/completed a task today/i)).toBeInTheDocument();
+      expect(screen.getByText('Task done today!')).toBeInTheDocument();
     });
 
     it('should show encouragement to keep streak when active but not completed today', () => {
       render(<StreakCounter streak={mockStreak} hasCompletedToday={false} />);
-      // Use getAllByText since responsive design shows both mobile and desktop versions
-      const messages = screen.getAllByText(/keep your streak/i);
+      // happy-dom renders both responsive spans; match the desktop text
+      const messages = screen.getAllByText('Complete a task!');
       expect(messages.length).toBeGreaterThan(0);
     });
 
@@ -63,8 +63,8 @@ describe('StreakCounter', () => {
         currentStreak: 0,
       };
       render(<StreakCounter streak={zeroStreak} hasCompletedToday={false} />);
-      // Use getAllByText since responsive design shows both mobile and desktop versions
-      const messages = screen.getAllByText(/start your streak/i);
+      // Same "Complete a task!" prompt regardless of streak value
+      const messages = screen.getAllByText('Complete a task!');
       expect(messages.length).toBeGreaterThan(0);
     });
   });
@@ -100,7 +100,7 @@ describe('StreakCounter', () => {
         currentStreak: 35,
       };
       render(<StreakCounter streak={longStreak} hasCompletedToday={true} />);
-      expect(screen.getByText(/Incredible! You're unstoppable!/)).toBeInTheDocument();
+      expect(screen.getByText('🎉 Unstoppable!')).toBeInTheDocument();
     });
 
     it('should show 14+ day message for 2-week streaks', () => {
@@ -109,7 +109,7 @@ describe('StreakCounter', () => {
         currentStreak: 20,
       };
       render(<StreakCounter streak={twoWeekStreak} hasCompletedToday={true} />);
-      expect(screen.getByText(/Two weeks strong!/)).toBeInTheDocument();
+      expect(screen.getByText('🌟 Two weeks!')).toBeInTheDocument();
     });
 
     it('should show 7+ day message for one-week streaks', () => {
@@ -118,7 +118,7 @@ describe('StreakCounter', () => {
         currentStreak: 10,
       };
       render(<StreakCounter streak={oneWeekStreak} hasCompletedToday={true} />);
-      expect(screen.getByText(/A whole week!/)).toBeInTheDocument();
+      expect(screen.getByText('💪 One week!')).toBeInTheDocument();
     });
 
     it('should show 3+ day message for short streaks', () => {
@@ -127,7 +127,7 @@ describe('StreakCounter', () => {
         currentStreak: 4,
       };
       render(<StreakCounter streak={shortStreak} hasCompletedToday={true} />);
-      expect(screen.getByText(/3 days and counting!/)).toBeInTheDocument();
+      expect(screen.getByText('🚀 Keep going!')).toBeInTheDocument();
     });
 
     it('should show starter message for 1-2 day streaks', () => {

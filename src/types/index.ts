@@ -126,18 +126,6 @@ export interface SocialShare {
   message: string;
 }
 
-export interface AppState {
-  goals: Goal[];
-  streak: StreakData;
-  notificationsEnabled: boolean;
-  activityLog: ActivityLogEntry[];
-  profile: UserProfile;
-  friends: Friend[];
-  invitations: Invitation[];
-  socialShares: SocialShare[];
-  lastSocialShareReminder?: string; // ISO date
-}
-
 // Activity tracking for analytics
 export interface ActivityLogEntry {
   id: string;
@@ -148,15 +136,6 @@ export interface ActivityLogEntry {
   substepId?: string;
   description: string;
   metadata?: Record<string, unknown>;
-}
-
-export interface DayActivity {
-  date: string;
-  tasksCompleted: number;
-  substepsCompleted: number;
-  hadActivity: boolean;
-  totalCostSpent: number;
-  activities: ActivityLogEntry[];
 }
 
 // Analytics Types

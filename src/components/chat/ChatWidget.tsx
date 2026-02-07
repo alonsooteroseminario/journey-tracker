@@ -3,7 +3,7 @@
  *
  * Interactions (closed button):
  *   Click (any device)        – opens chat instantly
- *   Hold 3 s without moving   – ripple ring builds → drag mode activates
+ *   Hold 1 s without moving   – ripple ring builds → drag mode activates
  *   Move after drag activates – button follows the pointer, sticks on release
  *
  * Position persists in localStorage.
@@ -21,7 +21,7 @@ import { ChatStatusIndicator } from './ChatStatusIndicator';
 /* ------------------------------------------------------------------ constants */
 const BUTTON_SIZE = 56;
 const STORAGE_KEY = 'chat-widget-position';
-const HOLD_MS = 3000; // hold duration before drag activates
+const HOLD_MS = 1000; // hold duration before drag activates
 const MOVE_CANCEL_PX = 8; // movement while holding cancels the hold
 const PANEL_MAX_W = 400;
 const PANEL_MAX_H = 600;
@@ -49,7 +49,7 @@ function loadSavedPosition(vw: number, vh: number): { x: number; y: number } {
 
 /* ------------------------------------------------------------ component */
 export function ChatWidget() {
-  const { messages, status, currentTool, sendMessage, clearMessages, isOpen, toggleOpen } =
+  const { messages, status, currentTool, processingLog, sendMessage, clearMessages, isOpen, toggleOpen } =
     useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -233,7 +233,7 @@ export function ChatWidget() {
           ref={buttonRef}
           style={{
             cursor: dragging ? 'grabbing' : 'pointer',
-            /* scale pulse the moment drag is armed (after 3 s) */
+            /* scale pulse the moment drag is armed (after hold) */
             transform: dragReady && !dragging ? 'scale(1.15)' : 'scale(1)',
             transition: dragging ? 'none' : 'transform 0.15s ease, box-shadow 0.15s ease',
             boxShadow:
@@ -393,7 +393,7 @@ export function ChatWidget() {
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} />
           ))}
-          <ChatStatusIndicator status={status} toolName={currentTool} />
+          <ChatStatusIndicator status={status} toolName={currentTool} processingLog={processingLog} />
           <div ref={messagesEndRef} />
         </div>
 

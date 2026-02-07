@@ -4,8 +4,8 @@
     "private": true,
     "scripts": {
         "postinstall": "prisma generate",
-        "dev": "next dev",
-        "build": "prisma generate && next build",
+        "dev": "next dev --webpack",
+        "build": "prisma generate && next build --webpack",
         "start": "next start",
         "lint": "next lint",
         "test": "vitest",
@@ -25,7 +25,7 @@
         "@dnd-kit/utilities": "^3.2.2",
         "@prisma/client": "^6.19.2",
         "@reduxjs/toolkit": "^2.11.2",
-        "next": "^15.5.11",
+        "next": "^16.1.6",
         "react": "^18",
         "react-dom": "^18",
         "react-redux": "^9.2.0",
@@ -41,18 +41,18 @@
         "@types/react": "^18",
         "@types/react-dom": "^18",
         "@vitejs/plugin-react": "^4.7.0",
-        "@vitest/coverage-v8": "^1.6.1",
-        "@vitest/ui": "^1.6.1",
+        "@vitest/coverage-v8": "^4.0.18",
+        "@vitest/ui": "^4.0.18",
         "autoprefixer": "^10.0.1",
         "eslint": "^9.39.2",
         "eslint-config-next": "^15.5.11",
-        "happy-dom": "^12.10.3",
+        "happy-dom": "^20.5.0",
         "jsdom": "^27.4.0",
         "postcss": "^8",
         "prisma": "^6.19.2",
         "tailwindcss": "^3.4.1",
         "typescript": "^5",
-        "vitest": "^1.6.1"
+        "vitest": "^4.0.18"
     },
     "optionalDependencies": {
         "@next/swc-linux-x64-gnu": "15.5.11"

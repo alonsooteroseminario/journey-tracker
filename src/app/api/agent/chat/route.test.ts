@@ -111,18 +111,17 @@ describe('Agent Chat API Route', () => {
         })),
       } as any);
 
-      // Mock Anthropic response
-      vi.mocked(Anthropic).mockImplementation(
-        () =>
-          ({
-            messages: {
-              create: vi.fn().mockResolvedValue({
-                stop_reason: 'end_turn',
-                content: [{ type: 'text', text: 'Hello! How can I help?' }],
-              }),
-            },
-          }) as any
-      );
+      // Mock Anthropic as a constructor (vitest v4 requires function/class, not arrow)
+      vi.mocked(Anthropic).mockImplementation(function () {
+        return {
+          messages: {
+            create: vi.fn().mockResolvedValue({
+              stop_reason: 'end_turn',
+              content: [{ type: 'text', text: 'Hello! How can I help?' }],
+            }),
+          },
+        };
+      } as any);
 
       const request = new NextRequest('http://localhost/api/agent/chat', {
         method: 'POST',
@@ -180,14 +179,13 @@ describe('Agent Chat API Route', () => {
           content: [{ type: 'text', text: 'You have 1 goal.' }],
         });
 
-      vi.mocked(Anthropic).mockImplementation(
-        () =>
-          ({
-            messages: {
-              create: mockCreate,
-            },
-          }) as any
-      );
+      vi.mocked(Anthropic).mockImplementation(function () {
+        return {
+          messages: {
+            create: mockCreate,
+          },
+        };
+      } as any);
 
       const request = new NextRequest('http://localhost/api/agent/chat', {
         method: 'POST',

@@ -101,7 +101,6 @@ export function useGoals() {
 
   const {
     data: apiActivity,
-    isLoading: activityLoading,
   } = useGetActivityLogQuery({});
 
   const {
@@ -583,13 +582,6 @@ export function useGoals() {
     [removeFriendMutation]
   );
 
-  const updateFriend = useCallback(
-    (_friendId: string, _updates: Partial<Friend>) => {
-      // Friends are updated via their own profile - no direct update needed
-    },
-    []
-  );
-
   // ==========================================
   // Invitation Management
   // ==========================================
@@ -597,13 +589,6 @@ export function useGoals() {
     const result = await createInvitationMutation().unwrap();
     return result as Invitation;
   }, [createInvitationMutation]);
-
-  const useInvitation = useCallback(
-    (code: string, _userId: string) => {
-      addFriendMutation({ code });
-    },
-    [addFriendMutation]
-  );
 
   // ==========================================
   // Social Share Management
@@ -889,7 +874,6 @@ export function useGoals() {
     profile,
     friends,
     invitations,
-    socialShares: [] as SocialShare[],
     isLoaded,
     // Goal operations
     addGoal,
@@ -918,10 +902,8 @@ export function useGoals() {
     // Friend operations
     addFriend,
     removeFriend,
-    updateFriend,
     // Invitation operations
     createInvitation,
-    useInvitation,
     // Social share operations
     addSocialShare,
     // Progress & Analytics

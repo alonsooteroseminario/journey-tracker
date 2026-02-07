@@ -5,7 +5,7 @@ import { generateId } from "./storage";
  * Parse a description with bullet points into substeps
  * Bullet points starting with • will be converted to individual substeps
  */
-export function parseDescriptionToSubsteps(description: string): {
+function parseDescriptionToSubsteps(description: string): {
   cleanDescription: string;
   substeps: Substep[];
 } {

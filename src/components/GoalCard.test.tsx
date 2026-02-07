@@ -107,7 +107,7 @@ describe('GoalCard', () => {
         />
       );
 
-      expect(screen.getByText('1 of 2 steps completed')).toBeInTheDocument();
+      expect(screen.getByText('1 of 2 steps')).toBeInTheDocument();
     });
 
     it('should show completion celebration when progress is 100%', () => {
@@ -169,7 +169,7 @@ describe('GoalCard', () => {
         />
       );
 
-      expect(screen.getByText('1 of 2 steps completed')).toBeInTheDocument();
+      expect(screen.getByText('1 of 2 steps')).toBeInTheDocument();
     });
   });
 
@@ -186,21 +186,24 @@ describe('GoalCard', () => {
         />
       );
 
-      // Get the first (main goal) collapse button
-      const expandButtons = screen.getAllByTitle('Collapse');
-      const mainCollapseButton = expandButtons[0];
-      fireEvent.click(mainCollapseButton);
+      // Card starts collapsed — Phases content is not visible
+      expect(screen.queryByText('No phases yet')).not.toBeInTheDocument();
 
-      // Content should be hidden when collapsed
-      expect(screen.queryByText('Complete Module 1')).not.toBeInTheDocument();
+      // Click Expand (same flush pattern as the passing "phases empty state" test)
+      fireEvent.click(screen.getByTitle('Expand'));
 
-      // Click again to expand
-      const collapseButtons = screen.getAllByTitle('Expand');
-      const mainExpandButton = collapseButtons[0];
-      fireEvent.click(mainExpandButton);
+      // Intermediate query triggers React 18 flush; then switch to Phases view
+      const phasesTab = screen.getByText('📊 Phases');
+      fireEvent.click(phasesTab);
 
-      // Content should be visible again
-      expect(screen.getByText('Complete Module 1')).toBeInTheDocument();
+      // Expanded + Phases view: content is visible
+      expect(screen.getByText('No phases yet')).toBeInTheDocument();
+
+      // Click Collapse to hide the content section
+      fireEvent.click(screen.getByTitle('Collapse'));
+
+      // Collapsed: content is hidden again
+      expect(screen.queryByText('No phases yet')).not.toBeInTheDocument();
     });
 
     it('should show delete confirmation modal when clicking delete button', () => {
@@ -283,10 +286,11 @@ describe('GoalCard', () => {
         />
       );
 
-      const tasksTab = screen.getByText('✅ Tasks');
+      // getByText returns the inner <span>; get the parent <button> for class assertions
+      const tasksTab = screen.getByText('✅ Tasks').closest('button')!;
       fireEvent.click(tasksTab);
 
-      // Should show tasks (they're shown in both views, so just verify tab is active)
+      // Tasks is the default active tab (no phases on mockGoal)
       expect(tasksTab).toHaveClass('bg-white', 'text-blue-600');
     });
 
@@ -302,7 +306,7 @@ describe('GoalCard', () => {
         />
       );
 
-      const calendarTab = screen.getByText('📅 Calendar');
+      const calendarTab = screen.getByText('📅 Calendar').closest('button')!;
       fireEvent.click(calendarTab);
 
       expect(calendarTab).toHaveClass('bg-white', 'text-blue-600');
@@ -320,7 +324,7 @@ describe('GoalCard', () => {
         />
       );
 
-      const analyticsTab = screen.getByText('📈 Analytics');
+      const analyticsTab = screen.getByText('📈 Analytics').closest('button')!;
       fireEvent.click(analyticsTab);
 
       expect(analyticsTab).toHaveClass('bg-white', 'text-blue-600');

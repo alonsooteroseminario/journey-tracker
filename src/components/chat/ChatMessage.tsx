@@ -9,6 +9,22 @@ interface ChatMessageProps {
 }
 
 export function ChatMessage({ message }: ChatMessageProps) {
+  // System messages: compact tool-log in a muted container
+  if (message.role === 'system') {
+    return (
+      <div className="mb-3 px-3">
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-md px-3 py-2 border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-xs text-gray-500 dark:text-gray-400">🔧 Tools executed</span>
+          </div>
+          <div className="whitespace-pre-wrap text-xs text-gray-600 dark:text-gray-400 font-mono">
+            {message.content}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const isUser = message.role === 'user';
 
   return (
