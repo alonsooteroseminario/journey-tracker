@@ -53,23 +53,23 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
 
   if (isEditing) {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-2">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 sm:p-3 space-y-1.5 sm:space-y-2">
         <input
           type="text"
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
-          className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Substep title"
           autoFocus
         />
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 sm:gap-2">
           <div className="relative flex-1">
-            <span className="absolute left-2 top-1.5 text-gray-500 text-sm">$</span>
+            <span className="absolute left-2 top-1 sm:top-1.5 text-gray-500 text-xs sm:text-sm">$</span>
             <input
               type="number"
               value={editCost}
               onChange={(e) => setEditCost(e.target.value)}
-              className="w-full pl-6 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-5 sm:pl-6 pr-2 sm:pr-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Cost"
             />
           </div>
@@ -77,21 +77,21 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
             type="text"
             value={editNotes}
             onChange={(e) => setEditNotes(e.target.value)}
-            className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Notes"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1.5 sm:gap-2">
           <button
             onClick={handleSave}
             disabled={!editTitle.trim()}
-            className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+            className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
           >
             Save
           </button>
           <button
             onClick={handleCancel}
-            className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded-md"
+            className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm text-gray-600 hover:bg-gray-200 rounded-md"
           >
             Cancel
           </button>
@@ -104,7 +104,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
     <div
       ref={setNodeRef}
       style={style}
-      className={`group flex items-center gap-2 p-2 rounded-lg transition-all ${
+      className={`group flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg transition-all ${
         substep.completed
           ? "bg-green-50 border border-green-100"
           : "bg-gray-50 border border-gray-100 hover:bg-gray-100"
@@ -144,20 +144,20 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
       {/* Content */}
       <div className="flex-1 min-w-0">
         <p
-          className={`text-sm ${
+          className={`text-xs sm:text-sm ${
             substep.completed ? "text-gray-500 line-through" : "text-gray-700"
           }`}
         >
           {substep.title}
         </p>
-        <div className="flex items-center gap-2 mt-0.5">
+        <div className="flex items-center gap-1 sm:gap-2 mt-0.5">
           {substep.cost !== undefined && substep.cost > 0 && (
-            <span className="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">
+            <span className="text-[10px] sm:text-xs px-1 sm:px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">
               {formatCurrency(substep.cost)}
             </span>
           )}
           {substep.notes && (
-            <span className="text-xs text-gray-400 truncate max-w-24" title={substep.notes}>
+            <span className="text-[10px] sm:text-xs text-gray-400 truncate max-w-24" title={substep.notes}>
               {substep.notes}
             </span>
           )}

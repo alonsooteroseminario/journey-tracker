@@ -103,32 +103,32 @@ export function GoalCard({
     >
       {/* Header */}
       <div
-        className={`p-3 sm:p-6 ${
+        className={`p-2 sm:p-6 ${
           progress === 100
             ? "bg-gradient-to-r from-green-50 to-emerald-50"
             : "bg-gradient-to-r from-red-50 via-white to-red-50"
         }`}
       >
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start justify-between gap-1.5">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="text-2xl sm:text-3xl flex-shrink-0">{goal.icon || '🎯'}</span>
-              <h3 className="text-base sm:text-xl font-bold text-gray-800 truncate">{goal.title}</h3>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <span className="text-lg sm:text-3xl flex-shrink-0">{goal.icon || '🎯'}</span>
+              <h3 className="text-sm sm:text-xl font-bold text-gray-800 truncate">{goal.title}</h3>
               {progress === 100 && (
-                <span className="text-xl sm:text-2xl flex-shrink-0" title="Goal completed!">
+                <span className="text-base sm:text-2xl flex-shrink-0" title="Goal completed!">
                   🎉
                 </span>
               )}
             </div>
             {goal.description && (
-              <p className="text-sm sm:text-base text-gray-600 mt-1 line-clamp-2">{goal.description}</p>
+              <p className="text-xs sm:text-base text-gray-600 mt-0.5 sm:mt-1 line-clamp-2">{goal.description}</p>
             )}
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-2 sm:p-3 min-w-[40px] sm:min-w-[48px] min-h-[40px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-white/50 rounded-lg transition-colors"
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-white/50 rounded-lg transition-colors"
               title={isExpanded ? "Collapse" : "Expand"}
               aria-label={isExpanded ? "Collapse goal" : "Expand goal"}
               aria-expanded={isExpanded}
@@ -144,7 +144,7 @@ export function GoalCard({
             </button>
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="p-2 sm:p-3 min-w-[40px] sm:min-w-[48px] min-h-[40px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white/50 rounded-lg transition-colors"
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white/50 rounded-lg transition-colors"
               title="Delete goal"
               aria-label="Delete goal"
             >
@@ -156,23 +156,23 @@ export function GoalCard({
         </div>
 
         {/* Progress Section */}
-        <div className="mt-3 sm:mt-4">
-          <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600 mb-2">
+        <div className="mt-2 sm:mt-4">
+          <div className="flex items-center justify-between text-[10px] sm:text-sm text-gray-600 mb-1 sm:mb-2">
             <span className="truncate">{completedCount} of {totalCount} steps</span>
             {progress === 100 && (
-              <span className="text-green-600 font-semibold text-xs sm:text-sm flex-shrink-0 ml-2">Complete!</span>
+              <span className="text-green-600 font-semibold text-[10px] sm:text-sm flex-shrink-0 ml-2">Complete!</span>
             )}
           </div>
           <ProgressBar progress={progress} showPercentage={true} size="md" />
         </div>
 
         {/* View Mode Tabs - Responsive Grid on Mobile */}
-        <div role="tablist" className="mt-3 sm:mt-4 grid grid-cols-3 sm:grid-cols-3 md:flex gap-1.5 sm:gap-2">
+        <div role="tablist" className="mt-2 sm:mt-4 grid grid-cols-5 md:flex gap-0.5 sm:gap-2">
           <button
             role="tab"
             aria-selected={viewMode === "phases"}
             onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
-            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
+            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
               viewMode === "phases" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
@@ -183,7 +183,7 @@ export function GoalCard({
             role="tab"
             aria-selected={viewMode === "tasks"}
             onClick={() => { setViewMode("tasks"); setSelectedPhase(null); }}
-            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
+            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
               viewMode === "tasks" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
@@ -194,7 +194,7 @@ export function GoalCard({
             role="tab"
             aria-selected={viewMode === "calendar"}
             onClick={() => setViewMode("calendar")}
-            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
+            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
               viewMode === "calendar" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
@@ -205,7 +205,7 @@ export function GoalCard({
             role="tab"
             aria-selected={viewMode === "analytics"}
             onClick={() => setViewMode("analytics")}
-            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
+            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
               viewMode === "analytics" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
@@ -216,7 +216,7 @@ export function GoalCard({
             role="tab"
             aria-selected={viewMode === "info"}
             onClick={() => setViewMode("info")}
-            className={`px-2 sm:px-3 py-1.5 sm:py-2 min-h-[40px] rounded-lg text-xs font-medium transition-colors ${
+            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
               viewMode === "info" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
             }`}
           >
@@ -228,7 +228,7 @@ export function GoalCard({
 
       {/* Content Section */}
       {isExpanded && (
-        <div className="p-3 sm:p-6 border-t border-gray-100">
+        <div className="p-2 sm:p-6 border-t border-gray-100">
           {/* Phase View */}
           {viewMode === "phases" && (
             goal.phases && goal.phases.length > 0 ? (

@@ -232,7 +232,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
       {/* Selected Day Details */}
       {selectedDate && selectedDayData && (
         <div className="border-t border-gray-200 p-2 sm:p-4 bg-gray-50">
-          <h5 className="font-semibold text-gray-800 mb-2">
+          <h5 className="font-semibold text-xs sm:text-base text-gray-800 mb-1.5 sm:mb-2">
             {new Date(selectedDate).toLocaleDateString("en-US", {
               weekday: "long",
               month: "long",
@@ -241,21 +241,21 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
           </h5>
 
           {selectedDayData.hasActivity ? (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {/* Day Summary */}
-              <div className="flex gap-3 text-sm">
+              <div className="flex gap-1.5 sm:gap-3 text-[10px] sm:text-sm">
                 {selectedDayData.tasksCompleted > 0 && (
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                  <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-blue-100 text-blue-700 rounded-full">
                     {selectedDayData.tasksCompleted} tasks
                   </span>
                 )}
                 {selectedDayData.substepsCompleted > 0 && (
-                  <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full">
+                  <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-purple-100 text-purple-700 rounded-full">
                     {selectedDayData.substepsCompleted} substeps
                   </span>
                 )}
                 {selectedDayData.costSpent > 0 && (
-                  <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full">
+                  <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-emerald-100 text-emerald-700 rounded-full">
                     ${selectedDayData.costSpent} spent
                   </span>
                 )}
@@ -267,7 +267,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
                   {selectedDayActivities.map((activity) => (
                     <div
                       key={activity.id}
-                      className="flex items-center gap-2 text-sm text-gray-600 p-2 bg-white rounded-lg"
+                      className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-600 p-1.5 sm:p-2 bg-white rounded-lg"
                     >
                       <span>
                         {activity.type === "task_completed" && "✅"}
@@ -276,7 +276,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
                         {activity.type === "goal_created" && "🎯"}
                       </span>
                       <span className="truncate">{activity.description}</span>
-                      <span className="text-xs text-gray-400 ml-auto">
+                      <span className="text-[10px] sm:text-xs text-gray-400 ml-auto">
                         {new Date(activity.date).toLocaleTimeString("en-US", {
                           hour: "numeric",
                           minute: "2-digit",
@@ -288,7 +288,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
               )}
             </div>
           ) : (
-            <p className="text-sm text-gray-500">No activity on this day</p>
+            <p className="text-xs sm:text-sm text-gray-500">No activity on this day</p>
           )}
         </div>
       )}

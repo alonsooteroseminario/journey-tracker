@@ -37,19 +37,22 @@ describe('ProgressBar', () => {
   describe('Size Variants', () => {
     it('should render small size correctly', () => {
       const { container } = render(<ProgressBar progress={50} size="sm" />);
-      const progressBarContainer = container.querySelector('.h-2');
+      // Mobile-first: h-1.5 on mobile, sm:h-2 on desktop
+      const progressBarContainer = container.querySelector('[class*="h-1"]');
       expect(progressBarContainer).toBeInTheDocument();
     });
 
     it('should render medium size correctly', () => {
       const { container } = render(<ProgressBar progress={50} size="md" />);
-      const progressBarContainer = container.querySelector('.h-4');
+      // Mobile-first: h-2.5 on mobile, sm:h-4 on desktop
+      const progressBarContainer = container.querySelector('[class*="h-2"]');
       expect(progressBarContainer).toBeInTheDocument();
     });
 
     it('should render large size correctly', () => {
       const { container } = render(<ProgressBar progress={50} size="lg" />);
-      const progressBarContainer = container.querySelector('.h-6');
+      // Mobile-first: h-4 on mobile, sm:h-6 on desktop
+      const progressBarContainer = container.querySelector('[class*="h-4"]');
       expect(progressBarContainer).toBeInTheDocument();
     });
   });

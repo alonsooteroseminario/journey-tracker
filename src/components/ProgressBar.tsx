@@ -32,15 +32,15 @@ export function ProgressBar({
   }, [progress, animated]);
 
   const heights = {
-    sm: "h-2",
-    md: "h-4",
-    lg: "h-6",
+    sm: "h-1.5 sm:h-2",
+    md: "h-2.5 sm:h-4",
+    lg: "h-4 sm:h-6",
   };
 
   const textSizes = {
-    sm: "text-xs",
-    md: "text-sm",
-    lg: "text-base",
+    sm: "text-[10px] sm:text-xs",
+    md: "text-xs sm:text-sm",
+    lg: "text-sm sm:text-base",
   };
 
   return (

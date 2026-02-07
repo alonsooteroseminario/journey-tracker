@@ -149,16 +149,16 @@ export function TaskMiniCard({
         }`}
       >
         {/* Main Card Header */}
-        <div className="p-4">
-          <div className="flex items-start gap-3">
+        <div className="p-2 sm:p-4">
+          <div className="flex items-start gap-1.5 sm:gap-3">
             {/* Drag Handle */}
             <button
               {...attributes}
               {...listeners}
-              className="cursor-grab active:cursor-grabbing flex-shrink-0 p-1 text-gray-400 hover:text-gray-600 mt-0.5"
+              className="cursor-grab active:cursor-grabbing flex-shrink-0 p-0.5 sm:p-1 text-gray-400 hover:text-gray-600 mt-0.5"
               title="Drag to reorder task"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
@@ -169,14 +169,14 @@ export function TaskMiniCard({
               role="checkbox"
               aria-checked={task.completed}
               aria-label={`Mark task "${task.title}" as ${task.completed ? "incomplete" : "complete"}`}
-              className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all mt-0.5 ${
+              className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all mt-0.5 ${
                 task.completed
                   ? "bg-green-500 border-green-500 text-white"
                   : "border-gray-300 hover:border-green-500 hover:bg-green-50"
               }`}
             >
               {task.completed && (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                 </svg>
               )}
@@ -184,14 +184,14 @@ export function TaskMiniCard({
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
                 {task.stepNumber && (
-                  <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-mono font-bold rounded">
+                  <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] sm:text-xs font-mono font-bold rounded">
                     {task.stepNumber}
                   </span>
                 )}
                 <h4
-                  className={`font-medium ${
+                  className={`text-xs sm:text-base font-medium ${
                     task.completed ? "text-gray-500 line-through" : "text-gray-800"
                   }`}
                 >
@@ -200,9 +200,9 @@ export function TaskMiniCard({
               </div>
 
               {/* Quick Info */}
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
+              <div className="flex items-center gap-1 sm:gap-2 mt-1 sm:mt-2 flex-wrap">
                 {hasCost && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full">
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] sm:text-xs rounded-full">
                     <span>💰</span>
                     {totalActualCost > 0 ? formatCurrency(totalActualCost) : formatCurrency(totalEstimatedCost)}
                     {spentSoFar > 0 && spentSoFar !== totalActualCost && (
@@ -213,20 +213,20 @@ export function TaskMiniCard({
                   </span>
                 )}
                 {hasSubsteps && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-purple-100 text-purple-700 text-[10px] sm:text-xs rounded-full">
                     <span>📋</span>
                     {completedSubsteps}/{substeps.length} substeps
                   </span>
                 )}
                 {task.dueDate && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded-full">
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] sm:text-xs rounded-full">
                     <span>📅</span>
                     {new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </span>
                 )}
                 {task.priority && task.priority !== "medium" && (
                   <span
-                    className={`px-2 py-0.5 text-xs rounded-full ${
+                    className={`px-1.5 py-0.5 text-[10px] sm:text-xs rounded-full ${
                       task.priority === "critical"
                         ? "bg-red-100 text-red-700"
                         : task.priority === "high"
@@ -253,14 +253,14 @@ export function TaskMiniCard({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5 sm:gap-1">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-1 sm:p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                 title={isExpanded ? "Collapse" : "Expand"}
               >
                 <svg
-                  className={`w-5 h-5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                  className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -270,19 +270,19 @@ export function TaskMiniCard({
               </button>
               <button
                 onClick={() => setIsEditing(true)}
-                className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                className="p-1 sm:p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
                 title="Edit"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </button>
               <button
                 onClick={onDelete}
-                className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                className="p-1 sm:p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                 title="Delete"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </button>
@@ -292,32 +292,32 @@ export function TaskMiniCard({
 
         {/* Expanded Content */}
         {isExpanded && (
-          <div className="px-4 pb-4 border-t border-gray-100 pt-3 space-y-3">
+          <div className="px-2 sm:px-4 pb-2 sm:pb-4 border-t border-gray-100 pt-2 sm:pt-3 space-y-2 sm:space-y-3">
             {/* Cost Tracking Section */}
             {hasCost && (
-              <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <h5 className="text-sm font-semibold text-emerald-800 flex items-center gap-1">
+              <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-2 sm:p-3">
+                <div className="flex items-center justify-between mb-1 sm:mb-2">
+                  <h5 className="text-xs sm:text-sm font-semibold text-emerald-800 flex items-center gap-1">
                     <span>💰</span>
                     Cost Tracking
                   </h5>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="bg-white/60 rounded p-2">
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2 text-[10px] sm:text-xs">
+                  <div className="bg-white/60 rounded p-1.5 sm:p-2">
                     <p className="text-gray-600 mb-0.5">Estimated</p>
-                    <p className="text-emerald-700 font-bold text-base">
+                    <p className="text-emerald-700 font-bold text-sm sm:text-base">
                       {formatCurrency(totalEstimatedCost)}
                     </p>
                   </div>
-                  <div className="bg-white/60 rounded p-2">
+                  <div className="bg-white/60 rounded p-1.5 sm:p-2">
                     <p className="text-gray-600 mb-0.5">Actual Spent</p>
-                    <p className="text-emerald-700 font-bold text-base">
+                    <p className="text-emerald-700 font-bold text-sm sm:text-base">
                       {formatCurrency(totalActualCost)}
                     </p>
                   </div>
-                  <div className="bg-white/60 rounded p-2 col-span-2">
+                  <div className="bg-white/60 rounded p-1.5 sm:p-2 col-span-2">
                     <p className="text-gray-600 mb-0.5">Spent on Completed Items</p>
-                    <p className="text-blue-700 font-bold text-base">
+                    <p className="text-blue-700 font-bold text-sm sm:text-base">
                       {formatCurrency(spentSoFar)}
                     </p>
                     <div className="mt-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
@@ -335,29 +335,29 @@ export function TaskMiniCard({
 
             {/* Notes */}
             {task.notes && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <p className="text-xs font-medium text-yellow-800 mb-1">Notes:</p>
-                <p className="text-sm text-yellow-700">{task.notes}</p>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 sm:p-3">
+                <p className="text-[10px] sm:text-xs font-medium text-yellow-800 mb-0.5">Notes:</p>
+                <p className="text-xs sm:text-sm text-yellow-700">{task.notes}</p>
               </div>
             )}
 
             {/* Documents Needed */}
             {task.documentsNeeded && task.documentsNeeded !== "None" && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                <p className="text-xs font-medium text-amber-800 mb-1">Documents Needed:</p>
-                <p className="text-sm text-amber-700">{task.documentsNeeded}</p>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 sm:p-3">
+                <p className="text-[10px] sm:text-xs font-medium text-amber-800 mb-0.5">Documents Needed:</p>
+                <p className="text-xs sm:text-sm text-amber-700">{task.documentsNeeded}</p>
               </div>
             )}
 
             {/* Substeps Section */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <h5 className="text-sm font-semibold text-gray-700">Substeps</h5>
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                <h5 className="text-xs sm:text-sm font-semibold text-gray-700">Substeps</h5>
                 <button
                   onClick={() => setIsAddingSubstep(true)}
-                  className="text-xs text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1"
+                  className="text-[10px] sm:text-xs text-blue-500 hover:text-blue-600 font-medium flex items-center gap-0.5 sm:gap-1"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                   Add Substep
@@ -390,13 +390,13 @@ export function TaskMiniCard({
 
               {/* Add Substep Form */}
               {isAddingSubstep && (
-                <div className="mt-2 flex gap-2">
+                <div className="mt-1.5 sm:mt-2 flex gap-1.5 sm:gap-2">
                   <input
                     type="text"
                     value={newSubstepTitle}
                     onChange={(e) => setNewSubstepTitle(e.target.value)}
                     placeholder="Enter substep..."
-                    className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleAddSubstep();
@@ -409,7 +409,7 @@ export function TaskMiniCard({
                   <button
                     onClick={handleAddSubstep}
                     disabled={!newSubstepTitle.trim()}
-                    className="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+                    className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
                   >
                     Add
                   </button>
@@ -418,7 +418,7 @@ export function TaskMiniCard({
                       setIsAddingSubstep(false);
                       setNewSubstepTitle("");
                     }}
-                    className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
+                    className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
                   >
                     Cancel
                   </button>
@@ -426,7 +426,7 @@ export function TaskMiniCard({
               )}
 
               {substeps.length === 0 && !isAddingSubstep && (
-                <p className="text-sm text-gray-400 text-center py-2">
+                <p className="text-xs sm:text-sm text-gray-400 text-center py-1.5 sm:py-2">
                   No substeps yet. Break this task into smaller steps!
                 </p>
               )}

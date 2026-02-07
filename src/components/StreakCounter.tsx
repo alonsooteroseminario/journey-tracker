@@ -45,9 +45,9 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
   const days = getLast7Days();
 
   return (
-    <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg p-2 sm:p-4 border border-orange-100 shadow-sm">
+    <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg p-1.5 sm:p-4 border border-orange-100 shadow-sm">
       {/* Main Streak Display */}
-      <div className="flex items-center justify-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
+      <div className="flex items-center justify-center gap-1 sm:gap-3 mb-1 sm:mb-4">
         {/* Fire Icon */}
         <div
           className={`relative flex-shrink-0 ${
@@ -55,14 +55,14 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
           }`}
         >
           <div
-            className={`text-2xl sm:text-4xl ${
+            className={`text-lg sm:text-4xl ${
               isActive ? "animate-glow rounded-full" : ""
             }`}
           >
             {streak.currentStreak > 0 ? "🔥" : "💤"}
           </div>
           {isActive && streak.currentStreak >= 7 && (
-            <div className="absolute -top-1 -right-1 text-sm sm:text-lg animate-bounce">
+            <div className="absolute -top-1 -right-1 text-[10px] sm:text-lg animate-bounce">
               ⭐
             </div>
           )}
@@ -71,7 +71,7 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
         {/* Streak Number */}
         <div className="text-center">
           <div
-            className={`text-lg sm:text-3xl font-black ${
+            className={`text-base sm:text-3xl font-black ${
               isActive
                 ? "text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-yellow-500"
                 : "text-gray-400"
@@ -79,7 +79,7 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
           >
             {streak.currentStreak}
           </div>
-          <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+          <div className="text-[10px] sm:text-xs font-semibold text-gray-600 uppercase tracking-wide">
             Streak
           </div>
         </div>
@@ -87,7 +87,7 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
 
       {/* Status Message */}
       <div
-        className={`text-center mb-2 sm:mb-3 py-1 px-1.5 sm:px-3 rounded-full text-xs font-medium ${
+        className={`text-center mb-1 sm:mb-3 py-0.5 px-1 sm:px-3 rounded-full text-[10px] sm:text-xs font-medium ${
           isActive
             ? "bg-green-100 text-green-700"
             : "bg-yellow-100 text-yellow-700"

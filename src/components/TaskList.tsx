@@ -93,20 +93,20 @@ export function TaskList({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2 sm:space-y-4">
       {/* View Mode Toggle */}
       <div className="flex items-center justify-between">
-        <div className="flex gap-2">
+        <div className="flex gap-1 sm:gap-2">
           <button
             onClick={() => setViewMode("cards")}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-sm font-medium transition-colors ${
               viewMode === "cards"
                 ? "bg-blue-100 text-blue-700"
                 : "text-gray-500 hover:bg-gray-100"
             }`}
           >
-            <span className="flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="flex items-center gap-0.5 sm:gap-1">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
               </svg>
               Cards
@@ -114,30 +114,30 @@ export function TaskList({
           </button>
           <button
             onClick={() => setViewMode("list")}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-sm font-medium transition-colors ${
               viewMode === "list"
                 ? "bg-blue-100 text-blue-700"
                 : "text-gray-500 hover:bg-gray-100"
             }`}
           >
-            <span className="flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="flex items-center gap-0.5 sm:gap-1">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
               </svg>
               List
             </span>
           </button>
         </div>
-        <span className="text-sm text-gray-500">
+        <span className="text-[10px] sm:text-sm text-gray-500">
           {completedTasks.length}/{tasks.length} complete
         </span>
       </div>
 
       {/* Pending Tasks */}
       {pendingTasks.length > 0 && (
-        <div className="space-y-3">
-          <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
-            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+        <div className="space-y-2 sm:space-y-3">
+          <h4 className="text-[10px] sm:text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-1.5 sm:gap-2">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full"></span>
             To Do ({pendingTasks.length})
           </h4>
           <DndContext
@@ -171,13 +171,13 @@ export function TaskList({
 
       {/* Add Task Form */}
       {isAdding ? (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-3">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-2.5 sm:p-4 space-y-2 sm:space-y-3">
           <input
             type="text"
             placeholder="Task title"
             value={newTaskTitle}
             onChange={(e) => setNewTaskTitle(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             autoFocus
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -193,7 +193,7 @@ export function TaskList({
             placeholder="Description (optional)"
             value={newTaskDescription}
             onChange={(e) => setNewTaskDescription(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleAddTask();
@@ -203,17 +203,17 @@ export function TaskList({
               }
             }}
           />
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             <button
               onClick={handleAddTask}
               disabled={!newTaskTitle.trim()}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Add Task
             </button>
             <button
               onClick={() => setIsAdding(false)}
-              className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
             >
               Cancel
             </button>
@@ -222,10 +222,10 @@ export function TaskList({
       ) : (
         <button
           onClick={() => setIsAdding(true)}
-          className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center gap-2"
+          className="w-full py-2 sm:py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-base"
         >
           <svg
-            className="w-5 h-5"
+            className="w-4 h-4 sm:w-5 sm:h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -243,10 +243,10 @@ export function TaskList({
 
       {/* Completed Tasks */}
       {completedTasks.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           <button
             onClick={() => setShowCompleted(!showCompleted)}
-            className="flex items-center gap-2 text-sm font-semibold text-gray-500 uppercase tracking-wide hover:text-gray-700 transition-colors"
+            className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-sm font-semibold text-gray-500 uppercase tracking-wide hover:text-gray-700 transition-colors"
           >
             <svg
               className={`w-4 h-4 transition-transform ${
@@ -288,10 +288,10 @@ export function TaskList({
 
       {/* Empty State */}
       {tasks.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
-          <div className="text-4xl mb-2">📝</div>
-          <p className="text-lg">No tasks yet</p>
-          <p className="text-sm">Add your first task to get started!</p>
+        <div className="text-center py-4 sm:py-8 text-gray-500">
+          <div className="text-2xl sm:text-4xl mb-1 sm:mb-2">📝</div>
+          <p className="text-sm sm:text-lg">No tasks yet</p>
+          <p className="text-xs sm:text-sm">Add your first task to get started!</p>
         </div>
       )}
     </div>

@@ -36,7 +36,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
             : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
         }`}
       >
-        <div className="whitespace-pre-wrap break-words">{message.content}</div>
+        <div className="whitespace-pre-wrap break-words text-sm">{message.content}</div>
         {message.toolUsed && (
           <div className="mt-2 text-xs opacity-70">
             <span className="font-semibold">Tool:</span> {message.toolUsed}

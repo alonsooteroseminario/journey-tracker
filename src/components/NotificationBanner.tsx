@@ -17,10 +17,10 @@ export function NotificationBanner({
 }: NotificationBannerProps) {
   if (!isSupported) {
     return (
-      <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 flex items-center gap-3">
-        <span className="text-2xl">🔕</span>
+      <div className="bg-gray-100 border border-gray-200 rounded-lg sm:rounded-xl p-2.5 sm:p-4 flex items-center gap-2 sm:gap-3">
+        <span className="text-base sm:text-2xl flex-shrink-0">🔕</span>
         <div className="flex-1">
-          <p className="text-sm text-gray-600">
+          <p className="text-[10px] sm:text-sm text-gray-600">
             Notifications are not supported in this browser.
           </p>
         </div>
@@ -30,12 +30,11 @@ export function NotificationBanner({
 
   if (permission === "denied") {
     return (
-      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-center gap-3">
-        <span className="text-2xl">⚠️</span>
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg sm:rounded-xl p-2.5 sm:p-4 flex items-center gap-2 sm:gap-3">
+        <span className="text-base sm:text-2xl flex-shrink-0">⚠️</span>
         <div className="flex-1">
-          <p className="text-sm text-yellow-800">
-            Notifications are blocked. Please enable them in your browser settings
-            to receive streak reminders.
+          <p className="text-[10px] sm:text-sm text-yellow-800">
+            Notifications blocked. Enable in browser settings for streak reminders.
           </p>
         </div>
       </div>
@@ -44,17 +43,17 @@ export function NotificationBanner({
 
   if (enabled) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
-        <span className="text-2xl">🔔</span>
+      <div className="bg-green-50 border border-green-200 rounded-lg sm:rounded-xl p-2.5 sm:p-4 flex items-center gap-2 sm:gap-3">
+        <span className="text-base sm:text-2xl flex-shrink-0">🔔</span>
         <div className="flex-1">
-          <p className="font-medium text-green-800">Daily Reminders Active</p>
-          <p className="text-sm text-green-600">
+          <p className="font-medium text-green-800 text-xs sm:text-base">Reminders Active</p>
+          <p className="text-[10px] sm:text-sm text-green-600">
             You&apos;ll be reminded at 6 PM if you haven&apos;t completed a task.
           </p>
         </div>
         <button
           onClick={onDisable}
-          className="px-4 py-2 text-sm text-green-700 hover:bg-green-100 rounded-lg transition-colors"
+          className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-green-700 hover:bg-green-100 rounded-lg transition-colors flex-shrink-0"
         >
           Disable
         </button>
@@ -63,17 +62,17 @@ export function NotificationBanner({
   }
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
-      <span className="text-2xl">🔔</span>
+    <div className="bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl p-2.5 sm:p-4 flex items-center gap-2 sm:gap-3">
+      <span className="text-base sm:text-2xl flex-shrink-0">🔔</span>
       <div className="flex-1">
-        <p className="font-medium text-blue-800">Enable Daily Reminders</p>
-        <p className="text-sm text-blue-600">
+        <p className="font-medium text-blue-800 text-xs sm:text-base">Enable Reminders</p>
+        <p className="text-[10px] sm:text-sm text-blue-600">
           Get notified to keep your streak alive!
         </p>
       </div>
       <button
         onClick={onEnable}
-        className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
+        className="px-2 sm:px-4 py-1.5 sm:py-2 bg-blue-500 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors flex-shrink-0"
       >
         Enable
       </button>
