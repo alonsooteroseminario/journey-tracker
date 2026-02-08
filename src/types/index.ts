@@ -139,6 +139,22 @@ export interface ActivityLogEntry {
 }
 
 // Analytics Types
+export interface GoalBreakdown {
+  goalId: string;
+  title: string;
+  completionRate: number;
+  tasksCompleted: number;
+  totalTasks: number;
+}
+
+export interface PhaseCompletion {
+  phaseId: string;
+  name: string;
+  completionRate: number;
+  tasksCompleted: number;
+  totalTasks: number;
+}
+
 export interface AnalyticsData {
   totalTasks: number;
   completedTasks: number;
@@ -154,6 +170,9 @@ export interface AnalyticsData {
   monthlyProgress: MonthlyProgress[];
   costByPhase: CostByPhase[];
   velocityTrend: VelocityPoint[];
+  goalBreakdown?: GoalBreakdown[];
+  phaseCompletion?: PhaseCompletion[];
+  mostProductiveDay?: { day: string; count: number };
 }
 
 export interface WeeklyProgress {

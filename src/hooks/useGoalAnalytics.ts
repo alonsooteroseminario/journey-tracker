@@ -9,6 +9,8 @@ import {
   MonthlyProgress,
   CostByPhase,
   VelocityPoint,
+  GoalBreakdown,
+  PhaseCompletion,
 } from "@/types";
 import { parseCostString, getWeekStart, addDays } from "@/lib/storage";
 
@@ -185,6 +187,103 @@ export function useGoalAnalytics(
         });
       });
 
+      // Goal breakdown (only for global analytics, not individual goal)
+      let goalBreakdown: GoalBreakdown[] | undefined;
+      if (!goalId && filteredGoals.length > 0) {
+        goalBreakdown = filteredGoals.map((goal) => {
+          const goalTasks = goal.tasks;
+          let goalTotalItems = 0;
+          let goalCompletedItems = 0;
+
+          goalTasks.forEach((task) => {
+            const substeps = task.substeps || [];
+            if (substeps.length > 0) {
+              goalTotalItems += substeps.length;
+              goalCompletedItems += substeps.filter((s) => s.completed).length;
+            } else {
+              goalTotalItems += 1;
+              goalCompletedItems += task.completed ? 1 : 0;
+            }
+          });
+
+          return {
+            goalId: goal.id,
+            title: goal.title,
+            completionRate: goalTotalItems > 0 ? Math.round((goalCompletedItems / goalTotalItems) * 100) : 0,
+            tasksCompleted: goalCompletedItems,
+            totalTasks: goalTotalItems,
+          };
+        });
+      }
+
+      // Phase completion (for goals with phases)
+      let phaseCompletion: PhaseCompletion[] | undefined;
+      const goalsWithPhases = filteredGoals.filter((g) => g.phases && g.phases.length > 0);
+      if (goalsWithPhases.length > 0) {
+        const phaseMap = new Map<string, { name: string; completed: number; total: number }>();
+
+        goalsWithPhases.forEach((goal) => {
+          goal.phases?.forEach((phase) => {
+            const phaseTasks = goal.tasks.filter((t) => phase.taskIds.includes(t.id));
+            let phaseTotal = 0;
+            let phaseCompleted = 0;
+
+            phaseTasks.forEach((task) => {
+              const substeps = task.substeps || [];
+              if (substeps.length > 0) {
+                phaseTotal += substeps.length;
+                phaseCompleted += substeps.filter((s) => s.completed).length;
+              } else {
+                phaseTotal += 1;
+                phaseCompleted += task.completed ? 1 : 0;
+              }
+            });
+
+            if (!phaseMap.has(phase.id)) {
+              phaseMap.set(phase.id, { name: phase.name, completed: 0, total: 0 });
+            }
+            const existing = phaseMap.get(phase.id)!;
+            existing.completed += phaseCompleted;
+            existing.total += phaseTotal;
+          });
+        });
+
+        phaseCompletion = Array.from(phaseMap.entries()).map(([phaseId, data]) => ({
+          phaseId,
+          name: data.name,
+          completionRate: data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0,
+          tasksCompleted: data.completed,
+          totalTasks: data.total,
+        }));
+      }
+
+      // Most productive day of week
+      let mostProductiveDay: { day: string; count: number } | undefined;
+      if (activities.length > 0) {
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayCounts = new Map<string, number>();
+
+        activities
+          .filter((a) => a.type === 'task_completed' || a.type === 'substep_completed')
+          .forEach((activity) => {
+            const date = new Date(activity.date);
+            const dayName = dayNames[date.getDay()];
+            dayCounts.set(dayName, (dayCounts.get(dayName) || 0) + 1);
+          });
+
+        if (dayCounts.size > 0) {
+          let maxDay = '';
+          let maxCount = 0;
+          dayCounts.forEach((count, day) => {
+            if (count > maxCount) {
+              maxCount = count;
+              maxDay = day;
+            }
+          });
+          mostProductiveDay = { day: maxDay, count: maxCount };
+        }
+      }
+
       return {
         totalTasks,
         completedTasks,
@@ -200,6 +299,9 @@ export function useGoalAnalytics(
         monthlyProgress,
         costByPhase,
         velocityTrend,
+        goalBreakdown,
+        phaseCompletion,
+        mostProductiveDay,
       };
     },
     [goals, streakHistory, activityLog]

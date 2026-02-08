@@ -22,7 +22,7 @@ interface GoalCardProps {
   onToggleTask: (goalId: string, taskId: string) => void;
   onUpdateTask: (goalId: string, taskId: string, updates: Partial<Task>) => void;
   onDeleteTask: (goalId: string, taskId: string) => void;
-  onAddTask: (goalId: string, title: string, description?: string) => void;
+  onAddTask: (goalId: string, title: string, description?: string, phaseId?: string) => void;
   onAddSubstep: (goalId: string, taskId: string, title: string, description?: string) => void;
   onUpdateSubstep: (goalId: string, taskId: string, substepId: string, updates: Partial<Substep>) => void;
   onToggleSubstep: (goalId: string, taskId: string, substepId: string) => void;
@@ -30,6 +30,9 @@ interface GoalCardProps {
   onDeleteGoal: (goalId: string) => void;
   onUpdateDocumentStatus?: (goalId: string, docId: string, status: "pending" | "obtained" | "submitted") => void;
   onReorderTasks?: (goalId: string, tasks: Task[]) => void;
+  onAddPhase?: (goalId: string, name: string, description: string) => void;
+  onAddResource?: (goalId: string, category: string, name: string, url: string) => void;
+  onDeleteResource?: (goalId: string, category: string, resourceIndex: number) => void;
 }
 
 type ViewMode = "tasks" | "phases" | "info" | "calendar" | "analytics";
@@ -51,11 +54,17 @@ export function GoalCard({
   onDeleteGoal,
   onUpdateDocumentStatus,
   onReorderTasks,
+  onAddPhase,
+  onAddResource,
+  onDeleteResource,
 }: GoalCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>(goal.phases && goal.phases.length > 0 ? "phases" : "tasks");
   const [selectedPhase, setSelectedPhase] = useState<string | null>(null);
+  const [isAddingPhase, setIsAddingPhase] = useState(false);
+  const [newPhaseName, setNewPhaseName] = useState("");
+  const [newPhaseDescription, setNewPhaseDescription] = useState("");
 
   // Calculate completed and total counts including substeps
   let completedCount = 0;
@@ -233,11 +242,76 @@ export function GoalCard({
           {viewMode === "phases" && (
             goal.phases && goal.phases.length > 0 ? (
               <div className="space-y-6">
-                {!selectedPhase ? (
+                {isAddingPhase ? (
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-2.5 sm:p-4 space-y-2 sm:space-y-3">
+                    <input
+                      type="text"
+                      placeholder="Phase name (e.g., Phase 2: Implementation)"
+                      value={newPhaseName}
+                      onChange={(e) => setNewPhaseName(e.target.value)}
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === "Escape") {
+                          setIsAddingPhase(false);
+                          setNewPhaseName("");
+                          setNewPhaseDescription("");
+                        }
+                      }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Description (e.g., Weeks 5-8 - Core implementation)"
+                      value={newPhaseDescription}
+                      onChange={(e) => setNewPhaseDescription(e.target.value)}
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && newPhaseName.trim()) {
+                          onAddPhase?.(goal.id, newPhaseName.trim(), newPhaseDescription.trim());
+                          setNewPhaseName("");
+                          setNewPhaseDescription("");
+                          setIsAddingPhase(false);
+                        }
+                        if (e.key === "Escape") {
+                          setIsAddingPhase(false);
+                          setNewPhaseName("");
+                          setNewPhaseDescription("");
+                        }
+                      }}
+                    />
+                    <div className="flex gap-1.5 sm:gap-2">
+                      <button
+                        onClick={() => {
+                          if (newPhaseName.trim()) {
+                            onAddPhase?.(goal.id, newPhaseName.trim(), newPhaseDescription.trim());
+                            setNewPhaseName("");
+                            setNewPhaseDescription("");
+                            setIsAddingPhase(false);
+                          }
+                        }}
+                        disabled={!newPhaseName.trim()}
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Add Phase
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsAddingPhase(false);
+                          setNewPhaseName("");
+                          setNewPhaseDescription("");
+                        }}
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : !selectedPhase ? (
                   <PhaseProgress
                     phases={goal.phases}
                     tasks={goal.tasks}
                     onPhaseClick={(phaseId) => setSelectedPhase(phaseId)}
+                    onAddPhase={() => setIsAddingPhase(true)}
                   />
                 ) : (
                   <div>
@@ -263,7 +337,7 @@ export function GoalCard({
                       onToggleTask={(taskId) => onToggleTask(goal.id, taskId)}
                       onUpdateTask={(taskId, updates) => onUpdateTask(goal.id, taskId, updates)}
                       onDeleteTask={(taskId) => onDeleteTask(goal.id, taskId)}
-                      onAddTask={(title, desc) => onAddTask(goal.id, title, desc)}
+                      onAddTask={(title, desc) => onAddTask(goal.id, title, desc, selectedPhase ?? undefined)}
                       onAddSubstep={(taskId, title, desc) => onAddSubstep(goal.id, taskId, title, desc)}
                       onUpdateSubstep={(taskId, substepId, updates) => onUpdateSubstep(goal.id, taskId, substepId, updates)}
                       onToggleSubstep={(taskId, substepId) => onToggleSubstep(goal.id, taskId, substepId)}
@@ -274,12 +348,86 @@ export function GoalCard({
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-blue-50/50 rounded-xl border border-blue-100 border-dashed">
-                <span className="text-3xl mb-2">📊</span>
-                <p className="text-sm font-semibold text-gray-700">No phases yet</p>
-                <p className="text-xs text-gray-500 mt-1 max-w-[260px]">
-                  Phases help you break your goal into milestones. Create a new goal with phases enabled, or ask the chatbot to help you set them up.
-                </p>
+              <div className="space-y-4">
+                {isAddingPhase ? (
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-2.5 sm:p-4 space-y-2 sm:space-y-3">
+                    <input
+                      type="text"
+                      placeholder="Phase name (e.g., Phase 1: Planning)"
+                      value={newPhaseName}
+                      onChange={(e) => setNewPhaseName(e.target.value)}
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === "Escape") {
+                          setIsAddingPhase(false);
+                          setNewPhaseName("");
+                          setNewPhaseDescription("");
+                        }
+                      }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Description (e.g., Weeks 1-4 - Planning and preparation)"
+                      value={newPhaseDescription}
+                      onChange={(e) => setNewPhaseDescription(e.target.value)}
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && newPhaseName.trim()) {
+                          onAddPhase?.(goal.id, newPhaseName.trim(), newPhaseDescription.trim());
+                          setNewPhaseName("");
+                          setNewPhaseDescription("");
+                          setIsAddingPhase(false);
+                        }
+                        if (e.key === "Escape") {
+                          setIsAddingPhase(false);
+                          setNewPhaseName("");
+                          setNewPhaseDescription("");
+                        }
+                      }}
+                    />
+                    <div className="flex gap-1.5 sm:gap-2">
+                      <button
+                        onClick={() => {
+                          if (newPhaseName.trim()) {
+                            onAddPhase?.(goal.id, newPhaseName.trim(), newPhaseDescription.trim());
+                            setNewPhaseName("");
+                            setNewPhaseDescription("");
+                            setIsAddingPhase(false);
+                          }
+                        }}
+                        disabled={!newPhaseName.trim()}
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Add Phase
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsAddingPhase(false);
+                          setNewPhaseName("");
+                          setNewPhaseDescription("");
+                        }}
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-blue-50/50 rounded-xl border border-blue-100 border-dashed">
+                    <span className="text-3xl mb-2">📊</span>
+                    <p className="text-sm font-semibold text-gray-700">No phases yet</p>
+                    <p className="text-xs text-gray-500 mt-1 mb-3 max-w-[260px]">
+                      Phases help you break your goal into milestones.
+                    </p>
+                    <button
+                      onClick={() => setIsAddingPhase(true)}
+                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+                    >
+                      Add First Phase
+                    </button>
+                  </div>
+                )}
               </div>
             )
           )}
@@ -327,7 +475,21 @@ export function GoalCard({
                     }
                   />
                 )}
-                {goal.resources && <ResourcesPanel resources={goal.resources} />}
+                {goal.resources && (
+                  <ResourcesPanel
+                    resources={goal.resources}
+                    onAddResource={
+                      onAddResource
+                        ? (category, name, url) => onAddResource(goal.id, category, name, url)
+                        : undefined
+                    }
+                    onDeleteResource={
+                      onDeleteResource
+                        ? (category, resourceIndex) => onDeleteResource(goal.id, category, resourceIndex)
+                        : undefined
+                    }
+                  />
+                )}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-purple-50/50 rounded-xl border border-purple-100 border-dashed">

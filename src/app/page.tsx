@@ -24,6 +24,7 @@ export default function Home() {
     addGoalWithTasks,
     deleteGoal,
     addTask,
+    addPhase,
     updateTask,
     toggleTask,
     deleteTask,
@@ -38,6 +39,8 @@ export default function Home() {
     hasCompletedTaskToday,
     getAnalytics,
     updateDocumentStatus,
+    addResource,
+    deleteResource,
   } = useGoals();
 
   const {
@@ -328,6 +331,7 @@ export default function Home() {
                     onUpdateTask={updateTask}
                     onDeleteTask={deleteTask}
                     onAddTask={addTask}
+                    onAddPhase={addPhase}
                     onAddSubstep={addSubstep}
                     onUpdateSubstep={updateSubstep}
                     onToggleSubstep={toggleSubstep}
@@ -335,6 +339,8 @@ export default function Home() {
                     onDeleteGoal={deleteGoal}
                     onUpdateDocumentStatus={updateDocumentStatus}
                     onReorderTasks={reorderTasks}
+                    onAddResource={addResource}
+                    onDeleteResource={deleteResource}
                   />
                 ))}
               </div>

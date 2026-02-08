@@ -6,9 +6,10 @@ interface PhaseProgressProps {
   phases: Phase[];
   tasks: Task[];
   onPhaseClick?: (phaseId: string) => void;
+  onAddPhase?: () => void;
 }
 
-export function PhaseProgress({ phases, tasks, onPhaseClick }: PhaseProgressProps) {
+export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: PhaseProgressProps) {
   const getPhaseProgress = (phase: Phase) => {
     const phaseTasks = tasks.filter((t) => phase.taskIds.includes(t.id));
     if (phaseTasks.length === 0) return 0;
@@ -202,6 +203,29 @@ export function PhaseProgress({ phases, tasks, onPhaseClick }: PhaseProgressProp
           />
         </div>
       </div>
+
+      {/* Add Phase Button */}
+      {onAddPhase && (
+        <button
+          onClick={onAddPhase}
+          className="w-full py-2 sm:py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-base mt-4"
+        >
+          <svg
+            className="w-4 h-4 sm:w-5 sm:h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          Add Phase
+        </button>
+      )}
     </div>
   );
 }

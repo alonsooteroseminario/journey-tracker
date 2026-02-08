@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { Goal, Task, Substep, DocumentItem, ActivityLogEntry } from "@/types";
+import { Goal, Task, Substep, DocumentItem, ActivityLogEntry, Phase, ResourceCategory } from "@/types";
 import { generateId, getToday } from "@/lib/storage";
 import {
   useGetGoalsQuery,
@@ -84,7 +84,7 @@ export function useGoalsCRUD(
 
   // Task operations
   const addTask = useCallback(
-    (goalId: string, title: string, description?: string) => {
+    (goalId: string, title: string, description?: string, phaseId?: string) => {
       const goal = goals.find((g) => g.id === goalId);
       if (!goal) return;
 
@@ -97,10 +97,46 @@ export function useGoalsCRUD(
         substeps: [],
       };
 
+      // If phaseId is provided, update the phase's taskIds array
+      let updatedPhases = goal.phases;
+      if (phaseId && goal.phases) {
+        updatedPhases = goal.phases.map((phase) =>
+          phase.id === phaseId
+            ? { ...phase, taskIds: [...phase.taskIds, newTask.id] }
+            : phase
+        );
+      }
+
       updateGoalMutation({
         id: goalId,
         updates: {
           tasks: [...goal.tasks, newTask],
+          ...(updatedPhases ? { phases: updatedPhases } : {}),
+          updatedAt: new Date().toISOString(),
+        },
+      });
+    },
+    [goals, updateGoalMutation]
+  );
+
+  const addPhase = useCallback(
+    (goalId: string, name: string, description: string) => {
+      const goal = goals.find((g) => g.id === goalId);
+      if (!goal) return;
+
+      const newPhase: Phase = {
+        id: generateId(),
+        name,
+        description,
+        taskIds: [],
+      };
+
+      const updatedPhases = [...(goal.phases || []), newPhase];
+
+      updateGoalMutation({
+        id: goalId,
+        updates: {
+          phases: updatedPhases,
           updatedAt: new Date().toISOString(),
         },
       });
@@ -367,6 +403,61 @@ export function useGoalsCRUD(
     [goals, updateGoalMutation]
   );
 
+  const addResource = useCallback(
+    (goalId: string, category: string, name: string, url: string) => {
+      const goal = goals.find((g) => g.id === goalId);
+      if (!goal) return;
+
+      const existingResources = goal.resources || [];
+      const categoryIndex = existingResources.findIndex(
+        (r) => r.category === category
+      );
+
+      let updatedResources: ResourceCategory[];
+      if (categoryIndex >= 0) {
+        updatedResources = existingResources.map((cat, i) =>
+          i === categoryIndex
+            ? { ...cat, resources: [...cat.resources, { name, url }] }
+            : cat
+        );
+      } else {
+        updatedResources = [
+          ...existingResources,
+          { category, resources: [{ name, url }] },
+        ];
+      }
+
+      updateGoalMutation({
+        id: goalId,
+        updates: { resources: updatedResources, updatedAt: new Date().toISOString() },
+      });
+    },
+    [goals, updateGoalMutation]
+  );
+
+  const deleteResource = useCallback(
+    (goalId: string, category: string, resourceIndex: number) => {
+      const goal = goals.find((g) => g.id === goalId);
+      if (!goal || !goal.resources) return;
+
+      const updatedResources = goal.resources
+        .map((cat) => {
+          if (cat.category !== category) return cat;
+          return {
+            ...cat,
+            resources: cat.resources.filter((_, i) => i !== resourceIndex),
+          };
+        })
+        .filter((cat) => cat.resources.length > 0);
+
+      updateGoalMutation({
+        id: goalId,
+        updates: { resources: updatedResources, updatedAt: new Date().toISOString() },
+      });
+    },
+    [goals, updateGoalMutation]
+  );
+
   // Progress calculations
   const getProgress = useCallback(
     (goalId: string) => {
@@ -421,6 +512,7 @@ export function useGoalsCRUD(
     deleteGoal,
     updateGoal,
     addTask,
+    addPhase,
     updateTask,
     toggleTask,
     deleteTask,
@@ -432,6 +524,8 @@ export function useGoalsCRUD(
     updateTaskCost,
     updateSubstepCost,
     updateDocumentStatus,
+    addResource,
+    deleteResource,
     getProgress,
     getTotalProgress,
   };

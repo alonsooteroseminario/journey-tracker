@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useGoals } from "@/hooks/useGoals";
 import { UserProfile } from "@/types";
+import { Calendar } from "@/components/Calendar";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { profile, streak, goals, isLoaded, updateProfile } = useGoals();
+  const { profile, streak, goals, isLoaded, updateProfile, activityLog } = useGoals();
   
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
@@ -61,37 +62,54 @@ export default function ProfilePage() {
   };
 
   const totalGoals = goals.length;
-  const completedGoals = goals.filter(g => 
+  const completedGoals = goals.filter(g =>
     g.tasks.every(t => t.completed)
   ).length;
+
+  // Calculate additional stats
+  const totalTasks = goals.reduce((sum, g) => sum + g.tasks.length, 0);
+  const completedTasks = goals.reduce(
+    (sum, g) => sum + g.tasks.filter((t) => t.completed).length,
+    0
+  );
+  const totalSubsteps = goals.reduce(
+    (sum, g) => sum + g.tasks.reduce((ts, t) => ts + (t.substeps?.length || 0), 0),
+    0
+  );
+  const completedSubsteps = goals.reduce(
+    (sum, g) => sum + g.tasks.reduce((ts, t) => ts + (t.substeps?.filter(s => s.completed).length || 0), 0),
+    0
+  );
+  const activeGoals = totalGoals - completedGoals;
+  const activeDays = streak.streakHistory.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header with Back Button */}
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
+        <div className="max-w-4xl mx-auto px-1.5 sm:px-4 py-1 sm:py-4">
+          <div className="flex items-center gap-1.5 sm:gap-4">
             <button
               onClick={() => router.push("/")}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-1 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
               title="Back to Dashboard"
             >
-              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-6 sm:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">Profile</h1>
-              <p className="text-sm text-gray-500">Manage your account</p>
+              <h1 className="text-sm sm:text-2xl font-bold text-gray-800">Profile</h1>
+              <p className="text-[10px] sm:text-sm text-gray-500">Manage your account</p>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-4xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8">
         {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-6">
-          <div className="flex flex-col md:flex-row items-start gap-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-2 sm:p-8 mb-3 sm:mb-6">
+          <div className="flex flex-col md:flex-row items-start gap-2 sm:gap-6">
             {/* Profile Image */}
             <div className="relative flex-shrink-0">
               {isEditing ? (
@@ -102,24 +120,24 @@ export default function ProfilePage() {
                     onChange={handleImageUpload}
                     className="hidden"
                   />
-                  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center group-hover:bg-gray-300 transition-colors overflow-hidden border-4 border-gray-300 group-hover:border-blue-400">
+                  <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gray-200 flex items-center justify-center group-hover:bg-gray-300 transition-colors overflow-hidden border-2 sm:border-4 border-gray-300 group-hover:border-blue-400">
                     {imagePreview ? (
                       <img src={imagePreview} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
                       <div className="text-center">
-                        <span className="text-4xl mb-1 block">📸</span>
-                        <span className="text-xs text-gray-600">Upload</span>
+                        <span className="text-2xl sm:text-4xl mb-1 block">📸</span>
+                        <span className="text-[10px] sm:text-xs text-gray-600">Upload</span>
                       </div>
                     )}
                   </div>
-                  <div className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 shadow-lg group-hover:bg-blue-600 transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-1 sm:p-2 shadow-lg group-hover:bg-blue-600 transition-colors">
+                    <svg className="w-3 h-3 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
                   </div>
                 </label>
               ) : (
-                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-5xl font-bold overflow-hidden border-4 border-white shadow-lg">
+                <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-3xl sm:text-5xl font-bold overflow-hidden border-2 sm:border-4 border-white shadow-lg">
                   {profile.profileImage ? (
                     <img src={profile.profileImage} alt={profile.name} className="w-full h-full object-cover" />
                   ) : (
@@ -132,7 +150,7 @@ export default function ProfilePage() {
             {/* Profile Info */}
             <div className="flex-1 w-full">
               {isEditing ? (
-                <div className="space-y-4">
+                <div className="space-y-2 sm:space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                     <input
@@ -190,7 +208,7 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{profile.name}</h1>
+                  <h1 className="text-lg sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">{profile.name}</h1>
                   {profile.email && (
                     <p className="text-gray-600 mb-2 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -227,41 +245,81 @@ export default function ProfilePage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-            <div className="text-3xl mb-2">📅</div>
-            <p className="text-gray-600 text-sm mb-1">Member Since</p>
-            <p className="text-xl font-bold text-gray-900">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-3 sm:mb-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-6 text-center">
+            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">📅</div>
+            <p className="text-gray-600 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Member Since</p>
+            <p className="text-sm sm:text-xl font-bold text-gray-900">
               {new Date(profile.joinedDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-orange-400 to-red-500 rounded-xl shadow-sm p-6 text-center text-white">
-            <div className="text-3xl mb-2">🔥</div>
-            <p className="text-orange-100 text-sm mb-1">Current Streak</p>
-            <p className="text-3xl font-bold">{streak.currentStreak}</p>
-            <p className="text-xs text-orange-100">days</p>
+          <div className="bg-gradient-to-br from-orange-400 to-red-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
+            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">🔥</div>
+            <p className="text-orange-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Current Streak</p>
+            <p className="text-lg sm:text-3xl font-bold">{streak.currentStreak}</p>
+            <p className="text-[10px] sm:text-xs text-orange-100">days</p>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl shadow-sm p-6 text-center text-white">
-            <div className="text-3xl mb-2">⭐</div>
-            <p className="text-purple-100 text-sm mb-1">Longest Streak</p>
-            <p className="text-3xl font-bold">{streak.longestStreak}</p>
-            <p className="text-xs text-purple-100">days</p>
+          <div className="bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
+            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">⭐</div>
+            <p className="text-purple-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Longest Streak</p>
+            <p className="text-lg sm:text-3xl font-bold">{streak.longestStreak}</p>
+            <p className="text-[10px] sm:text-xs text-purple-100">days</p>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl shadow-sm p-6 text-center text-white">
-            <div className="text-3xl mb-2">🎯</div>
-            <p className="text-blue-100 text-sm mb-1">Goals</p>
-            <p className="text-3xl font-bold">{totalGoals}</p>
-            <p className="text-xs text-blue-100">{completedGoals} completed</p>
+          <div className="bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
+            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">🎯</div>
+            <p className="text-blue-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Goals</p>
+            <p className="text-lg sm:text-3xl font-bold">{totalGoals}</p>
+            <p className="text-[10px] sm:text-xs text-blue-100">{completedGoals} completed</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
+            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">✅</div>
+            <p className="text-green-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Tasks</p>
+            <p className="text-lg sm:text-3xl font-bold">{completedTasks}</p>
+            <p className="text-[10px] sm:text-xs text-green-100">of {totalTasks} total</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-indigo-400 to-blue-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
+            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">📝</div>
+            <p className="text-indigo-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Substeps</p>
+            <p className="text-lg sm:text-3xl font-bold">{completedSubsteps}</p>
+            <p className="text-[10px] sm:text-xs text-indigo-100">of {totalSubsteps} total</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-pink-400 to-rose-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
+            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">🚀</div>
+            <p className="text-pink-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Active Goals</p>
+            <p className="text-lg sm:text-3xl font-bold">{activeGoals}</p>
+            <p className="text-[10px] sm:text-xs text-pink-100">in progress</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
+            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">📆</div>
+            <p className="text-amber-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Active Days</p>
+            <p className="text-lg sm:text-3xl font-bold">{activeDays}</p>
+            <p className="text-[10px] sm:text-xs text-amber-100">total</p>
           </div>
         </div>
 
+        {/* Activity Calendar */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-2 sm:p-6 mb-3 sm:mb-6">
+          <h2 className="text-sm sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4 flex items-center gap-1 sm:gap-2">
+            <span className="text-lg sm:text-2xl">📅</span>
+            Activity Calendar
+          </h2>
+          <Calendar
+            streakHistory={streak.streakHistory}
+            activityLog={activityLog}
+          />
+        </div>
+
         {/* Share Section */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg p-8 text-white">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold mb-2">Share Your Progress 🚀</h2>
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg p-3 sm:p-8 text-white">
+          <div className="text-center mb-3 sm:mb-6">
+            <h2 className="text-sm sm:text-2xl font-bold mb-1 sm:mb-2">Share Your Progress 🚀</h2>
             <p className="text-blue-100">
               Show your friends your amazing {streak.currentStreak} day streak and motivate them!
             </p>

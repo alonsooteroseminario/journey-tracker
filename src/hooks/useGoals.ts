@@ -29,9 +29,10 @@ export function useGoals() {
   const {
     goals, goalsLoading,
     addGoal, addGoalWithTasks, deleteGoal, updateGoal,
-    addTask, updateTask, toggleTask, deleteTask, reorderTasks,
+    addTask, addPhase, updateTask, toggleTask, deleteTask, reorderTasks,
     addSubstep, updateSubstep, toggleSubstep, deleteSubstep,
     updateTaskCost, updateSubstepCost, updateDocumentStatus,
+    addResource, deleteResource,
     getProgress, getTotalProgress,
   } = useGoalsCRUD(logActivity, triggerStreakUpdate);
 
@@ -83,6 +84,7 @@ export function useGoals() {
     deleteGoal,
     updateGoal,
     addTask,
+    addPhase,
     updateTask,
     toggleTask,
     deleteTask,
@@ -94,6 +96,8 @@ export function useGoals() {
     deleteSubstep,
     updateSubstepCost,
     updateDocumentStatus,
+    addResource,
+    deleteResource,
     setNotificationsEnabled,
     updateProfile,
     addFriend,

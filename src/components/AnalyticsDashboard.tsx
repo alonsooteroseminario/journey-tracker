@@ -39,7 +39,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
       </div>
 
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         <MetricCard
           title="Completion Rate"
           value={`${Math.round(analytics.completionRate)}%`}
@@ -68,6 +68,15 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
           icon="📅"
           color="purple"
         />
+        {analytics.mostProductiveDay && (
+          <MetricCard
+            title="Most Productive"
+            value={analytics.mostProductiveDay.day}
+            subtitle={`${analytics.mostProductiveDay.count} completions`}
+            icon="🌟"
+            color="pink"
+          />
+        )}
       </div>
 
       {/* Main Charts Row */}
@@ -279,6 +288,62 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
           </div>
         </div>
       )}
+
+      {/* Goal Breakdown */}
+      {analytics.goalBreakdown && analytics.goalBreakdown.length > 0 && (
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-100 p-3 sm:p-6">
+          <h3 className="font-bold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">Goal Breakdown</h3>
+          <div className="space-y-3">
+            {analytics.goalBreakdown.map((goal) => (
+              <div key={goal.goalId} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-xs sm:text-sm font-semibold text-gray-700 truncate flex-1">{goal.title}</h4>
+                  <span className="text-xs sm:text-sm font-bold text-blue-600 ml-2">{goal.completionRate}%</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full transition-all"
+                      style={{ width: `${goal.completionRate}%` }}
+                    />
+                  </div>
+                  <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">
+                    {goal.tasksCompleted}/{goal.totalTasks}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Phase Completion */}
+      {analytics.phaseCompletion && analytics.phaseCompletion.length > 0 && (
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-100 p-3 sm:p-6">
+          <h3 className="font-bold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">Phase Completion</h3>
+          <div className="space-y-3">
+            {analytics.phaseCompletion.map((phase) => (
+              <div key={phase.phaseId} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-xs sm:text-sm font-semibold text-gray-700 truncate flex-1">{phase.name}</h4>
+                  <span className="text-xs sm:text-sm font-bold text-purple-600 ml-2">{phase.completionRate}%</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all"
+                      style={{ width: `${phase.completionRate}%` }}
+                    />
+                  </div>
+                  <span className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">
+                    {phase.tasksCompleted}/{phase.totalTasks}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -289,7 +354,7 @@ interface MetricCardProps {
   value: string;
   subtitle: string;
   icon: string;
-  color: "blue" | "amber" | "emerald" | "purple";
+  color: "blue" | "amber" | "emerald" | "purple" | "pink";
 }
 
 function MetricCard({ title, value, subtitle, icon, color }: MetricCardProps) {
@@ -298,6 +363,7 @@ function MetricCard({ title, value, subtitle, icon, color }: MetricCardProps) {
     amber: "from-amber-500 to-orange-500",
     emerald: "from-emerald-500 to-teal-500",
     purple: "from-purple-500 to-violet-500",
+    pink: "from-pink-500 to-rose-500",
   };
 
   return (
