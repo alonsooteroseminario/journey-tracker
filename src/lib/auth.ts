@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { notify } from "@/lib/email/notifications";
 
 /**
  * Get the current authenticated user from the database.
@@ -20,6 +21,7 @@ export async function getCurrentUser() {
   // Auto-create user on first API call if not found
   // (handles case where webhook hasn't fired yet)
   if (!user) {
+    let isNewUser = false;
     try {
       user = await prisma.user.create({
         data: {
@@ -35,6 +37,7 @@ export async function getCurrentUser() {
           },
         },
       });
+      isNewUser = true;
     } catch (error) {
       // Handle race condition: another request created the user between our findUnique and create
       // Retry the findUnique to get the user that was just created
@@ -43,7 +46,7 @@ export async function getCurrentUser() {
         user = await prisma.user.findUnique({
           where: { clerkId },
         });
-        
+
         if (!user) {
           // This should never happen, but if it does, throw the original error
           throw error;
@@ -52,6 +55,13 @@ export async function getCurrentUser() {
         // Some other error occurred, re-throw it
         throw error;
       }
+    }
+
+    // Send welcome email for new users (don't await to avoid blocking)
+    if (isNewUser && user) {
+      notify(user.id, "welcomeEmail", { userName: user.name }).catch((err) => {
+        console.error("Failed to send welcome email:", err);
+      });
     }
   }
 

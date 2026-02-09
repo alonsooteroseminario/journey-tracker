@@ -262,6 +262,101 @@ export interface ResourceCategory {
   resources: Resource[];
 }
 
+// Email Preferences
+export interface EmailPreferences {
+  id: string;
+  enabled: boolean;
+  frequency: 'immediate' | 'daily' | 'weekly';
+  welcomeEmail: boolean;
+  profileChanges: boolean;
+  goalCreated: boolean;
+  goalDeleted: boolean;
+  friendInvitation: boolean;
+  goalPublished: boolean;
+  goalShared: boolean;
+  goalForked: boolean;
+  streakMilestone: boolean;
+  streakReminder: boolean;
+  friendStreakReminder: boolean;
+  friendActivity: boolean;
+}
+
+export type NotificationType = keyof Omit<EmailPreferences, 'id' | 'enabled' | 'frequency'>;
+
+// Social Feed
+export interface FeedItem {
+  id: string;
+  userId: string;
+  userName: string;
+  userImage?: string;
+  type: 'streak_milestone' | 'goal_created' | 'task_completed' | 'goal_shared' | 'goal_published' | 'goal_forked' | 'streak_at_risk';
+  content: string;
+  metadata?: Record<string, unknown>;
+  visibility: 'friends' | 'public';
+  comments: FeedComment[];
+  cheers: FeedCheer[];
+  cheerCount: number;
+  hasCheered: boolean;
+  createdAt: string;
+}
+
+export interface FeedComment {
+  id: string;
+  feedItemId: string;
+  userId: string;
+  userName: string;
+  userImage?: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface FeedCheer {
+  id: string;
+  feedItemId: string;
+  userId: string;
+  userName: string;
+  emoji: string;
+  createdAt: string;
+}
+
+// Goal Template & Marketplace
+export interface GoalTemplate {
+  id: string;
+  authorId: string;
+  author?: {
+    id: string;
+    name: string;
+    profileImage?: string | null;
+  };
+  originalGoalId: string;
+  title: string;
+  description?: string;
+  icon?: string | null;
+  tasks: Task[] | unknown;
+  phases?: Phase[] | unknown;
+  timeline?: TimelineComparison | unknown;
+  resources?: ResourceCategory[] | unknown;
+  lessonsLearned?: string;
+  tips?: string;
+  estimatedDuration?: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  visibility: 'friends' | 'public';
+  isPublished: boolean;
+  category?: string;
+  tags: string[];
+  forkCount: number;
+  createdAt: Date | string;
+  updatedAt?: Date | string;
+}
+
+export interface GoalFork {
+  id: string;
+  templateId: string;
+  userId: string;
+  newGoalId: string;
+  forkedAt: string;
+}
+
 // Calendar Types
 export interface CalendarDay {
   date: string;

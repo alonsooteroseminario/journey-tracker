@@ -1,0 +1,219 @@
+"use client";
+
+import { useState } from "react";
+import {
+  useGetEmailPreferencesQuery,
+  useUpdateEmailPreferencesMutation,
+} from "@/store/slices/profileSlice";
+import type { NotificationType } from "@/types";
+
+export function EmailPreferencesPanel() {
+  const { data: preferences, isLoading } = useGetEmailPreferencesQuery();
+  const [updatePreferences] = useUpdateEmailPreferencesMutation();
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+
+  const handleToggle = async (field: NotificationType | "enabled", value: boolean) => {
+    setSaveStatus("saving");
+    try {
+      await updatePreferences({ [field]: value }).unwrap();
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch (error) {
+      console.error("Failed to update preferences:", error);
+      setSaveStatus("idle");
+    }
+  };
+
+  const handleFrequencyChange = async (frequency: "immediate" | "daily" | "weekly") => {
+    setSaveStatus("saving");
+    try {
+      await updatePreferences({ frequency }).unwrap();
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch (error) {
+      console.error("Failed to update frequency:", error);
+      setSaveStatus("idle");
+    }
+  };
+
+  if (isLoading || !preferences) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-semibold mb-4">Email Notifications</h2>
+        <p className="text-gray-500">Loading preferences...</p>
+      </div>
+    );
+  }
+
+  const notificationGroups = [
+    {
+      title: "Account",
+      items: [
+        { key: "welcomeEmail" as const, label: "Welcome email" },
+        { key: "profileChanges" as const, label: "Profile changes" },
+      ],
+    },
+    {
+      title: "Goals",
+      items: [
+        { key: "goalCreated" as const, label: "Goal created" },
+        { key: "goalDeleted" as const, label: "Goal deleted" },
+      ],
+    },
+    {
+      title: "Friends",
+      items: [
+        { key: "friendInvitation" as const, label: "Friend invitation sent" },
+        { key: "friendActivity" as const, label: "Friend needs encouragement" },
+      ],
+    },
+    {
+      title: "Streaks",
+      items: [
+        { key: "streakMilestone" as const, label: "Streak milestones" },
+        { key: "streakReminder" as const, label: "Daily streak reminders" },
+        { key: "friendStreakReminder" as const, label: "Friend streak alerts" },
+      ],
+    },
+    {
+      title: "Templates & Marketplace",
+      items: [
+        { key: "goalPublished" as const, label: "Template published" },
+        { key: "goalShared" as const, label: "Template shared with friends" },
+        { key: "goalForked" as const, label: "Someone forked your template" },
+      ],
+    },
+  ];
+
+  return (
+    <div className="bg-white rounded-lg shadow p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold">Email Notifications</h2>
+        {saveStatus === "saved" && (
+          <span className="text-sm text-green-600">✓ Saved</span>
+        )}
+        {saveStatus === "saving" && (
+          <span className="text-sm text-gray-500">Saving...</span>
+        )}
+      </div>
+
+      {/* Master toggle */}
+      <div className="mb-6 pb-6 border-b border-gray-200">
+        <label className="flex items-center justify-between cursor-pointer">
+          <div>
+            <span className="font-medium text-gray-900">Enable email notifications</span>
+            <p className="text-sm text-gray-500">
+              Receive email updates about your goals and activity
+            </p>
+          </div>
+          <input
+            type="checkbox"
+            checked={preferences.enabled}
+            onChange={(e) => handleToggle("enabled", e.target.checked)}
+            className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+          />
+        </label>
+      </div>
+
+      {/* Frequency selector */}
+      {preferences.enabled && (
+        <div className="mb-6 pb-6 border-b border-gray-200">
+          <label className="block font-medium text-gray-900 mb-3">
+            Email frequency
+          </label>
+          <div className="space-y-2">
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                name="frequency"
+                value="immediate"
+                checked={preferences.frequency === "immediate"}
+                onChange={() => handleFrequencyChange("immediate")}
+                className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
+              />
+              <span className="ml-3">
+                <span className="block text-sm font-medium text-gray-900">
+                  Immediate
+                </span>
+                <span className="block text-xs text-gray-500">
+                  Send emails as events happen
+                </span>
+              </span>
+            </label>
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                name="frequency"
+                value="daily"
+                checked={preferences.frequency === "daily"}
+                onChange={() => handleFrequencyChange("daily")}
+                className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
+              />
+              <span className="ml-3">
+                <span className="block text-sm font-medium text-gray-900">
+                  Daily digest
+                </span>
+                <span className="block text-xs text-gray-500">
+                  One email per day with all updates
+                </span>
+              </span>
+            </label>
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="radio"
+                name="frequency"
+                value="weekly"
+                checked={preferences.frequency === "weekly"}
+                onChange={() => handleFrequencyChange("weekly")}
+                className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
+              />
+              <span className="ml-3">
+                <span className="block text-sm font-medium text-gray-900">
+                  Weekly summary
+                </span>
+                <span className="block text-xs text-gray-500">
+                  One email per week with highlights
+                </span>
+              </span>
+            </label>
+          </div>
+        </div>
+      )}
+
+      {/* Notification type toggles */}
+      {preferences.enabled && (
+        <div className="space-y-6">
+          {notificationGroups.map((group) => (
+            <div key={group.title}>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">
+                {group.title}
+              </h3>
+              <div className="space-y-3">
+                {group.items.map((item) => (
+                  <label
+                    key={item.key}
+                    className="flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="text-sm text-gray-900">{item.label}</span>
+                    <input
+                      type="checkbox"
+                      checked={preferences[item.key]}
+                      onChange={(e) => handleToggle(item.key, e.target.checked)}
+                      className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!preferences.enabled && (
+        <p className="text-sm text-gray-500 text-center py-8">
+          Email notifications are disabled. Enable them to customize your preferences.
+        </p>
+      )}
+    </div>
+  );
+}

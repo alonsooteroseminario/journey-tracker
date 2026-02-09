@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { UserProfile } from "@/types";
+import type { UserProfile, EmailPreferences } from "@/types";
 
 // ========== RTK Query API ==========
 export const profileApi = createApi({
   reducerPath: "profileApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-  tagTypes: ["Profile"],
+  tagTypes: ["Profile", "EmailPreferences"],
   endpoints: (builder) => ({
     // GET /api/profile
     getProfile: builder.query<UserProfile, void>({
@@ -36,6 +36,25 @@ export const profileApi = createApi({
       }),
       invalidatesTags: ["Profile"],
     }),
+
+    // GET /api/email-preferences
+    getEmailPreferences: builder.query<EmailPreferences, void>({
+      query: () => "/email-preferences",
+      providesTags: ["EmailPreferences"],
+    }),
+
+    // PATCH /api/email-preferences
+    updateEmailPreferences: builder.mutation<
+      EmailPreferences,
+      Partial<EmailPreferences>
+    >({
+      query: (updates) => ({
+        url: "/email-preferences",
+        method: "PATCH",
+        body: updates,
+      }),
+      invalidatesTags: ["EmailPreferences"],
+    }),
   }),
 });
 
@@ -43,6 +62,8 @@ export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useUploadProfileImageMutation,
+  useGetEmailPreferencesQuery,
+  useUpdateEmailPreferencesMutation,
 } = profileApi;
 
 // ========== Local UI State Slice ==========

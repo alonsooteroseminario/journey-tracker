@@ -28,6 +28,14 @@ import { toolDefinition as getFriendProfileDefinition, executeGetFriendProfile }
 import { toolDefinition as removeFriendDefinition, executeRemoveFriend } from './removeFriend';
 import { toolDefinition as createInvitationDefinition, executeCreateInvitation } from './createInvitation';
 import { toolDefinition as getInvitationsDefinition, executeGetInvitations } from './getInvitations';
+import { toolDefinition as getFeedDefinition, executeGetFeed } from './getFeed';
+import { toolDefinition as addFeedCommentDefinition, executeAddFeedComment } from './addFeedComment';
+import { toolDefinition as toggleFeedCheerDefinition, executeToggleFeedCheer } from './toggleFeedCheer';
+import { toolDefinition as shareGoalTemplateDefinition, executeShareGoalTemplate } from './shareGoalTemplate';
+import { toolDefinition as getSharedTemplatesDefinition, executeGetSharedTemplates } from './getSharedTemplates';
+import { toolDefinition as forkGoalTemplateDefinition, executeForkGoalTemplate } from './forkGoalTemplate';
+import { toolDefinition as updateGoalTemplateDefinition, executeUpdateGoalTemplate } from './updateGoalTemplate';
+import { toolDefinition as deleteGoalTemplateDefinition, executeDeleteGoalTemplate } from './deleteGoalTemplate';
 
 /**
  * Array of all tool definitions
@@ -56,6 +64,14 @@ export const tools: ToolDefinition[] = [
   removeFriendDefinition,
   createInvitationDefinition,
   getInvitationsDefinition,
+  getFeedDefinition,
+  addFeedCommentDefinition,
+  toggleFeedCheerDefinition,
+  shareGoalTemplateDefinition,
+  getSharedTemplatesDefinition,
+  forkGoalTemplateDefinition,
+  updateGoalTemplateDefinition,
+  deleteGoalTemplateDefinition,
 ];
 
 /**
@@ -156,6 +172,38 @@ export const toolExecutors = {
   'get-invitations': {
     definition: getInvitationsDefinition,
     executor: executeGetInvitations,
+  },
+  'get-feed': {
+    definition: getFeedDefinition,
+    executor: executeGetFeed,
+  },
+  'add-feed-comment': {
+    definition: addFeedCommentDefinition,
+    executor: executeAddFeedComment,
+  },
+  'toggle-feed-cheer': {
+    definition: toggleFeedCheerDefinition,
+    executor: executeToggleFeedCheer,
+  },
+  'share-goal-template': {
+    definition: shareGoalTemplateDefinition,
+    executor: executeShareGoalTemplate,
+  },
+  'get-shared-templates': {
+    definition: getSharedTemplatesDefinition,
+    executor: executeGetSharedTemplates,
+  },
+  'fork-goal-template': {
+    definition: forkGoalTemplateDefinition,
+    executor: executeForkGoalTemplate,
+  },
+  'update-goal-template': {
+    definition: updateGoalTemplateDefinition,
+    executor: executeUpdateGoalTemplate,
+  },
+  'delete-goal-template': {
+    definition: deleteGoalTemplateDefinition,
+    executor: executeDeleteGoalTemplate,
   },
 } as unknown as ToolRegistry;
 

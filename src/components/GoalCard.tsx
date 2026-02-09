@@ -11,6 +11,7 @@ import { DocumentChecklist } from "./DocumentChecklist";
 import { ResourcesPanel } from "./ResourcesPanel";
 import { Calendar } from "./Calendar";
 import { AnalyticsDashboard } from "./AnalyticsDashboard";
+import { ShareGoalModal } from "./templates/ShareGoalModal";
 import { AnalyticsData, ActivityLogEntry } from "@/types";
 
 interface GoalCardProps {
@@ -60,6 +61,7 @@ export function GoalCard({
 }: GoalCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>(goal.phases && goal.phases.length > 0 ? "phases" : "tasks");
   const [selectedPhase, setSelectedPhase] = useState<string | null>(null);
   const [isAddingPhase, setIsAddingPhase] = useState(false);
@@ -135,6 +137,16 @@ export function GoalCard({
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-colors"
+              title="Share as template"
+              aria-label="Share goal as template"
+            >
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+            </button>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-white/50 rounded-lg transition-colors"
@@ -537,6 +549,15 @@ export function GoalCard({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Share Goal Modal */}
+      {showShareModal && (
+        <ShareGoalModal
+          goalId={goal.id}
+          goalTitle={goal.title}
+          onClose={() => setShowShareModal(false)}
+        />
       )}
     </div>
   );

@@ -5,6 +5,9 @@ import { prisma } from '@/lib/prisma';
 vi.mock('@/lib/agent/resolveUser');
 vi.mock('@/lib/agent/conversationStore');
 vi.mock('@/lib/agent/auditLog');
+vi.mock('@/lib/email/notifications', () => ({
+  notify: vi.fn().mockResolvedValue({ success: true }),
+}));
 
 describe('executeCreateGoal', () => {
   const mockUser = { id: 'user-mongo-id', clerkId: 'clerk-123' };
@@ -29,6 +32,7 @@ describe('executeCreateGoal', () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     } as any);
+    vi.mocked(prisma.feedItem.create).mockResolvedValue({} as any);
     vi.mocked(conversationStore.setLastGoal).mockImplementation(() => {});
     vi.mocked(auditLogger.logGoalCreated).mockImplementation(() => {});
 
@@ -75,6 +79,7 @@ describe('executeCreateGoal', () => {
       tasks: [{ id: 'generated-id', title: 'Task 1', completed: false, order: 0 }],
       createdAt: new Date(),
     } as any);
+    vi.mocked(prisma.feedItem.create).mockResolvedValue({} as any);
 
     const result = await executeCreateGoal(
       {

@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { ToolDefinition, ToolResult } from '@/types/agent';
 import { resolveUser } from '@/lib/agent/resolveUser';
 import { auditLogger } from '@/lib/agent/auditLog';
+import { notify } from '@/lib/email/notifications';
 
 export const toolDefinition: ToolDefinition = {
   name: 'update-profile',
@@ -64,6 +65,24 @@ export async function executeUpdateProfile(
     });
 
     auditLogger.logProfileUpdated(userId, updateData);
+
+    // Send email notification (non-blocking)
+    const changedFields = Object.keys(updateData).map((key) => {
+      const fieldNames: Record<string, string> = {
+        name: 'Name',
+        bio: 'Bio',
+        location: 'Location',
+        timezone: 'Timezone',
+      };
+      return fieldNames[key] || key;
+    });
+
+    notify(user.id, 'profileChanges', {
+      userName: updated.name,
+      changedFields,
+    }).catch((err) => {
+      console.error('Failed to send profile changed email:', err);
+    });
 
     return {
       success: true,

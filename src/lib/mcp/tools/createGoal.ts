@@ -9,6 +9,7 @@ import { CreateGoalSchema, validateRequest } from '@/lib/validations';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
 import { pickGoalIcon } from '@/lib/agent/pickGoalIcon';
+import { notify } from '@/lib/email/notifications';
 import { randomUUID } from 'crypto';
 
 export const toolDefinition: ToolDefinition = {
@@ -127,6 +128,32 @@ export async function executeCreateGoal(
     auditLogger.logGoalCreated(userId, goal.id, {
       title: goal.title,
       taskCount: tasksWithIds.length,
+    });
+
+    // Send email notification (non-blocking)
+    notify(user.id, 'goalCreated', {
+      userName: user.name,
+      goalTitle: goal.title,
+      goalIcon: goal.icon || undefined,
+      taskCount: tasksWithIds.length,
+    }).catch((err) => {
+      console.error('Failed to send goal created email:', err);
+    });
+
+    // Create feed item for goal creation
+    prisma.feedItem.create({
+      data: {
+        userId: user.id,
+        type: 'goal_created',
+        content: `${user.name} created a new goal: ${goal.icon || '🎯'} ${goal.title}`,
+        metadata: {
+          goalId: goal.id,
+          taskCount: tasksWithIds.length,
+        },
+        visibility: goal.isPublic ? 'friends' : 'friends',
+      },
+    }).catch((err) => {
+      console.error('Failed to create feed item for goal creation:', err);
     });
 
     return {

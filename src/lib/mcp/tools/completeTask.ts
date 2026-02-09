@@ -9,6 +9,7 @@ import { resolveUser } from '@/lib/agent/resolveUser';
 import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
+import { notify } from '@/lib/email/notifications';
 import { Task } from '@/types';
 
 export const toolDefinition: ToolDefinition = {
@@ -159,6 +160,30 @@ export async function executeCompleteTask(
               streakHistory,
             },
           });
+
+          // Send streak milestone email for notable achievements
+          const milestones = [7, 14, 30, 60, 100];
+          if (milestones.includes(currentStreak)) {
+            notify(user.id, 'streakMilestone', {
+              userName: user.name,
+              streakCount: currentStreak,
+            }).catch((err) => {
+              console.error('Failed to send streak milestone email:', err);
+            });
+
+            // Create feed item for streak milestone
+            prisma.feedItem.create({
+              data: {
+                userId: user.id,
+                type: 'streak_milestone',
+                content: `${user.name} reached a ${currentStreak}-day streak! 🔥`,
+                metadata: { streakCount: currentStreak },
+                visibility: 'friends',
+              },
+            }).catch((err) => {
+              console.error('Failed to create feed item for streak milestone:', err);
+            });
+          }
         }
       }
     }

@@ -6,12 +6,20 @@ import { useGoals } from "@/hooks/useGoals";
 import { ProgressBar } from "@/components/ProgressBar";
 import { StreakData } from "@/types";
 import { getToday } from "@/lib/storage";
+import { useGetTemplatesQuery } from "@/store/slices/templatesSlice";
+import { TemplateCard } from "@/components/templates/TemplateCard";
+import { TemplateDetailModal } from "@/components/templates/TemplateDetailModal";
+import type { GoalTemplate } from "@/types";
 
 export default function FriendProfilePage() {
   const router = useRouter();
   const params = useParams();
   const { friends, profile, streak, goals, isLoaded } = useGoals();
   const [expandedGoals, setExpandedGoals] = useState<Set<number>>(new Set());
+  const [selectedTemplate, setSelectedTemplate] = useState<GoalTemplate | null>(null);
+
+  // Fetch all templates (friend's templates will be filtered below)
+  const { data: allTemplates } = useGetTemplatesQuery({ includeOwn: false, visibility: "all" });
   
   if (!isLoaded) {
     return (
@@ -225,6 +233,9 @@ export default function FriendProfilePage() {
 
   const friendLast7Days = getFriendLast7Days();
   const hasCompletedToday = friendStreak.streakHistory.includes(getToday());
+
+  // Filter templates shared by this friend
+  const friendTemplates = allTemplates?.filter(t => t.authorId === friend.id) || [];
 
   const sendEncouragement = () => {
     alert(`Encouragement sent to ${friend.name}! 💪\n\n"Keep up the great work! You're doing amazing!"`);
@@ -599,6 +610,25 @@ export default function FriendProfilePage() {
           </div>
         </div>
 
+        {/* Shared Templates */}
+        {friendTemplates.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+              <span>📋</span>
+              {friend.name}'s Shared Templates
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              {friendTemplates.map((template) => (
+                <TemplateCard
+                  key={template.id}
+                  template={template}
+                  onClick={() => setSelectedTemplate(template)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Recent Activity */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -626,6 +656,14 @@ export default function FriendProfilePage() {
           </p>
         </div>
       </main>
+
+      {/* Template Detail Modal */}
+      {selectedTemplate && (
+        <TemplateDetailModal
+          template={selectedTemplate}
+          onClose={() => setSelectedTemplate(null)}
+        />
+      )}
     </div>
   );
 }

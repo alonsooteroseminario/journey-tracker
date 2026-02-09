@@ -21,13 +21,19 @@ model User {
   lastLoginDate DateTime @default(now())
 
   // Relations
-  goals        Goal[]
-  streakData   StreakData?
-  friendships  Friendship[] @relation("UserFriendships")
-  friendOf     Friendship[] @relation("FriendOfUser")
-  invitations  Invitation[]
-  socialShares SocialShare[]
-  activityLog  ActivityLog[]
+  goals            Goal[]
+  streakData       StreakData?
+  friendships      Friendship[]      @relation("UserFriendships")
+  friendOf         Friendship[]      @relation("FriendOfUser")
+  invitations      Invitation[]
+  socialShares     SocialShare[]
+  activityLog      ActivityLog[]
+  emailPreferences EmailPreferences?
+  feedItems        FeedItem[]        @relation("FeedItemAuthor")
+  feedComments     FeedComment[]
+  feedCheers       FeedCheer[]
+  goalTemplates    GoalTemplate[]    @relation("TemplateAuthor")
+  goalForks        GoalFork[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -155,4 +161,141 @@ model ActivityLog {
 
   @@index([userId, timestamp])
   @@map("activity_logs")
+}
+
+// ============== Email Preferences Model ==============
+model EmailPreferences {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  enabled          Boolean @default(true)
+  frequency        String  @default("daily") // "immediate" | "daily" | "weekly"
+
+  // Notification type toggles
+  welcomeEmail          Boolean @default(true)
+  profileChanges        Boolean @default(true)
+  goalCreated           Boolean @default(true)
+  goalDeleted           Boolean @default(true)
+  friendInvitation      Boolean @default(true)
+  goalPublished         Boolean @default(true)
+  goalShared            Boolean @default(true)
+  goalForked            Boolean @default(true)
+  streakMilestone       Boolean @default(true)
+  streakReminder        Boolean @default(true)
+  friendStreakReminder  Boolean @default(true)
+  friendActivity        Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_preferences")
+}
+
+// ============== Social Feed Models ==============
+model FeedItem {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation("FeedItemAuthor", fields: [userId], references: [id], onDelete: Cascade)
+
+  type       String // "streak_milestone" | "goal_created" | "task_completed" | "goal_shared" | "goal_published" | "goal_forked"
+  content    String // Human-readable description
+  metadata   Json?  // Type-specific data (goalId, streakCount, templateId, etc.)
+  visibility String @default("friends") // "friends" | "public"
+
+  comments FeedComment[]
+  cheers   FeedCheer[]
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+  @@map("feed_items")
+}
+
+model FeedComment {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  feedItemId String   @db.ObjectId
+  feedItem   FeedItem @relation(fields: [feedItemId], references: [id], onDelete: Cascade)
+  userId     String   @db.ObjectId
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([feedItemId, createdAt])
+  @@map("feed_comments")
+}
+
+model FeedCheer {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  feedItemId String   @db.ObjectId
+  feedItem   FeedItem @relation(fields: [feedItemId], references: [id], onDelete: Cascade)
+  userId     String   @db.ObjectId
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  emoji     String   @default("🎉")
+  createdAt DateTime @default(now())
+
+  @@unique([feedItemId, userId])
+  @@index([feedItemId])
+  @@map("feed_cheers")
+}
+
+// ============== Goal Template & Marketplace Models ==============
+model GoalTemplate {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  authorId String @db.ObjectId
+  author   User   @relation("TemplateAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  originalGoalId String @db.ObjectId
+
+  title       String
+  description String?
+  icon        String?
+
+  // Snapshot of goal structure
+  tasks     Json  // Array of Task objects (with substeps)
+  phases    Json? // Array of Phase objects
+  timeline  Json? // TimelineComparison
+  resources Json? // Array of ResourceCategory objects
+
+  // Creator notes
+  lessonsLearned    String?
+  tips              String?
+  estimatedDuration String?
+  difficulty        String? // "beginner" | "intermediate" | "advanced"
+
+  // Sharing & marketplace
+  visibility  String  @default("friends") // "friends" | "public"
+  isPublished Boolean @default(false)
+  category    String? // "career" | "health" | "education" | "immigration" | "finance" | "other"
+  tags        String[]
+
+  // Stats
+  forkCount Int @default(0)
+
+  forks GoalFork[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([visibility, isPublished])
+  @@map("goal_templates")
+}
+
+model GoalFork {
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  templateId String       @db.ObjectId
+  template   GoalTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  userId     String       @db.ObjectId
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  newGoalId String // ID of the newly created goal
+  forkedAt  DateTime @default(now())
+
+  @@index([templateId])
+  @@index([userId])
+  @@map("goal_forks")
 }

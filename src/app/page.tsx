@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 import Link from "next/link";
 import { useGoals } from "@/hooks/useGoals";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -11,6 +13,10 @@ import { CreateGoalModal } from "@/components/CreateGoalModal";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { Calendar } from "@/components/Calendar";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
+import { Header } from "@/components/Header";
+import { FeedView } from "@/components/views/FeedView";
+import { TemplatesView } from "@/components/views/TemplatesView";
+import { MarketplaceView } from "@/components/views/MarketplaceView";
 
 export default function Home() {
   const {
@@ -57,6 +63,7 @@ export default function Home() {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [showGlobalAnalytics, setShowGlobalAnalytics] = useState(false);
+  const activeView = useSelector((state: RootState) => state.ui.activeView);
 
   // Show loading state
   if (!isLoaded) {
@@ -84,88 +91,23 @@ export default function Home() {
   const globalAnalytics = getAnalytics();
 
   return (
-    <main className="min-h-screen pb-4 md:pb-20">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-1.5 sm:px-4 py-1 sm:py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-0.5 sm:gap-2">
-              <span className="text-sm sm:text-xl">🚀</span>
-              <h1 className="text-xs sm:text-lg font-bold text-gray-800">
-                <span className="hidden sm:inline">Journey Tracker</span>
-                <span className="sm:hidden">Journey</span>
-              </h1>
-            </div>
+    <main className="min-h-screen pb-4 md:pb-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <Header
+        totalProgress={totalProgress}
+        currentStreak={streak.currentStreak}
+        profileName={profile.name}
+        profileImage={profile.profileImage}
+        onNewGoalClick={() => setIsCreateModalOpen(true)}
+      />
 
-            {/* Quick Stats in Header */}
-            <div className="flex items-center gap-0.5 sm:gap-3">
-              {goals.length > 0 && (
-                <div className="hidden md:flex items-center gap-4">
-                  <button
-                    onClick={() => setShowGlobalAnalytics(!showGlobalAnalytics)}
-                    className="text-center hover:bg-gray-100 px-2 py-1 rounded-lg transition-colors"
-                  >
-                    <div className="text-base font-bold text-blue-600">{totalProgress}%</div>
-                    <div className="text-xs text-gray-500">Progress</div>
-                  </button>
-                  <div className="text-center">
-                    <div className="text-base font-bold text-orange-500 flex items-center gap-1">
-                      {streak.currentStreak > 0 && <span className="text-base">🔥</span>}
-                      {streak.currentStreak}
-                    </div>
-                    <div className="text-xs text-gray-500">Streak</div>
-                  </div>
-                </div>
-              )}
+      {/* Render view based on activeView state */}
+      {activeView === "feed" && <FeedView />}
+      {activeView === "templates" && <TemplatesView />}
+      {activeView === "marketplace" && <MarketplaceView />}
 
-              {/* Friends Button */}
-              <Link
-                href="/friends"
-                className="p-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded hover:opacity-90 transition-all font-medium flex items-center"
-              >
-                <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <span className="hidden sm:inline">Friends</span>
-              </Link>
-
-              {/* Profile Picture Icon */}
-              <Link
-                href="/profile"
-                className="group relative flex items-center gap-0.5 sm:gap-1 p-0.5 sm:p-1 rounded-full hover:bg-gray-100 transition-all"
-                title="Go to Profile"
-              >
-                {profile.profileImage ? (
-                  <img
-                    src={profile.profileImage}
-                    alt={profile.name}
-                    className="w-6 h-6 sm:w-9 sm:h-9 rounded-full object-cover border border-gray-200 group-hover:border-blue-400 transition-all"
-                  />
-                ) : (
-                  <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-[10px] sm:text-sm border border-transparent group-hover:border-blue-400 transition-all">
-                    {profile.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <span className="hidden lg:block text-xs font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
-                  {profile.name}
-                </span>
-              </Link>
-
-              <button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="p-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded hover:opacity-90 transition-all font-medium flex items-center"
-              >
-                <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                <span className="hidden sm:inline">New Goal</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-6xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8 pb-20 md:pb-8">
+      {/* Home view content */}
+      {activeView === "home" && (
+        <div className="max-w-6xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8 pb-20 md:pb-8">
         {/* Global Analytics (Toggleable) */}
         {showGlobalAnalytics && goals.length > 0 && (
           <div className="mb-8">
@@ -347,7 +289,8 @@ export default function Home() {
             </div>
           </div>
         )}
-      </div>
+        </div>
+      )}
 
       {/* Create Goal Modal */}
       <CreateGoalModal
@@ -357,8 +300,8 @@ export default function Home() {
         onAddGoalWithTasks={addGoalWithTasks}
       />
 
-      {/* Today's Status Badge (Fixed at bottom) */}
-      {goals.length > 0 && (
+      {/* Today's Status Badge (Fixed at bottom) - only show on home view */}
+      {goals.length > 0 && activeView === "home" && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-[calc(100vw-2rem)]">
           <div
             className={`px-3 sm:px-6 py-2 sm:py-3 rounded-full shadow-md font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 ${

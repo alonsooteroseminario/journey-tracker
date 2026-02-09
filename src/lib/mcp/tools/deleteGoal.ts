@@ -7,6 +7,7 @@ import { ToolDefinition, ToolResult } from '@/types/agent';
 import { resolveUser } from '@/lib/agent/resolveUser';
 import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
+import { notify } from '@/lib/email/notifications';
 
 export const toolDefinition: ToolDefinition = {
   name: 'delete-goal',
@@ -79,6 +80,16 @@ export async function executeDeleteGoal(
 
     // Audit log
     auditLogger.logGoalDeleted(userId, args.goalId);
+
+    // Send email notification (non-blocking)
+    if (goal) {
+      notify(user.id, 'goalDeleted', {
+        userName: user.name,
+        goalTitle: goal.title,
+      }).catch((err) => {
+        console.error('Failed to send goal deleted email:', err);
+      });
+    }
 
     return {
       success: true,

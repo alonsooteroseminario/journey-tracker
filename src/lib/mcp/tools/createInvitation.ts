@@ -5,6 +5,7 @@
 import { prisma } from '@/lib/prisma';
 import { ToolDefinition, ToolResult } from '@/types/agent';
 import { resolveUser } from '@/lib/agent/resolveUser';
+import { notify } from '@/lib/email/notifications';
 import { randomBytes } from 'crypto';
 
 export const toolDefinition: ToolDefinition = {
@@ -39,6 +40,14 @@ export async function executeCreateInvitation(
         code,
         expiresAt,
       },
+    });
+
+    // Send email notification (non-blocking)
+    notify(user.id, 'friendInvitation', {
+      userName: user.name,
+      invitationCode: invitation.code,
+    }).catch((err) => {
+      console.error('Failed to send friend invitation email:', err);
     });
 
     return {
