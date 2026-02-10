@@ -22,20 +22,18 @@ export default function TemplatesPage() {
   }) || [];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       <Header
         currentStreak={streak.currentStreak}
-        profileName={profile.name}
-        profileImage={profile.profileImage}
         showNewGoalButton={false}
       />
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         {/* Page Title */}
         <div className="mb-4 sm:mb-6 lg:mb-8">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
             Goal Templates
           </h1>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+          <p className="text-sm sm:text-base text-gray-600">
             Browse and fork goal templates shared with you
           </p>
         </div>
@@ -52,7 +50,7 @@ export default function TemplatesPage() {
             className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-md ${
               filter === "all"
                 ? "bg-indigo-600 text-white"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
             }`}
           >
             All Templates
@@ -62,7 +60,7 @@ export default function TemplatesPage() {
             className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-md ${
               filter === "own"
                 ? "bg-indigo-600 text-white"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
             }`}
           >
             My Templates
@@ -72,7 +70,7 @@ export default function TemplatesPage() {
             className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-md ${
               filter === "friends"
                 ? "bg-indigo-600 text-white"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
             }`}
           >
             Friends Only
@@ -83,7 +81,7 @@ export default function TemplatesPage() {
         {isLoading && (
           <div className="text-center py-8 sm:py-12">
             <div className="inline-block h-6 w-6 sm:h-8 sm:w-8 animate-spin rounded-full border-4 border-solid border-indigo-600 border-r-transparent"></div>
-            <p className="mt-2 sm:mt-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
+            <p className="mt-2 sm:mt-4 text-sm sm:text-base text-gray-700 font-medium">
               Loading templates...
             </p>
           </div>
@@ -93,10 +91,10 @@ export default function TemplatesPage() {
         {!isLoading && filteredTemplates.length === 0 && (
           <div className="text-center py-8 sm:py-12">
             <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">📋</div>
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
               No templates yet
             </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+            <p className="text-sm sm:text-base text-gray-600">
               {filter === "own"
                 ? "You haven't shared any templates yet. Share a goal to create your first template!"
                 : "No templates shared with you yet. Check back later!"}
