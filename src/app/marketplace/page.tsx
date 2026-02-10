@@ -1,22 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import { useGetMarketplaceTemplatesQuery } from "@/store/slices/templatesSlice";
 import { MarketplaceSearch } from "@/components/marketplace/MarketplaceSearch";
 import { CategoryFilter } from "@/components/marketplace/CategoryFilter";
 import { MarketplaceGrid } from "@/components/marketplace/MarketplaceGrid";
-import { TemplateDetailModal } from "@/components/templates/TemplateDetailModal";
 import { Header } from "@/components/Header";
-import { useGoals } from "@/hooks/useGoals";
-import type { GoalTemplate } from "@/types";
 
 export default function MarketplacePage() {
-  const [selectedTemplate, setSelectedTemplate] = useState<GoalTemplate | null>(null);
+  const { user } = useUser();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [difficulty, setDifficulty] = useState("all");
   const [page, setPage] = useState(1);
-  const { profile, streak } = useGoals();
 
   const { data, isLoading } = useGetMarketplaceTemplatesQuery({
     search,
@@ -32,16 +29,16 @@ export default function MarketplacePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header
-        currentStreak={streak.currentStreak}
-        profileName={profile.name}
-        profileImage={profile.profileImage}
+        currentStreak={0}
+        profileName={user?.fullName || user?.firstName || undefined}
+        profileImage={user?.imageUrl}
         showNewGoalButton={false}
       />
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         {/* Page Title */}
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            🏪 Template Marketplace
+            Template Marketplace
           </h1>
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Discover and fork goal templates shared by the community
@@ -68,7 +65,6 @@ export default function MarketplacePage() {
         {/* Templates Grid */}
         <MarketplaceGrid
           templates={templates}
-          onTemplateClick={setSelectedTemplate}
           isLoading={isLoading}
         />
 
@@ -93,14 +89,6 @@ export default function MarketplacePage() {
               Next
             </button>
           </div>
-        )}
-
-        {/* Detail Modal */}
-        {selectedTemplate && (
-          <TemplateDetailModal
-            template={selectedTemplate}
-            onClose={() => setSelectedTemplate(null)}
-          />
         )}
       </div>
     </div>

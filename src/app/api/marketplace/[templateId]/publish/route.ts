@@ -38,45 +38,41 @@ export async function POST(
       );
     }
 
-    if (template.isPublished) {
-      return NextResponse.json(
-        { error: "Template is already published" },
-        { status: 400 }
-      );
-    }
+    // Toggle publish status
+    const newPublished = !template.isPublished;
 
-    // Publish template
     const updated = await prisma.goalTemplate.update({
       where: { id: templateId },
       data: {
-        isPublished: true,
-        visibility: "public",
+        isPublished: newPublished,
+        ...(newPublished ? { visibility: "public" } : {}),
       },
     });
 
-    // Send notification
-    notify(user.id, "goalPublished", {
-      userName: user.name,
-      goalTitle: template.title,
-      goalIcon: template.icon || undefined,
-    }).catch((err) => {
-      console.error("Failed to send goal published email:", err);
-    });
-
-    // Create feed item
-    prisma.feedItem
-      .create({
-        data: {
-          userId: user.id,
-          type: "goal_shared",
-          content: `${user.name} published a template to the marketplace: ${template.icon || "🎯"} ${template.title}`,
-          metadata: { templateId: template.id, isPublic: true },
-          visibility: "public",
-        },
-      })
-      .catch((err) => {
-        console.error("Failed to create feed item:", err);
+    // Send notification only when publishing (not unpublishing)
+    if (newPublished) {
+      notify(user.id, "goalPublished", {
+        userName: user.name,
+        goalTitle: template.title,
+        goalIcon: template.icon || undefined,
+      }).catch((err) => {
+        console.error("Failed to send goal published email:", err);
       });
+
+      prisma.feedItem
+        .create({
+          data: {
+            userId: user.id,
+            type: "goal_shared",
+            content: `${user.name} published a template to the marketplace: ${template.icon || "🎯"} ${template.title}`,
+            metadata: { templateId: template.id, isPublic: true },
+            visibility: "public",
+          },
+        })
+        .catch((err) => {
+          console.error("Failed to create feed item:", err);
+        });
+    }
 
     return NextResponse.json(updated);
   } catch (error) {

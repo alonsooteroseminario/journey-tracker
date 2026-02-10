@@ -1,17 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { TemplateCard } from "@/components/templates/TemplateCard";
 import type { GoalTemplate } from "@/types";
 
 interface MarketplaceGridProps {
   templates: GoalTemplate[];
-  onTemplateClick: (template: GoalTemplate) => void;
+  onTemplateClick?: (template: GoalTemplate) => void;
   isLoading?: boolean;
 }
 
 export function MarketplaceGrid({
   templates,
-  onTemplateClick,
   isLoading,
 }: MarketplaceGridProps) {
   if (isLoading) {
@@ -28,7 +28,7 @@ export function MarketplaceGrid({
   if (templates.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="text-5xl sm:text-6xl mb-4">🔍</div>
+        <div className="text-5xl sm:text-6xl mb-4">&#x1F50D;</div>
         <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
           No templates found
         </h3>
@@ -42,11 +42,9 @@ export function MarketplaceGrid({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
       {templates.map((template) => (
-        <TemplateCard
-          key={template.id}
-          template={template}
-          onClick={() => onTemplateClick(template)}
-        />
+        <Link key={template.id} href={`/marketplace/${template.id}`}>
+          <TemplateCard template={template} />
+        </Link>
       ))}
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import type { GoalTemplate, Task } from "@/types";
 import { ForkButton } from "./ForkButton";
@@ -186,8 +187,20 @@ export function TemplateDetailModal({ template, onClose, showPublishButton }: Te
               >
                 Close
               </button>
-              {!isOwnTemplate && (
-                <ForkButton templateId={template.id} templateTitle={template.title} />
+              {!isOwnTemplate && user && (
+                <ForkButton
+                  templateId={template.id}
+                  templateTitle={template.title}
+                  isPublic={template.visibility === "public" && template.isPublished}
+                />
+              )}
+              {!user && (
+                <Link
+                  href="/sign-in"
+                  className="w-full sm:flex-1 px-4 py-2 text-sm sm:text-base bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-center"
+                >
+                  Sign in to fork this template
+                </Link>
               )}
             </div>
           </div>

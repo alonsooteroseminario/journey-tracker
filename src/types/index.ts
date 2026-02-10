@@ -357,6 +357,22 @@ export interface GoalFork {
   forkedAt: string;
 }
 
+export interface ForkRequest {
+  id: string;
+  templateId: string;
+  requesterId: string;
+  requester?: {
+    id: string;
+    name: string;
+    profileImage?: string | null;
+  };
+  template?: GoalTemplate;
+  status: 'pending' | 'approved' | 'rejected';
+  message?: string;
+  createdAt: Date | string;
+  updatedAt?: Date | string;
+}
+
 // Calendar Types
 export interface CalendarDay {
   date: string;

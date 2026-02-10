@@ -14,6 +14,7 @@ const createTemplateSchema = z.object({
   category: z.string().optional(),
   tags: z.array(z.string()).optional(),
   visibility: z.enum(["friends", "public"]).default("friends"),
+  isPublished: z.boolean().optional(),
 });
 
 /**
@@ -138,8 +139,8 @@ export async function POST(request: Request) {
         difficulty: validated.difficulty || "intermediate",
         category: validated.category || "Other",
         tags: validated.tags || [],
-        visibility: validated.visibility,
-        isPublished: false,
+        visibility: validated.isPublished ? "public" : validated.visibility,
+        isPublished: validated.isPublished || false,
         forkCount: 0,
       },
     });

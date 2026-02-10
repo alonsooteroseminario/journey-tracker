@@ -19,15 +19,22 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
     category: "",
     tags: [] as string[],
     visibility: "friends" as "friends" | "public",
+    publishToMarketplace: false,
   });
   const [tagInput, setTagInput] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const { publishToMarketplace, ...templateData } = formData;
+      // If publishing to marketplace, force public visibility
+      if (publishToMarketplace) {
+        templateData.visibility = "public";
+      }
       await createTemplate({
         goalId,
-        ...formData,
+        ...templateData,
+        isPublished: publishToMarketplace,
       }).unwrap();
       onClose();
     } catch (error) {
@@ -247,11 +254,26 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
                 </label>
               </div>
 
-              {/* Publish to Marketplace Note */}
+              {/* Publish to Marketplace Checkbox */}
               {formData.visibility === "public" && (
-                <p className="mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-md">
-                  💡 Public templates can be published to the marketplace from your templates page
-                </p>
+                <label className="mt-3 flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.publishToMarketplace}
+                    onChange={(e) =>
+                      setFormData({ ...formData, publishToMarketplace: e.target.checked })
+                    }
+                    className="mt-0.5"
+                  />
+                  <div>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      Publish to Marketplace
+                    </span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      Make this template discoverable by anyone in the marketplace
+                    </p>
+                  </div>
+                </label>
               )}
             </div>
 

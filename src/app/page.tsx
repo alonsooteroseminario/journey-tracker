@@ -1,9 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import Link from "next/link";
 import { useGoals } from "@/hooks/useGoals";
 import { useNotifications } from "@/hooks/useNotifications";
 import { GoalCard } from "@/components/GoalCard";
@@ -14,9 +11,6 @@ import { NotificationBanner } from "@/components/NotificationBanner";
 import { Calendar } from "@/components/Calendar";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { Header } from "@/components/Header";
-import { FeedView } from "@/components/views/FeedView";
-import { TemplatesView } from "@/components/views/TemplatesView";
-import { MarketplaceView } from "@/components/views/MarketplaceView";
 
 export default function Home() {
   const {
@@ -63,7 +57,6 @@ export default function Home() {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [showGlobalAnalytics, setShowGlobalAnalytics] = useState(false);
-  const activeView = useSelector((state: RootState) => state.ui.activeView);
 
   // Show loading state
   if (!isLoaded) {
@@ -100,14 +93,8 @@ export default function Home() {
         onNewGoalClick={() => setIsCreateModalOpen(true)}
       />
 
-      {/* Render view based on activeView state */}
-      {activeView === "feed" && <FeedView />}
-      {activeView === "templates" && <TemplatesView />}
-      {activeView === "marketplace" && <MarketplaceView />}
-
       {/* Home view content */}
-      {activeView === "home" && (
-        <div className="max-w-6xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8 pb-20 md:pb-8">
+      <div className="max-w-6xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8 pb-20 md:pb-8">
         {/* Global Analytics (Toggleable) */}
         {showGlobalAnalytics && goals.length > 0 && (
           <div className="mb-8">
@@ -290,7 +277,6 @@ export default function Home() {
           </div>
         )}
         </div>
-      )}
 
       {/* Create Goal Modal */}
       <CreateGoalModal
@@ -300,8 +286,8 @@ export default function Home() {
         onAddGoalWithTasks={addGoalWithTasks}
       />
 
-      {/* Today's Status Badge (Fixed at bottom) - only show on home view */}
-      {goals.length > 0 && activeView === "home" && (
+      {/* Today's Status Badge (Fixed at bottom) */}
+      {goals.length > 0 && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-[calc(100vw-2rem)]">
           <div
             className={`px-3 sm:px-6 py-2 sm:py-3 rounded-full shadow-md font-medium text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 ${

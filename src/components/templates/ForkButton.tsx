@@ -2,30 +2,68 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForkTemplateMutation } from "@/store/slices/templatesSlice";
+import {
+  useForkTemplateMutation,
+  useCreateForkRequestMutation,
+  useGetForkRequestStatusQuery,
+} from "@/store/slices/templatesSlice";
 
 interface ForkButtonProps {
   templateId: string;
   templateTitle: string;
+  isPublic?: boolean;
 }
 
-export function ForkButton({ templateId, templateTitle }: ForkButtonProps) {
+export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkButtonProps) {
   const router = useRouter();
-  const [forkTemplate, { isLoading }] = useForkTemplateMutation();
+  const [forkTemplate, { isLoading: isForking }] = useForkTemplateMutation();
+  const [createForkRequest, { isLoading: isRequesting }] = useCreateForkRequestMutation();
+  const { data: existingRequest } = useGetForkRequestStatusQuery(templateId, {
+    skip: isPublic,
+  });
   const [showConfirm, setShowConfirm] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
+  const [message, setMessage] = useState("");
 
+  // Friends-only: show request status if one exists
+  if (!isPublic && existingRequest) {
+    const statusColors = {
+      pending: "bg-yellow-100 text-yellow-800",
+      approved: "bg-green-100 text-green-800",
+      rejected: "bg-red-100 text-red-800",
+    };
+    return (
+      <div className={`w-full sm:flex-1 px-4 py-3 text-sm sm:text-base rounded-md text-center font-medium ${statusColors[existingRequest.status]}`}>
+        {existingRequest.status === "pending" && "Fork request pending..."}
+        {existingRequest.status === "approved" && "Fork request approved! Check your goals."}
+        {existingRequest.status === "rejected" && "Fork request was declined"}
+      </div>
+    );
+  }
+
+  // Public template: direct fork flow
   const handleFork = async () => {
     try {
       const result = await forkTemplate({
         id: templateId,
         data: customTitle ? { customTitle } : {},
       }).unwrap();
-
-      // Navigate to the new goal
       router.push(`/goals?id=${result.goalId}`);
     } catch (error) {
       console.error("Failed to fork template:", error);
+    }
+  };
+
+  // Friends-only template: request flow
+  const handleRequest = async () => {
+    try {
+      await createForkRequest({
+        templateId,
+        message: message || undefined,
+      }).unwrap();
+      setShowConfirm(false);
+    } catch (error) {
+      console.error("Failed to create fork request:", error);
     }
   };
 
@@ -35,28 +73,69 @@ export function ForkButton({ templateId, templateTitle }: ForkButtonProps) {
         onClick={() => setShowConfirm(true)}
         className="w-full sm:flex-1 px-4 py-2 text-sm sm:text-base bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
       >
-        🍴 Fork This Template
+        {isPublic ? "Fork This Template" : "Request to Fork"}
       </button>
     );
   }
 
+  // Public fork confirmation
+  if (isPublic) {
+    return (
+      <div className="w-full sm:flex-1 space-y-2 sm:space-y-3">
+        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 sm:p-4 rounded-md">
+          <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+            This will create a new goal based on this template. All tasks will start uncompleted.
+          </p>
+          <div>
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              Custom Title (optional)
+            </label>
+            <input
+              type="text"
+              value={customTitle}
+              onChange={(e) => setCustomTitle(e.target.value)}
+              placeholder={templateTitle}
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col-reverse sm:flex-row gap-2">
+          <button
+            onClick={() => setShowConfirm(false)}
+            className="w-full sm:w-auto px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleFork}
+            disabled={isForking}
+            className="w-full sm:flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+          >
+            {isForking ? "Forking..." : "Confirm Fork"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Friends-only fork request confirmation
   return (
     <div className="w-full sm:flex-1 space-y-2 sm:space-y-3">
-      <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 sm:p-4 rounded-md">
+      <div className="bg-purple-50 dark:bg-purple-900/20 p-3 sm:p-4 rounded-md">
         <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
-          This will create a new goal based on this template. All tasks will start
-          uncompleted.
+          This template requires the creator&apos;s permission to fork. Send a request and they&apos;ll be notified.
         </p>
         <div>
           <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-            Custom Title (optional)
+            Message to creator (optional)
           </label>
-          <input
-            type="text"
-            value={customTitle}
-            onChange={(e) => setCustomTitle(e.target.value)}
-            placeholder={templateTitle}
-            className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Why you'd like to fork this template..."
+            rows={2}
+            maxLength={500}
+            className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
           />
         </div>
       </div>
@@ -68,11 +147,11 @@ export function ForkButton({ templateId, templateTitle }: ForkButtonProps) {
           Cancel
         </button>
         <button
-          onClick={handleFork}
-          disabled={isLoading}
-          className="w-full sm:flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+          onClick={handleRequest}
+          disabled={isRequesting}
+          className="w-full sm:flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
         >
-          {isLoading ? "Forking..." : "Confirm Fork"}
+          {isRequesting ? "Sending..." : "Send Request"}
         </button>
       </div>
     </div>

@@ -34,6 +34,7 @@ model User {
   feedCheers       FeedCheer[]
   goalTemplates    GoalTemplate[]    @relation("TemplateAuthor")
   goalForks        GoalFork[]
+  forkRequests     ForkRequest[]     @relation("ForkRequester")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -275,7 +276,8 @@ model GoalTemplate {
   // Stats
   forkCount Int @default(0)
 
-  forks GoalFork[]
+  forks        GoalFork[]
+  forkRequests ForkRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -298,4 +300,23 @@ model GoalFork {
   @@index([templateId])
   @@index([userId])
   @@map("goal_forks")
+}
+
+model ForkRequest {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  templateId  String       @db.ObjectId
+  template    GoalTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  requesterId String       @db.ObjectId
+  requester   User         @relation("ForkRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+
+  status  String  @default("pending") // "pending" | "approved" | "rejected"
+  message String? // optional message from requester
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([templateId])
+  @@index([requesterId])
+  @@index([templateId, status])
+  @@map("fork_requests")
 }

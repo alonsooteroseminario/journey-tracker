@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useGetTemplatesQuery } from "@/store/slices/templatesSlice";
 import { TemplateCard } from "@/components/templates/TemplateCard";
 import { TemplateDetailModal } from "@/components/templates/TemplateDetailModal";
+import { ForkRequestsPanel } from "@/components/templates/ForkRequestsPanel";
 import { Header } from "@/components/Header";
 import { useGoals } from "@/hooks/useGoals";
 import type { GoalTemplate } from "@/types";
@@ -37,6 +38,11 @@ export default function TemplatesPage() {
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Browse and fork goal templates shared with you
           </p>
+        </div>
+
+        {/* Fork Requests (for template authors) */}
+        <div className="mb-4 sm:mb-6">
+          <ForkRequestsPanel />
         </div>
 
         {/* Filters */}

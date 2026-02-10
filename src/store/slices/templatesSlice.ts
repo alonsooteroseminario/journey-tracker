@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { GoalTemplate } from "@/types";
+import type { GoalTemplate, ForkRequest } from "@/types";
 
 export interface CreateTemplateRequest {
   goalId: string;
@@ -10,6 +10,7 @@ export interface CreateTemplateRequest {
   category?: string;
   tags?: string[];
   visibility?: "friends" | "public";
+  isPublished?: boolean;
 }
 
 export interface UpdateTemplateRequest {
@@ -52,7 +53,7 @@ export interface MarketplaceResponse {
 export const templatesApi = createApi({
   reducerPath: "templatesApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-  tagTypes: ["Templates", "Template"],
+  tagTypes: ["Templates", "Template", "ForkRequests"],
   endpoints: (builder) => ({
     getTemplates: builder.query<GoalTemplate[], { includeOwn?: boolean; visibility?: string }>({
       query: ({ includeOwn = true, visibility = "all" } = {}) =>
@@ -112,6 +113,10 @@ export const templatesApi = createApi({
       },
       providesTags: ["Templates"],
     }),
+    getMarketplaceTemplateById: builder.query<GoalTemplate, string>({
+      query: (id) => `/marketplace/${id}`,
+      providesTags: (_result, _error, id) => [{ type: "Template", id }],
+    }),
     publishTemplate: builder.mutation<GoalTemplate, string>({
       query: (id) => ({
         url: `/marketplace/${id}/publish`,
@@ -121,6 +126,31 @@ export const templatesApi = createApi({
         { type: "Template", id },
         "Templates",
       ],
+    }),
+    // Fork request endpoints (for friends-only templates)
+    createForkRequest: builder.mutation<ForkRequest, { templateId: string; message?: string }>({
+      query: ({ templateId, message }) => ({
+        url: `/templates/${templateId}/fork-request`,
+        method: "POST",
+        body: { message },
+      }),
+      invalidatesTags: ["ForkRequests"],
+    }),
+    getForkRequestStatus: builder.query<ForkRequest | null, string>({
+      query: (templateId) => `/templates/${templateId}/fork-request`,
+      providesTags: ["ForkRequests"],
+    }),
+    getForkRequests: builder.query<ForkRequest[], void>({
+      query: () => "/fork-requests",
+      providesTags: ["ForkRequests"],
+    }),
+    respondToForkRequest: builder.mutation<ForkRequest, { requestId: string; status: "approved" | "rejected" }>({
+      query: ({ requestId, status }) => ({
+        url: `/fork-requests/${requestId}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["ForkRequests", "Templates"],
     }),
   }),
 });
@@ -133,5 +163,10 @@ export const {
   useDeleteTemplateMutation,
   useForkTemplateMutation,
   useGetMarketplaceTemplatesQuery,
+  useGetMarketplaceTemplateByIdQuery,
   usePublishTemplateMutation,
+  useCreateForkRequestMutation,
+  useGetForkRequestStatusQuery,
+  useGetForkRequestsQuery,
+  useRespondToForkRequestMutation,
 } = templatesApi;
