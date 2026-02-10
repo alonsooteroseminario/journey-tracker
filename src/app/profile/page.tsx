@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useGoals } from "@/hooks/useGoals";
 import { UserProfile } from "@/types";
 import { Calendar } from "@/components/Calendar";
 import { EmailPreferencesPanel } from "@/components/EmailPreferencesPanel";
+import { Header } from "@/components/Header";
 
 export default function ProfilePage() {
-  const router = useRouter();
   const { profile, streak, goals, isLoaded, updateProfile, activityLog } = useGoals();
   
   const [isEditing, setIsEditing] = useState(false);
@@ -86,26 +85,11 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      {/* Header with Back Button */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-4xl mx-auto px-1.5 sm:px-4 py-1 sm:py-4">
-          <div className="flex items-center gap-1.5 sm:gap-4">
-            <button
-              onClick={() => router.push("/")}
-              className="p-1 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              title="Back to Dashboard"
-            >
-              <svg className="w-4 h-4 sm:w-6 sm:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <div>
-              <h1 className="text-sm sm:text-2xl font-bold text-gray-800">Profile</h1>
-              <p className="text-[10px] sm:text-sm text-gray-500">Manage your account</p>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header
+        totalProgress={undefined}
+        currentStreak={streak.currentStreak}
+        showNewGoalButton={false}
+      />
 
       <main className="max-w-4xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8">
         {/* Profile Card */}
@@ -126,7 +110,7 @@ export default function ProfilePage() {
                       <img src={imagePreview} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
                       <div className="text-center">
-                        <span className="text-2xl sm:text-4xl mb-1 block">📸</span>
+                        <span className="text-xl sm:text-3xl mb-1 block">📸</span>
                         <span className="text-[10px] sm:text-xs text-gray-600">Upload</span>
                       </div>
                     )}
@@ -138,7 +122,7 @@ export default function ProfilePage() {
                   </div>
                 </label>
               ) : (
-                <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-3xl sm:text-5xl font-bold overflow-hidden border-2 sm:border-4 border-white shadow-lg">
+                <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-2xl sm:text-4xl font-bold overflow-hidden border-2 sm:border-4 border-white shadow-lg">
                   {profile.profileImage ? (
                     <img src={profile.profileImage} alt={profile.name} className="w-full h-full object-cover" />
                   ) : (
@@ -209,7 +193,7 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <div>
-                  <h1 className="text-lg sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">{profile.name}</h1>
+                  <h1 className="text-base sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">{profile.name}</h1>
                   {profile.email && (
                     <p className="text-gray-600 mb-2 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,67 +232,67 @@ export default function ProfilePage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-3 sm:mb-6">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-6 text-center">
-            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">📅</div>
+            <div className="text-lg sm:text-2xl mb-1 sm:mb-2">📅</div>
             <p className="text-gray-600 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Member Since</p>
-            <p className="text-sm sm:text-xl font-bold text-gray-900">
+            <p className="text-xs sm:text-lg font-bold text-gray-900">
               {new Date(profile.joinedDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
             </p>
           </div>
 
           <div className="bg-gradient-to-br from-orange-400 to-red-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
-            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">🔥</div>
+            <div className="text-lg sm:text-2xl mb-1 sm:mb-2">🔥</div>
             <p className="text-orange-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Current Streak</p>
-            <p className="text-lg sm:text-3xl font-bold">{streak.currentStreak}</p>
+            <p className="text-base sm:text-2xl font-bold">{streak.currentStreak}</p>
             <p className="text-[10px] sm:text-xs text-orange-100">days</p>
           </div>
 
           <div className="bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
-            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">⭐</div>
+            <div className="text-lg sm:text-2xl mb-1 sm:mb-2">⭐</div>
             <p className="text-purple-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Longest Streak</p>
-            <p className="text-lg sm:text-3xl font-bold">{streak.longestStreak}</p>
+            <p className="text-base sm:text-2xl font-bold">{streak.longestStreak}</p>
             <p className="text-[10px] sm:text-xs text-purple-100">days</p>
           </div>
 
           <div className="bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
-            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">🎯</div>
+            <div className="text-lg sm:text-2xl mb-1 sm:mb-2">🎯</div>
             <p className="text-blue-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Goals</p>
-            <p className="text-lg sm:text-3xl font-bold">{totalGoals}</p>
+            <p className="text-base sm:text-2xl font-bold">{totalGoals}</p>
             <p className="text-[10px] sm:text-xs text-blue-100">{completedGoals} completed</p>
           </div>
 
           <div className="bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
-            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">✅</div>
+            <div className="text-lg sm:text-2xl mb-1 sm:mb-2">✅</div>
             <p className="text-green-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Tasks</p>
-            <p className="text-lg sm:text-3xl font-bold">{completedTasks}</p>
+            <p className="text-base sm:text-2xl font-bold">{completedTasks}</p>
             <p className="text-[10px] sm:text-xs text-green-100">of {totalTasks} total</p>
           </div>
 
           <div className="bg-gradient-to-br from-indigo-400 to-blue-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
-            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">📝</div>
+            <div className="text-lg sm:text-2xl mb-1 sm:mb-2">📝</div>
             <p className="text-indigo-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Substeps</p>
-            <p className="text-lg sm:text-3xl font-bold">{completedSubsteps}</p>
+            <p className="text-base sm:text-2xl font-bold">{completedSubsteps}</p>
             <p className="text-[10px] sm:text-xs text-indigo-100">of {totalSubsteps} total</p>
           </div>
 
           <div className="bg-gradient-to-br from-pink-400 to-rose-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
-            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">🚀</div>
+            <div className="text-lg sm:text-2xl mb-1 sm:mb-2">🚀</div>
             <p className="text-pink-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Active Goals</p>
-            <p className="text-lg sm:text-3xl font-bold">{activeGoals}</p>
+            <p className="text-base sm:text-2xl font-bold">{activeGoals}</p>
             <p className="text-[10px] sm:text-xs text-pink-100">in progress</p>
           </div>
 
           <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl shadow-sm p-2 sm:p-6 text-center text-white">
-            <div className="text-xl sm:text-3xl mb-1 sm:mb-2">📆</div>
+            <div className="text-lg sm:text-2xl mb-1 sm:mb-2">📆</div>
             <p className="text-amber-100 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Active Days</p>
-            <p className="text-lg sm:text-3xl font-bold">{activeDays}</p>
+            <p className="text-base sm:text-2xl font-bold">{activeDays}</p>
             <p className="text-[10px] sm:text-xs text-amber-100">total</p>
           </div>
         </div>
 
         {/* Activity Calendar */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-2 sm:p-6 mb-3 sm:mb-6">
-          <h2 className="text-sm sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4 flex items-center gap-1 sm:gap-2">
-            <span className="text-lg sm:text-2xl">📅</span>
+          <h2 className="text-xs sm:text-lg font-bold text-gray-800 mb-2 sm:mb-4 flex items-center gap-1 sm:gap-2">
+            <span className="text-base sm:text-xl">📅</span>
             Activity Calendar
           </h2>
           <Calendar
@@ -325,7 +309,7 @@ export default function ProfilePage() {
 
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg p-3 sm:p-8 text-white">
           <div className="text-center mb-3 sm:mb-6">
-            <h2 className="text-sm sm:text-2xl font-bold mb-1 sm:mb-2">Share Your Progress 🚀</h2>
+            <h2 className="text-xs sm:text-xl font-bold mb-1 sm:mb-2">Share Your Progress 🚀</h2>
             <p className="text-blue-100">
               Show your friends your amazing {streak.currentStreak} day streak and motivate them!
             </p>
