@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import { useGoals } from "@/hooks/useGoals";
 import { useNotifications } from "@/hooks/useNotifications";
 import { GoalCard } from "@/components/GoalCard";
@@ -12,8 +13,11 @@ import { Calendar } from "@/components/Calendar";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { Header } from "@/components/Header";
 import { MobileStatsPanel } from "@/components/MobileStatsPanel";
+import { LandingPage } from "@/components/LandingPage";
 
 export default function Home() {
+  const { user, isLoaded: userLoaded } = useUser();
+
   const {
     goals,
     streak,
@@ -59,17 +63,24 @@ export default function Home() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [showGlobalAnalytics, setShowGlobalAnalytics] = useState(false);
 
-  // Show loading state
-  if (!isLoaded) {
+  // Show loading while checking auth
+  if (!userLoaded || !isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your journey...</p>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
   }
+
+  // Show landing page if not authenticated
+  if (!user) {
+    return <LandingPage />;
+  }
+
+  // Show dashboard for authenticated users (existing code continues)
 
   const totalProgress = getTotalProgress();
   const totalTasks = goals.reduce((sum, g) => sum + g.tasks.length, 0);
