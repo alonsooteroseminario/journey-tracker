@@ -1,140 +1,105 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MobileStatsPanel } from "./MobileStatsPanel";
-import type { Goal } from "@/types";
 
-// Mock child components
-vi.mock("./StreakCounter", () => ({
-  StreakCounter: () => <div data-testid="streak-counter">StreakCounter</div>,
-}));
+const mockStreak = {
+  currentStreak: 5,
+  longestStreak: 10,
+  streakHistory: [
+    { date: "2026-02-10", completed: true },
+    { date: "2026-02-09", completed: true },
+  ],
+};
 
-vi.mock("./ProgressBar", () => ({
-  ProgressBar: ({ value, max }: { value: number; max: number }) => (
-    <div data-testid="progress-bar">
-      {value}/{max}
-    </div>
-  ),
-}));
-
-vi.mock("./Calendar", () => ({
-  Calendar: () => <div data-testid="calendar">Calendar</div>,
-}));
+const mockActivityLog = [
+  {
+    id: "1",
+    date: new Date().toISOString(),
+    type: "task_completed" as const,
+    goalId: "goal-1",
+    taskId: "task-1",
+    description: "Completed Test Task",
+  },
+];
 
 describe("MobileStatsPanel", () => {
-  const mockGoals: Goal[] = [
-    {
-      id: "1",
-      userId: "user1",
-      title: "Goal 1",
-      description: "Description 1",
-      targetDate: new Date("2026-12-31"),
-      priority: "high",
-      status: "in-progress",
-      tags: [],
-      tasks: [
-        {
-          id: "t1",
-          title: "Task 1",
-          completed: true,
-          priority: "medium",
-          phaseId: null,
-          order: 0,
-          substeps: [],
-        },
-        {
-          id: "t2",
-          title: "Task 2",
-          completed: false,
-          priority: "medium",
-          phaseId: null,
-          order: 1,
-          substeps: [],
-        },
-      ],
-      phases: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
-
-  it("renders FAB button when closed", () => {
-    render(<MobileStatsPanel goals={mockGoals} />);
+  it("should render FAB button", () => {
+    render(
+      <MobileStatsPanel
+        totalProgress={50}
+        completedTasks={5}
+        totalTasks={10}
+        totalSubsteps={20}
+        goalCount={3}
+        streak={mockStreak}
+        activityLog={mockActivityLog}
+      />
+    );
 
     const fab = screen.getByRole("button", { name: /view stats/i });
-    expect(fab).toBeInTheDocument();
-    expect(fab).toHaveClass("lg:hidden"); // Only visible on mobile
+    expect(fab).toBeDefined();
   });
 
-  it("opens bottom sheet when FAB is clicked", () => {
-    render(<MobileStatsPanel goals={mockGoals} />);
+  it("should show bottom sheet when FAB is clicked", () => {
+    render(
+      <MobileStatsPanel
+        totalProgress={50}
+        completedTasks={5}
+        totalTasks={10}
+        totalSubsteps={20}
+        goalCount={3}
+        streak={mockStreak}
+        activityLog={mockActivityLog}
+      />
+    );
 
-    // Initially, bottom sheet should not be visible
-    expect(screen.queryByText("Your Progress")).not.toBeInTheDocument();
-
-    // Click FAB
     const fab = screen.getByRole("button", { name: /view stats/i });
     fireEvent.click(fab);
 
-    // Bottom sheet should now be visible
-    expect(screen.getByText("Your Progress")).toBeInTheDocument();
-    expect(screen.getByTestId("streak-counter")).toBeInTheDocument();
-    expect(screen.getByTestId("progress-bar")).toBeInTheDocument();
-    expect(screen.getByTestId("calendar")).toBeInTheDocument();
+    expect(screen.getByText(/overall progress/i)).toBeDefined();
+    expect(screen.getByText(/activity calendar/i)).toBeDefined();
   });
 
-  it("closes bottom sheet when overlay is clicked", () => {
-    render(<MobileStatsPanel goals={mockGoals} />);
+  it("should close bottom sheet when overlay is clicked", () => {
+    render(
+      <MobileStatsPanel
+        totalProgress={50}
+        completedTasks={5}
+        totalTasks={10}
+        totalSubsteps={20}
+        goalCount={3}
+        streak={mockStreak}
+        activityLog={mockActivityLog}
+      />
+    );
 
-    // Open bottom sheet
     const fab = screen.getByRole("button", { name: /view stats/i });
     fireEvent.click(fab);
 
-    // Verify it's open
-    const heading = screen.getByText("Your Progress");
-    expect(heading).toBeInTheDocument();
-
-    // Click overlay
     const overlay = screen.getByTestId("stats-overlay");
     fireEvent.click(overlay);
 
-    // Bottom sheet should be closed
-    expect(screen.queryByText("Your Progress")).not.toBeInTheDocument();
+    expect(screen.queryByText(/overall progress/i)).toBeNull();
   });
 
-  it("closes bottom sheet when close button is clicked", () => {
-    render(<MobileStatsPanel goals={mockGoals} />);
+  it("should display correct stats", () => {
+    render(
+      <MobileStatsPanel
+        totalProgress={75}
+        completedTasks={15}
+        totalTasks={20}
+        totalSubsteps={30}
+        goalCount={5}
+        streak={mockStreak}
+        activityLog={mockActivityLog}
+      />
+    );
 
-    // Open bottom sheet
     const fab = screen.getByRole("button", { name: /view stats/i });
     fireEvent.click(fab);
 
-    // Verify it's open
-    expect(screen.getByText("Your Progress")).toBeInTheDocument();
-
-    // Click close button
-    const closeButton = screen.getByRole("button", { name: /close stats/i });
-    fireEvent.click(closeButton);
-
-    // Bottom sheet should be closed
-    expect(screen.queryByText("Your Progress")).not.toBeInTheDocument();
-  });
-
-  it("displays correct stats from goals", () => {
-    render(<MobileStatsPanel goals={mockGoals} />);
-
-    // Open bottom sheet
-    const fab = screen.getByRole("button", { name: /view stats/i });
-    fireEvent.click(fab);
-
-    // Check Quick Stats section
-    expect(screen.getByText("Active Goals")).toBeInTheDocument();
-    expect(screen.getByText("Tasks")).toBeInTheDocument();
-
-    // Check ProgressBar (mocked component shows "1/2")
-    expect(screen.getByTestId("progress-bar")).toHaveTextContent("1/2");
-
-    // Verify stats components are rendered
-    expect(screen.getByTestId("streak-counter")).toBeInTheDocument();
-    expect(screen.getByTestId("calendar")).toBeInTheDocument();
+    expect(screen.getByText("75%")).toBeDefined();
+    expect(screen.getByText("15 done")).toBeDefined();
+    expect(screen.getByText("5 left")).toBeDefined();
   });
 });

@@ -27,10 +27,8 @@ export default function TemplateDetailPage({
   const isOwnTemplate = user?.id === template?.authorId;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       <Header
-        profileName={user?.fullName || user?.firstName || undefined}
-        profileImage={user?.imageUrl}
         showNewGoalButton={false}
       />
 
@@ -45,6 +43,34 @@ export default function TemplateDetailPage({
           </svg>
           Back to Marketplace
         </Link>
+
+        {/* Login/Register Banner for Unauthenticated Users */}
+        {!user && (
+          <div className="mb-4 sm:mb-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-4 sm:p-6 text-white shadow-lg">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div>
+                <h3 className="font-semibold text-base sm:text-lg mb-1">Join Journey Tracker</h3>
+                <p className="text-xs sm:text-sm text-indigo-100">
+                  Sign up to fork this template and start tracking your goals
+                </p>
+              </div>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Link
+                  href="/sign-in"
+                  className="flex-1 sm:flex-initial px-4 py-2 text-xs sm:text-sm bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-center font-medium"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="flex-1 sm:flex-initial px-4 py-2 text-xs sm:text-sm bg-white text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors text-center font-medium"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Loading */}
         {isLoading && (

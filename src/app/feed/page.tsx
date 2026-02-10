@@ -8,11 +8,9 @@ export default function FeedPage() {
   const { profile, streak } = useGoals();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       <Header
         currentStreak={streak.currentStreak}
-        profileName={profile.name}
-        profileImage={profile.profileImage}
         showNewGoalButton={false}
       />
       <div className="max-w-3xl mx-auto px-4 py-6 sm:px-6 sm:py-8">

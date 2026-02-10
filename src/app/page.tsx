@@ -297,7 +297,17 @@ export default function Home() {
       />
 
       {/* Mobile Stats Panel - FAB with bottom sheet */}
-      <MobileStatsPanel goals={goals} />
+      {goals.length > 0 && (
+        <MobileStatsPanel
+          totalProgress={totalProgress}
+          completedTasks={completedTasks}
+          totalTasks={totalTasks}
+          totalSubsteps={totalSubsteps}
+          goalCount={goals.length}
+          streak={streak}
+          activityLog={activityLog}
+        />
+      )}
 
       {/* Today's Status Badge (Fixed at bottom) */}
       {goals.length > 0 && (

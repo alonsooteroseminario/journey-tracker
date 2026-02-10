@@ -4,21 +4,33 @@ import { useState } from "react";
 import { StreakCounter } from "./StreakCounter";
 import { ProgressBar } from "./ProgressBar";
 import { Calendar } from "./Calendar";
-import type { Goal } from "@/types";
+import type { Streak, ActivityLogEntry } from "@/types";
 
 interface MobileStatsPanelProps {
-  goals: Goal[];
+  totalProgress: number;
+  completedTasks: number;
+  totalTasks: number;
+  totalSubsteps: number;
+  goalCount: number;
+  streak: Streak;
+  activityLog: ActivityLogEntry[];
 }
 
-export function MobileStatsPanel({ goals }: MobileStatsPanelProps) {
+export function MobileStatsPanel({
+  totalProgress,
+  completedTasks,
+  totalTasks,
+  totalSubsteps,
+  goalCount,
+  streak,
+  activityLog,
+}: MobileStatsPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Calculate stats
-  const activeGoals = goals.filter((g) => g.status !== "completed").length;
-  const totalTasks = goals.reduce((sum, goal) => sum + goal.tasks.length, 0);
-  const completedTasks = goals.reduce(
-    (sum, goal) => sum + goal.tasks.filter((t) => t.completed).length,
-    0
+  const hasCompletedToday = activityLog.some(
+    (log) =>
+      log.type === "task_completed" &&
+      new Date(log.date).toDateString() === new Date().toDateString()
   );
 
   return (
@@ -91,44 +103,61 @@ export function MobileStatsPanel({ goals }: MobileStatsPanelProps) {
             {/* Content */}
             <div className="p-6 space-y-6">
               {/* Streak Counter */}
-              <div>
-                <StreakCounter />
-              </div>
+              <StreakCounter streak={streak} hasCompletedToday={hasCompletedToday} />
 
-              {/* Progress Section */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+              {/* Overall Progress */}
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                <h3 className="font-bold text-sm text-gray-800 mb-3 flex items-center gap-2">
+                  <span className="text-lg">📊</span>
                   Overall Progress
                 </h3>
-                <ProgressBar value={completedTasks} max={totalTasks} />
+                <ProgressBar progress={totalProgress} size="md" showPercentage={true} />
+                <div className="mt-3 flex justify-between text-xs text-gray-600">
+                  <span>{completedTasks} done</span>
+                  <span>{totalTasks - completedTasks} left</span>
+                </div>
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-                    {activeGoals}
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                <h3 className="font-bold text-sm text-gray-800 mb-3 flex items-center gap-2">
+                  <span className="text-lg">📈</span>
+                  Quick Stats
+                </h3>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Goals</span>
+                    <span className="font-bold text-gray-800">{goalCount}</span>
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Active Goals
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Tasks</span>
+                    <span className="font-bold text-gray-800">{totalTasks}</span>
                   </div>
-                </div>
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-                    {completedTasks}/{totalTasks}
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Substeps</span>
+                    <span className="font-bold text-purple-600">{totalSubsteps}</span>
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Tasks
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Done</span>
+                    <span className="font-bold text-green-600">{completedTasks}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Days Active</span>
+                    <span className="font-bold text-blue-600">{streak.streakHistory.length}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Calendar */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+              {/* Mini Calendar */}
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                <h3 className="font-bold text-sm text-gray-800 mb-3 flex items-center gap-2">
+                  <span className="text-lg">📅</span>
                   Activity Calendar
                 </h3>
-                <Calendar />
+                <Calendar
+                  streakHistory={streak.streakHistory}
+                  activityLog={activityLog}
+                />
               </div>
             </div>
           </div>

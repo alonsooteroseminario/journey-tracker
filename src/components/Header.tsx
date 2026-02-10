@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 interface HeaderProps {
   totalProgress?: number;
   currentStreak?: number;
-  profileName?: string;
-  profileImage?: string;
   onNewGoalClick?: () => void;
   showNewGoalButton?: boolean;
 }
@@ -22,19 +21,20 @@ const navItems = [
 export function Header({
   totalProgress,
   currentStreak = 0,
-  profileName,
-  profileImage,
   onNewGoalClick,
   showNewGoalButton = true,
 }: HeaderProps) {
   const pathname = usePathname();
+  const { user, isLoaded } = useUser();
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname?.startsWith(href) ?? false;
   };
 
-  const isAuthenticated = !!profileName;
+  const isAuthenticated = isLoaded && !!user;
+  const profileName = user?.fullName || user?.firstName || "";
+  const profileImage = user?.imageUrl;
 
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
@@ -113,7 +113,7 @@ export function Header({
                     />
                   ) : (
                     <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-[10px] sm:text-sm border border-transparent group-hover:border-blue-400 transition-all">
-                      {profileName!.charAt(0).toUpperCase()}
+                      {profileName ? profileName.charAt(0).toUpperCase() : "?"}
                     </div>
                   )}
                   <span className="hidden lg:block text-xs font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
@@ -164,21 +164,22 @@ export function Header({
           </div>
         </div>
 
-        {/* Always-Visible Tab Bar */}
+        {/* Always-Visible Tab Bar — icons only on mobile, labels on sm+ */}
         <div className="mt-2 sm:mt-3 border-t border-gray-200 pt-2 sm:pt-3">
-          <div className="flex gap-1 sm:gap-2 overflow-x-auto">
+          <div className="flex gap-1 sm:gap-2">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                title={item.label}
+                className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                   isActive(item.href)
                     ? "bg-blue-100 text-blue-700 shadow-sm"
                     : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                <span className="text-base sm:text-lg">{item.icon}</span>
-                <span>{item.label}</span>
+                <span className="text-lg sm:text-lg">{item.icon}</span>
+                <span className="hidden sm:inline">{item.label}</span>
               </Link>
             ))}
           </div>
