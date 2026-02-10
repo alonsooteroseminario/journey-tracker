@@ -4,7 +4,7 @@ import { useState } from "react";
 import { StreakCounter } from "./StreakCounter";
 import { ProgressBar } from "./ProgressBar";
 import { Calendar } from "./Calendar";
-import type { Streak, ActivityLogEntry } from "@/types";
+import type { StreakData, ActivityLogEntry } from "@/types";
 
 interface MobileStatsPanelProps {
   totalProgress: number;
@@ -12,7 +12,7 @@ interface MobileStatsPanelProps {
   totalTasks: number;
   totalSubsteps: number;
   goalCount: number;
-  streak: Streak;
+  streak: StreakData;
   activityLog: ActivityLogEntry[];
 }
 

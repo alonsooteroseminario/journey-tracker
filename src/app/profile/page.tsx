@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
 import { useGoals } from "@/hooks/useGoals";
 import { UserProfile } from "@/types";
 import { Calendar } from "@/components/Calendar";
@@ -8,19 +9,23 @@ import { EmailPreferencesPanel } from "@/components/EmailPreferencesPanel";
 import { Header } from "@/components/Header";
 
 export default function ProfilePage() {
+  const { user: clerkUser, isLoaded: clerkLoaded } = useUser();
   const { profile, streak, goals, isLoaded, updateProfile, activityLog } = useGoals();
-  
+
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
-  const [imagePreview, setImagePreview] = useState(profile.profileImage || "");
+
+  // Get actual user info from Clerk
+  const displayName = clerkUser?.fullName || clerkUser?.firstName || profile.name;
+  const displayEmail = clerkUser?.primaryEmailAddress?.emailAddress || profile.email;
+  const displayImage = clerkUser?.imageUrl || profile.profileImage;
 
   // Sync editedProfile when profile loads from API
   useEffect(() => {
     setEditedProfile(profile);
-    setImagePreview(profile.profileImage || "");
   }, [profile]);
 
-  if (!isLoaded) {
+  if (!isLoaded || !clerkLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -31,25 +36,6 @@ export default function ProfilePage() {
     );
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Check file size (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Image size should be less than 2MB");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setImagePreview(base64);
-        setEditedProfile({ ...editedProfile, profileImage: base64 });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSave = () => {
     updateProfile(editedProfile);
     setIsEditing(false);
@@ -57,7 +43,6 @@ export default function ProfilePage() {
 
   const handleCancel = () => {
     setEditedProfile(profile);
-    setImagePreview(profile.profileImage || "");
     setIsEditing(false);
   };
 
@@ -97,64 +82,45 @@ export default function ProfilePage() {
           <div className="flex flex-col md:flex-row items-start gap-2 sm:gap-6">
             {/* Profile Image */}
             <div className="relative flex-shrink-0">
-              {isEditing ? (
-                <label className="cursor-pointer group">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                  <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gray-200 flex items-center justify-center group-hover:bg-gray-300 transition-colors overflow-hidden border-2 sm:border-4 border-gray-300 group-hover:border-blue-400">
-                    {imagePreview ? (
-                      <img src={imagePreview} alt="Profile" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="text-center">
-                        <span className="text-xl sm:text-3xl mb-1 block">📸</span>
-                        <span className="text-[10px] sm:text-xs text-gray-600">Upload</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-1 sm:p-2 shadow-lg group-hover:bg-blue-600 transition-colors">
-                    <svg className="w-3 h-3 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
-                  </div>
-                </label>
-              ) : (
-                <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-2xl sm:text-4xl font-bold overflow-hidden border-2 sm:border-4 border-white shadow-lg">
-                  {profile.profileImage ? (
-                    <img src={profile.profileImage} alt={profile.name} className="w-full h-full object-cover" />
-                  ) : (
-                    profile.name.charAt(0).toUpperCase()
-                  )}
-                </div>
-              )}
+              <div className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-2xl sm:text-4xl font-bold overflow-hidden border-2 sm:border-4 border-white shadow-lg">
+                {displayImage ? (
+                  <img src={displayImage} alt={displayName} className="w-full h-full object-cover" />
+                ) : (
+                  displayName.charAt(0).toUpperCase()
+                )}
+              </div>
             </div>
 
             {/* Profile Info */}
             <div className="flex-1 w-full">
               {isEditing ? (
                 <div className="space-y-2 sm:space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                    <input
-                      type="text"
-                      value={editedProfile.name}
-                      onChange={(e) => setEditedProfile({ ...editedProfile, name: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input
-                      type="email"
-                      value={editedProfile.email || ""}
-                      onChange={(e) => setEditedProfile({ ...editedProfile, email: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="your.email@example.com"
-                    />
+                  {/* Account Info (Read-only, managed by Clerk) */}
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 sm:p-4">
+                    <div className="mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Name</label>
+                      <p className="text-sm sm:text-base text-gray-900">{displayName}</p>
+                    </div>
+                    <div className="mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email</label>
+                      <p className="text-sm sm:text-base text-gray-900">{displayEmail}</p>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Name and email are managed through your account settings.{" "}
+                      <a
+                        href={clerkUser?.organizationMemberships && clerkUser.organizationMemberships.length > 0 ? undefined : "/user"}
+                        onClick={(e) => {
+                          if (clerkUser) {
+                            e.preventDefault();
+                            // Open Clerk's user profile modal
+                            window.open(`https://accounts.${window.location.hostname}/user`, '_blank');
+                          }
+                        }}
+                        className="text-blue-600 hover:text-blue-700 underline"
+                      >
+                        Manage account
+                      </a>
+                    </p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
@@ -193,13 +159,13 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <div>
-                  <h1 className="text-base sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">{profile.name}</h1>
-                  {profile.email && (
-                    <p className="text-gray-600 mb-2 flex items-center gap-2">
+                  <h1 className="text-base sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">{displayName}</h1>
+                  {displayEmail && (
+                    <p className="text-xs sm:text-sm text-gray-600 mb-2 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
-                      {profile.email}
+                      {displayEmail}
                     </p>
                   )}
                   {profile.bio && (
