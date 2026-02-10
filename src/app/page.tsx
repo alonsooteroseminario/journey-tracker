@@ -11,6 +11,7 @@ import { NotificationBanner } from "@/components/NotificationBanner";
 import { Calendar } from "@/components/Calendar";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { Header } from "@/components/Header";
+import { MobileStatsPanel } from "@/components/MobileStatsPanel";
 
 export default function Home() {
   const {
@@ -88,8 +89,6 @@ export default function Home() {
       <Header
         totalProgress={totalProgress}
         currentStreak={streak.currentStreak}
-        profileName={profile.name}
-        profileImage={profile.profileImage}
         onNewGoalClick={() => setIsCreateModalOpen(true)}
       />
 
@@ -155,7 +154,7 @@ export default function Home() {
         ) : (
           <div className="grid lg:grid-cols-3 gap-2 sm:gap-8">
             {/* Sidebar - Streak & Stats */}
-            <div className="lg:col-span-1 space-y-2 sm:space-y-4">
+            <div className="hidden lg:block lg:col-span-1 space-y-2 sm:space-y-4">
               {/* Streak Counter */}
               <StreakCounter streak={streak} hasCompletedToday={hasCompletedTaskToday()} />
 
@@ -285,6 +284,9 @@ export default function Home() {
         onCreateGoal={addGoal}
         onAddGoalWithTasks={addGoalWithTasks}
       />
+
+      {/* Mobile Stats Panel - FAB with bottom sheet */}
+      <MobileStatsPanel goals={goals} />
 
       {/* Today's Status Badge (Fixed at bottom) */}
       {goals.length > 0 && (
