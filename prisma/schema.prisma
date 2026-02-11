@@ -38,6 +38,7 @@ model User {
   socialAccounts   SocialAccount[]
   socialPosts      SocialPost[]
   marketingCampaigns MarketingCampaign[]
+  videos           Video[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -429,4 +430,39 @@ model MarketingCampaign {
   @@index([userId])
   @@index([status])
   @@map("marketing_campaigns")
+}
+
+model Video {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+
+  // Video type and source data
+  templateType String // "goal_progress" | "streak_milestone" | "task_completion"
+  sourceData   Json   // Goal/streak data used for generation
+
+  // Rendering
+  status       String   @default("pending") // "pending" | "rendering" | "completed" | "failed"
+  renderJobId  String?  // Job ID for tracking render progress
+  duration     Int?     // Duration in seconds
+  width        Int      @default(1920)
+  height       Int      @default(1080)
+  fps          Int      @default(30)
+
+  // Output
+  videoUrl     String?  // URL to rendered video file
+  thumbnailUrl String?  // URL to video thumbnail
+  fileSize     Int?     // Size in bytes
+
+  error        String?  // Error message if rendering failed
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([templateType])
+  @@map("videos")
 }

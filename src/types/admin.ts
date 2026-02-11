@@ -144,3 +144,37 @@ export interface MarketingCampaign {
   createdAt: Date;
   updatedAt: Date;
 }
+
+// Video Types
+export type VideoTemplateType = "goal_progress" | "streak_milestone" | "task_completion";
+
+export interface Video {
+  id: string;
+  userId: string;
+  title: string;
+  description: string | null;
+  templateType: VideoTemplateType;
+  sourceData: any;
+  status: "pending" | "rendering" | "completed" | "failed";
+  renderJobId: string | null;
+  duration: number | null;
+  width: number;
+  height: number;
+  fps: number;
+  videoUrl: string | null;
+  thumbnailUrl: string | null;
+  fileSize: number | null;
+  error: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateVideoRequest {
+  title: string;
+  description?: string;
+  templateType: VideoTemplateType;
+  sourceData: any;
+  width?: number;
+  height?: number;
+  fps?: number;
+}

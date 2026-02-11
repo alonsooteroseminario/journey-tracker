@@ -1,9 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
-  webpack(config, { dev }) {
+  experimental: {
+    serverComponentsExternalPackages: ['@remotion/bundler', '@remotion/renderer'],
+  },
+  webpack(config, { dev, isServer }) {
     if (dev) {
       config.cache = { type: 'memory' };
+    }
+    // Exclude Remotion packages from client bundle
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@remotion/bundler': false,
+        '@remotion/renderer': false,
+      };
     }
     return config;
   },

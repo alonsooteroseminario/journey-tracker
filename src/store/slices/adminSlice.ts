@@ -7,14 +7,16 @@ import type {
   SocialPlatform,
   SocialPostWithAccount,
   CreatePostRequest,
-  UpdatePostRequest
+  UpdatePostRequest,
+  Video,
+  CreateVideoRequest
 } from "@/types/admin";
 
 // RTK Query API for admin endpoints
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api/admin" }),
-  tagTypes: ["Analytics", "Explorer", "SocialAccounts", "SocialPosts"],
+  tagTypes: ["Analytics", "Explorer", "SocialAccounts", "SocialPosts", "Videos"],
   endpoints: (builder) => ({
     getAnalytics: builder.query<AnalyticsData, void>({
       query: () => "/analytics",
@@ -134,6 +136,26 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ["SocialPosts"],
     }),
+    // Video endpoints
+    getVideos: builder.query<{ videos: Video[] }, void>({
+      query: () => "/videos",
+      providesTags: ["Videos"],
+    }),
+    createVideo: builder.mutation<{ video: Video }, CreateVideoRequest>({
+      query: (data) => ({
+        url: "/videos",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Videos"],
+    }),
+    deleteVideo: builder.mutation<{ success: boolean }, string>({
+      query: (videoId) => ({
+        url: `/videos/${videoId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Videos"],
+    }),
   }),
 });
 
@@ -152,6 +174,9 @@ export const {
   useUpdateSocialPostMutation,
   useDeleteSocialPostMutation,
   usePublishSocialPostMutation,
+  useGetVideosQuery,
+  useCreateVideoMutation,
+  useDeleteVideoMutation,
 } = adminApi;
 
 // UI state slice for admin dashboard
