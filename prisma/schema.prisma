@@ -35,6 +35,9 @@ model User {
   goalTemplates    GoalTemplate[]    @relation("TemplateAuthor")
   goalForks        GoalFork[]
   forkRequests     ForkRequest[]     @relation("ForkRequester")
+  socialAccounts   SocialAccount[]
+  socialPosts      SocialPost[]
+  marketingCampaigns MarketingCampaign[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -319,4 +322,111 @@ model ForkRequest {
   @@index([requesterId])
   @@index([templateId, status])
   @@map("fork_requests")
+}
+
+// ============== Social Media & Marketing Models ==============
+model SocialAccount {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  platform        String // "twitter" | "instagram"
+  platformUserId  String // User ID on the platform
+  username        String
+  displayName     String?
+  profileImage    String?
+
+  // Encrypted OAuth tokens
+  accessToken     String
+  refreshToken    String?
+  tokenExpiresAt  DateTime?
+
+  // Platform-specific metadata
+  metadata        Json? // followerCount, bio, etc.
+
+  isActive        Boolean  @default(true)
+  lastSyncedAt    DateTime @default(now())
+
+  posts           SocialPost[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, platform, platformUserId])
+  @@index([userId])
+  @@index([platform])
+  @@map("social_accounts")
+}
+
+model SocialPost {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String @db.ObjectId
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId String @db.ObjectId
+  account   SocialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  campaignId String? @db.ObjectId
+  campaign   MarketingCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
+  // Content
+  content       String
+  mediaUrls     String[] // URLs to images/videos
+  hashtags      String[]
+
+  // Scheduling
+  status        String   @default("draft") // "draft" | "scheduled" | "posted" | "failed"
+  scheduledFor  DateTime?
+  postedAt      DateTime?
+
+  // Platform post reference
+  platformPostId String? // ID on the social platform after posting
+  postUrl        String? // Public URL to the post
+
+  // Analytics (populated after posting)
+  analytics     Json? // likes, shares, comments, reach, etc.
+
+  // Goal linking for automated posting
+  linkedGoalId  String? @db.ObjectId
+
+  error         String? // Error message if posting failed
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([accountId])
+  @@index([campaignId])
+  @@index([scheduledFor])
+  @@map("social_posts")
+}
+
+model MarketingCampaign {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+
+  // Campaign configuration
+  targetGoals     String[] // Array of goal IDs to promote
+  platforms       String[] // ["twitter", "instagram"]
+  postingSchedule Json?    // Cron-like schedule or specific times
+
+  status          String   @default("draft") // "draft" | "active" | "paused" | "completed"
+
+  startDate       DateTime?
+  endDate         DateTime?
+
+  posts           SocialPost[]
+
+  // AI-generated content templates
+  contentTemplates Json? // Array of content variations
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("marketing_campaigns")
 }

@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { AnalyticsData, TimeRange } from "@/types/admin";
+import type { AnalyticsData, TimeRange, SocialAccount, SocialPlatform } from "@/types/admin";
 
 // RTK Query API for admin endpoints
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api/admin" }),
-  tagTypes: ["Analytics", "Explorer"],
+  tagTypes: ["Analytics", "Explorer", "SocialAccounts"],
   endpoints: (builder) => ({
     getAnalytics: builder.query<AnalyticsData, void>({
       query: () => "/analytics",
@@ -57,6 +57,28 @@ export const adminApi = createApi({
       }),
       invalidatesTags: (result, error, { model }) => [{ type: "Explorer", id: model }],
     }),
+    // Social accounts endpoints
+    getSocialAccounts: builder.query<{ accounts: SocialAccount[] }, void>({
+      query: () => "/social/accounts",
+      providesTags: ["SocialAccounts"],
+    }),
+    initiateSocialConnect: builder.query<{ authUrl: string; state: string }, SocialPlatform>({
+      query: (platform) => `/social/connect/${platform}`,
+    }),
+    deleteSocialAccount: builder.mutation<{ success: boolean }, string>({
+      query: (accountId) => ({
+        url: `/social/accounts/${accountId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["SocialAccounts"],
+    }),
+    refreshSocialToken: builder.mutation<{ success: boolean; expiresAt: Date | null }, string>({
+      query: (accountId) => ({
+        url: `/social/accounts/${accountId}/refresh`,
+        method: "POST",
+      }),
+      invalidatesTags: ["SocialAccounts"],
+    }),
   }),
 });
 
@@ -66,6 +88,10 @@ export const {
   useGetRecordQuery,
   useUpdateRecordMutation,
   useDeleteRecordMutation,
+  useGetSocialAccountsQuery,
+  useLazyInitiateSocialConnectQuery,
+  useDeleteSocialAccountMutation,
+  useRefreshSocialTokenMutation,
 } = adminApi;
 
 // UI state slice for admin dashboard
