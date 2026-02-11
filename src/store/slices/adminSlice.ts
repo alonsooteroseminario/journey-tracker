@@ -11,14 +11,15 @@ import type {
   Video,
   CreateVideoRequest,
   Recording,
-  CreateRecordingRequest
+  CreateRecordingRequest,
+  MarketingCampaign
 } from "@/types/admin";
 
 // RTK Query API for admin endpoints
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api/admin" }),
-  tagTypes: ["Analytics", "Explorer", "SocialAccounts", "SocialPosts", "Videos", "Recordings"],
+  tagTypes: ["Analytics", "Explorer", "SocialAccounts", "SocialPosts", "Videos", "Recordings", "Campaigns"],
   endpoints: (builder) => ({
     getAnalytics: builder.query<AnalyticsData, void>({
       query: () => "/analytics",
@@ -181,6 +182,71 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ["Recordings"],
     }),
+    // Campaign endpoints
+    getCampaigns: builder.query<
+      { campaigns: MarketingCampaign[] },
+      { status?: string } | void
+    >({
+      query: (params) => {
+        const searchParams = new URLSearchParams();
+        if (params && "status" in params && params.status) {
+          searchParams.set("status", params.status);
+        }
+        return `/campaigns?${searchParams}`;
+      },
+      providesTags: ["Campaigns"],
+    }),
+    getCampaign: builder.query<{ campaign: MarketingCampaign }, string>({
+      query: (campaignId) => `/campaigns/${campaignId}`,
+      providesTags: (result, error, id) => [{ type: "Campaigns", id }],
+    }),
+    createCampaign: builder.mutation<
+      { campaign: MarketingCampaign },
+      {
+        name: string;
+        description?: string;
+        targetGoals?: string[];
+        platforms: string[];
+        postingSchedule?: any;
+        startDate?: string;
+        endDate?: string;
+      }
+    >({
+      query: (data) => ({
+        url: "/campaigns",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Campaigns"],
+    }),
+    updateCampaign: builder.mutation<
+      { campaign: MarketingCampaign },
+      {
+        id: string;
+        name?: string;
+        description?: string;
+        status?: string;
+        targetGoals?: string[];
+        platforms?: string[];
+        postingSchedule?: any;
+        startDate?: string;
+        endDate?: string;
+      }
+    >({
+      query: ({ id, ...data }) => ({
+        url: `/campaigns/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => ["Campaigns", { type: "Campaigns", id }],
+    }),
+    deleteCampaign: builder.mutation<{ success: boolean }, string>({
+      query: (campaignId) => ({
+        url: `/campaigns/${campaignId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Campaigns"],
+    }),
   }),
 });
 
@@ -206,6 +272,11 @@ export const {
   useGetAvailableFlowsQuery,
   useCreateRecordingMutation,
   useDeleteRecordingMutation,
+  useGetCampaignsQuery,
+  useGetCampaignQuery,
+  useCreateCampaignMutation,
+  useUpdateCampaignMutation,
+  useDeleteCampaignMutation,
 } = adminApi;
 
 // UI state slice for admin dashboard

@@ -36,6 +36,9 @@ import { toolDefinition as getSharedTemplatesDefinition, executeGetSharedTemplat
 import { toolDefinition as forkGoalTemplateDefinition, executeForkGoalTemplate } from './forkGoalTemplate';
 import { toolDefinition as updateGoalTemplateDefinition, executeUpdateGoalTemplate } from './updateGoalTemplate';
 import { toolDefinition as deleteGoalTemplateDefinition, executeDeleteGoalTemplate } from './deleteGoalTemplate';
+import { toolDefinition as createCampaignDefinition, executeCreateCampaign } from './createCampaign';
+import { toolDefinition as getCampaignsDefinition, executeGetCampaigns } from './getCampaigns';
+import { toolDefinition as generatePostContentDefinition, executeGeneratePostContent } from './generatePostContent';
 
 /**
  * Array of all tool definitions
@@ -72,6 +75,9 @@ export const tools: ToolDefinition[] = [
   forkGoalTemplateDefinition,
   updateGoalTemplateDefinition,
   deleteGoalTemplateDefinition,
+  createCampaignDefinition,
+  getCampaignsDefinition,
+  generatePostContentDefinition,
 ];
 
 /**
@@ -204,6 +210,18 @@ export const toolExecutors = {
   'delete-goal-template': {
     definition: deleteGoalTemplateDefinition,
     executor: executeDeleteGoalTemplate,
+  },
+  'create-campaign': {
+    definition: createCampaignDefinition,
+    executor: executeCreateCampaign,
+  },
+  'get-campaigns': {
+    definition: getCampaignsDefinition,
+    executor: executeGetCampaigns,
+  },
+  'generate-post-content': {
+    definition: generatePostContentDefinition,
+    executor: executeGeneratePostContent,
   },
 } as unknown as ToolRegistry;
 
