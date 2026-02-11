@@ -6,16 +6,67 @@ import type { AnalyticsData, TimeRange } from "@/types/admin";
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api/admin" }),
-  tagTypes: ["Analytics"],
+  tagTypes: ["Analytics", "Explorer"],
   endpoints: (builder) => ({
     getAnalytics: builder.query<AnalyticsData, void>({
       query: () => "/analytics",
       providesTags: ["Analytics"],
     }),
+    getModelRecords: builder.query<
+      { data: any[]; pagination: any },
+      {
+        model: string;
+        page?: number;
+        limit?: number;
+        search?: string;
+        sort?: string;
+        order?: "asc" | "desc";
+      }
+    >({
+      query: ({ model, page = 1, limit = 20, search = "", sort = "createdAt", order = "desc" }) => {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+          search,
+          sort,
+          order,
+        });
+        return `/explorer/${model}?${params}`;
+      },
+      providesTags: (result, error, { model }) => [{ type: "Explorer", id: model }],
+    }),
+    getRecord: builder.query<any, { model: string; id: string }>({
+      query: ({ model, id }) => `/explorer/${model}/${id}`,
+      providesTags: (result, error, { model, id }) => [{ type: "Explorer", id: `${model}-${id}` }],
+    }),
+    updateRecord: builder.mutation<any, { model: string; id: string; data: any }>({
+      query: ({ model, id, data }) => ({
+        url: `/explorer/${model}/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { model, id }) => [
+        { type: "Explorer", id: model },
+        { type: "Explorer", id: `${model}-${id}` },
+      ],
+    }),
+    deleteRecord: builder.mutation<void, { model: string; id: string }>({
+      query: ({ model, id }) => ({
+        url: `/explorer/${model}/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, { model }) => [{ type: "Explorer", id: model }],
+    }),
   }),
 });
 
-export const { useGetAnalyticsQuery } = adminApi;
+export const {
+  useGetAnalyticsQuery,
+  useGetModelRecordsQuery,
+  useGetRecordQuery,
+  useUpdateRecordMutation,
+  useDeleteRecordMutation,
+} = adminApi;
 
 // UI state slice for admin dashboard
 interface AdminUIState {
