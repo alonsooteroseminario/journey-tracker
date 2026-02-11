@@ -386,6 +386,15 @@ model SocialPost {
 
   // Analytics (populated after posting)
   analytics     Json? // likes, shares, comments, reach, etc.
+  impressions   Int? // View count
+  likes         Int? // Like count
+  retweets      Int? // Retweet/share count
+  comments      Int? // Comment count
+  clicks        Int? // Link click count
+  analyticsLastFetched DateTime? // Last time analytics were updated
+
+  // A/B testing
+  abTestGroup   String? // "A" | "B" | null
 
   // Goal linking for automated posting
   linkedGoalId  String? @db.ObjectId
@@ -424,6 +433,10 @@ model MarketingCampaign {
 
   // AI-generated content templates
   contentTemplates Json? // Array of content variations
+
+  // A/B testing configuration
+  abTestEnabled Boolean @default(false)
+  abTestConfig  Json? // { variants: ['A', 'B'], metric: 'engagement', ... }
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

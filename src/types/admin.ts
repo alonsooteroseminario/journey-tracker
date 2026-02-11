@@ -141,6 +141,9 @@ export interface MarketingCampaign {
   startDate: Date | null;
   endDate: Date | null;
   contentTemplates: any;
+  abTestEnabled: boolean;
+  abTestConfig: any;
+  posts?: any[]; // Optional for list views, included in detail views
   createdAt: Date;
   updatedAt: Date;
 }
