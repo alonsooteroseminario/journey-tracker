@@ -1,10 +1,11 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/email/notifications";
 
 /**
  * Get the current authenticated user from the database.
  * Creates the user record if it doesn't exist yet (first login).
+ * Always syncs the latest name, email, and profileImage from Clerk.
  */
 export async function getCurrentUser() {
   const { userId: clerkId } = await auth();
@@ -13,21 +14,30 @@ export async function getCurrentUser() {
     return null;
   }
 
+  // Fetch the latest user data from Clerk
+  const clerk = await clerkClient();
+  const clerkUser = await clerk.users.getUser(clerkId);
+
+  // Extract user data from Clerk
+  const name = clerkUser.fullName || clerkUser.firstName || "User";
+  const email = clerkUser.emailAddresses[0]?.emailAddress || `${clerkId}@placeholder.com`;
+  const profileImage = clerkUser.imageUrl || null;
+
   // Use findUnique first for the common case (user already exists)
   let user = await prisma.user.findUnique({
     where: { clerkId },
   });
 
   // Auto-create user on first API call if not found
-  // (handles case where webhook hasn't fired yet)
   if (!user) {
     let isNewUser = false;
     try {
       user = await prisma.user.create({
         data: {
           clerkId,
-          email: `${clerkId}@placeholder.com`, // Will be updated by webhook
-          name: "New User",
+          email,
+          name,
+          profileImage,
           streakData: {
             create: {
               currentStreak: 0,
@@ -40,19 +50,15 @@ export async function getCurrentUser() {
       isNewUser = true;
     } catch (error) {
       // Handle race condition: another request created the user between our findUnique and create
-      // Retry the findUnique to get the user that was just created
       if ((error as any).code === "P2002") {
-        // Prisma unique constraint violation
         user = await prisma.user.findUnique({
           where: { clerkId },
         });
 
         if (!user) {
-          // This should never happen, but if it does, throw the original error
           throw error;
         }
       } else {
-        // Some other error occurred, re-throw it
         throw error;
       }
     }
@@ -61,6 +67,23 @@ export async function getCurrentUser() {
     if (isNewUser && user) {
       notify(user.id, "welcomeEmail", { userName: user.name }).catch((err) => {
         console.error("Failed to send welcome email:", err);
+      });
+    }
+  } else {
+    // User exists - sync the latest data from Clerk
+    // Only update if data has changed to avoid unnecessary database writes
+    if (
+      user.name !== name ||
+      user.email !== email ||
+      user.profileImage !== profileImage
+    ) {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          name,
+          email,
+          profileImage,
+        },
       });
     }
   }
