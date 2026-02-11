@@ -1,12 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { AnalyticsData, TimeRange, SocialAccount, SocialPlatform } from "@/types/admin";
+import type {
+  AnalyticsData,
+  TimeRange,
+  SocialAccount,
+  SocialPlatform,
+  SocialPostWithAccount,
+  CreatePostRequest,
+  UpdatePostRequest
+} from "@/types/admin";
 
 // RTK Query API for admin endpoints
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api/admin" }),
-  tagTypes: ["Analytics", "Explorer", "SocialAccounts"],
+  tagTypes: ["Analytics", "Explorer", "SocialAccounts", "SocialPosts"],
   endpoints: (builder) => ({
     getAnalytics: builder.query<AnalyticsData, void>({
       query: () => "/analytics",
@@ -79,6 +87,53 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ["SocialAccounts"],
     }),
+    // Social posts endpoints
+    getSocialPosts: builder.query<
+      { posts: SocialPostWithAccount[] },
+      { status?: string; accountId?: string } | void
+    >({
+      query: (params) => {
+        const searchParams = new URLSearchParams();
+        if (params && "status" in params && params.status) {
+          searchParams.set("status", params.status);
+        }
+        if (params && "accountId" in params && params.accountId) {
+          searchParams.set("accountId", params.accountId);
+        }
+        return `/social/posts?${searchParams}`;
+      },
+      providesTags: ["SocialPosts"],
+    }),
+    createSocialPost: builder.mutation<{ post: SocialPostWithAccount }, CreatePostRequest>({
+      query: (data) => ({
+        url: "/social/posts",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["SocialPosts"],
+    }),
+    updateSocialPost: builder.mutation<{ post: SocialPostWithAccount }, { id: string; data: UpdatePostRequest }>({
+      query: ({ id, data }) => ({
+        url: `/social/posts/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["SocialPosts"],
+    }),
+    deleteSocialPost: builder.mutation<{ success: boolean }, string>({
+      query: (postId) => ({
+        url: `/social/posts/${postId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["SocialPosts"],
+    }),
+    publishSocialPost: builder.mutation<{ post: SocialPostWithAccount }, string>({
+      query: (postId) => ({
+        url: `/social/posts/${postId}/publish`,
+        method: "POST",
+      }),
+      invalidatesTags: ["SocialPosts"],
+    }),
   }),
 });
 
@@ -92,6 +147,11 @@ export const {
   useLazyInitiateSocialConnectQuery,
   useDeleteSocialAccountMutation,
   useRefreshSocialTokenMutation,
+  useGetSocialPostsQuery,
+  useCreateSocialPostMutation,
+  useUpdateSocialPostMutation,
+  useDeleteSocialPostMutation,
+  usePublishSocialPostMutation,
 } = adminApi;
 
 // UI state slice for admin dashboard

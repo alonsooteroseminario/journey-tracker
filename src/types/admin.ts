@@ -101,6 +101,34 @@ export interface SocialPost {
   updatedAt: Date;
 }
 
+export interface SocialPostWithAccount extends SocialPost {
+  account: {
+    id: string;
+    platform: SocialPlatform;
+    username: string;
+    displayName: string | null;
+    profileImage: string | null;
+  };
+}
+
+export interface CreatePostRequest {
+  accountId: string;
+  content: string;
+  mediaUrls?: string[];
+  hashtags?: string[];
+  scheduledFor?: string;
+  linkedGoalId?: string;
+}
+
+export interface UpdatePostRequest {
+  content?: string;
+  mediaUrls?: string[];
+  hashtags?: string[];
+  scheduledFor?: string | null;
+  status?: "draft" | "scheduled";
+  linkedGoalId?: string | null;
+}
+
 export interface MarketingCampaign {
   id: string;
   userId: string;
