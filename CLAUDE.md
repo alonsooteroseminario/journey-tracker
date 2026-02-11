@@ -28,6 +28,22 @@ Path alias `@/` maps to `src/` (configured in both `tsconfig.json` and `vitest.c
 2. API routes call `auth()` from `@clerk/nextjs/server` to get `userId`.
 3. `src/lib/auth.ts` exports `getCurrentUser()` which resolves a Clerk `userId` to a Prisma `User` row, auto-creating on first login.
 
+#### User Data Synchronization
+
+`getCurrentUser()` automatically syncs the latest user data from Clerk to the Prisma User table on every authenticated request:
+- Fetches `name`, `email`, and `profileImage` from Clerk
+- Updates the User record only if data has changed (optimization)
+- Ensures template creator names and profile information are always up-to-date
+- No webhooks required - synchronization happens automatically on each auth check
+
+#### Email Notifications
+
+Email notifications respect user preferences stored in the `EmailPreferences` model:
+- Master toggle: `enabled` field controls all emails globally
+- Individual toggles: Each notification type (goalCreated, streakMilestone, etc.) can be disabled
+- The `notify()` function automatically checks preferences before sending
+- Preferences are managed via `EmailPreferencesPanel` on the profile page
+
 ### Data Layer
 
 - **Prisma + MongoDB** (`prisma/schema.prisma`). The `Goal` model stores `tasks` as a JSON field (array of Task objects with nested substeps). Any API that mutates tasks must do a read-modify-write on that JSON field.
