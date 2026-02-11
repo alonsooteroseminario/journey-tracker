@@ -39,6 +39,7 @@ model User {
   socialPosts      SocialPost[]
   marketingCampaigns MarketingCampaign[]
   videos           Video[]
+  recordings       Recording[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -465,4 +466,34 @@ model Video {
   @@index([userId, status])
   @@index([templateType])
   @@map("videos")
+}
+
+model Recording {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+
+  // Recording flow type
+  flowType    String // "goal_creation" | "task_completion" | "dashboard_tour" | "custom"
+  flowConfig  Json   // Configuration for the recording flow
+
+  // Recording status
+  status      String   @default("pending") // "pending" | "recording" | "completed" | "failed"
+
+  // Output
+  videoUrl    String?  // URL to recorded video file
+  duration    Int?     // Duration in seconds
+  fileSize    Int?     // Size in bytes
+
+  error       String?  // Error message if recording failed
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([flowType])
+  @@map("recordings")
 }

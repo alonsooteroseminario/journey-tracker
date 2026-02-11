@@ -178,3 +178,29 @@ export interface CreateVideoRequest {
   height?: number;
   fps?: number;
 }
+
+// Recording Types
+export type RecordingFlowType = "goal_creation" | "task_completion" | "dashboard_tour" | "custom";
+
+export interface Recording {
+  id: string;
+  userId: string;
+  title: string;
+  description: string | null;
+  flowType: RecordingFlowType;
+  flowConfig: any;
+  status: "pending" | "recording" | "completed" | "failed";
+  videoUrl: string | null;
+  duration: number | null;
+  fileSize: number | null;
+  error: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateRecordingRequest {
+  title: string;
+  description?: string;
+  flowType: RecordingFlowType;
+  flowConfig?: any;
+}

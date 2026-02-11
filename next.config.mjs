@@ -2,7 +2,7 @@
 const nextConfig = {
   poweredByHeader: false,
   experimental: {
-    serverComponentsExternalPackages: ['@remotion/bundler', '@remotion/renderer'],
+    serverComponentsExternalPackages: ['@remotion/bundler', '@remotion/renderer', 'playwright'],
   },
   webpack(config, { dev, isServer }) {
     if (dev) {

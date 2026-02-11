@@ -9,6 +9,7 @@ const navigation = [
   { name: "Social Accounts", href: "/admin/social", icon: "🌐" },
   { name: "Posts", href: "/admin/posts", icon: "📝" },
   { name: "Videos", href: "/admin/videos", icon: "🎬" },
+  { name: "Recordings", href: "/admin/recordings", icon: "🎥" },
   { name: "Campaigns", href: "/admin/campaigns", icon: "📢" },
   { name: "Marketing", href: "/admin/marketing", icon: "💼" },
 ];

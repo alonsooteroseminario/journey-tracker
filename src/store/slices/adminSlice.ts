@@ -9,14 +9,16 @@ import type {
   CreatePostRequest,
   UpdatePostRequest,
   Video,
-  CreateVideoRequest
+  CreateVideoRequest,
+  Recording,
+  CreateRecordingRequest
 } from "@/types/admin";
 
 // RTK Query API for admin endpoints
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api/admin" }),
-  tagTypes: ["Analytics", "Explorer", "SocialAccounts", "SocialPosts", "Videos"],
+  tagTypes: ["Analytics", "Explorer", "SocialAccounts", "SocialPosts", "Videos", "Recordings"],
   endpoints: (builder) => ({
     getAnalytics: builder.query<AnalyticsData, void>({
       query: () => "/analytics",
@@ -156,6 +158,29 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ["Videos"],
     }),
+    // Recording endpoints
+    getRecordings: builder.query<{ recordings: Recording[] }, void>({
+      query: () => "/recordings",
+      providesTags: ["Recordings"],
+    }),
+    getAvailableFlows: builder.query<{ flows: Array<{ type: string; name: string }> }, void>({
+      query: () => "/recordings?action=flows",
+    }),
+    createRecording: builder.mutation<{ recording: Recording }, CreateRecordingRequest>({
+      query: (data) => ({
+        url: "/recordings",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Recordings"],
+    }),
+    deleteRecording: builder.mutation<{ success: boolean }, string>({
+      query: (recordingId) => ({
+        url: `/recordings/${recordingId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Recordings"],
+    }),
   }),
 });
 
@@ -177,6 +202,10 @@ export const {
   useGetVideosQuery,
   useCreateVideoMutation,
   useDeleteVideoMutation,
+  useGetRecordingsQuery,
+  useGetAvailableFlowsQuery,
+  useCreateRecordingMutation,
+  useDeleteRecordingMutation,
 } = adminApi;
 
 // UI state slice for admin dashboard
