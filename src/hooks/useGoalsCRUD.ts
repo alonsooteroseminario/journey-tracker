@@ -187,7 +187,7 @@ export function useGoalsCRUD(
       if (!task) return;
 
       const taskTitle = task.title;
-      const oldStatus = task.status;
+      const oldStatus = task.status || 'not_started';
       // Toggle: not_started → completed, completed → not_started, in_progress → completed
       const newStatus: TaskStatus = oldStatus === 'completed' ? 'not_started' : 'completed';
       const now = new Date().toISOString();
@@ -301,7 +301,7 @@ export function useGoalsCRUD(
       if (!substep) return;
 
       const substepTitle = substep.title;
-      const oldStatus = substep.status;
+      const oldStatus = substep.status || 'not_started';
       // Toggle: not_started → completed, completed → not_started, in_progress → completed
       const newStatus: TaskStatus = oldStatus === 'completed' ? 'not_started' : 'completed';
       const now = new Date().toISOString();
