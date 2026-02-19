@@ -13,6 +13,7 @@ interface HeaderProps {
 
 const navItems = [
   { href: "/", label: "Home", icon: "🏠" },
+  { href: "/board", label: "Board", icon: "📊" },
   { href: "/feed", label: "Feed", icon: "📰" },
   { href: "/templates", label: "Templates", icon: "📋" },
   { href: "/marketplace", label: "Marketplace", icon: "🏪" },

@@ -14,6 +14,7 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
 
   const navItems = [
     { href: "/", label: "Dashboard", icon: "🏠" },
+    { href: "/board", label: "Board", icon: "📊" },
     { href: "/goals", label: "My Goals", icon: "🎯" },
     { href: "/feed", label: "Feed", icon: "📰" },
     { href: "/templates", label: "Templates", icon: "📋" },
