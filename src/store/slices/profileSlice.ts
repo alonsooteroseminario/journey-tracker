@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { UserProfile, EmailPreferences } from "@/types";
+import type { UserProfile, EmailPreferences, FeedPreferences } from "@/types";
 
 // ========== RTK Query API ==========
 export const profileApi = createApi({
   reducerPath: "profileApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-  tagTypes: ["Profile", "EmailPreferences"],
+  tagTypes: ["Profile", "EmailPreferences", "FeedPreferences"],
   endpoints: (builder) => ({
     // GET /api/profile
     getProfile: builder.query<UserProfile, void>({
@@ -55,6 +55,25 @@ export const profileApi = createApi({
       }),
       invalidatesTags: ["EmailPreferences"],
     }),
+
+    // GET /api/feed-preferences
+    getFeedPreferences: builder.query<FeedPreferences, void>({
+      query: () => "/feed-preferences",
+      providesTags: ["FeedPreferences"],
+    }),
+
+    // PATCH /api/feed-preferences
+    updateFeedPreferences: builder.mutation<
+      FeedPreferences,
+      Partial<FeedPreferences>
+    >({
+      query: (updates) => ({
+        url: "/feed-preferences",
+        method: "PATCH",
+        body: updates,
+      }),
+      invalidatesTags: ["FeedPreferences"],
+    }),
   }),
 });
 
@@ -64,6 +83,8 @@ export const {
   useUploadProfileImageMutation,
   useGetEmailPreferencesQuery,
   useUpdateEmailPreferencesMutation,
+  useGetFeedPreferencesQuery,
+  useUpdateFeedPreferencesMutation,
 } = profileApi;
 
 // ========== Local UI State Slice ==========

@@ -6,6 +6,7 @@ import { useGoals } from "@/hooks/useGoals";
 import { UserProfile } from "@/types";
 import { Calendar } from "@/components/Calendar";
 import { EmailPreferencesPanel } from "@/components/EmailPreferencesPanel";
+import { FeedPreferencesPanel } from "@/components/FeedPreferencesPanel";
 import { Header } from "@/components/Header";
 
 export default function ProfilePage() {
@@ -267,11 +268,17 @@ export default function ProfilePage() {
           />
         </div>
 
-        {/* Share Section */}
         {/* Email Preferences */}
         <div className="mb-6">
           <EmailPreferencesPanel />
         </div>
+
+        {/* Feed Visibility Preferences */}
+        <div className="mb-6">
+          <FeedPreferencesPanel />
+        </div>
+
+        {/* Share Section */}
 
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg p-3 sm:p-8 text-white">
           <div className="text-center mb-3 sm:mb-6">
