@@ -146,7 +146,7 @@ export function TaskMiniCard({
           task.status === 'completed'
             ? "border-l-green-500 bg-green-50/50"
             : task.status === 'in_progress'
-            ? "border-l-blue-500 bg-blue-50/30"
+            ? "border-l-orange-500 bg-orange-50/30"
             : priorityStyles[task.priority || "medium"]
         }`}
       >
@@ -170,12 +170,12 @@ export function TaskMiniCard({
               onClick={onToggle}
               role="button"
               aria-label={`Toggle task "${task.title}" status`}
-              title={TASK_STATUS_CONFIG[task.status]?.label || 'Toggle status'}
+              title={TASK_STATUS_CONFIG[task.status || 'not_started']?.label || 'Toggle status'}
               className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all mt-0.5 ${
                 task.status === 'completed'
                   ? "bg-green-500 border-green-500 text-white"
                   : task.status === 'in_progress'
-                  ? "bg-blue-500 border-blue-500 text-white"
+                  ? "bg-orange-500 border-orange-500 text-white"
                   : "border-gray-300 hover:border-green-500 hover:bg-green-50"
               }`}
             >
