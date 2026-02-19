@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Substep } from "@/types";
+import { Substep, TaskStatus, TASK_STATUS_CONFIG } from "@/types";
 import { formatCurrency } from "@/lib/storage";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -19,6 +19,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
   const [editTitle, setEditTitle] = useState(substep.title);
   const [editCost, setEditCost] = useState(substep.cost?.toString() || "");
   const [editNotes, setEditNotes] = useState(substep.notes || "");
+  const [editStatus, setEditStatus] = useState<TaskStatus>(substep.status || "not_started");
 
   const {
     attributes,
@@ -40,6 +41,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
       title: editTitle,
       cost: editCost ? parseFloat(editCost) : undefined,
       notes: editNotes || undefined,
+      status: editStatus,
     });
     setIsEditing(false);
   };
@@ -48,6 +50,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
     setEditTitle(substep.title);
     setEditCost(substep.cost?.toString() || "");
     setEditNotes(substep.notes || "");
+    setEditStatus(substep.status || "not_started");
     setIsEditing(false);
   };
 
@@ -80,6 +83,35 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
             className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Notes"
           />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            Status <span className="text-gray-400">(Optional)</span>
+          </label>
+          <div className="flex gap-1 sm:gap-1.5">
+            {(["not_started", "in_progress", "completed"] as const).map((s) => {
+              const config = TASK_STATUS_CONFIG[s];
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setEditStatus(s)}
+                  className={`flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs font-medium transition-all ${
+                    editStatus === s
+                      ? s === "completed"
+                        ? "bg-green-100 text-green-700 border border-green-300"
+                        : s === "in_progress"
+                        ? "bg-blue-100 text-blue-700 border border-blue-300"
+                        : "bg-gray-100 text-gray-700 border border-gray-300"
+                      : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50"
+                  }`}
+                >
+                  <span className="text-xs">{config.icon}</span>
+                  <span className="hidden sm:inline">{config.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
         <div className="flex gap-1.5 sm:gap-2">
           <button

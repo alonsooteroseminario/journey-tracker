@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Task, Substep } from "@/types";
+import { Task, Substep, TaskStatus, TASK_STATUS_CONFIG } from "@/types";
 import { formatCurrency } from "@/lib/storage";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 
@@ -20,6 +20,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
   const [dueDate, setDueDate] = useState(task.dueDate || "");
   const [notes, setNotes] = useState(task.notes || "");
   const [priority, setPriority] = useState<Task["priority"]>(task.priority || "medium");
+  const [status, setStatus] = useState<TaskStatus>(task.status || "not_started");
 
   useEffect(() => {
     setTitle(task.title);
@@ -29,6 +30,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
     setDueDate(task.dueDate || "");
     setNotes(task.notes || "");
     setPriority(task.priority || "medium");
+    setStatus(task.status || "not_started");
   }, [task]);
 
   const focusTrapRef = useFocusTrap(isOpen);
@@ -53,6 +55,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
       dueDate: dueDate || undefined,
       notes: notes || undefined,
       priority,
+      status,
     });
     onClose();
   };
@@ -191,6 +194,37 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
                   {p.charAt(0).toUpperCase() + p.slice(1)}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Status */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status <span className="text-gray-400 text-xs">(Optional)</span>
+            </label>
+            <div className="flex gap-2">
+              {(["not_started", "in_progress", "completed"] as const).map((s) => {
+                const config = TASK_STATUS_CONFIG[s];
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setStatus(s)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all ${
+                      status === s
+                        ? s === "completed"
+                          ? "bg-green-100 text-green-700 border-green-300"
+                          : s === "in_progress"
+                          ? "bg-blue-100 text-blue-700 border-blue-300"
+                          : "bg-gray-100 text-gray-700 border-gray-300"
+                        : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    <span>{config.icon}</span>
+                    <span>{config.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
