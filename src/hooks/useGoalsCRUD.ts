@@ -179,7 +179,7 @@ export function useGoalsCRUD(
   );
 
   const toggleTask = useCallback(
-    (goalId: string, taskId: string) => {
+    async (goalId: string, taskId: string) => {
       const goal = goals.find((g) => g.id === goalId);
       if (!goal) return;
 
@@ -202,19 +202,23 @@ export function useGoalsCRUD(
         };
       });
 
-      updateGoalMutation({
-        id: goalId,
-        updates: {
-          tasks: updatedTasks,
-          updatedAt: new Date().toISOString(),
-        },
-      });
+      try {
+        await updateGoalMutation({
+          id: goalId,
+          updates: {
+            tasks: updatedTasks,
+            updatedAt: new Date().toISOString(),
+          },
+        }).unwrap();
 
-      if (newStatus === 'completed') {
-        logActivity("task_completed", goalId, `Completed task: ${taskTitle}`, taskId);
-        triggerStreakUpdate();
-      } else {
-        logActivity("task_uncompleted", goalId, `Uncompleted task: ${taskTitle}`, taskId);
+        if (newStatus === 'completed') {
+          logActivity("task_completed", goalId, `Completed task: ${taskTitle}`, taskId);
+          triggerStreakUpdate();
+        } else {
+          logActivity("task_uncompleted", goalId, `Uncompleted task: ${taskTitle}`, taskId);
+        }
+      } catch (error) {
+        console.error("Failed to toggle task:", error);
       }
     },
     [goals, updateGoalMutation, logActivity, triggerStreakUpdate]
@@ -290,7 +294,7 @@ export function useGoalsCRUD(
   );
 
   const toggleSubstep = useCallback(
-    (goalId: string, taskId: string, substepId: string) => {
+    async (goalId: string, taskId: string, substepId: string) => {
       const goal = goals.find((g) => g.id === goalId);
       if (!goal) return;
 
@@ -322,16 +326,20 @@ export function useGoalsCRUD(
         };
       });
 
-      updateGoalMutation({
-        id: goalId,
-        updates: { tasks: updatedTasks, updatedAt: new Date().toISOString() },
-      });
+      try {
+        await updateGoalMutation({
+          id: goalId,
+          updates: { tasks: updatedTasks, updatedAt: new Date().toISOString() },
+        }).unwrap();
 
-      if (newStatus === 'completed') {
-        logActivity("substep_completed", goalId, `Completed substep: ${substepTitle}`, taskId, substepId);
-        triggerStreakUpdate();
-      } else {
-        logActivity("substep_uncompleted", goalId, `Uncompleted substep: ${substepTitle}`, taskId, substepId);
+        if (newStatus === 'completed') {
+          logActivity("substep_completed", goalId, `Completed substep: ${substepTitle}`, taskId, substepId);
+          triggerStreakUpdate();
+        } else {
+          logActivity("substep_uncompleted", goalId, `Uncompleted substep: ${substepTitle}`, taskId, substepId);
+        }
+      } catch (error) {
+        console.error("Failed to toggle substep:", error);
       }
     },
     [goals, updateGoalMutation, logActivity, triggerStreakUpdate]

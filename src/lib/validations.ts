@@ -19,8 +19,10 @@ const SubstepSchema = z.object({
   id: z.string().optional(), // Optional for creation, server generates if missing
   title: z.string().min(1, "Substep title is required").max(200, "Title too long"),
   description: z.string().max(1000, "Description too long").optional(),
-  completed: z.boolean().default(false),
+  status: z.enum(["not_started", "in_progress", "completed"]).default("not_started"),
+  completed: z.boolean().optional(), // Legacy field — ignored, kept for backward compat
   completedAt: isoDateTimeString.optional(),
+  startedAt: isoDateTimeString.optional(),
   cost: z.number().min(0, "Cost cannot be negative").optional(),
   estimatedCost: z.number().min(0, "Estimated cost cannot be negative").optional(),
   dueDate: isoDateString.optional(),
@@ -32,8 +34,10 @@ const TaskSchema = z.object({
   id: z.string().optional(), // Optional for creation
   title: z.string().min(1, "Task title is required").max(200, "Title too long"),
   description: z.string().max(1000, "Description too long").optional(),
-  completed: z.boolean().default(false),
+  status: z.enum(["not_started", "in_progress", "completed"]).default("not_started"),
+  completed: z.boolean().optional(), // Legacy field — ignored, kept for backward compat
   completedAt: isoDateTimeString.optional(),
+  startedAt: isoDateTimeString.optional(),
   order: z.number().int().min(0, "Order must be non-negative"),
   phase: z.string().max(100).optional(),
   stepNumber: z.string().max(50).optional(),
@@ -88,8 +92,10 @@ export const UpdateGoalSchema = z.object({
 export const UpdateTaskSchema = z.object({
   title: z.string().min(1).max(200).optional(),
   description: z.string().max(1000).optional(),
-  completed: z.boolean().optional(),
+  status: z.enum(["not_started", "in_progress", "completed"]).optional(),
+  completed: z.boolean().optional(), // Legacy field — ignored
   completedAt: isoDateTimeString.nullable().optional(),
+  startedAt: isoDateTimeString.nullable().optional(),
   order: z.number().int().min(0).optional(),
   phase: z.string().max(100).optional(),
   stepNumber: z.string().max(50).optional(),
