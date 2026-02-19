@@ -92,7 +92,7 @@ export function useGoalsCRUD(
         id: generateId(),
         title,
         description,
-        completed: false,
+        status: 'not_started',
         order: goal.tasks.length + 1,
         substeps: [],
       };
@@ -184,16 +184,19 @@ export function useGoalsCRUD(
       if (!goal) return;
 
       let taskTitle = "";
-      let wasCompleted = false;
+      let oldStatus: 'not_started' | 'in_progress' | 'completed' = 'not_started';
       const updatedTasks = goal.tasks.map((task) => {
         if (task.id !== taskId) return task;
         taskTitle = task.title;
-        wasCompleted = task.completed;
-        const newCompleted = !task.completed;
+        oldStatus = task.status;
+        // Toggle: not_started → completed, completed → not_started, in_progress → completed
+        const newStatus = task.status === 'completed' ? 'not_started' : 'completed';
+        const now = new Date().toISOString();
         return {
           ...task,
-          completed: newCompleted,
-          completedAt: newCompleted ? new Date().toISOString() : undefined,
+          status: newStatus,
+          completedAt: newStatus === 'completed' ? now : undefined,
+          startedAt: newStatus === 'completed' ? (task.startedAt || now) : undefined,
         };
       });
 
@@ -205,7 +208,7 @@ export function useGoalsCRUD(
         },
       });
 
-      if (!wasCompleted) {
+      if (oldStatus !== 'completed') {
         logActivity("task_completed", goalId, `Completed task: ${taskTitle}`, taskId);
         triggerStreakUpdate();
       } else {
@@ -243,7 +246,7 @@ export function useGoalsCRUD(
           id: generateId(),
           title,
           description,
-          completed: false,
+          status: 'not_started',
           order: (task.substeps?.length || 0) + 1,
         };
         return {
@@ -290,7 +293,7 @@ export function useGoalsCRUD(
       if (!goal) return;
 
       let substepTitle = "";
-      let wasCompleted = false;
+      let oldStatus: 'not_started' | 'in_progress' | 'completed' = 'not_started';
       const updatedTasks = goal.tasks.map((task) => {
         if (task.id !== taskId) return task;
         return {
@@ -298,12 +301,15 @@ export function useGoalsCRUD(
           substeps: task.substeps?.map((substep) => {
             if (substep.id !== substepId) return substep;
             substepTitle = substep.title;
-            wasCompleted = substep.completed;
-            const newCompleted = !substep.completed;
+            oldStatus = substep.status;
+            // Toggle: not_started → completed, completed → not_started, in_progress → completed
+            const newStatus = substep.status === 'completed' ? 'not_started' : 'completed';
+            const now = new Date().toISOString();
             return {
               ...substep,
-              completed: newCompleted,
-              completedAt: newCompleted ? new Date().toISOString() : undefined,
+              status: newStatus,
+              completedAt: newStatus === 'completed' ? now : undefined,
+              startedAt: newStatus === 'completed' ? (substep.startedAt || now) : undefined,
             };
           }),
         };
@@ -314,7 +320,7 @@ export function useGoalsCRUD(
         updates: { tasks: updatedTasks, updatedAt: new Date().toISOString() },
       });
 
-      if (!wasCompleted) {
+      if (oldStatus !== 'completed') {
         logActivity("substep_completed", goalId, `Completed substep: ${substepTitle}`, taskId, substepId);
         triggerStreakUpdate();
       } else {
@@ -471,10 +477,10 @@ export function useGoalsCRUD(
         const substeps = task.substeps || [];
         if (substeps.length > 0) {
           totalItems += substeps.length;
-          completedItems += substeps.filter((s) => s.completed).length;
+          completedItems += substeps.filter((s) => s.status === 'completed').length;
         } else {
           totalItems += 1;
-          completedItems += task.completed ? 1 : 0;
+          completedItems += task.status === 'completed' ? 1 : 0;
         }
       });
 
@@ -494,10 +500,10 @@ export function useGoalsCRUD(
       const substeps = task.substeps || [];
       if (substeps.length > 0) {
         totalItems += substeps.length;
-        completedItems += substeps.filter((s) => s.completed).length;
+        completedItems += substeps.filter((s) => s.status === 'completed').length;
       } else {
         totalItems += 1;
-        completedItems += task.completed ? 1 : 0;
+        completedItems += task.status === 'completed' ? 1 : 0;
       }
     });
 

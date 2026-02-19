@@ -29,21 +29,21 @@ export function useGoalAnalytics(
       const allSubsteps = allTasks.flatMap((t) => t.substeps || []);
 
       const totalTasks = allTasks.length;
-      const completedTasks = allTasks.filter((t) => t.completed).length;
+      const completedTasks = allTasks.filter((t) => t.status === 'completed').length;
       const totalSubsteps = allSubsteps.length;
-      const completedSubsteps = allSubsteps.filter((s) => s.completed).length;
+      const completedSubsteps = allSubsteps.filter((s) => s.status === 'completed').length;
 
       let totalItems = 0;
       let completedItems = 0;
 
-      allTasks.forEach((task) => {
+      allTasks.forEach ((task) => {
         const substeps = task.substeps || [];
         if (substeps.length > 0) {
           totalItems += substeps.length;
-          completedItems += substeps.filter((s) => s.completed).length;
+          completedItems += substeps.filter((s) => s.status === 'completed').length;
         } else {
           totalItems += 1;
-          completedItems += task.completed ? 1 : 0;
+          completedItems += task.status === 'completed' ? 1 : 0;
         }
       });
 
@@ -199,10 +199,10 @@ export function useGoalAnalytics(
             const substeps = task.substeps || [];
             if (substeps.length > 0) {
               goalTotalItems += substeps.length;
-              goalCompletedItems += substeps.filter((s) => s.completed).length;
+              goalCompletedItems += substeps.filter((s) => s.status === 'completed').length;
             } else {
               goalTotalItems += 1;
-              goalCompletedItems += task.completed ? 1 : 0;
+              goalCompletedItems += task.status === 'completed' ? 1 : 0;
             }
           });
 
@@ -232,10 +232,10 @@ export function useGoalAnalytics(
               const substeps = task.substeps || [];
               if (substeps.length > 0) {
                 phaseTotal += substeps.length;
-                phaseCompleted += substeps.filter((s) => s.completed).length;
+                phaseCompleted += substeps.filter((s) => s.status === 'completed').length;
               } else {
                 phaseTotal += 1;
-                phaseCompleted += task.completed ? 1 : 0;
+                phaseCompleted += task.status === 'completed' ? 1 : 0;
               }
             });
 
