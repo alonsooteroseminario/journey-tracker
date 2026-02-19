@@ -49,8 +49,8 @@ export function TaskList({
   const [showCompleted, setShowCompleted] = useState(false);
   const [viewMode, setViewMode] = useState<"cards" | "list">("cards");
 
-  const completedTasks = tasks.filter((t) => t.completed);
-  const pendingTasks = tasks.filter((t) => !t.completed);
+  const completedTasks = tasks.filter((t) => t.status === 'completed');
+  const pendingTasks = tasks.filter((t) => t.status !== 'completed');
 
   // Drag and drop sensors
   const sensors = useSensors(

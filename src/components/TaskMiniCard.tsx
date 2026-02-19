@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Task, Substep } from "@/types";
+import { Task, Substep, TASK_STATUS_CONFIG } from "@/types";
 import { SubstepCard } from "./SubstepCard";
 import { EditTaskModal } from "./EditTaskModal";
 import { formatCurrency } from "@/lib/storage";
@@ -98,7 +98,7 @@ export function TaskMiniCard({
   };
 
   const substeps = task.substeps || [];
-  const completedSubsteps = substeps.filter((s) => s.completed).length;
+  const completedSubsteps = substeps.filter((s) => s.status === 'completed').length;
   const hasSubsteps = substeps.length > 0;
   const substepProgress = hasSubsteps ? (completedSubsteps / substeps.length) * 100 : 0;
 
@@ -116,9 +116,9 @@ export function TaskMiniCard({
   
   // Calculate how much has been spent on completed items
   const completedSubstepsCost = substeps
-    .filter((s) => s.completed)
+    .filter((s) => s.status === 'completed')
     .reduce((sum, s) => sum + (s.cost || s.estimatedCost || 0), 0);
-  const spentSoFar = task.completed ? totalActualCost : completedSubstepsCost;
+  const spentSoFar = task.status === 'completed' ? totalActualCost : completedSubstepsCost;
   
   const hasCost = totalEstimatedCost > 0 || totalActualCost > 0;
 
@@ -143,8 +143,10 @@ export function TaskMiniCard({
         ref={setNodeRef}
         style={style}
         className={`bg-white rounded-xl border-l-4 shadow-sm hover:shadow-md transition-all ${
-          task.completed
+          task.status === 'completed'
             ? "border-l-green-500 bg-green-50/50"
+            : task.status === 'in_progress'
+            ? "border-l-blue-500 bg-blue-50/30"
             : priorityStyles[task.priority || "medium"]
         }`}
       >
@@ -163,22 +165,27 @@ export function TaskMiniCard({
               </svg>
             </button>
 
-            {/* Checkbox */}
+            {/* Status Button */}
             <button
               onClick={onToggle}
-              role="checkbox"
-              aria-checked={task.completed}
-              aria-label={`Mark task "${task.title}" as ${task.completed ? "incomplete" : "complete"}`}
+              role="button"
+              aria-label={`Toggle task "${task.title}" status`}
+              title={TASK_STATUS_CONFIG[task.status].label}
               className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all mt-0.5 ${
-                task.completed
+                task.status === 'completed'
                   ? "bg-green-500 border-green-500 text-white"
+                  : task.status === 'in_progress'
+                  ? "bg-blue-500 border-blue-500 text-white"
                   : "border-gray-300 hover:border-green-500 hover:bg-green-50"
               }`}
             >
-              {task.completed && (
+              {task.status === 'completed' && (
                 <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                 </svg>
+              )}
+              {task.status === 'in_progress' && (
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full" />
               )}
             </button>
 
@@ -192,7 +199,7 @@ export function TaskMiniCard({
                 )}
                 <h4
                   className={`text-xs sm:text-base font-medium ${
-                    task.completed ? "text-gray-500 line-through" : "text-gray-800"
+                    task.status === 'completed' ? "text-gray-500 line-through" : "text-gray-800"
                   }`}
                 >
                   {task.title}

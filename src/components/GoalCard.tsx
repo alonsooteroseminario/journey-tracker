@@ -74,15 +74,15 @@ export function GoalCard({
 
   goal.tasks.forEach((task) => {
     const substeps = task.substeps || [];
-    
+
     if (substeps.length > 0) {
       // If task has substeps, count substeps only
       totalCount += substeps.length;
-      completedCount += substeps.filter((s) => s.completed).length;
+      completedCount += substeps.filter((s) => s.status === 'completed').length;
     } else {
       // If no substeps, count the task itself
       totalCount += 1;
-      completedCount += task.completed ? 1 : 0;
+      completedCount += task.status === 'completed' ? 1 : 0;
     }
   });
 
@@ -340,7 +340,7 @@ export function GoalCard({
                     <div className="mb-4 p-4 bg-blue-50 rounded-xl">
                       <h4 className="font-bold text-blue-800">{selectedPhaseName}</h4>
                       <p className="text-sm text-blue-600">
-                        {displayedTasks.filter((t) => t.completed).length} of {displayedTasks.length} tasks completed
+                        {displayedTasks.filter((t) => t.status === 'completed').length} of {displayedTasks.length} tasks completed
                       </p>
                     </div>
 

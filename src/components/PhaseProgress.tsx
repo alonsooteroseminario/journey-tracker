@@ -20,15 +20,15 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
 
     phaseTasks.forEach((task) => {
       const substeps = task.substeps || [];
-      
+
       if (substeps.length > 0) {
         // If task has substeps, count substeps only
         totalItems += substeps.length;
-        completedItems += substeps.filter((s) => s.completed).length;
+        completedItems += substeps.filter((s) => s.status === 'completed').length;
       } else {
         // If no substeps, count the task itself
         totalItems += 1;
-        completedItems += task.completed ? 1 : 0;
+        completedItems += task.status === 'completed' ? 1 : 0;
       }
     });
 
@@ -37,22 +37,22 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
 
   const getPhaseStats = (phase: Phase) => {
     const phaseTasks = tasks.filter((t) => phase.taskIds.includes(t.id));
-    
+
     // Count both tasks and substeps for stats
     let totalItems = 0;
     let completedItems = 0;
 
     phaseTasks.forEach((task) => {
       const substeps = task.substeps || [];
-      
+
       if (substeps.length > 0) {
         // If task has substeps, count substeps only
         totalItems += substeps.length;
-        completedItems += substeps.filter((s) => s.completed).length;
+        completedItems += substeps.filter((s) => s.status === 'completed').length;
       } else {
         // If no substeps, count the task itself
         totalItems += 1;
-        completedItems += task.completed ? 1 : 0;
+        completedItems += task.status === 'completed' ? 1 : 0;
       }
     });
 

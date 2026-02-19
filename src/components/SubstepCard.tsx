@@ -105,8 +105,10 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
       ref={setNodeRef}
       style={style}
       className={`group flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg transition-all ${
-        substep.completed
+        substep.status === 'completed'
           ? "bg-green-50 border border-green-100"
+          : substep.status === 'in_progress'
+          ? "bg-blue-50 border border-blue-100"
           : "bg-gray-50 border border-gray-100 hover:bg-gray-100"
       }`}
     >
@@ -122,22 +124,26 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
         </svg>
       </button>
 
-      {/* Checkbox */}
+      {/* Status Button */}
       <button
         onClick={onToggle}
-        role="checkbox"
-        aria-checked={substep.completed}
-        aria-label={`Mark substep "${substep.title}" as ${substep.completed ? "incomplete" : "complete"}`}
+        role="button"
+        aria-label={`Toggle substep "${substep.title}" status`}
         className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-          substep.completed
+          substep.status === 'completed'
             ? "bg-green-500 border-green-500 text-white"
+            : substep.status === 'in_progress'
+            ? "bg-blue-500 border-blue-500 text-white"
             : "border-gray-300 hover:border-green-500"
         }`}
       >
-        {substep.completed && (
+        {substep.status === 'completed' && (
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
+        )}
+        {substep.status === 'in_progress' && (
+          <div className="w-1.5 h-1.5 bg-white rounded-full" />
         )}
       </button>
 
@@ -145,7 +151,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
       <div className="flex-1 min-w-0">
         <p
           className={`text-xs sm:text-sm ${
-            substep.completed ? "text-gray-500 line-through" : "text-gray-700"
+            substep.status === 'completed' ? "text-gray-500 line-through" : "text-gray-700"
           }`}
         >
           {substep.title}
