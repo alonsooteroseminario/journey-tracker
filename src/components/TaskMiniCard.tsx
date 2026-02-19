@@ -170,7 +170,7 @@ export function TaskMiniCard({
               onClick={onToggle}
               role="button"
               aria-label={`Toggle task "${task.title}" status`}
-              title={TASK_STATUS_CONFIG[task.status].label}
+              title={TASK_STATUS_CONFIG[task.status]?.label || 'Toggle status'}
               className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all mt-0.5 ${
                 task.status === 'completed'
                   ? "bg-green-500 border-green-500 text-white"
