@@ -7,6 +7,7 @@ import { ToolDefinition, ToolResult } from '@/types/agent';
 import { resolveUser } from '@/lib/agent/resolveUser';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { notify } from '@/lib/email/notifications';
+import { trackActivity, diffFields, formatDiffAction } from '@/lib/activity';
 
 export const toolDefinition: ToolDefinition = {
   name: 'update-profile',
@@ -59,11 +60,35 @@ export async function executeUpdateProfile(
       return { success: false, error: 'Validation error', message: 'At least one field must be provided (name, bio, location, timezone)' };
     }
 
+    // Capture old values for diff
+    const oldRecord: Record<string, unknown> = {
+      name: user.name,
+      bio: (user as any).bio,
+      location: (user as any).location,
+      timezone: (user as any).timezone,
+    };
+
     const updated = await prisma.user.update({
       where: { id: user.id },
       data: updateData,
     });
 
+    // Track activity with diff
+    const newRecord: Record<string, unknown> = {
+      name: updated.name,
+      bio: updated.bio,
+      location: updated.location,
+      timezone: updated.timezone,
+    };
+    const diffs = diffFields(oldRecord, newRecord, Object.keys(updateData));
+    await trackActivity({
+      userId: user.id,
+      type: 'profile_updated',
+      action: formatDiffAction('profile', updated.name, diffs),
+      metadata: { diffs },
+    });
+
+    // Audit log (legacy — console only)
     auditLogger.logProfileUpdated(userId, updateData);
 
     // Send email notification (non-blocking)

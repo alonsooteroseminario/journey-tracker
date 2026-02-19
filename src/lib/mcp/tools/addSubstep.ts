@@ -7,6 +7,7 @@ import { Prisma } from '@prisma/client';
 import { ToolDefinition, ToolResult } from '@/types/agent';
 import { resolveUser } from '@/lib/agent/resolveUser';
 import { securityGuard } from '@/lib/agent/security';
+import { trackActivity } from '@/lib/activity';
 import { Task } from '@/types';
 import { randomUUID } from 'crypto';
 
@@ -111,7 +112,7 @@ export async function executeAddSubstep(
       id: randomUUID(),
       title: args.title,
       description: args.description,
-      completed: false,
+      status: 'not_started' as const,
       order: substeps.length,
     };
 
@@ -122,6 +123,17 @@ export async function executeAddSubstep(
     await prisma.goal.update({
       where: { id: args.goalId },
       data: { tasks: tasks as unknown as Prisma.InputJsonValue },
+    });
+
+    // Track activity
+    await trackActivity({
+      userId: user.id,
+      type: 'substep_created',
+      action: `Added substep "${newSubstep.title}" to task "${task.title}"`,
+      goalId: args.goalId,
+      taskId: args.taskId,
+      substepId: newSubstep.id,
+      metadata: { goalTitle: goal.title, taskTitle: task.title, substepTitle: newSubstep.title },
     });
 
     return {

@@ -9,6 +9,7 @@ import { resolveUser } from '@/lib/agent/resolveUser';
 import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
+import { trackActivity } from '@/lib/activity';
 import { Task } from '@/types';
 import { randomUUID } from 'crypto';
 
@@ -109,7 +110,7 @@ export async function executeCreateTask(
     const newTask: Task = {
       id: randomUUID(),
       title: args.title.trim(),
-      completed: false,
+      status: 'not_started',
       order: tasks.length,
       ...(args.description && { description: args.description }),
       ...(args.priority && { priority: args.priority as Task['priority'] }),
@@ -130,7 +131,17 @@ export async function executeCreateTask(
     conversationStore.setLastGoal(userId, args.goalId);
     conversationStore.setLastTask(userId, newTask.id);
 
-    // Audit log
+    // Track activity (audit + feed)
+    await trackActivity({
+      userId: user.id,
+      type: 'task_created',
+      action: `Created task "${newTask.title}" in goal "${goal.title}"`,
+      goalId: args.goalId,
+      taskId: newTask.id,
+      metadata: { goalTitle: goal.title, taskTitle: newTask.title },
+    });
+
+    // Audit log (legacy — console only)
     auditLogger.logTaskUpdated(userId, args.goalId, newTask.id, { action: 'created', title: newTask.title });
 
     return {

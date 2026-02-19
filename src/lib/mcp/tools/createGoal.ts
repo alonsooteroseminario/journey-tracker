@@ -10,6 +10,7 @@ import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
 import { pickGoalIcon } from '@/lib/agent/pickGoalIcon';
 import { notify } from '@/lib/email/notifications';
+import { trackActivity } from '@/lib/activity';
 import { randomUUID } from 'crypto';
 
 export const toolDefinition: ToolDefinition = {
@@ -96,11 +97,11 @@ export async function executeCreateGoal(
     const tasksWithIds = (validatedData.tasks || []).map((task: any) => ({
       ...task,
       id: task.id || randomUUID(),
-      completed: task.completed || false,
+      status: task.status ?? (task.completed ? 'completed' : 'not_started'),
       substeps: (task.substeps || []).map((substep: any) => ({
         ...substep,
         id: substep.id || randomUUID(),
-        completed: substep.completed || false,
+        status: substep.status ?? (substep.completed ? 'completed' : 'not_started'),
       })),
     }));
 
@@ -140,20 +141,17 @@ export async function executeCreateGoal(
       console.error('Failed to send goal created email:', err);
     });
 
-    // Create feed item for goal creation
-    prisma.feedItem.create({
-      data: {
-        userId: user.id,
-        type: 'goal_created',
-        content: `${user.name} created a new goal: ${goal.icon || '🎯'} ${goal.title}`,
-        metadata: {
-          goalId: goal.id,
-          taskCount: tasksWithIds.length,
-        },
-        visibility: goal.isPublic ? 'friends' : 'friends',
-      },
+    // Track activity (creates ActivityLog + FeedItem per preferences)
+    trackActivity({
+      userId: user.id,
+      type: 'goal_created',
+      action: `Created new goal: ${goal.icon || '🎯'} ${goal.title}`,
+      feedContent: `${user.name} created a new goal: ${goal.icon || '🎯'} ${goal.title}`,
+      goalId: goal.id,
+      metadata: { goalId: goal.id, goalTitle: goal.title, taskCount: tasksWithIds.length },
+      feedVisibility: 'friends',
     }).catch((err) => {
-      console.error('Failed to create feed item for goal creation:', err);
+      console.error('Failed to track goal_created activity:', err);
     });
 
     return {

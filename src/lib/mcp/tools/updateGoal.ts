@@ -8,6 +8,7 @@ import { resolveUser } from '@/lib/agent/resolveUser';
 import { UpdateGoalSchema, validateRequest } from '@/lib/validations';
 import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
+import { trackActivity, diffFields, formatDiffAction } from '@/lib/activity';
 
 export const toolDefinition: ToolDefinition = {
   name: 'update-goal',
@@ -112,13 +113,43 @@ export async function executeUpdateGoal(
     }
     if (args.isPublic !== undefined) updateObject.isPublic = args.isPublic;
 
+    // Fetch old goal for diff
+    const oldGoal = await prisma.goal.findUnique({
+      where: { id: goalId },
+      select: { title: true, description: true, startDate: true, targetDate: true, isPublic: true },
+    });
+
     // Update goal
     const goal = await prisma.goal.update({
       where: { id: goalId },
       data: updateObject,
     });
 
-    // Audit log
+    // Track activity with diff
+    const oldRecord: Record<string, unknown> = {
+      title: oldGoal?.title,
+      description: oldGoal?.description,
+      startDate: oldGoal?.startDate?.toISOString().split('T')[0],
+      targetDate: oldGoal?.targetDate?.toISOString().split('T')[0],
+      isPublic: oldGoal?.isPublic,
+    };
+    const newRecord: Record<string, unknown> = {
+      title: goal.title,
+      description: goal.description,
+      startDate: goal.startDate?.toISOString().split('T')[0],
+      targetDate: goal.targetDate?.toISOString().split('T')[0],
+      isPublic: goal.isPublic,
+    };
+    const diffs = diffFields(oldRecord, newRecord, ['title', 'description', 'startDate', 'targetDate', 'isPublic']);
+    await trackActivity({
+      userId: user.id,
+      type: 'goal_updated',
+      action: formatDiffAction('goal', goal.title, diffs),
+      goalId,
+      metadata: { diffs, goalTitle: goal.title },
+    });
+
+    // Audit log (legacy — console only)
     auditLogger.logGoalUpdated(userId, goalId, updateObject);
 
     return {

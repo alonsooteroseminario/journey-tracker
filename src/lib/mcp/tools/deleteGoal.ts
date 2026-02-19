@@ -8,6 +8,7 @@ import { resolveUser } from '@/lib/agent/resolveUser';
 import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { notify } from '@/lib/email/notifications';
+import { trackActivity } from '@/lib/activity';
 
 export const toolDefinition: ToolDefinition = {
   name: 'delete-goal',
@@ -73,12 +74,21 @@ export async function executeDeleteGoal(
       select: { title: true },
     });
 
+    // Track activity before deleting (so we still have the title)
+    await trackActivity({
+      userId: user.id,
+      type: 'goal_deleted',
+      action: `Deleted goal "${goal?.title ?? args.goalId}"`,
+      goalId: args.goalId,
+      metadata: { goalTitle: goal?.title },
+    });
+
     // Delete goal
     await prisma.goal.delete({
       where: { id: args.goalId },
     });
 
-    // Audit log
+    // Audit log (legacy — console only)
     auditLogger.logGoalDeleted(userId, args.goalId);
 
     // Send email notification (non-blocking)

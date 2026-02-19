@@ -10,6 +10,7 @@ import { UpdateTaskSchema, validateRequest } from '@/lib/validations';
 import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
+import { trackActivity, diffFields, formatDiffAction } from '@/lib/activity';
 import { Task } from '@/types';
 
 export const toolDefinition: ToolDefinition = {
@@ -131,6 +132,9 @@ export async function executeUpdateTask(
       };
     }
 
+    // Capture old values for diff
+    const oldTask = { ...tasks[taskIndex] } as Record<string, unknown>;
+
     // Update task
     tasks[taskIndex] = {
       ...tasks[taskIndex],
@@ -143,10 +147,24 @@ export async function executeUpdateTask(
       data: { tasks: tasks as unknown as Prisma.InputJsonValue },
     });
 
+    // Track activity with before/after diff
+    const updatedTask = tasks[taskIndex] as Record<string, unknown>;
+    const diffs = diffFields(oldTask, updatedTask, ['title', 'description', 'priority', 'dueDate', 'notes']);
+    if (diffs.length > 0) {
+      await trackActivity({
+        userId: user.id,
+        type: 'task_updated',
+        action: formatDiffAction('task', tasks[taskIndex].title, diffs),
+        goalId: args.goalId,
+        taskId: args.taskId,
+        metadata: { diffs, goalTitle: goal.title, taskTitle: tasks[taskIndex].title },
+      });
+    }
+
     // Update conversation context
     conversationStore.setLastTask(userId, args.taskId);
 
-    // Audit log
+    // Audit log (legacy — console only)
     auditLogger.logTaskUpdated(userId, args.goalId, args.taskId, validation.data);
 
     return {

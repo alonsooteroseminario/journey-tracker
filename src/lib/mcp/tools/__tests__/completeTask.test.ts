@@ -12,8 +12,8 @@ describe('executeCompleteTask', () => {
   const mockGoal = {
     id: 'goal-1',
     tasks: [
-      { id: 'task-1', title: 'Task 1', completed: false },
-      { id: 'task-2', title: 'Task 2', completed: false },
+      { id: 'task-1', title: 'Task 1', status: 'not_started' },
+      { id: 'task-2', title: 'Task 2', status: 'not_started' },
     ],
   };
 
@@ -41,13 +41,13 @@ describe('executeCompleteTask', () => {
     vi.mocked(auditLogger.logTaskCompleted).mockImplementation(() => {});
 
     const result = await executeCompleteTask(
-      { goalId: 'goal-1', taskId: 'task-1', completed: true },
+      { goalId: 'goal-1', taskId: 'task-1', status: 'completed' },
       'clerk-123'
     );
 
     expect(result.success).toBe(true);
     const data = result.data as any;
-    expect(data.completed).toBe(true);
+    expect(data.status).toBe('completed');
     expect(data.completedAt).toBeDefined();
     expect(prisma.activityLog.create).toHaveBeenCalled();
   });
@@ -60,19 +60,19 @@ describe('executeCompleteTask', () => {
     vi.mocked(securityGuard.verifyOwnership).mockResolvedValue(true);
     vi.mocked(prisma.goal.findUnique).mockResolvedValue({
       ...mockGoal,
-      tasks: [{ id: 'task-1', title: 'Task 1', completed: true, completedAt: '2024-01-01' }],
+      tasks: [{ id: 'task-1', title: 'Task 1', status: 'completed', completedAt: '2024-01-01' }],
     } as any);
     vi.mocked(prisma.goal.update).mockResolvedValue({} as any);
     vi.mocked(prisma.activityLog.create).mockResolvedValue({} as any);
 
     const result = await executeCompleteTask(
-      { goalId: 'goal-1', taskId: 'task-1', completed: false },
+      { goalId: 'goal-1', taskId: 'task-1', status: 'not_started' },
       'clerk-123'
     );
 
     expect(result.success).toBe(true);
     const data = result.data as any;
-    expect(data.completed).toBe(false);
+    expect(data.status).toBe('not_started');
     expect(data.completedAt).toBeUndefined();
   });
 
@@ -85,7 +85,7 @@ describe('executeCompleteTask', () => {
     vi.mocked(prisma.goal.findUnique).mockResolvedValue(mockGoal as any);
 
     const result = await executeCompleteTask(
-      { goalId: 'goal-1', taskId: 'nonexistent', completed: true },
+      { goalId: 'goal-1', taskId: 'nonexistent', status: 'completed' },
       'clerk-123'
     );
 

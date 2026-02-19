@@ -37,7 +37,7 @@ describe('executeCreateTask', () => {
     expect(result.success).toBe(true);
     const data = result.data as any;
     expect(data.title).toBe('New Task');
-    expect(data.completed).toBe(false);
+    expect(data.status).toBe('not_started');
     expect(data.order).toBe(1); // appended after existing task at order 0
     expect(data.substeps).toEqual([]);
     expect(data.id).toBeDefined();

@@ -1,5 +1,5 @@
 /**
- * Toggle task completion status
+ * Update task status (not_started / in_progress / completed)
  */
 
 import { prisma } from '@/lib/prisma';
@@ -10,11 +10,12 @@ import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
 import { notify } from '@/lib/email/notifications';
-import { Task } from '@/types';
+import { trackActivity } from '@/lib/activity';
+import { Task, TaskStatus } from '@/types';
 
 export const toolDefinition: ToolDefinition = {
   name: 'complete-task',
-  description: 'Marks a task as completed or uncompleted. Also records activity and updates streaks.',
+  description: 'Updates a task status: not_started, in_progress, or completed. Also records activity and updates streaks when completed.',
   input_schema: {
     type: 'object',
     properties: {
@@ -24,89 +25,75 @@ export const toolDefinition: ToolDefinition = {
       },
       taskId: {
         type: 'string',
-        description: 'The ID of the task to complete/uncomplete',
+        description: 'The ID of the task to update',
       },
-      completed: {
-        type: 'boolean',
-        description: 'True to mark complete, false to mark incomplete',
+      status: {
+        type: 'string',
+        enum: ['not_started', 'in_progress', 'completed'],
+        description: 'The new status for the task',
       },
     },
-    required: ['goalId', 'taskId', 'completed'],
+    required: ['goalId', 'taskId', 'status'],
   },
 };
 
 export async function executeCompleteTask(
-  args: { goalId: string; taskId: string; completed: boolean },
+  args: { goalId: string; taskId: string; status: TaskStatus },
   userId?: string
 ): Promise<ToolResult> {
   try {
     if (!userId) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-        message: 'User ID is required',
-      };
+      return { success: false, error: 'Unauthorized', message: 'User ID is required' };
     }
 
-    if (!args.goalId || !args.taskId || args.completed === undefined) {
-      return {
-        success: false,
-        error: 'Validation error',
-        message: 'Goal ID, Task ID, and completed status are required',
-      };
+    if (!args.goalId || !args.taskId || !args.status) {
+      return { success: false, error: 'Validation error', message: 'Goal ID, Task ID, and status are required' };
     }
-    args.goalId = args.goalId.replace(/^(goal_|task_|substep_|user_)/i, "");
+    args.goalId = args.goalId.replace(/^(goal_|task_|substep_|user_)/i, '');
 
     // Resolve Clerk userId to MongoDB user
     const user = await resolveUser(userId);
     if (!user) {
-      return {
-        success: false,
-        error: 'User not found',
-        message: 'Could not find user in database',
-      };
+      return { success: false, error: 'User not found', message: 'Could not find user in database' };
     }
 
     // Verify ownership
     const hasAccess = await securityGuard.verifyOwnership(args.goalId, user.id, 'goal');
     if (!hasAccess) {
       auditLogger.logUnauthorizedAccess(userId, args.goalId, 'goal');
-      return {
-        success: false,
-        error: 'Forbidden',
-        message: 'You don\'t have access to this goal',
-      };
+      return { success: false, error: 'Forbidden', message: "You don't have access to this goal" };
     }
 
     // Fetch goal
-    const goal = await prisma.goal.findUnique({
-      where: { id: args.goalId },
-    });
-
+    const goal = await prisma.goal.findUnique({ where: { id: args.goalId } });
     if (!goal) {
-      return {
-        success: false,
-        error: 'Not found',
-        message: 'Goal not found',
-      };
+      return { success: false, error: 'Not found', message: 'Goal not found' };
     }
 
     // Parse tasks
     const tasks = ((goal.tasks as unknown) as Task[]) || [];
     const taskIndex = tasks.findIndex((t) => t.id === args.taskId);
-
     if (taskIndex === -1) {
-      return {
-        success: false,
-        error: 'Not found',
-        message: 'Task not found in goal',
-      };
+      return { success: false, error: 'Not found', message: 'Task not found in goal' };
     }
 
-    // Update task completion
+    // Capture old status for activity tracking
     const task = tasks[taskIndex];
-    task.completed = args.completed;
-    task.completedAt = args.completed ? new Date().toISOString() : undefined;
+    const oldStatus = task.status ?? (task as any).completed ? 'completed' : 'not_started';
+
+    // Update task status
+    const now = new Date().toISOString();
+    task.status = args.status;
+    if (args.status === 'completed') {
+      task.completedAt = now;
+      task.startedAt = task.startedAt ?? now;
+    } else if (args.status === 'in_progress') {
+      task.startedAt = task.startedAt ?? now;
+      task.completedAt = undefined;
+    } else {
+      task.completedAt = undefined;
+      task.startedAt = undefined;
+    }
 
     // Save back to database
     await prisma.goal.update({
@@ -114,30 +101,31 @@ export async function executeCompleteTask(
       data: { tasks: tasks as unknown as Prisma.InputJsonValue },
     });
 
-    // Create activity log entry
-    await prisma.activityLog.create({
-      data: {
-        userId: user.id,
-        type: args.completed ? 'task_completed' : 'task_uncompleted',
-        action: args.completed ? `Completed task: ${task.title}` : `Uncompleted task: ${task.title}`,
-        goalId: args.goalId,
-        taskId: args.taskId,
+    // Track activity (always logs + creates feed item per preferences)
+    await trackActivity({
+      userId: user.id,
+      type: 'task_status_changed',
+      action: `Changed task "${task.title}" status from ${oldStatus} to ${args.status}`,
+      goalId: args.goalId,
+      taskId: args.taskId,
+      metadata: {
+        oldStatus,
+        newStatus: args.status,
+        goalTitle: goal.title,
+        taskTitle: task.title,
       },
     });
 
-    // Update streak if completing
-    if (args.completed) {
+    // Update streak and send milestone notifications only when completing
+    if (args.status === 'completed') {
       const today = new Date().toISOString().split('T')[0];
-      const streakData = await prisma.streakData.findUnique({
-        where: { userId: user.id },
-      });
+      const streakData = await prisma.streakData.findUnique({ where: { userId: user.id } });
 
       if (streakData) {
         const streakHistory = streakData.streakHistory || [];
         if (!streakHistory.includes(today)) {
           streakHistory.push(today);
 
-          // Calculate new streak
           const sortedDates = streakHistory.sort();
           let currentStreak = 1;
           for (let i = sortedDates.length - 1; i > 0; i--) {
@@ -161,54 +149,39 @@ export async function executeCompleteTask(
             },
           });
 
-          // Send streak milestone email for notable achievements
+          // Milestone: notify + feed item (forced, bypasses preferences)
           const milestones = [7, 14, 30, 60, 100];
           if (milestones.includes(currentStreak)) {
             notify(user.id, 'streakMilestone', {
               userName: user.name,
               streakCount: currentStreak,
-            }).catch((err) => {
-              console.error('Failed to send streak milestone email:', err);
-            });
+            }).catch((err) => console.error('Failed to send streak milestone email:', err));
 
-            // Create feed item for streak milestone
-            prisma.feedItem.create({
-              data: {
-                userId: user.id,
-                type: 'streak_milestone',
-                content: `${user.name} reached a ${currentStreak}-day streak! 🔥`,
-                metadata: { streakCount: currentStreak },
-                visibility: 'friends',
-              },
-            }).catch((err) => {
-              console.error('Failed to create feed item for streak milestone:', err);
-            });
+            trackActivity({
+              userId: user.id,
+              type: 'streak_milestone',
+              action: `${user.name} reached a ${currentStreak}-day streak! 🔥`,
+              metadata: { streakCount: currentStreak },
+              createFeedItem: true,
+              feedVisibility: 'friends',
+            }).catch((err) => console.error('Failed to track streak milestone:', err));
           }
         }
       }
+
+      auditLogger.logTaskCompleted(userId, args.goalId, args.taskId);
     }
 
     // Update conversation context
     conversationStore.setLastTask(userId, args.taskId);
 
-    // Audit log
-    if (args.completed) {
-      auditLogger.logTaskCompleted(userId, args.goalId, args.taskId);
-    }
-
     return {
       success: true,
       data: task,
-      message: args.completed
-        ? `Completed task: ${task.title}`
-        : `Uncompleted task: ${task.title}`,
+      message: `Task "${task.title}" is now ${args.status.replace('_', ' ')}`,
     };
   } catch (error) {
     console.error('Error in executeCompleteTask:', error);
-    return {
-      success: false,
-      error: 'Database error',
-      message: 'Failed to update task completion',
-    };
+    return { success: false, error: 'Database error', message: 'Failed to update task status' };
   }
 }

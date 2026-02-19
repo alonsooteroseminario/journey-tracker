@@ -8,6 +8,7 @@ import { ToolDefinition, ToolResult } from '@/types/agent';
 import { resolveUser } from '@/lib/agent/resolveUser';
 import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
+import { trackActivity } from '@/lib/activity';
 import { Task } from '@/types';
 
 export const toolDefinition: ToolDefinition = {
@@ -92,6 +93,18 @@ export async function executeDeleteSubstep(
       data: { tasks: tasks as unknown as Prisma.InputJsonValue },
     });
 
+    // Track activity
+    await trackActivity({
+      userId: user.id,
+      type: 'substep_deleted',
+      action: `Deleted substep "${deletedTitle}" from task "${task.title}"`,
+      goalId: args.goalId,
+      taskId: args.taskId,
+      substepId: args.substepId,
+      metadata: { goalTitle: goal.title, taskTitle: task.title, substepTitle: deletedTitle },
+    });
+
+    // Audit log (legacy — console only)
     auditLogger.logTaskUpdated(userId, args.goalId, args.taskId, { action: 'substep_deleted', substepId: args.substepId, title: deletedTitle });
 
     return {

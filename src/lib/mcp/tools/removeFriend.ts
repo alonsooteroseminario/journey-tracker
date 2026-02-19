@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { ToolDefinition, ToolResult } from '@/types/agent';
 import { resolveUser } from '@/lib/agent/resolveUser';
 import { auditLogger } from '@/lib/agent/auditLog';
+import { trackActivity } from '@/lib/activity';
 
 export const toolDefinition: ToolDefinition = {
   name: 'remove-friend',
@@ -64,6 +65,15 @@ export async function executeRemoveFriend(
       },
     });
 
+    // Track activity
+    await trackActivity({
+      userId: user.id,
+      type: 'friend_changed',
+      action: `Removed ${friend?.name || 'a friend'} from friends list`,
+      metadata: { action: 'removed', friendId: args.friendId, friendName: friend?.name },
+    });
+
+    // Audit log (legacy — console only)
     auditLogger.logFriendRemoved(userId, args.friendId, { friendName: friend?.name });
 
     return {
