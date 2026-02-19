@@ -14,23 +14,77 @@ interface FeedItemCardProps {
 }
 
 const FEED_TYPE_ICONS: Record<string, string> = {
+  // Streaks
   streak_milestone: "🔥",
+  streak_at_risk: "⚠️",
+
+  // Goals
   goal_created: "🎯",
-  task_completed: "✅",
+  goal_updated: "📝",
+  goal_deleted: "🗑️",
   goal_shared: "🤝",
   goal_published: "🌟",
   goal_forked: "🔱",
-  streak_at_risk: "⚠️",
+
+  // Tasks
+  task_created: "➕",
+  task_updated: "✏️",
+  task_deleted: "❌",
+  task_completed: "✅",
+  task_status_changed: "🔄",
+
+  // Substeps
+  substep_created: "🔹",
+  substep_updated: "🔸",
+  substep_deleted: "⬜",
+
+  // Costs & Notes
+  cost_added: "💰",
+  cost_updated: "💵",
+  note_added: "📌",
+  note_updated: "📋",
+
+  // Profile & Friends
+  profile_updated: "👤",
+  friend_added: "👥",
+  friend_changed: "🔔",
 };
 
 const FEED_TYPE_COLORS: Record<string, string> = {
+  // Streaks
   streak_milestone: "bg-orange-50 border-orange-200",
+  streak_at_risk: "bg-red-50 border-red-200",
+
+  // Goals
   goal_created: "bg-blue-50 border-blue-200",
-  task_completed: "bg-green-50 border-green-200",
+  goal_updated: "bg-blue-50 border-blue-200",
+  goal_deleted: "bg-gray-50 border-gray-300",
   goal_shared: "bg-purple-50 border-purple-200",
   goal_published: "bg-yellow-50 border-yellow-200",
   goal_forked: "bg-indigo-50 border-indigo-200",
-  streak_at_risk: "bg-red-50 border-red-200",
+
+  // Tasks
+  task_created: "bg-emerald-50 border-emerald-200",
+  task_updated: "bg-teal-50 border-teal-200",
+  task_deleted: "bg-gray-50 border-gray-300",
+  task_completed: "bg-green-50 border-green-200",
+  task_status_changed: "bg-cyan-50 border-cyan-200",
+
+  // Substeps
+  substep_created: "bg-violet-50 border-violet-200",
+  substep_updated: "bg-fuchsia-50 border-fuchsia-200",
+  substep_deleted: "bg-gray-50 border-gray-300",
+
+  // Costs & Notes
+  cost_added: "bg-amber-50 border-amber-200",
+  cost_updated: "bg-yellow-50 border-yellow-200",
+  note_added: "bg-lime-50 border-lime-200",
+  note_updated: "bg-green-50 border-green-200",
+
+  // Profile & Friends
+  profile_updated: "bg-indigo-50 border-indigo-200",
+  friend_added: "bg-pink-50 border-pink-200",
+  friend_changed: "bg-rose-50 border-rose-200",
 };
 
 export function FeedItemCard({
@@ -102,6 +156,40 @@ export function FeedItemCard({
           <p className="text-sm sm:text-base text-gray-700 mb-2 break-words">
             {item.content}
           </p>
+
+          {/* Diff Display for Updates */}
+          {item.metadata?.diffs && Array.isArray(item.metadata.diffs) && item.metadata.diffs.length > 0 && (
+            <div className="mt-2 p-2 bg-white/50 rounded-lg border border-gray-200 text-xs sm:text-sm space-y-1">
+              {item.metadata.diffs.slice(0, 3).map((diff: any, index: number) => (
+                <div key={index} className="flex items-start gap-2">
+                  <span className="text-gray-500 font-medium min-w-[60px]">{diff.field}:</span>
+                  <div className="flex-1">
+                    {diff.oldValue !== undefined && (
+                      <span className="text-red-600 line-through">
+                        {String(diff.oldValue).substring(0, 50)}
+                        {String(diff.oldValue).length > 50 ? "..." : ""}
+                      </span>
+                    )}
+                    {diff.oldValue !== undefined && diff.newValue !== undefined && (
+                      <span className="mx-1 text-gray-400">→</span>
+                    )}
+                    {diff.newValue !== undefined && (
+                      <span className="text-green-600 font-medium">
+                        {String(diff.newValue).substring(0, 50)}
+                        {String(diff.newValue).length > 50 ? "..." : ""}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {item.metadata.diffs.length > 3 && (
+                <div className="text-gray-400 italic">
+                  +{item.metadata.diffs.length - 3} more changes
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="text-xs sm:text-sm text-gray-500">
             {formatDistanceToNow(new Date(item.createdAt), {
               addSuffix: true,

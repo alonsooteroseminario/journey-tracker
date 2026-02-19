@@ -2,20 +2,37 @@
 
 type FilterType =
   | "all"
-  | "streak_milestone"
-  | "goal_created"
-  | "task_completed";
+  | "goals"
+  | "tasks"
+  | "substeps"
+  | "streaks"
+  | "social"
+  | "notes_costs";
 
 interface FeedFiltersProps {
   activeFilter: FilterType;
   onFilterChange: (filter: FilterType) => void;
 }
 
+// Map filter categories to activity types
+export const FILTER_TYPE_MAP: Record<FilterType, string[]> = {
+  all: [],
+  goals: ["goal_created", "goal_updated", "goal_deleted", "goal_shared", "goal_published", "goal_forked"],
+  tasks: ["task_created", "task_updated", "task_deleted", "task_completed", "task_status_changed"],
+  substeps: ["substep_created", "substep_updated", "substep_deleted"],
+  streaks: ["streak_milestone", "streak_at_risk"],
+  social: ["friend_added", "friend_changed", "profile_updated"],
+  notes_costs: ["note_added", "note_updated", "cost_added", "cost_updated"],
+};
+
 const FILTERS: { value: FilterType; label: string; icon: string }[] = [
   { value: "all", label: "All", icon: "📰" },
-  { value: "streak_milestone", label: "Streaks", icon: "🔥" },
-  { value: "goal_created", label: "Goals", icon: "🎯" },
-  { value: "task_completed", label: "Tasks", icon: "✅" },
+  { value: "goals", label: "Goals", icon: "🎯" },
+  { value: "tasks", label: "Tasks", icon: "✅" },
+  { value: "substeps", label: "Substeps", icon: "🔹" },
+  { value: "streaks", label: "Streaks", icon: "🔥" },
+  { value: "social", label: "Social", icon: "👥" },
+  { value: "notes_costs", label: "Notes & Costs", icon: "💰" },
 ];
 
 export function FeedFilters({

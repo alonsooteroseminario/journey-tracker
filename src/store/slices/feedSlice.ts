@@ -75,7 +75,7 @@ export const {
 interface FeedUIState {
   expandedFeedItems: string[]; // IDs of feed items with expanded comments
   filters: {
-    type: "all" | "streak_milestone" | "goal_created" | "task_completed";
+    type: "all" | "goals" | "tasks" | "substeps" | "streaks" | "social" | "notes_costs";
   };
 }
 
@@ -103,7 +103,7 @@ const feedSlice = createSlice({
     setFeedFilter: (
       state,
       action: PayloadAction<
-        "all" | "streak_milestone" | "goal_created" | "task_completed"
+        "all" | "goals" | "tasks" | "substeps" | "streaks" | "social" | "notes_costs"
       >
     ) => {
       state.filters.type = action.payload;

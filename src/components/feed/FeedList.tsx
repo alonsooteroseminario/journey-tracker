@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FeedItem } from "@/types";
 import { FeedItemCard } from "./FeedItemCard";
-import { FeedFilters } from "./FeedFilters";
+import { FeedFilters, FILTER_TYPE_MAP } from "./FeedFilters";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { toggleFeedItemExpanded, setFeedFilter } from "@/store/slices/feedSlice";
 import {
@@ -39,7 +39,7 @@ export function FeedList() {
   };
 
   const handleFilterChange = (
-    filter: "all" | "streak_milestone" | "goal_created" | "task_completed"
+    filter: "all" | "goals" | "tasks" | "substeps" | "streaks" | "social" | "notes_costs"
   ) => {
     dispatch(setFeedFilter(filter));
     setPage(0); // Reset to first page when filter changes
@@ -49,7 +49,10 @@ export function FeedList() {
   const filteredItems =
     filters.type === "all"
       ? feedItems
-      : feedItems.filter((item: FeedItem) => item.type === filters.type);
+      : feedItems.filter((item: FeedItem) => {
+          const allowedTypes = FILTER_TYPE_MAP[filters.type as keyof typeof FILTER_TYPE_MAP];
+          return allowedTypes?.includes(item.type);
+        });
 
   if (isLoading && page === 0) {
     return (

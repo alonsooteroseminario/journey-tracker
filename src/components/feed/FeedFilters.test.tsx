@@ -16,7 +16,7 @@ describe("FeedFilters", () => {
 
   it("highlights active filter", () => {
     render(
-      <FeedFilters activeFilter="streak_milestone" onFilterChange={vi.fn()} />
+      <FeedFilters activeFilter="streaks" onFilterChange={vi.fn()} />
     );
 
     const buttons = screen.getAllByRole("button");
@@ -38,7 +38,7 @@ describe("FeedFilters", () => {
     const goalsButton = buttons.find((btn) => btn.textContent?.includes("🎯"));
 
     fireEvent.click(goalsButton!);
-    expect(onFilterChange).toHaveBeenCalledWith("goal_created");
+    expect(onFilterChange).toHaveBeenCalledWith("goals");
   });
 
   it("applies correct styling to inactive filters", () => {
