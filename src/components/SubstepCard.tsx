@@ -101,7 +101,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
                       ? s === "completed"
                         ? "bg-green-100 text-green-700 border border-green-300"
                         : s === "in_progress"
-                        ? "bg-blue-100 text-blue-700 border border-blue-300"
+                        ? "bg-orange-100 text-orange-700 border border-orange-300"
                         : "bg-gray-100 text-gray-700 border border-gray-300"
                       : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50"
                   }`}
@@ -138,9 +138,9 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
       style={style}
       className={`group flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg transition-all ${
         substep.status === 'completed'
-          ? "bg-green-50 border border-green-100"
+          ? "bg-green-50 border border-green-200"
           : substep.status === 'in_progress'
-          ? "bg-blue-50 border border-blue-100"
+          ? "bg-orange-50 border border-orange-200"
           : "bg-gray-50 border border-gray-100 hover:bg-gray-100"
       }`}
     >
@@ -165,7 +165,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
           substep.status === 'completed'
             ? "bg-green-500 border-green-500 text-white"
             : substep.status === 'in_progress'
-            ? "bg-blue-500 border-blue-500 text-white"
+            ? "bg-orange-500 border-orange-500 text-white"
             : "border-gray-300 hover:border-green-500"
         }`}
       >

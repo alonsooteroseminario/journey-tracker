@@ -215,7 +215,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
                         ? s === "completed"
                           ? "bg-green-100 text-green-700 border-green-300"
                           : s === "in_progress"
-                          ? "bg-blue-100 text-blue-700 border-blue-300"
+                          ? "bg-orange-100 text-orange-700 border-orange-300"
                           : "bg-gray-100 text-gray-700 border-gray-300"
                         : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"
                     }`}
