@@ -57,7 +57,7 @@ export default function FriendProfilePage() {
     totalGoals: goals.length,
     currentStreak: streak.currentStreak,
     longestStreak: streak.longestStreak,
-    completedGoals: goals.filter(g => g.tasks.every(t => t.completed)).length,
+    completedGoals: goals.filter(g => g.tasks.every(t => t.status === "completed")).length,
   };
 
   // Get friend's actual goals from sharedData or create personalized mock data

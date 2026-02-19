@@ -48,13 +48,13 @@ export default function ProfilePage() {
 
   const totalGoals = goals.length;
   const completedGoals = goals.filter(g =>
-    g.tasks.every(t => t.completed)
+    g.tasks.every(t => t.status === "completed")
   ).length;
 
   // Calculate additional stats
   const totalTasks = goals.reduce((sum, g) => sum + g.tasks.length, 0);
   const completedTasks = goals.reduce(
-    (sum, g) => sum + g.tasks.filter((t) => t.completed).length,
+    (sum, g) => sum + g.tasks.filter((t) => t.status === "completed").length,
     0
   );
   const totalSubsteps = goals.reduce(
@@ -62,7 +62,7 @@ export default function ProfilePage() {
     0
   );
   const completedSubsteps = goals.reduce(
-    (sum, g) => sum + g.tasks.reduce((ts, t) => ts + (t.substeps?.filter(s => s.completed).length || 0), 0),
+    (sum, g) => sum + g.tasks.reduce((ts, t) => ts + (t.substeps?.filter(s => s.status === "completed").length || 0), 0),
     0
   );
   const activeGoals = totalGoals - completedGoals;

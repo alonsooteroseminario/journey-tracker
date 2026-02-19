@@ -66,7 +66,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • Email Universidad de Piura with WES reference number
 • Request official transcripts sent to WES
 • Processing: 7-10 business days after WES receives docs`,
-      completed: false,
+      status: 'not_started' as const,
       order: 1,
       phase: "PHASE 1",
       stepNumber: "1.1",
@@ -81,7 +81,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • Book for 13 weeks from start date
 • Choose Vancouver test center
 • Set calendar reminder 1 week before`,
-      completed: false,
+      status: 'not_started' as const,
       order: 2,
       phase: "PHASE 1",
       stepNumber: "1.2",
@@ -98,7 +98,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • Add all work experience
 • Set Primary NOC: 21232 (Software Developer)
 • Screenshot your SIRS score after submission`,
-      completed: false,
+      status: 'not_started' as const,
       order: 3,
       phase: "PHASE 1",
       stepNumber: "1.3",
@@ -112,7 +112,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • CELPIP Study Pack (~$149)
 • Download and organize in study folder
 • Focus materials: 70% listening practice`,
-      completed: false,
+      status: 'not_started' as const,
       order: 4,
       phase: "PHASE 1",
       stepNumber: "1.4",
@@ -126,7 +126,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • Target: 18-30 hours/week (escalating)
 • Focus 70% on listening (weakest area)
 • Track progress weekly`,
-      completed: false,
+      status: 'not_started' as const,
       order: 5,
       phase: "PHASE 1",
       stepNumber: "1.5",
@@ -144,7 +144,7 @@ export function createBCPNPtoPRChecklist(): Goal {
   - Version control (Git)
 • Request letter on company letterhead
 • Include: Title, dates, hours/week, salary, duties, supervisor contact`,
-      completed: false,
+      status: 'not_started' as const,
       order: 6,
       phase: "PHASE 1",
       stepNumber: "1.6",
@@ -156,7 +156,7 @@ export function createBCPNPtoPRChecklist(): Goal {
       description: `• Request reference letter for 10-month position
 • Include all standard information
 • Emphasize technical responsibilities`,
-      completed: false,
+      status: 'not_started' as const,
       order: 7,
       phase: "PHASE 1",
       stepNumber: "1.7",
@@ -169,7 +169,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • BIM Modeler (1.67 years): Request letter in Spanish
 • Ensure letters include all required details
 • Letters will need certified translation later`,
-      completed: false,
+      status: 'not_started' as const,
       order: 8,
       phase: "PHASE 1",
       stepNumber: "1.8",
@@ -187,7 +187,7 @@ export function createBCPNPtoPRChecklist(): Goal {
   - Reading: 5% of time
 • Take practice tests weekly
 • Track error patterns`,
-      completed: false,
+      status: 'not_started' as const,
       order: 9,
       phase: "PHASE 1",
       stepNumber: "1.9",
@@ -201,7 +201,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • Chilean employer letters in Spanish (by Week 6-8)
 • Review all letters for completeness
 • Check: dates, duties, salary, contact info all correct`,
-      completed: false,
+      status: 'not_started' as const,
       order: 10,
       phase: "PHASE 1",
       stepNumber: "1.10",
@@ -218,7 +218,7 @@ export function createBCPNPtoPRChecklist(): Goal {
   - Certification statement
   - Translator credentials and stamp
 • Cost: ~$30-50 per page`,
-      completed: false,
+      status: 'not_started' as const,
       order: 11,
       phase: "PHASE 1",
       stepNumber: "1.11",
@@ -232,7 +232,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • Chilean jobs: Employment contracts, certificates of employment
 • Work permit copy
 • Job offer letter (permanent, full-time)`,
-      completed: false,
+      status: 'not_started' as const,
       order: 12,
       phase: "PHASE 1",
       stepNumber: "1.12",
@@ -246,7 +246,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • Note ECA reference number
 • Valid for 5 years
 • UPDATE BC PNP profile immediately with ECA number`,
-      completed: false,
+      status: 'not_started' as const,
       order: 13,
       phase: "PHASE 1",
       stepNumber: "1.13",
@@ -260,7 +260,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • Focus on weak areas
 • Get adequate rest before test
 • Week 13: Light review only, rest before test`,
-      completed: false,
+      status: 'not_started' as const,
       order: 14,
       phase: "PHASE 1",
       stepNumber: "1.14",
@@ -274,7 +274,7 @@ export function createBCPNPtoPRChecklist(): Goal {
 • Arrive 30 minutes early
 • Complete all 4 sections
 • Results in 8 business days online`,
-      completed: false,
+      status: 'not_started' as const,
       order: 15,
       phase: "PHASE 1",
       stepNumber: "1.15",
@@ -296,7 +296,7 @@ IF CLB 6 LISTENING REMAINS:
 • Continue with Base BC PNP stream (already registered)
 • Can retake CELPIP later if desired
 • Still get PR, just 18-month federal processing vs 6 months`,
-      completed: false,
+      status: 'not_started' as const,
       order: 16,
       phase: "PHASE 1",
       stepNumber: "1.16",
@@ -312,7 +312,7 @@ IF CLB 6 LISTENING REMAINS:
 • BC PNP announces draws with minimum scores
 • 2025 note: Limited draws (~100 ITAs for high-impact candidates)
 • Tech draws continue weekly but competitive`,
-      completed: false,
+      status: 'not_started' as const,
       order: 17,
       phase: "PHASE 2",
       stepNumber: "2.1",
@@ -328,7 +328,7 @@ IF CLB 6 LISTENING REMAINS:
   - Address changes
   - Contact information
 • Check email daily for BC PNP communications`,
-      completed: false,
+      status: 'not_started' as const,
       order: 18,
       phase: "PHASE 2",
       stepNumber: "2.2",
@@ -342,7 +342,7 @@ IF CLB 6 LISTENING REMAINS:
 • Keep work permit valid
 • Maintain good relationship with employer
 • Inform employer you may need updated documents`,
-      completed: false,
+      status: 'not_started' as const,
       order: 19,
       phase: "PHASE 2",
       stepNumber: "2.3",
@@ -356,7 +356,7 @@ IF CLB 6 LISTENING REMAINS:
 • Reference letters: Refresh every 6 months if needed
 • Keep employment documents updated
 • Ensure passport validity (needs 6+ months when applying)`,
-      completed: false,
+      status: 'not_started' as const,
       order: 20,
       phase: "PHASE 2",
       stepNumber: "2.4",
@@ -370,7 +370,7 @@ IF CLB 6 LISTENING REMAINS:
 • Review ITA carefully
 • YOU HAVE 30 DAYS TO SUBMIT COMPLETE APPLICATION
 • Do not delay - start application immediately!`,
-      completed: false,
+      status: 'not_started' as const,
       order: 21,
       phase: "PHASE 2",
       stepNumber: "2.5",
@@ -396,7 +396,7 @@ IF CLB 6 LISTENING REMAINS:
 □ Passport bio pages
 □ Proof of legal status in Canada
 □ Educational credentials (diploma, transcripts)`,
-      completed: false,
+      status: 'not_started' as const,
       order: 22,
       phase: "PHASE 3",
       stepNumber: "3.1",
@@ -415,7 +415,7 @@ IF CLB 6 LISTENING REMAINS:
   - Family information
 • Review for accuracy - any errors can delay processing
 • Save draft frequently`,
-      completed: false,
+      status: 'not_started' as const,
       order: 23,
       phase: "PHASE 3",
       stepNumber: "3.2",
@@ -433,7 +433,7 @@ IF CLB 6 LISTENING REMAINS:
   - Complete (all pages)
   - Properly translated (if applicable)
 • Double-check all uploads before submission`,
-      completed: false,
+      status: 'not_started' as const,
       order: 24,
       phase: "PHASE 3",
       stepNumber: "3.3",
@@ -449,7 +449,7 @@ IF CLB 6 LISTENING REMAINS:
 Payment by credit card
 Save receipt confirmation
 Fee is NON-REFUNDABLE`,
-      completed: false,
+      status: 'not_started' as const,
       order: 25,
       phase: "PHASE 3",
       stepNumber: "3.4",
@@ -466,7 +466,7 @@ Fee is NON-REFUNDABLE`,
 • Print/save confirmation page
 • Note your BC PNP file number
 • Save confirmation email`,
-      completed: false,
+      status: 'not_started' as const,
       order: 26,
       phase: "PHASE 3",
       stepNumber: "3.5",
@@ -485,7 +485,7 @@ Fee is NON-REFUNDABLE`,
   - Additional proof of work
 • Response deadline: Usually 7-14 days
 • CRITICAL: Missing deadline = automatic refusal`,
-      completed: false,
+      status: 'not_started' as const,
       order: 27,
       phase: "PHASE 4",
       stepNumber: "4.1",
@@ -502,7 +502,7 @@ Fee is NON-REFUNDABLE`,
   - Permanent position
 • BC PNP checks education credentials
 • Background verification conducted`,
-      completed: false,
+      status: 'not_started' as const,
       order: 28,
       phase: "PHASE 4",
       stepNumber: "4.2",
@@ -516,7 +516,7 @@ Fee is NON-REFUNDABLE`,
 • Keep work permit valid
 • Do NOT change address without notifying BC PNP
 • Respond immediately to all BC PNP communications`,
-      completed: false,
+      status: 'not_started' as const,
       order: 29,
       phase: "PHASE 4",
       stepNumber: "4.3",
@@ -540,7 +540,7 @@ OPTION C - Refused (rare):
 • Review refusal reasons
 • Can reapply after addressing issues
 • May appeal if decision unfair`,
-      completed: false,
+      status: 'not_started' as const,
       order: 30,
       phase: "PHASE 4",
       stepNumber: "4.4",
@@ -562,7 +562,7 @@ PATH B - BASE BC PNP (If CLB 6 listening):
 • Limited status updates
 
 Follow steps below based on your path`,
-      completed: false,
+      status: 'not_started' as const,
       order: 31,
       phase: "PHASE 5",
       stepNumber: "5.1",
@@ -577,7 +577,7 @@ Follow steps below based on your path`,
 • Your CRS score increases by 600 points
 • You now have ~1000+ CRS score
 • Screenshot new score`,
-      completed: false,
+      status: 'not_started' as const,
       order: 32,
       phase: "PHASE 5",
       stepNumber: "5.2A",
@@ -590,7 +590,7 @@ Follow steps below based on your path`,
 • Usually within 2 weeks of accepting nomination
 • You have 60 DAYS to submit complete application
 • Start gathering documents immediately`,
-      completed: false,
+      status: 'not_started' as const,
       order: 33,
       phase: "PHASE 5",
       stepNumber: "5.2B",
@@ -618,7 +618,7 @@ PERU (If lived 6+ months after age 18):
 • Valid 6 months
 
 All certificates must be less than 6 months old at time of application`,
-      completed: false,
+      status: 'not_started' as const,
       order: 34,
       phase: "PHASE 5",
       stepNumber: "5.3",
@@ -642,7 +642,7 @@ All certificates must be less than 6 months old at time of application`,
   - Urine tests
 • Doctor uploads results directly to IRCC
 • Results valid 12 months`,
-      completed: false,
+      status: 'not_started' as const,
       order: 35,
       phase: "PHASE 5",
       stepNumber: "5.4",
@@ -666,7 +666,7 @@ All certificates must be less than 6 months old at time of application`,
 □ Spouse documents (if applicable)
 □ Digital photos (PR specifications)
 □ Proof of funds (if required)`,
-      completed: false,
+      status: 'not_started' as const,
       order: 36,
       phase: "PHASE 5",
       stepNumber: "5.5",
@@ -691,7 +691,7 @@ All certificates must be less than 6 months old at time of application`,
 • Submit application
 • Receive Acknowledgement of Receipt (AOR)
 • Save AOR number - your tracking number!`,
-      completed: false,
+      status: 'not_started' as const,
       order: 37,
       phase: "PHASE 5",
       stepNumber: "5.6A",
@@ -716,7 +716,7 @@ All certificates must be less than 6 months old at time of application`,
   Canada
 • Send by courier with tracking
 • Wait for AOR by mail (4-8 weeks)`,
-      completed: false,
+      status: 'not_started' as const,
       order: 38,
       phase: "PHASE 5",
       stepNumber: "5.6B",
@@ -734,7 +734,7 @@ All certificates must be less than 6 months old at time of application`,
   - Application number (from AOR)
   - Personal information
   - Family name, date of birth, etc.`,
-      completed: false,
+      status: 'not_started' as const,
       order: 39,
       phase: "PHASE 6",
       stepNumber: "6.1",
@@ -755,7 +755,7 @@ All certificates must be less than 6 months old at time of application`,
   - Digital photo taken
 • Must complete within 30 days of request
 • Biometrics valid 10 years`,
-      completed: false,
+      status: 'not_started' as const,
       order: 40,
       phase: "PHASE 6",
       stepNumber: "6.2",
@@ -779,7 +779,7 @@ All certificates must be less than 6 months old at time of application`,
   - Express Entry: ~6 months
   - Paper-based: ~18 months
 • Can vary based on IRCC workload`,
-      completed: false,
+      status: 'not_started' as const,
       order: 41,
       phase: "PHASE 6",
       stepNumber: "6.3",
@@ -797,7 +797,7 @@ All certificates must be less than 6 months old at time of application`,
 • Deadline: Usually 30-60 days
 • Upload documents through online portal
 • Confirm receipt of your submission`,
-      completed: false,
+      status: 'not_started' as const,
       order: 42,
       phase: "PHASE 6",
       stepNumber: "6.4",
@@ -815,7 +815,7 @@ All certificates must be less than 6 months old at time of application`,
   - Allows continued work while waiting
 • Keep employer informed of status
 • Do NOT travel extensively (can delay processing)`,
-      completed: false,
+      status: 'not_started' as const,
       order: 43,
       phase: "PHASE 6",
       stepNumber: "6.5",
@@ -832,7 +832,7 @@ All certificates must be less than 6 months old at time of application`,
   - Credential recognition info
   - Community connections
 • Optional but recommended`,
-      completed: false,
+      status: 'not_started' as const,
       order: 44,
       phase: "PHASE 6",
       stepNumber: "6.6",
@@ -855,7 +855,7 @@ All certificates must be less than 6 months old at time of application`,
   - IRCC will affix visa
 • Deadline: Usually 30 days
 • Use secure mail with tracking`,
-      completed: false,
+      status: 'not_started' as const,
       order: 45,
       phase: "PHASE 6",
       stepNumber: "6.7",
@@ -882,7 +882,7 @@ All certificates must be less than 6 months old at time of application`,
   - Passport number matches
 • IF ERRORS: Contact IRCC immediately!
 • DO NOT SIGN until instructed`,
-      completed: false,
+      status: 'not_started' as const,
       order: 46,
       phase: "PHASE 7",
       stepNumber: "7.1",
@@ -914,7 +914,7 @@ OPTION B - IN-PERSON LANDING:
 • You sign COPR (Part 1 and Part 2)
 • Officer stamps COPR
 • YOU ARE NOW A PERMANENT RESIDENT!`,
-      completed: false,
+      status: 'not_started' as const,
       order: 47,
       phase: "PHASE 7",
       stepNumber: "7.2",
@@ -932,7 +932,7 @@ OPTION B - IN-PERSON LANDING:
   - Do NOT travel outside Canada before receiving card
   - If must travel, apply for PR Travel Document
   - Card is proof of PR status for re-entry to Canada`,
-      completed: false,
+      status: 'not_started' as const,
       order: 48,
       phase: "PHASE 7",
       stepNumber: "7.3",
@@ -954,7 +954,7 @@ OPTION B - IN-PERSON LANDING:
   - Taxes
   - Government benefits
   - Banking`,
-      completed: false,
+      status: 'not_started' as const,
       order: 49,
       phase: "PHASE 7",
       stepNumber: "7.4",
@@ -977,7 +977,7 @@ OPTION B - IN-PERSON LANDING:
   - Doctor visits
   - Hospital care
   - Medical services`,
-      completed: false,
+      status: 'not_started' as const,
       order: 50,
       phase: "PHASE 7",
       stepNumber: "7.5",
@@ -1004,7 +1004,7 @@ OPTION B - IN-PERSON LANDING:
   - Car insurance
   - Life insurance
   - Private health insurance`,
-      completed: false,
+      status: 'not_started' as const,
       order: 51,
       phase: "PHASE 8",
       stepNumber: "8.1",
@@ -1036,7 +1036,7 @@ RESPONSIBILITIES:
   - Don't meet residency obligation
   - Convicted of serious crime
   - Misrepresentation on application`,
-      completed: false,
+      status: 'not_started' as const,
       order: 52,
       phase: "PHASE 8",
       stepNumber: "8.2",
@@ -1062,7 +1062,7 @@ RESPONSIBILITIES:
   - No residency obligation
   - Cannot lose citizenship
 • Start tracking your time NOW!`,
-      completed: false,
+      status: 'not_started' as const,
       order: 53,
       phase: "PHASE 8",
       stepNumber: "8.3",
@@ -1093,7 +1093,7 @@ RESPONSIBILITIES:
   ✓ Enjoy all Canada offers
 
 CONGRATULATIONS! 🇨🇦`,
-      completed: false,
+      status: 'not_started' as const,
       order: 54,
       phase: "PHASE 8",
       stepNumber: "8.4",

@@ -13,7 +13,7 @@ describe('GoalCard', () => {
         id: 'task-1',
         title: 'Complete Module 1',
         description: 'Basics',
-        status: 'completed',
+        status: 'completed' as const,
         order: 1,
         substeps: [],
       },
@@ -21,7 +21,7 @@ describe('GoalCard', () => {
         id: 'task-2',
         title: 'Complete Module 2',
         description: 'Intermediate',
-        status: 'not_started',
+        status: 'not_started' as const,
         order: 2,
         substeps: [],
       },
@@ -113,7 +113,7 @@ describe('GoalCard', () => {
     it('should show completion celebration when progress is 100%', () => {
       const completedGoal = {
         ...mockGoal,
-        tasks: mockGoal.tasks.map((t) => ({ ...t, status: 'completed' })),
+        tasks: mockGoal.tasks.map((t) => ({ ...t, status: 'completed' as const })),
       };
 
       render(

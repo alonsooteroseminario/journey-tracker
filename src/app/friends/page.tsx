@@ -37,7 +37,7 @@ export default function FriendsPage() {
     );
   }
 
-  const completedGoals = goals.filter(g => g.tasks.every(t => t.completed)).length;
+  const completedGoals = goals.filter(g => g.tasks.every(t => t.status === "completed")).length;
   const totalGoals = goals.length;
 
   const myStats = {

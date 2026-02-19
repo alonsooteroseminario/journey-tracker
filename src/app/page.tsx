@@ -85,7 +85,7 @@ export default function Home() {
   const totalProgress = getTotalProgress();
   const totalTasks = goals.reduce((sum, g) => sum + g.tasks.length, 0);
   const completedTasks = goals.reduce(
-    (sum, g) => sum + g.tasks.filter((t) => t.completed).length,
+    (sum, g) => sum + g.tasks.filter((t) => t.status === "completed").length,
     0
   );
   const totalSubsteps = goals.reduce(

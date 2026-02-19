@@ -53,7 +53,7 @@ function parseDescriptionToSubsteps(description: string): {
           id: generateId(),
           title: content,
           description: "",
-          completed: false,
+          status: 'not_started' as const,
           order: substeps.length + 1,
         });
       }
@@ -64,7 +64,7 @@ function parseDescriptionToSubsteps(description: string): {
         id: generateId(),
         title: content,
         description: "",
-        completed: false,
+        status: 'not_started' as const,
         order: substeps.length + 1,
       });
     } else {

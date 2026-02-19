@@ -1,0 +1,54 @@
+"use client";
+
+interface KanbanBreadcrumbProps {
+  level: "goals" | "tasks" | "substeps";
+  goalName?: string;
+  taskName?: string;
+  onNavigate: (level: "goals" | "tasks") => void;
+}
+
+export function KanbanBreadcrumb({ level, goalName, taskName, onNavigate }: KanbanBreadcrumbProps) {
+  return (
+    <nav className="flex items-center gap-2 text-sm">
+      <button
+        onClick={() => onNavigate("goals")}
+        className={`px-3 py-1.5 rounded-lg transition-colors ${
+          level === "goals"
+            ? "bg-blue-100 text-blue-700 font-semibold"
+            : "text-gray-600 hover:bg-gray-100"
+        }`}
+      >
+        🎯 All Goals
+      </button>
+
+      {(level === "tasks" || level === "substeps") && goalName && (
+        <>
+          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <button
+            onClick={() => onNavigate("tasks")}
+            className={`px-3 py-1.5 rounded-lg transition-colors ${
+              level === "tasks"
+                ? "bg-blue-100 text-blue-700 font-semibold"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            📋 {goalName}
+          </button>
+        </>
+      )}
+
+      {level === "substeps" && taskName && (
+        <>
+          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <span className="px-3 py-1.5 bg-blue-100 text-blue-700 font-semibold rounded-lg">
+            ✓ {taskName}
+          </span>
+        </>
+      )}
+    </nav>
+  );
+}
