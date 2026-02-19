@@ -117,6 +117,12 @@ vi.mock('@/lib/prisma', () => ({
       create: vi.fn(),
       update: vi.fn(),
     },
+    feedPreferences: {
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      upsert: vi.fn(),
+    },
   },
 }));
 
