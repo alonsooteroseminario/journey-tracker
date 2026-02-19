@@ -481,13 +481,16 @@ export function useGoalsCRUD(
       let completedItems = 0;
 
       goal.tasks.forEach((task) => {
+        // Ensure task has a valid status, default to 'not_started'
+        const taskStatus: TaskStatus = task.status || 'not_started';
         const substeps = task.substeps || [];
+
         if (substeps.length > 0) {
           totalItems += substeps.length;
-          completedItems += substeps.filter((s) => s.status === 'completed').length;
+          completedItems += substeps.filter((s) => (s.status || 'not_started') === 'completed').length;
         } else {
           totalItems += 1;
-          completedItems += task.status === 'completed' ? 1 : 0;
+          completedItems += taskStatus === 'completed' ? 1 : 0;
         }
       });
 
@@ -504,13 +507,16 @@ export function useGoalsCRUD(
     let completedItems = 0;
 
     allTasks.forEach((task) => {
+      // Ensure task has a valid status, default to 'not_started'
+      const taskStatus: TaskStatus = task.status || 'not_started';
       const substeps = task.substeps || [];
+
       if (substeps.length > 0) {
         totalItems += substeps.length;
-        completedItems += substeps.filter((s) => s.status === 'completed').length;
+        completedItems += substeps.filter((s) => (s.status || 'not_started') === 'completed').length;
       } else {
         totalItems += 1;
-        completedItems += task.status === 'completed' ? 1 : 0;
+        completedItems += taskStatus === 'completed' ? 1 : 0;
       }
     });
 
