@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { Goal, Task, Substep, DocumentItem, ActivityLogEntry, Phase, ResourceCategory } from "@/types";
+import { Goal, Task, Substep, TaskStatus, DocumentItem, ActivityLogEntry, Phase, ResourceCategory } from "@/types";
 import { generateId, getToday } from "@/lib/storage";
 import {
   useGetGoalsQuery,
@@ -183,20 +183,22 @@ export function useGoalsCRUD(
       const goal = goals.find((g) => g.id === goalId);
       if (!goal) return;
 
-      let taskTitle = "";
-      let oldStatus: 'not_started' | 'in_progress' | 'completed' = 'not_started';
-      const updatedTasks = goal.tasks.map((task) => {
-        if (task.id !== taskId) return task;
-        taskTitle = task.title;
-        oldStatus = task.status;
-        // Toggle: not_started → completed, completed → not_started, in_progress → completed
-        const newStatus: 'not_started' | 'completed' = task.status === 'completed' ? 'not_started' : 'completed';
-        const now = new Date().toISOString();
+      const task = goal.tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      const taskTitle = task.title;
+      const oldStatus = task.status;
+      // Toggle: not_started → completed, completed → not_started, in_progress → completed
+      const newStatus: TaskStatus = oldStatus === 'completed' ? 'not_started' : 'completed';
+      const now = new Date().toISOString();
+
+      const updatedTasks = goal.tasks.map((t) => {
+        if (t.id !== taskId) return t;
         return {
-          ...task,
-          status: newStatus as 'not_started' | 'in_progress' | 'completed',
+          ...t,
+          status: newStatus,
           completedAt: newStatus === 'completed' ? now : undefined,
-          startedAt: newStatus === 'completed' ? (task.startedAt || now) : undefined,
+          startedAt: newStatus === 'completed' ? (t.startedAt || now) : undefined,
         };
       });
 
@@ -208,7 +210,7 @@ export function useGoalsCRUD(
         },
       });
 
-      if (oldStatus !== 'completed') {
+      if (newStatus === 'completed') {
         logActivity("task_completed", goalId, `Completed task: ${taskTitle}`, taskId);
         triggerStreakUpdate();
       } else {
@@ -292,24 +294,29 @@ export function useGoalsCRUD(
       const goal = goals.find((g) => g.id === goalId);
       if (!goal) return;
 
-      let substepTitle = "";
-      let oldStatus: 'not_started' | 'in_progress' | 'completed' = 'not_started';
-      const updatedTasks = goal.tasks.map((task) => {
-        if (task.id !== taskId) return task;
+      const task = goal.tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      const substep = task.substeps?.find((s) => s.id === substepId);
+      if (!substep) return;
+
+      const substepTitle = substep.title;
+      const oldStatus = substep.status;
+      // Toggle: not_started → completed, completed → not_started, in_progress → completed
+      const newStatus: TaskStatus = oldStatus === 'completed' ? 'not_started' : 'completed';
+      const now = new Date().toISOString();
+
+      const updatedTasks = goal.tasks.map((t) => {
+        if (t.id !== taskId) return t;
         return {
-          ...task,
-          substeps: task.substeps?.map((substep) => {
-            if (substep.id !== substepId) return substep;
-            substepTitle = substep.title;
-            oldStatus = substep.status;
-            // Toggle: not_started → completed, completed → not_started, in_progress → completed
-            const newStatus: 'not_started' | 'completed' = substep.status === 'completed' ? 'not_started' : 'completed';
-            const now = new Date().toISOString();
+          ...t,
+          substeps: t.substeps?.map((s) => {
+            if (s.id !== substepId) return s;
             return {
-              ...substep,
-              status: newStatus as 'not_started' | 'in_progress' | 'completed',
+              ...s,
+              status: newStatus,
               completedAt: newStatus === 'completed' ? now : undefined,
-              startedAt: newStatus === 'completed' ? (substep.startedAt || now) : undefined,
+              startedAt: newStatus === 'completed' ? (s.startedAt || now) : undefined,
             };
           }),
         };
@@ -320,7 +327,7 @@ export function useGoalsCRUD(
         updates: { tasks: updatedTasks, updatedAt: new Date().toISOString() },
       });
 
-      if (oldStatus !== 'completed') {
+      if (newStatus === 'completed') {
         logActivity("substep_completed", goalId, `Completed substep: ${substepTitle}`, taskId, substepId);
         triggerStreakUpdate();
       } else {

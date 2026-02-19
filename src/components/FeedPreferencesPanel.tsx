@@ -70,16 +70,16 @@ export function FeedPreferencesPanel() {
       description: "Streak milestones, streak at risk alerts",
     },
     {
+      title: "Profile Events",
+      icon: "👤",
+      key: "profileEvents" as const,
+      description: "Profile updated, settings changed",
+    },
+    {
       title: "Social Events",
       icon: "👥",
       key: "socialEvents" as const,
-      description: "Friend added, friend changed, profile updated",
-    },
-    {
-      title: "Template Events",
-      icon: "📋",
-      key: "templateEvents" as const,
-      description: "Template published, shared, forked",
+      description: "Friend added, friend changed",
     },
   ];
 

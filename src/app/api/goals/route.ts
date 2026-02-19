@@ -71,11 +71,11 @@ export async function POST(req: NextRequest) {
     const icon = validatedData.icon || (await pickGoalIcon(validatedData.title, validatedData.description));
 
     // Normalize tasks to ensure status field is set
-    const tasks = (validatedData.tasks || []) as Task[];
-    const normalizedTasks = tasks.map((task) => ({
+    const tasks = (validatedData.tasks || []) as any[];
+    const normalizedTasks: Task[] = tasks.map((task) => ({
       ...task,
       status: task.status || 'not_started',
-      substeps: task.substeps?.map((substep) => ({
+      substeps: task.substeps?.map((substep: any) => ({
         ...substep,
         status: substep.status || 'not_started',
       })) || [],
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
         title: validatedData.title,
         description: validatedData.description || null,
         icon,
-        tasks: normalizedTasks,
+        tasks: normalizedTasks as any,
         phases: validatedData.phases || undefined,
         budget: validatedData.budget || undefined,
         timeline: validatedData.timeline || undefined,

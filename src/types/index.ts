@@ -321,9 +321,9 @@ export interface FeedPreferences {
   substepEvents: boolean;
   costEvents: boolean;
   noteEvents: boolean;
+  streakEvents: boolean;
   profileEvents: boolean;
   socialEvents: boolean;
-  streakEvents: boolean;
 }
 
 export type FeedPreferenceCategory = keyof Omit<FeedPreferences, 'id'>;

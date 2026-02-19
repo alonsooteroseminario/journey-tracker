@@ -68,7 +68,7 @@ export async function trackActivity(params: TrackActivityParams): Promise<void> 
       goalId: goalId ?? undefined,
       taskId: taskId ?? undefined,
       substepId: substepId ?? undefined,
-      metadata: metadata ?? undefined,
+      metadata: (metadata ?? undefined) as any,
     },
   });
 
@@ -99,7 +99,7 @@ export async function trackActivity(params: TrackActivityParams): Promise<void> 
       userId,
       type,
       content: feedContent ?? action,
-      metadata: metadata ?? undefined,
+      metadata: (metadata ?? undefined) as any,
       visibility: feedVisibility,
     },
   });

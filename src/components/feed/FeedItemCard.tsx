@@ -129,6 +129,44 @@ export function FeedItemCard({
   const typeColor = FEED_TYPE_COLORS[item.type] || "bg-gray-50 border-gray-200";
   const commentCount = item.comments?.length || 0;
   const isStreakAtRisk = item.type === "streak_at_risk";
+  const hasDiffs = item.metadata?.diffs && Array.isArray(item.metadata.diffs) && item.metadata.diffs.length > 0;
+
+  const renderDiffs = (): JSX.Element | null => {
+    if (!hasDiffs || !item.metadata?.diffs) return null;
+
+    const diffs = item.metadata.diffs as any[];
+    return (
+      <div className="mt-2 p-2 bg-white/50 rounded-lg border border-gray-200 text-xs sm:text-sm space-y-1">
+        {diffs.slice(0, 3).map((diff: any, index: number) => (
+          <div key={index} className="flex items-start gap-2">
+            <span className="text-gray-500 font-medium min-w-[60px]">{diff.field}:</span>
+            <div className="flex-1">
+              {diff.oldValue !== undefined && (
+                <span className="text-red-600 line-through">
+                  {String(diff.oldValue).substring(0, 50)}
+                  {String(diff.oldValue).length > 50 ? "..." : ""}
+                </span>
+              )}
+              {diff.oldValue !== undefined && diff.newValue !== undefined && (
+                <span className="mx-1 text-gray-400">→</span>
+              )}
+              {diff.newValue !== undefined && (
+                <span className="text-green-600 font-medium">
+                  {String(diff.newValue).substring(0, 50)}
+                  {String(diff.newValue).length > 50 ? "..." : ""}
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+        {diffs.length > 3 && (
+          <div className="text-gray-400 italic">
+            +{diffs.length - 3} more changes
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div
@@ -157,38 +195,7 @@ export function FeedItemCard({
             {item.content}
           </p>
 
-          {/* Diff Display for Updates */}
-          {item.metadata?.diffs && Array.isArray(item.metadata.diffs) && item.metadata.diffs.length > 0 && (
-            <div className="mt-2 p-2 bg-white/50 rounded-lg border border-gray-200 text-xs sm:text-sm space-y-1">
-              {item.metadata.diffs.slice(0, 3).map((diff: any, index: number) => (
-                <div key={index} className="flex items-start gap-2">
-                  <span className="text-gray-500 font-medium min-w-[60px]">{diff.field}:</span>
-                  <div className="flex-1">
-                    {diff.oldValue !== undefined && (
-                      <span className="text-red-600 line-through">
-                        {String(diff.oldValue).substring(0, 50)}
-                        {String(diff.oldValue).length > 50 ? "..." : ""}
-                      </span>
-                    )}
-                    {diff.oldValue !== undefined && diff.newValue !== undefined && (
-                      <span className="mx-1 text-gray-400">→</span>
-                    )}
-                    {diff.newValue !== undefined && (
-                      <span className="text-green-600 font-medium">
-                        {String(diff.newValue).substring(0, 50)}
-                        {String(diff.newValue).length > 50 ? "..." : ""}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-              {item.metadata.diffs.length > 3 && (
-                <div className="text-gray-400 italic">
-                  +{item.metadata.diffs.length - 3} more changes
-                </div>
-              )}
-            </div>
-          )}
+          {renderDiffs()}
 
           <div className="text-xs sm:text-sm text-gray-500">
             {formatDistanceToNow(new Date(item.createdAt), {

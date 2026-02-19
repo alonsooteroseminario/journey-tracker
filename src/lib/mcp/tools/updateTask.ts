@@ -148,7 +148,7 @@ export async function executeUpdateTask(
     });
 
     // Track activity with before/after diff
-    const updatedTask = tasks[taskIndex] as Record<string, unknown>;
+    const updatedTask = tasks[taskIndex] as unknown as Record<string, unknown>;
     const diffs = diffFields(oldTask, updatedTask, ['title', 'description', 'priority', 'dueDate', 'notes']);
     if (diffs.length > 0) {
       await trackActivity({
