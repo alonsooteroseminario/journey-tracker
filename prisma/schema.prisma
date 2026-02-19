@@ -29,6 +29,7 @@ model User {
   socialShares     SocialShare[]
   activityLog      ActivityLog[]
   emailPreferences EmailPreferences?
+  feedPreferences  FeedPreferences?
   feedItems        FeedItem[]        @relation("FeedItemAuthor")
   feedComments     FeedComment[]
   feedCheers       FeedCheer[]
@@ -196,6 +197,27 @@ model EmailPreferences {
   updatedAt DateTime @updatedAt
 
   @@map("email_preferences")
+}
+
+// ============== Feed Preferences Model ==============
+model FeedPreferences {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  goalEvents    Boolean @default(true)
+  taskEvents    Boolean @default(true)
+  substepEvents Boolean @default(true)
+  costEvents    Boolean @default(true)
+  noteEvents    Boolean @default(true)
+  profileEvents Boolean @default(true)
+  socialEvents  Boolean @default(true)
+  streakEvents  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("feed_preferences")
 }
 
 // ============== Social Feed Models ==============

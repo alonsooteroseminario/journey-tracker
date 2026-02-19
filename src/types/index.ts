@@ -1,10 +1,26 @@
+// Task status enum
+export type TaskStatus = 'not_started' | 'in_progress' | 'completed';
+
+export interface TaskStatusInfo {
+  label: string;
+  color: string; // Tailwind color class
+  icon: string; // Emoji
+}
+
+export const TASK_STATUS_CONFIG: Record<TaskStatus, TaskStatusInfo> = {
+  not_started: { label: 'Not Started', color: 'gray', icon: '⏳' },
+  in_progress: { label: 'In Progress', color: 'blue', icon: '🔄' },
+  completed: { label: 'Completed', color: 'green', icon: '✅' },
+};
+
 // Substep for breaking down tasks further
 export interface Substep {
   id: string;
   title: string;
   description?: string;
-  completed: boolean;
-  completedAt?: string;
+  status: TaskStatus;
+  completedAt?: string; // ISO date string — set when status → 'completed'
+  startedAt?: string; // ISO date string — set when status → 'in_progress'
   cost?: number; // Actual cost in CAD
   estimatedCost?: number; // Planned cost
   dueDate?: string; // ISO date string
@@ -16,8 +32,9 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
-  completed: boolean;
-  completedAt?: string; // ISO date string
+  status: TaskStatus;
+  completedAt?: string; // ISO date string — set when status → 'completed'
+  startedAt?: string; // ISO date string — set when status → 'in_progress'
   order: number;
   phase?: string;
   stepNumber?: string;
@@ -26,7 +43,7 @@ export interface Task {
   actualCost?: number; // Actual cost in CAD (editable)
   estimatedCost?: number; // Planned cost in CAD
   dueDate?: string; // ISO date string
-  startDate?: string; // When task was started
+  startDate?: string; // When journey task was started (semantic, user-set)
   notes?: string; // User notes
   substeps?: Substep[]; // Mini-tasks within this task
   priority?: 'low' | 'medium' | 'high' | 'critical';
@@ -130,7 +147,20 @@ export interface SocialShare {
 export interface ActivityLogEntry {
   id: string;
   date: string;
-  type: 'task_completed' | 'task_uncompleted' | 'task_started' | 'substep_completed' | 'substep_uncompleted' | 'cost_added' | 'note_added' | 'goal_created';
+  type:
+    // Goal events
+    | 'goal_created' | 'goal_updated' | 'goal_deleted'
+    // Task events
+    | 'task_created' | 'task_updated' | 'task_deleted' | 'task_status_changed'
+    // Substep events
+    | 'substep_created' | 'substep_updated' | 'substep_deleted' | 'substep_status_changed'
+    // Other events
+    | 'cost_updated' | 'note_updated'
+    | 'profile_updated' | 'friend_changed' | 'template_action'
+    // Legacy types (backwards compat)
+    | 'task_completed' | 'task_uncompleted' | 'task_started'
+    | 'substep_completed' | 'substep_uncompleted'
+    | 'cost_added' | 'note_added';
   goalId: string;
   taskId?: string;
   substepId?: string;
@@ -283,13 +313,37 @@ export interface EmailPreferences {
 
 export type NotificationType = keyof Omit<EmailPreferences, 'id' | 'enabled' | 'frequency'>;
 
+// Feed Preferences
+export interface FeedPreferences {
+  id: string;
+  goalEvents: boolean;
+  taskEvents: boolean;
+  substepEvents: boolean;
+  costEvents: boolean;
+  noteEvents: boolean;
+  profileEvents: boolean;
+  socialEvents: boolean;
+  streakEvents: boolean;
+}
+
+export type FeedPreferenceCategory = keyof Omit<FeedPreferences, 'id'>;
+
 // Social Feed
 export interface FeedItem {
   id: string;
   userId: string;
   userName: string;
   userImage?: string;
-  type: 'streak_milestone' | 'goal_created' | 'task_completed' | 'goal_shared' | 'goal_published' | 'goal_forked' | 'streak_at_risk';
+  type:
+    | 'streak_milestone' | 'streak_at_risk'
+    | 'goal_created' | 'goal_updated' | 'goal_deleted'
+    | 'task_created' | 'task_updated' | 'task_deleted' | 'task_status_changed'
+    | 'substep_created' | 'substep_updated' | 'substep_deleted' | 'substep_status_changed'
+    | 'cost_updated' | 'note_updated'
+    | 'profile_updated' | 'friend_changed' | 'template_action'
+    | 'goal_shared' | 'goal_published' | 'goal_forked'
+    // Legacy
+    | 'task_completed';
   content: string;
   metadata?: Record<string, unknown>;
   visibility: 'friends' | 'public';
