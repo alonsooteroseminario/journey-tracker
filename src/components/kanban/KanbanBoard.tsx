@@ -16,8 +16,12 @@ interface DrillDownContext {
   taskId?: string;
 }
 
+// Augmented item carrying parent IDs for flat views
+type FlatItem = (Goal | Task | Substep) & { _goalId?: string; _taskId?: string };
+
 export function KanbanBoard() {
   const [drillDown, setDrillDown] = useState<DrillDownContext>({ level: "goals" });
+  const [viewLevel, setViewLevel] = useState<ViewLevel>("goals");
   const [searchTerm, setSearchTerm] = useState("");
   const [dateFilter, setDateFilter] = useState<"all" | "overdue" | "today" | "week">("all");
   const [priorityFilter, setPriorityFilter] = useState<"all" | "low" | "medium" | "high" | "critical">("all");
@@ -36,20 +40,50 @@ export function KanbanBoard() {
     () => {}  // triggerStreakUpdate
   );
 
-  // Get current view data based on drill-down level
-  const viewData: Array<Goal | Task | Substep> = useMemo(() => {
+  // Determine effective level: viewLevel filter takes priority over drill-down
+  const effectiveLevel = viewLevel !== "goals" ? viewLevel : drillDown.level;
+
+  // Get current view data based on effective level
+  const viewData: Array<FlatItem> = useMemo(() => {
+    // Flat "all tasks" view
+    if (viewLevel === "tasks") {
+      return goals.flatMap((g) =>
+        (g.tasks || []).map((t) => ({ ...t, _goalId: g.id } as FlatItem))
+      );
+    }
+
+    // Flat "all substeps" view
+    if (viewLevel === "substeps") {
+      return goals.flatMap((g) =>
+        (g.tasks || []).flatMap((t) =>
+          (t.substeps || []).map((s) => ({ ...s, _goalId: g.id, _taskId: t.id } as FlatItem))
+        )
+      );
+    }
+
+    // Goals view (with drill-down)
     if (drillDown.level === "goals") {
-      return goals as Array<Goal | Task | Substep>;
+      return goals.map((g) => {
+        const tasks = g.tasks || [];
+        let status: TaskStatus = "not_started";
+        if (tasks.length > 0) {
+          const allCompleted = tasks.every((t) => (t.status || "not_started") === "completed");
+          const anyStarted = tasks.some((t) => (t.status || "not_started") !== "not_started");
+          if (allCompleted) status = "completed";
+          else if (anyStarted) status = "in_progress";
+        }
+        return { ...g, status } as FlatItem;
+      });
     } else if (drillDown.level === "tasks" && drillDown.goalId) {
       const goal = goals.find((g) => g.id === drillDown.goalId);
-      return (goal?.tasks || []) as Array<Goal | Task | Substep>;
+      return ((goal?.tasks || []) as FlatItem[]).map((t) => ({ ...t, _goalId: drillDown.goalId } as FlatItem));
     } else if (drillDown.level === "substeps" && drillDown.goalId && drillDown.taskId) {
       const goal = goals.find((g) => g.id === drillDown.goalId);
       const task = goal?.tasks.find((t) => t.id === drillDown.taskId);
-      return (task?.substeps || []) as Array<Goal | Task | Substep>;
+      return ((task?.substeps || []) as FlatItem[]).map((s) => ({ ...s, _goalId: drillDown.goalId, _taskId: drillDown.taskId } as FlatItem));
     }
     return [];
-  }, [goals, drillDown]);
+  }, [goals, drillDown, viewLevel]);
 
   // Apply filters
   const filteredData = useMemo(() => {
@@ -63,12 +97,12 @@ export function KanbanBoard() {
     }
 
     // Priority filter (only for tasks)
-    if (priorityFilter !== "all" && drillDown.level === "tasks") {
+    if (priorityFilter !== "all" && effectiveLevel === "tasks") {
       data = data.filter((item: any) => item.priority === priorityFilter);
     }
 
     // Date filter (only for tasks with dueDate)
-    if (dateFilter !== "all" && drillDown.level === "tasks") {
+    if (dateFilter !== "all" && effectiveLevel === "tasks") {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const weekFromNow = new Date(today);
@@ -87,7 +121,7 @@ export function KanbanBoard() {
     }
 
     return data;
-  }, [viewData, searchTerm, dateFilter, priorityFilter, drillDown.level]);
+  }, [viewData, searchTerm, dateFilter, priorityFilter, effectiveLevel]);
 
   // Group by status
   const columns = useMemo(() => {
@@ -112,38 +146,56 @@ export function KanbanBoard() {
     const newStatus = over.id as TaskStatus;
 
     // Find the item being dragged
-    const item = filteredData.find((d: any) => d.id === itemId);
+    const item = filteredData.find((d: any) => d.id === itemId) as FlatItem | undefined;
     if (!item) return;
 
-    // Update based on drill-down level
-    if (drillDown.level === "goals") {
-      // Goals don't have status - skip for now
-      return;
-    }
+    // Goals don't have a persisted status — skip
+    if (effectiveLevel === "goals") return;
 
-    // Check if status hasn't changed (only for tasks/substeps)
+    // Check if status hasn't changed
     if ('status' in item && item.status === newStatus) return;
 
-    if (drillDown.level === "tasks" && drillDown.goalId) {
-      updateTask(drillDown.goalId, itemId, { status: newStatus });
-    } else if (drillDown.level === "substeps" && drillDown.goalId && drillDown.taskId) {
-      updateSubstep(drillDown.goalId, drillDown.taskId, itemId, { status: newStatus });
+    if (effectiveLevel === "tasks") {
+      const goalId = item._goalId || drillDown.goalId;
+      if (goalId) updateTask(goalId, itemId, { status: newStatus });
+    } else if (effectiveLevel === "substeps") {
+      const goalId = item._goalId || drillDown.goalId;
+      const taskId = item._taskId || drillDown.taskId;
+      if (goalId && taskId) updateSubstep(goalId, taskId, itemId, { status: newStatus });
     }
   };
 
   const handleDrillDown = (itemId: string) => {
-    if (drillDown.level === "goals") {
+    if (effectiveLevel === "goals") {
+      // When in flat tasks/substeps mode, drill-down from goals level doesn't apply
+      // but when in goals drill-down mode, navigate into that goal's tasks
+      setViewLevel("goals"); // ensure we're in drill-down mode
       setDrillDown({ level: "tasks", goalId: itemId });
-    } else if (drillDown.level === "tasks") {
-      setDrillDown({ level: "substeps", goalId: drillDown.goalId, taskId: itemId });
+    } else if (effectiveLevel === "tasks") {
+      // Find the parent goalId from the flat item metadata
+      const item = filteredData.find((d: any) => d.id === itemId) as FlatItem | undefined;
+      const goalId = item?._goalId || drillDown.goalId;
+      if (goalId) {
+        setViewLevel("goals"); // switch back to drill-down mode
+        setDrillDown({ level: "substeps", goalId, taskId: itemId });
+      }
     }
   };
 
   const handleBreadcrumbClick = (level: ViewLevel) => {
+    setViewLevel("goals"); // breadcrumb always returns to drill-down mode
     if (level === "goals") {
       setDrillDown({ level: "goals" });
     } else if (level === "tasks") {
       setDrillDown({ level: "tasks", goalId: drillDown.goalId });
+    }
+  };
+
+  const handleViewLevelChange = (level: ViewLevel) => {
+    setViewLevel(level);
+    if (level !== "goals") {
+      // Reset drill-down when switching to flat views
+      setDrillDown({ level: "goals" });
     }
   };
 
@@ -175,13 +227,15 @@ export function KanbanBoard() {
 
   return (
     <div className="space-y-4">
-      {/* Breadcrumb */}
-      <KanbanBreadcrumb
-        level={drillDown.level}
-        goalName={contextNames.goals}
-        taskName={contextNames.tasks}
-        onNavigate={handleBreadcrumbClick}
-      />
+      {/* Breadcrumb — only show when in drill-down mode (not flat view) */}
+      {viewLevel === "goals" && (
+        <KanbanBreadcrumb
+          level={drillDown.level}
+          goalName={contextNames.goals}
+          taskName={contextNames.tasks}
+          onNavigate={handleBreadcrumbClick}
+        />
+      )}
 
       {/* Filters */}
       <KanbanFilters
@@ -191,8 +245,10 @@ export function KanbanBoard() {
         onDateFilterChange={setDateFilter}
         priorityFilter={priorityFilter}
         onPriorityFilterChange={setPriorityFilter}
-        showDateFilter={drillDown.level === "tasks"}
-        showPriorityFilter={drillDown.level === "tasks"}
+        showDateFilter={effectiveLevel === "tasks"}
+        showPriorityFilter={effectiveLevel === "tasks"}
+        viewLevel={viewLevel}
+        onViewLevelChange={handleViewLevelChange}
       />
 
       {/* Kanban Columns */}
@@ -201,26 +257,26 @@ export function KanbanBoard() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4">
           <KanbanColumn
             title="Not Started"
             status="not_started"
             items={columns.notStarted}
-            level={drillDown.level}
+            level={effectiveLevel}
             onDrillDown={handleDrillDown}
           />
           <KanbanColumn
             title="In Progress"
             status="in_progress"
             items={columns.inProgress}
-            level={drillDown.level}
+            level={effectiveLevel}
             onDrillDown={handleDrillDown}
           />
           <KanbanColumn
             title="Done"
             status="completed"
             items={columns.completed}
-            level={drillDown.level}
+            level={effectiveLevel}
             onDrillDown={handleDrillDown}
           />
         </div>
@@ -242,9 +298,9 @@ export function KanbanBoard() {
           <p className="text-sm text-gray-400 mt-1">
             {searchTerm || dateFilter !== "all" || priorityFilter !== "all"
               ? "Try adjusting your filters"
-              : drillDown.level === "goals"
+              : effectiveLevel === "goals"
               ? "Create a goal to get started"
-              : "No items in this view"}
+              : `No ${effectiveLevel} found`}
           </p>
         </div>
       )}

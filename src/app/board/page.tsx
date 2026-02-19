@@ -15,7 +15,7 @@ export default function BoardPage() {
         currentStreak={streak.currentStreak}
         onNewGoalClick={() => {}}
       />
-      <div className="max-w-[1800px] mx-auto px-4 py-6">
+      <div className="max-w-[1800px] mx-auto px-2 sm:px-4 py-3 sm:py-6">
         <KanbanBoard />
       </div>
     </main>

@@ -1,5 +1,7 @@
 "use client";
 
+type ViewLevel = "goals" | "tasks" | "substeps";
+
 interface KanbanFiltersProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
@@ -9,6 +11,8 @@ interface KanbanFiltersProps {
   onPriorityFilterChange: (value: "all" | "low" | "medium" | "high" | "critical") => void;
   showDateFilter: boolean;
   showPriorityFilter: boolean;
+  viewLevel: ViewLevel;
+  onViewLevelChange: (level: ViewLevel) => void;
 }
 
 export function KanbanFilters({
@@ -20,12 +24,36 @@ export function KanbanFilters({
   onPriorityFilterChange,
   showDateFilter,
   showPriorityFilter,
+  viewLevel,
+  onViewLevelChange,
 }: KanbanFiltersProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className="bg-white rounded-xl border border-gray-200 p-2 sm:p-4">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        {/* View Level Toggle */}
+        <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+          {([
+            { value: "goals" as ViewLevel, label: "Goals", icon: "🎯" },
+            { value: "tasks" as ViewLevel, label: "Tasks", icon: "📋" },
+            { value: "substeps" as ViewLevel, label: "Substeps", icon: "✓" },
+          ]).map(({ value, label, icon }) => (
+            <button
+              key={value}
+              onClick={() => onViewLevelChange(value)}
+              className={`px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                viewLevel === value
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              <span className="sm:hidden">{icon}</span>
+              <span className="hidden sm:inline">{icon} {label}</span>
+            </button>
+          ))}
+        </div>
+
         {/* Search */}
-        <div className="flex-1 min-w-[200px]">
+        <div className="flex-1 min-w-0 sm:min-w-[200px]">
           <div className="relative">
             <svg
               className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
@@ -53,7 +81,7 @@ export function KanbanFilters({
         {/* Date Filter */}
         {showDateFilter && (
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">Due:</label>
+            <label className="hidden sm:inline text-sm font-medium text-gray-700">Due:</label>
             <select
               value={dateFilter}
               onChange={(e) => onDateFilterChange(e.target.value as any)}
@@ -70,7 +98,7 @@ export function KanbanFilters({
         {/* Priority Filter */}
         {showPriorityFilter && (
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">Priority:</label>
+            <label className="hidden sm:inline text-sm font-medium text-gray-700">Priority:</label>
             <select
               value={priorityFilter}
               onChange={(e) => onPriorityFilterChange(e.target.value as any)}

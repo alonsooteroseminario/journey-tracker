@@ -36,11 +36,11 @@ export function KanbanCard({ item, level, onDrillDown }: KanbanCardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing group"
+      className="bg-white rounded-lg border border-gray-200 p-2 sm:p-3 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing group"
     >
       {/* Title */}
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h4 className="font-medium text-gray-900 text-sm flex-1">
+        <h4 className="font-medium text-gray-900 text-xs sm:text-sm flex-1">
           {item.title}
         </h4>
         {hasChildren && (
@@ -61,35 +61,97 @@ export function KanbanCard({ item, level, onDrillDown }: KanbanCardProps) {
 
       {/* Description (if available) */}
       {(task.description || substep.description) && (
-        <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+        <p className="text-[10px] sm:text-xs text-gray-600 mb-2 line-clamp-2">
           {task.description || substep.description}
         </p>
       )}
 
-      {/* Metadata */}
-      <div className="flex flex-wrap items-center gap-1.5 text-xs">
+      {/* Goal: List task names */}
+      {level === "goals" && goal.tasks && goal.tasks.length > 0 && (
+        <ul className="mb-2 space-y-0.5">
+          {goal.tasks.slice(0, 5).map((t) => {
+            const statusIcon = t.status === "completed" ? "✓" : t.status === "in_progress" ? "◐" : "○";
+            const statusColor = t.status === "completed" ? "text-green-600" : t.status === "in_progress" ? "text-orange-500" : "text-gray-400";
+            return (
+              <li key={t.id} className="flex items-center gap-1.5 text-[10px] sm:text-xs">
+                <span className={`flex-shrink-0 ${statusColor}`}>{statusIcon}</span>
+                <span className={`truncate ${t.status === "completed" ? "text-gray-400 line-through" : "text-gray-700"}`}>
+                  {t.title}
+                </span>
+              </li>
+            );
+          })}
+          {goal.tasks.length > 5 && (
+            <li className="text-[10px] sm:text-xs text-gray-400 pl-4">
+              +{goal.tasks.length - 5} more
+            </li>
+          )}
+        </ul>
+      )}
+
+      {/* Task: Substep progress bar */}
+      {level === "tasks" && task.substeps && task.substeps.length > 0 && (() => {
+        const done = task.substeps.filter((s) => s.status === "completed").length;
+        const total = task.substeps.length;
+        const pct = Math.round((done / total) * 100);
+        return (
+          <div className="mb-2">
+            <div className="flex items-center justify-between text-[10px] sm:text-xs text-gray-500 mb-0.5">
+              <span>{done}/{total} substeps</span>
+              <span>{pct}%</span>
+            </div>
+            <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${pct === 100 ? "bg-green-500" : "bg-blue-500"}`}
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Task: List substep names */}
+      {level === "tasks" && task.substeps && task.substeps.length > 0 && (
+        <ul className="mb-2 space-y-0.5">
+          {task.substeps.slice(0, 4).map((s) => {
+            const statusIcon = s.status === "completed" ? "✓" : s.status === "in_progress" ? "◐" : "○";
+            const statusColor = s.status === "completed" ? "text-green-600" : s.status === "in_progress" ? "text-orange-500" : "text-gray-400";
+            return (
+              <li key={s.id} className="flex items-center gap-1.5 text-[10px] sm:text-xs">
+                <span className={`flex-shrink-0 ${statusColor}`}>{statusIcon}</span>
+                <span className={`truncate ${s.status === "completed" ? "text-gray-400 line-through" : "text-gray-700"}`}>
+                  {s.title}
+                </span>
+              </li>
+            );
+          })}
+          {task.substeps.length > 4 && (
+            <li className="text-[10px] sm:text-xs text-gray-400 pl-4">
+              +{task.substeps.length - 4} more
+            </li>
+          )}
+        </ul>
+      )}
+
+      {/* Metadata badges */}
+      <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs">
         {/* Goal: Show task count */}
         {level === "goals" && goal.tasks && (
-          <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">
+          <span className="px-1.5 sm:px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">
             {goal.tasks.length} tasks
           </span>
         )}
 
-        {/* Task: Show substep count */}
-        {level === "tasks" && task.substeps && task.substeps.length > 0 && (
-          <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">
-            {task.substeps.filter((s) => s.status === "completed").length}/{task.substeps?.length || 0} substeps
-          </span>
-        )}
-
         {/* Task: Show priority */}
-        {level === "tasks" && task.priority && task.priority !== "medium" && (
+        {level === "tasks" && task.priority && (
           <span
-            className={`px-2 py-0.5 rounded-full ${
+            className={`px-1.5 sm:px-2 py-0.5 rounded-full ${
               task.priority === "critical"
                 ? "bg-red-100 text-red-700"
                 : task.priority === "high"
                 ? "bg-orange-100 text-orange-700"
+                : task.priority === "medium"
+                ? "bg-yellow-100 text-yellow-700"
                 : "bg-gray-100 text-gray-600"
             }`}
           >
@@ -97,28 +159,105 @@ export function KanbanCard({ item, level, onDrillDown }: KanbanCardProps) {
           </span>
         )}
 
-        {/* Task: Show due date */}
-        {level === "tasks" && task.dueDate && (
-          <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full">
-            {new Date(task.dueDate).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}
+        {/* Task: Show phase */}
+        {level === "tasks" && task.phase && (
+          <span className="px-1.5 sm:px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full">
+            {task.phase}
           </span>
         )}
 
-        {/* Task/Substep: Show cost */}
-        {(level === "tasks" && (task.estimatedCost || task.actualCost)) && (
-          <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">
-            ${task.actualCost || task.estimatedCost}
+        {/* Task: Show step number */}
+        {level === "tasks" && task.stepNumber && (
+          <span className="px-1.5 sm:px-2 py-0.5 bg-sky-100 text-sky-700 rounded-full">
+            Step {task.stepNumber}
           </span>
         )}
-        {level === "substeps" && substep.cost && (
-          <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">
-            ${substep.cost}
+
+        {/* Task: Show due date */}
+        {level === "tasks" && task.dueDate && (() => {
+          const due = new Date(task.dueDate);
+          due.setHours(0, 0, 0, 0);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const isOverdue = due < today && task.status !== "completed";
+          return (
+            <span className={`px-1.5 sm:px-2 py-0.5 rounded-full ${isOverdue ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
+              {isOverdue && "⚠ "}
+              {due.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            </span>
+          );
+        })()}
+
+        {/* Substep: Show due date */}
+        {level === "substeps" && substep.dueDate && (() => {
+          const due = new Date(substep.dueDate);
+          due.setHours(0, 0, 0, 0);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const isOverdue = due < today && substep.status !== "completed";
+          return (
+            <span className={`px-1.5 sm:px-2 py-0.5 rounded-full ${isOverdue ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
+              {isOverdue && "⚠ "}
+              {due.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            </span>
+          );
+        })()}
+
+        {/* Task: Show cost (estimated vs actual) */}
+        {level === "tasks" && (task.estimatedCost || task.actualCost) && (
+          <span className="px-1.5 sm:px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">
+            {task.actualCost != null && task.estimatedCost != null
+              ? `$${task.actualCost}/$${task.estimatedCost}`
+              : `$${task.actualCost ?? task.estimatedCost}`}
           </span>
         )}
+
+        {/* Substep: Show cost */}
+        {level === "substeps" && (substep.cost != null || substep.estimatedCost != null) && (
+          <span className="px-1.5 sm:px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">
+            {substep.cost != null && substep.estimatedCost != null
+              ? `$${substep.cost}/$${substep.estimatedCost}`
+              : `$${substep.cost ?? substep.estimatedCost}`}
+          </span>
+        )}
+
+        {/* Task: Show tags */}
+        {level === "tasks" && task.tags && task.tags.length > 0 && task.tags.map((tag) => (
+          <span key={tag} className="px-1.5 sm:px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
+            {tag}
+          </span>
+        ))}
       </div>
+
+      {/* Task: Documents needed */}
+      {level === "tasks" && task.documentsNeeded && (
+        <div className="mt-1.5 text-[10px] sm:text-xs text-gray-500 flex items-start gap-1">
+          <svg className="w-3 h-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span className="line-clamp-1">{task.documentsNeeded}</span>
+        </div>
+      )}
+
+      {/* Notes preview */}
+      {(task.notes || substep.notes) && (
+        <div className="mt-1.5 text-[10px] sm:text-xs text-gray-400 italic line-clamp-1">
+          {task.notes || substep.notes}
+        </div>
+      )}
+
+      {/* Timestamps */}
+      {(level === "tasks" || level === "substeps") && (item as Task).startedAt && (
+        <div className="mt-1.5 text-[10px] text-gray-400 flex items-center gap-1">
+          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Started {new Date((item as Task).startedAt!).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+          {(item as Task).completedAt && (
+            <> · Done {new Date((item as Task).completedAt!).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</>
+          )}
+        </div>
+      )}
 
       {/* Drag indicator */}
       <div className="mt-2 pt-2 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity">

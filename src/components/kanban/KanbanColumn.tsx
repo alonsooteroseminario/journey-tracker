@@ -24,10 +24,10 @@ export function KanbanColumn({ title, status, items, level, onDrillDown }: Kanba
       hoverBorder: "border-gray-400",
     },
     in_progress: {
-      bg: "bg-blue-50",
-      border: "border-blue-200",
-      header: "bg-blue-100 text-blue-700",
-      hoverBorder: "border-blue-400",
+      bg: "bg-orange-50",
+      border: "border-orange-200",
+      header: "bg-orange-100 text-orange-700",
+      hoverBorder: "border-orange-400",
     },
     completed: {
       bg: "bg-green-50",
@@ -47,15 +47,15 @@ export function KanbanColumn({ title, status, items, level, onDrillDown }: Kanba
       } ${isOver ? "shadow-lg" : ""}`}
     >
       {/* Column Header */}
-      <div className={`px-4 py-3 rounded-t-lg ${colors.header} font-semibold flex items-center justify-between`}>
+      <div className={`px-2 sm:px-4 py-2 sm:py-3 rounded-t-lg ${colors.header} font-semibold flex items-center justify-between text-sm sm:text-base`}>
         <span>{title}</span>
-        <span className="text-sm font-normal opacity-75">
+        <span className="text-xs sm:text-sm font-normal opacity-75">
           {items.length}
         </span>
       </div>
 
       {/* Column Body */}
-      <div className="p-3 space-y-2 min-h-[500px]">
+      <div className="p-2 sm:p-3 space-y-1.5 sm:space-y-2 min-h-[200px] sm:min-h-[400px]">
         <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
           {items.map((item) => (
             <KanbanCard
