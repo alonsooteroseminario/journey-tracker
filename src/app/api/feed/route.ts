@@ -5,6 +5,7 @@ import { z } from "zod";
 
 const createFeedItemSchema = z.object({
   type: z.enum([
+    // Legacy types
     "streak_milestone",
     "goal_created",
     "task_completed",
@@ -12,6 +13,23 @@ const createFeedItemSchema = z.object({
     "goal_published",
     "goal_forked",
     "streak_at_risk",
+    // New comprehensive activity types (Step 2)
+    "goal_updated",
+    "goal_deleted",
+    "task_created",
+    "task_updated",
+    "task_deleted",
+    "task_status_changed",
+    "substep_created",
+    "substep_updated",
+    "substep_deleted",
+    "cost_added",
+    "cost_updated",
+    "note_added",
+    "note_updated",
+    "profile_updated",
+    "friend_added",
+    "friend_changed",
   ]),
   content: z.string(),
   metadata: z.record(z.string(), z.any()).optional(),

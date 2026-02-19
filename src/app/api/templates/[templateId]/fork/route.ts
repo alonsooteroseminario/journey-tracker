@@ -13,12 +13,14 @@ const forkTemplateSchema = z.object({
 function resetTasksCompletion(tasks: Task[]): Task[] {
   return tasks.map((task) => ({
     ...task,
-    completed: false,
+    status: 'not_started' as const,
+    startedAt: undefined,
     completedAt: undefined,
     substeps: task.substeps
       ? task.substeps.map((substep) => ({
           ...substep,
-          completed: false,
+          status: 'not_started' as const,
+          startedAt: undefined,
           completedAt: undefined,
         }))
       : [],

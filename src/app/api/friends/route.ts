@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { AddFriendSchema, validateRequest } from "@/lib/validations";
+import { trackActivity } from "@/lib/activity";
 
 // GET /api/friends - Get all friends with their stats
 export async function GET() {
@@ -43,7 +44,7 @@ export async function GET() {
         const totalGoals = goals.length;
         const completedGoals = goals.filter((g) => {
           const tasks = (g.tasks as any[]) || [];
-          return tasks.length > 0 && tasks.every((t: any) => t.completed);
+          return tasks.length > 0 && tasks.every((t: any) => t.status === 'completed');
         }).length;
 
         return {
@@ -171,6 +172,14 @@ export async function POST(req: NextRequest) {
         usedBy: user.clerkId,
         usedAt: new Date(),
       },
+    });
+
+    // Track activity for both users
+    await trackActivity({
+      userId: user.id,
+      type: 'friend_added',
+      action: `Added ${invitation.user.name} as a friend`,
+      metadata: { friendId: invitation.userId, friendName: invitation.user.name },
     });
 
     return NextResponse.json({ success: true, friendName: invitation.user.name });

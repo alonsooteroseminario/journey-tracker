@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { UpdateProfileSchema, validateRequest } from "@/lib/validations";
+import { trackActivity, diffFields, formatDiffAction } from "@/lib/activity";
 
 // GET /api/profile - Get current user's profile
 export async function GET() {
@@ -58,9 +59,36 @@ export async function PATCH(req: NextRequest) {
     if (validatedData.location !== undefined) updateData.location = validatedData.location;
     if (validatedData.timezone !== undefined) updateData.timezone = validatedData.timezone;
 
+    // Capture old values for diff
+    const oldRecord: Record<string, unknown> = {
+      name: user.name,
+      email: user.email,
+      bio: user.bio,
+      profileImage: user.profileImage,
+      location: user.location,
+      timezone: user.timezone,
+    };
+
     const updated = await prisma.user.update({
       where: { id: user.id },
       data: updateData,
+    });
+
+    // Track activity with diff
+    const newRecord: Record<string, unknown> = {
+      name: updated.name,
+      email: updated.email,
+      bio: updated.bio,
+      profileImage: updated.profileImage,
+      location: updated.location,
+      timezone: updated.timezone,
+    };
+    const diffs = diffFields(oldRecord, newRecord, Object.keys(updateData));
+    await trackActivity({
+      userId: user.id,
+      type: 'profile_updated',
+      action: formatDiffAction('profile', updated.name, diffs),
+      metadata: { diffs },
     });
 
     return NextResponse.json({

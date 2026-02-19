@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { CreateGoalSchema, validateRequest } from "@/lib/validations";
 import { pickGoalIcon } from "@/lib/agent/pickGoalIcon";
+import type { Task } from "@/types";
 
 // GET /api/goals - Get all goals for current user
 export async function GET() {
@@ -69,13 +70,24 @@ export async function POST(req: NextRequest) {
     // Pick icon via AI if not already provided
     const icon = validatedData.icon || (await pickGoalIcon(validatedData.title, validatedData.description));
 
+    // Normalize tasks to ensure status field is set
+    const tasks = (validatedData.tasks || []) as Task[];
+    const normalizedTasks = tasks.map((task) => ({
+      ...task,
+      status: task.status || 'not_started',
+      substeps: task.substeps?.map((substep) => ({
+        ...substep,
+        status: substep.status || 'not_started',
+      })) || [],
+    }));
+
     const goal = await prisma.goal.create({
       data: {
         userId: user.id,
         title: validatedData.title,
         description: validatedData.description || null,
         icon,
-        tasks: validatedData.tasks || [],
+        tasks: normalizedTasks,
         phases: validatedData.phases || undefined,
         budget: validatedData.budget || undefined,
         timeline: validatedData.timeline || undefined,

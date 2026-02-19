@@ -48,8 +48,8 @@ describe('GET /api/friends', () => {
     vi.mocked(prisma.streakData.findUnique).mockResolvedValue(mockStreakData as any);
 
     const mockGoals = [
-      { id: 'goal-1', userId: 'friend-1', isPublic: true, tasks: [{ completed: true }] },
-      { id: 'goal-2', userId: 'friend-1', isPublic: true, tasks: [{ completed: false }] },
+      { id: 'goal-1', userId: 'friend-1', isPublic: true, tasks: [{ status: 'completed' }] },
+      { id: 'goal-2', userId: 'friend-1', isPublic: true, tasks: [{ status: 'not_started' }] },
     ];
     vi.mocked(prisma.goal.findMany).mockResolvedValue(mockGoals as any);
 
