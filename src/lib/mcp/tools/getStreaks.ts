@@ -5,6 +5,7 @@
 import { prisma } from '@/lib/prisma';
 import { ToolDefinition, ToolResult } from '@/types/agent';
 import { resolveUser } from '@/lib/agent/resolveUser';
+import { getTodayInTimezone } from '@/lib/dateUtils';
 
 export const toolDefinition: ToolDefinition = {
   name: 'get-streaks',
@@ -58,7 +59,7 @@ export async function executeGetStreaks(
     }
 
     // Check if streak needs to be reset
-    const today = new Date().toISOString().split('T')[0];
+    const today = getTodayInTimezone(user.timezone);
     const lastActivity = streakData.lastActivityDate
       ? new Date(streakData.lastActivityDate).toISOString().split('T')[0]
       : null;

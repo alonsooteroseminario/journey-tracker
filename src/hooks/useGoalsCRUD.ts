@@ -8,6 +8,7 @@ import {
   useCreateGoalMutation,
   useUpdateGoalMutation,
   useDeleteGoalMutation,
+  useReorderGoalsMutation,
 } from "@/store/slices/goalsSlice";
 
 export function useGoalsCRUD(
@@ -29,6 +30,7 @@ export function useGoalsCRUD(
   const [createGoalMutation] = useCreateGoalMutation();
   const [updateGoalMutation] = useUpdateGoalMutation();
   const [deleteGoalMutation] = useDeleteGoalMutation();
+  const [reorderGoalsMutation] = useReorderGoalsMutation();
 
   const goals: Goal[] = useMemo(() => apiGoals || [], [apiGoals]);
 
@@ -80,6 +82,13 @@ export function useGoalsCRUD(
       });
     },
     [updateGoalMutation]
+  );
+
+  const reorderGoals = useCallback(
+    (goalIds: string[]) => {
+      reorderGoalsMutation(goalIds);
+    },
+    [reorderGoalsMutation]
   );
 
   // Task operations
@@ -538,6 +547,7 @@ export function useGoalsCRUD(
     addGoalWithTasks,
     deleteGoal,
     updateGoal,
+    reorderGoals,
     addTask,
     addPhase,
     updateTask,

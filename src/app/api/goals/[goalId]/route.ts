@@ -39,6 +39,7 @@ export async function GET(
       targetDate: goal.targetDate?.toISOString().split("T")[0],
       createdAt: goal.createdAt.toISOString(),
       updatedAt: goal.updatedAt.toISOString(),
+      order: goal.order,
     });
   } catch (error) {
     console.error("GET /api/goals/:id error:", error);
@@ -113,6 +114,7 @@ export async function PATCH(
       targetDate: goal.targetDate?.toISOString().split("T")[0],
       createdAt: goal.createdAt.toISOString(),
       updatedAt: goal.updatedAt.toISOString(),
+      order: goal.order,
     });
   } catch (error) {
     console.error("PATCH /api/goals/:id error:", error);

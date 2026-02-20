@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useGoalsCRUD } from "@/hooks/useGoalsCRUD";
 import { Goal, Task, Substep, TaskStatus } from "@/types";
 import { KanbanColumn } from "./KanbanColumn";
@@ -26,6 +26,24 @@ export function KanbanBoard() {
   const [dateFilter, setDateFilter] = useState<"all" | "overdue" | "today" | "week">("all");
   const [priorityFilter, setPriorityFilter] = useState<"all" | "low" | "medium" | "high" | "critical">("all");
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  // Collapsible columns — persisted in localStorage
+  const [collapsedColumns, setCollapsedColumns] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem("kanban-collapsed-columns");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const toggleColumnCollapse = useCallback((status: string) => {
+    setCollapsedColumns((prev) => {
+      const next = { ...prev, [status]: !prev[status] };
+      try { localStorage.setItem("kanban-collapsed-columns", JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  }, []);
 
   const {
     goals,
@@ -264,6 +282,8 @@ export function KanbanBoard() {
             items={columns.notStarted}
             level={effectiveLevel}
             onDrillDown={handleDrillDown}
+            isCollapsed={!!collapsedColumns["not_started"]}
+            onToggleCollapse={toggleColumnCollapse}
           />
           <KanbanColumn
             title="In Progress"
@@ -271,6 +291,8 @@ export function KanbanBoard() {
             items={columns.inProgress}
             level={effectiveLevel}
             onDrillDown={handleDrillDown}
+            isCollapsed={!!collapsedColumns["in_progress"]}
+            onToggleCollapse={toggleColumnCollapse}
           />
           <KanbanColumn
             title="Done"
@@ -278,6 +300,8 @@ export function KanbanBoard() {
             items={columns.completed}
             level={effectiveLevel}
             onDrillDown={handleDrillDown}
+            isCollapsed={!!collapsedColumns["completed"]}
+            onToggleCollapse={toggleColumnCollapse}
           />
         </div>
 

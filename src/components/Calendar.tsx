@@ -2,7 +2,21 @@
 
 import { useState, useMemo } from "react";
 import { CalendarDay, ActivityLogEntry } from "@/types";
-import { getToday, isToday } from "@/lib/storage";
+import { getToday } from "@/lib/storage";
+
+/** Format a local Date as YYYY-MM-DD without UTC conversion. */
+function toLocalDateStr(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/** Parse a YYYY-MM-DD string as a local date (not UTC). */
+function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
 
 interface CalendarProps {
   streakHistory: string[];
@@ -20,7 +34,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
   const calendarDays = useMemo(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    
+
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const startPadding = firstDay.getDay();
@@ -32,9 +46,9 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
     const prevMonth = new Date(year, month, 0);
     for (let i = startPadding - 1; i >= 0; i--) {
       const date = new Date(year, month - 1, prevMonth.getDate() - i);
-      const dateStr = date.toISOString().split("T")[0];
+      const dateStr = toLocalDateStr(date);
       const dayActivities = activityLog.filter((a) => a.date.split("T")[0] === dateStr);
-      
+
       days.push({
         date: dateStr,
         isCurrentMonth: false,
@@ -52,9 +66,9 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
     // Current month days
     for (let day = 1; day <= totalDays; day++) {
       const date = new Date(year, month, day);
-      const dateStr = date.toISOString().split("T")[0];
+      const dateStr = toLocalDateStr(date);
       const dayActivities = activityLog.filter((a) => a.date.split("T")[0] === dateStr);
-      
+
       days.push({
         date: dateStr,
         isCurrentMonth: true,
@@ -73,9 +87,9 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
     const remainingDays = 42 - days.length; // 6 rows * 7 days
     for (let i = 1; i <= remainingDays; i++) {
       const date = new Date(year, month + 1, i);
-      const dateStr = date.toISOString().split("T")[0];
+      const dateStr = toLocalDateStr(date);
       const dayActivities = activityLog.filter((a) => a.date.split("T")[0] === dateStr);
-      
+
       days.push({
         date: dateStr,
         isCurrentMonth: false,
@@ -200,32 +214,35 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
 
         {/* Day Cells */}
         <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
-          {calendarDays.map((day, index) => (
-            <button
-              key={`${day.date}-${index}`}
-              onClick={() => {
-                setSelectedDate(day.date);
-                onDateClick?.(day.date);
-              }}
-              className={`
-                relative aspect-square p-0.5 sm:p-1 rounded transition-all text-xs sm:text-sm
-                ${day.isCurrentMonth ? "text-gray-800" : "text-gray-400"}
-                ${day.isToday ? "ring-1 ring-indigo-500 font-bold" : ""}
-                ${selectedDate === day.date ? "bg-indigo-100" : "hover:bg-gray-100"}
-                ${day.hasActivity && day.isCurrentMonth ? "bg-green-50" : ""}
-              `}
-            >
-              <span className="block text-[10px] sm:text-sm">{new Date(day.date).getDate()}</span>
-              {day.hasActivity && day.isCurrentMonth && (
-                <div className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 flex gap-0.5">
-                  <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-green-500 rounded-full"></span>
-                  {day.tasksCompleted > 0 && (
-                    <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-blue-500 rounded-full"></span>
-                  )}
-                </div>
-              )}
-            </button>
-          ))}
+          {calendarDays.map((day, index) => {
+            const localDate = parseLocalDate(day.date);
+            return (
+              <button
+                key={`${day.date}-${index}`}
+                onClick={() => {
+                  setSelectedDate(day.date);
+                  onDateClick?.(day.date);
+                }}
+                className={`
+                  relative aspect-square p-0.5 sm:p-1 rounded transition-all text-xs sm:text-sm
+                  ${day.isCurrentMonth ? "text-gray-800" : "text-gray-400"}
+                  ${day.isToday ? "ring-1 ring-indigo-500 font-bold" : ""}
+                  ${selectedDate === day.date ? "bg-indigo-100" : "hover:bg-gray-100"}
+                  ${day.hasActivity && day.isCurrentMonth ? "bg-green-50" : ""}
+                `}
+              >
+                <span className="block text-[10px] sm:text-sm">{localDate.getDate()}</span>
+                {day.hasActivity && day.isCurrentMonth && (
+                  <div className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 flex gap-0.5">
+                    <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-green-500 rounded-full"></span>
+                    {day.tasksCompleted > 0 && (
+                      <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-blue-500 rounded-full"></span>
+                    )}
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -233,7 +250,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
       {selectedDate && selectedDayData && (
         <div className="border-t border-gray-200 p-2 sm:p-4 bg-gray-50">
           <h5 className="font-semibold text-xs sm:text-base text-gray-800 mb-1.5 sm:mb-2">
-            {new Date(selectedDate).toLocaleDateString("en-US", {
+            {parseLocalDate(selectedDate).toLocaleDateString("en-US", {
               weekday: "long",
               month: "long",
               day: "numeric",

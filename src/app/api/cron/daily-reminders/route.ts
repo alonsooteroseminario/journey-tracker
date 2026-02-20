@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/email/notifications";
+import { getTodayInTimezone } from "@/lib/dateUtils";
 
 /**
  * Cron job: Send daily streak reminders to users who haven't completed a task today
@@ -13,8 +14,6 @@ export async function GET(request: Request) {
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    const today = new Date().toISOString().split("T")[0];
 
     // Find users with active streaks but no activity today
     const usersWithStreaks = await prisma.streakData.findMany({
@@ -31,7 +30,8 @@ export async function GET(request: Request) {
     const remindersToSend: Array<{ userId: string; userName: string; streak: number }> = [];
 
     for (const streakData of usersWithStreaks) {
-      // Check if user has activity today
+      // Check if user has activity today (using their timezone)
+      const today = getTodayInTimezone(streakData.user.timezone);
       const hasActivityToday = streakData.streakHistory.includes(today);
 
       if (!hasActivityToday) {

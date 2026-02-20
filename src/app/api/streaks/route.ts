@@ -1,24 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-
-function getToday(): string {
-  return new Date().toISOString().split("T")[0];
-}
-
-function isToday(dateString: string | null | undefined): boolean {
-  if (!dateString) return false;
-  const d = typeof dateString === "string" ? dateString : new Date(dateString).toISOString().split("T")[0];
-  return d === getToday();
-}
-
-function isYesterday(dateString: string | null | undefined): boolean {
-  if (!dateString) return false;
-  const d = typeof dateString === "string" ? dateString : new Date(dateString).toISOString().split("T")[0];
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  return d === yesterday.toISOString().split("T")[0];
-}
+import { getTodayInTimezone, isTodayInTimezone, isYesterdayInTimezone } from "@/lib/dateUtils";
 
 // GET /api/streaks - Get current user's streak data
 export async function GET() {
@@ -27,6 +10,8 @@ export async function GET() {
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const tz = user.timezone;
 
     let streakData = await prisma.streakData.findUnique({
       where: { userId: user.id },
@@ -50,7 +35,7 @@ export async function GET() {
       : null;
 
     let currentStreak = streakData.currentStreak;
-    if (lastDate && !isToday(lastDate) && !isYesterday(lastDate)) {
+    if (lastDate && !isTodayInTimezone(lastDate, tz) && !isYesterdayInTimezone(lastDate, tz)) {
       // Streak is broken, reset
       currentStreak = 0;
       await prisma.streakData.update({
@@ -84,6 +69,8 @@ export async function PATCH() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const tz = user.timezone;
+
     let streakData = await prisma.streakData.findUnique({
       where: { userId: user.id },
     });
@@ -99,13 +86,13 @@ export async function PATCH() {
       });
     }
 
-    const today = getToday();
+    const today = getTodayInTimezone(tz);
     const lastDate = streakData.lastActivityDate
       ? streakData.lastActivityDate.toISOString().split("T")[0]
       : null;
 
     // Already logged today
-    if (isToday(lastDate)) {
+    if (isTodayInTimezone(lastDate, tz)) {
       return NextResponse.json({
         currentStreak: streakData.currentStreak,
         longestStreak: streakData.longestStreak,
@@ -116,7 +103,7 @@ export async function PATCH() {
 
     // Calculate new streak
     let newStreak: number;
-    if (isYesterday(lastDate)) {
+    if (isYesterdayInTimezone(lastDate, tz)) {
       newStreak = streakData.currentStreak + 1;
     } else {
       newStreak = 1; // Reset or start

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/email/notifications";
+import { getTodayInTimezone } from "@/lib/dateUtils";
 
 interface AtRiskUser {
   userId: string;
@@ -12,8 +13,6 @@ interface AtRiskUser {
  * Finds users whose streaks are at risk (active streak but no activity today)
  */
 export async function findAtRiskUsers(): Promise<AtRiskUser[]> {
-  const today = new Date().toISOString().split("T")[0];
-
   // Find all users with active streaks
   const streakData = await prisma.streakData.findMany({
     where: {
@@ -26,6 +25,7 @@ export async function findAtRiskUsers(): Promise<AtRiskUser[]> {
         select: {
           id: true,
           name: true,
+          timezone: true,
         },
       },
     },
@@ -34,6 +34,7 @@ export async function findAtRiskUsers(): Promise<AtRiskUser[]> {
   const atRiskUsers: AtRiskUser[] = [];
 
   for (const data of streakData) {
+    const today = getTodayInTimezone(data.user.timezone);
     const streakHistory = data.streakHistory || [];
     const hasActivityToday = streakHistory.includes(today);
 

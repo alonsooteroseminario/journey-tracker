@@ -67,6 +67,16 @@ export const goalsApi = createApi({
       ],
     }),
 
+    // POST /api/goals/reorder — batch reorder goals
+    reorderGoals: builder.mutation<{ success: boolean }, string[]>({
+      query: (goalIds) => ({
+        url: "/goals/reorder",
+        method: "POST",
+        body: { goalIds },
+      }),
+      invalidatesTags: ["Goal"],
+    }),
+
     // POST /api/migrate - Migrate localStorage data to MongoDB
     migrateLocalData: builder.mutation<{ success: boolean }, unknown>({
       query: (localData) => ({
@@ -86,6 +96,7 @@ export const {
   useUpdateGoalMutation,
   useDeleteGoalMutation,
   useUpdateTaskMutation,
+  useReorderGoalsMutation,
   useMigrateLocalDataMutation,
 } = goalsApi;
 

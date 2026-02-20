@@ -1,10 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useGoals } from "@/hooks/useGoals";
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
 import { useNotifications } from "@/hooks/useNotifications";
 import { GoalCard } from "@/components/GoalCard";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { StreakCounter } from "@/components/StreakCounter";
 import { ProgressBar } from "@/components/ProgressBar";
 import { CreateGoalModal } from "@/components/CreateGoalModal";
@@ -14,6 +30,36 @@ import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { Header } from "@/components/Header";
 import { MobileStatsPanel } from "@/components/MobileStatsPanel";
 import { LandingPage } from "@/components/LandingPage";
+
+function SortableGoalCard(props: React.ComponentProps<typeof GoalCard>) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: props.goal.id,
+  });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    position: "relative" as const,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      {/* Drag handle — grip icon in top-right */}
+      <button
+        {...attributes}
+        {...listeners}
+        className="absolute top-2 right-28 sm:top-5 sm:right-32 z-10 p-1 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity"
+        aria-label="Drag to reorder"
+      >
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M7 2a2 2 0 10.001 4.001A2 2 0 007 2zm0 6a2 2 0 10.001 4.001A2 2 0 007 8zm0 6a2 2 0 10.001 4.001A2 2 0 007 14zm6-8a2 2 0 10-.001-4.001A2 2 0 0013 6zm0 2a2 2 0 10.001 4.001A2 2 0 0013 8zm0 6a2 2 0 10.001 4.001A2 2 0 0013 14z" />
+        </svg>
+      </button>
+      <GoalCard {...props} />
+    </div>
+  );
+}
 
 export default function Home() {
   const { user, isLoaded: userLoaded } = useUser();
@@ -34,6 +80,7 @@ export default function Home() {
     toggleTask,
     deleteTask,
     reorderTasks,
+    reorderGoals,
     addSubstep,
     updateSubstep,
     toggleSubstep,
@@ -62,6 +109,27 @@ export default function Home() {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [showGlobalAnalytics, setShowGlobalAnalytics] = useState(false);
+
+  // Goal drag-and-drop reordering
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor)
+  );
+
+  const handleGoalDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+
+      const oldIndex = goals.findIndex((g) => g.id === active.id);
+      const newIndex = goals.findIndex((g) => g.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      const reordered = arrayMove(goals, oldIndex, newIndex);
+      reorderGoals(reordered.map((g) => g.id));
+    },
+    [goals, reorderGoals]
+  );
 
   // Show loading while checking auth
   if (!userLoaded || !isLoaded) {
@@ -256,33 +324,44 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* Goals List */}
-              <div className="space-y-2 sm:space-y-4">
-                {goals.map((goal) => (
-                  <GoalCard
-                    key={goal.id}
-                    goal={goal}
-                    progress={getProgress(goal.id)}
-                    analytics={getAnalytics(goal.id)}
-                    activityLog={activityLog}
-                    streakHistory={streak.streakHistory}
-                    onToggleTask={toggleTask}
-                    onUpdateTask={updateTask}
-                    onDeleteTask={deleteTask}
-                    onAddTask={addTask}
-                    onAddPhase={addPhase}
-                    onAddSubstep={addSubstep}
-                    onUpdateSubstep={updateSubstep}
-                    onToggleSubstep={toggleSubstep}
-                    onDeleteSubstep={deleteSubstep}
-                    onDeleteGoal={deleteGoal}
-                    onUpdateDocumentStatus={updateDocumentStatus}
-                    onReorderTasks={reorderTasks}
-                    onAddResource={addResource}
-                    onDeleteResource={deleteResource}
-                  />
-                ))}
-              </div>
+              {/* Goals List — drag to reorder */}
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleGoalDragEnd}
+              >
+                <SortableContext
+                  items={goals.map((g) => g.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-2 sm:space-y-4">
+                    {goals.map((goal) => (
+                      <SortableGoalCard
+                        key={goal.id}
+                        goal={goal}
+                        progress={getProgress(goal.id)}
+                        analytics={getAnalytics(goal.id)}
+                        activityLog={activityLog}
+                        streakHistory={streak.streakHistory}
+                        onToggleTask={toggleTask}
+                        onUpdateTask={updateTask}
+                        onDeleteTask={deleteTask}
+                        onAddTask={addTask}
+                        onAddPhase={addPhase}
+                        onAddSubstep={addSubstep}
+                        onUpdateSubstep={updateSubstep}
+                        onToggleSubstep={toggleSubstep}
+                        onDeleteSubstep={deleteSubstep}
+                        onDeleteGoal={deleteGoal}
+                        onUpdateDocumentStatus={updateDocumentStatus}
+                        onReorderTasks={reorderTasks}
+                        onAddResource={addResource}
+                        onDeleteResource={deleteResource}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
             </div>
           </div>
         )}

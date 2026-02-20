@@ -44,7 +44,7 @@ function loadSavedPosition(vw: number, vh: number): { x: number; y: number } {
   } catch {
     // ignore
   }
-  return { x: vw - BUTTON_SIZE - 24, y: vh - BUTTON_SIZE - 24 };
+  return { x: 16, y: 12 };
 }
 
 /* ------------------------------------------------------------ component */

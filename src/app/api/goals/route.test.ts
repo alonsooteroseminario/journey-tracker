@@ -323,7 +323,7 @@ describe('GET /api/goals', () => {
 
     expect(prisma.goal.findMany).toHaveBeenCalledWith({
       where: { userId: 'user-123' },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
     });
   });
 

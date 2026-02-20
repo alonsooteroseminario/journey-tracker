@@ -2,6 +2,7 @@
 
 import { ReduxProvider } from "@/store/provider";
 import { AutoMigration } from "@/components/AutoMigration";
+import { TimezoneSync } from "@/components/TimezoneSync";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 
 /**
@@ -12,6 +13,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <ReduxProvider>
       <AutoMigration />
+      <TimezoneSync />
       {children}
       <ChatWidget />
     </ReduxProvider>

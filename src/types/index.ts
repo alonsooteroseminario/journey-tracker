@@ -65,6 +65,7 @@ export interface Goal {
   resources?: ResourceCategory[];
   targetDate?: string; // Goal completion target
   startDate?: string; // When journey started
+  order?: number; // User-defined display order
 }
 
 export interface Phase {

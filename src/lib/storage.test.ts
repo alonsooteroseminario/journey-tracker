@@ -39,10 +39,12 @@ describe('storage utilities', () => {
       expect(today).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     });
 
-    it('should match current date', () => {
+    it('should match current date in local timezone', () => {
       const today = getToday();
-      const expected = new Date().toISOString().split('T')[0];
-      
+      const expected = new Intl.DateTimeFormat('en-CA', {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+      }).format(new Date());
+
       expect(today).toBe(expected);
     });
 

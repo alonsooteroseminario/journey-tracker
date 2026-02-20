@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterAll } from "vitest";
 import { GET } from "./route";
 import { prisma } from "@/lib/prisma";
 import * as notifications from "@/lib/email/notifications";
+import { getTodayInTimezone } from "@/lib/dateUtils";
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
@@ -40,20 +41,20 @@ describe("GET /api/cron/daily-reminders", () => {
   });
 
   it("processes users with streaks but no activity today", async () => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = getTodayInTimezone(null);
 
     mockFindMany.mockResolvedValue([
       {
         userId: "user-1",
         currentStreak: 5,
         streakHistory: ["2024-01-01"], // No activity today
-        user: { id: "user-1", name: "Alice" },
+        user: { id: "user-1", name: "Alice", timezone: null },
       },
       {
         userId: "user-2",
         currentStreak: 10,
         streakHistory: [today], // Already has activity today
-        user: { id: "user-2", name: "Bob" },
+        user: { id: "user-2", name: "Bob", timezone: null },
       },
     ]);
 
@@ -101,7 +102,7 @@ describe("GET /api/cron/daily-reminders", () => {
         userId: "user-1",
         currentStreak: 3,
         streakHistory: [],
-        user: { id: "user-1", name: "Charlie" },
+        user: { id: "user-1", name: "Charlie", timezone: null },
       },
     ]);
 

@@ -15,7 +15,7 @@ export async function GET() {
 
     const goals = await prisma.goal.findMany({
       where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     });
 
     // Transform Prisma goals to match the frontend Goal type
@@ -35,6 +35,7 @@ export async function GET() {
       createdAt: goal.createdAt.toISOString(),
       updatedAt: goal.updatedAt.toISOString(),
       isPublic: goal.isPublic,
+      order: goal.order,
     }));
 
     return NextResponse.json(transformed, {

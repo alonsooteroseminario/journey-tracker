@@ -28,7 +28,7 @@ export function useGoals() {
 
   const {
     goals, goalsLoading,
-    addGoal, addGoalWithTasks, deleteGoal, updateGoal,
+    addGoal, addGoalWithTasks, deleteGoal, updateGoal, reorderGoals,
     addTask, addPhase, updateTask, toggleTask, deleteTask, reorderTasks,
     addSubstep, updateSubstep, toggleSubstep, deleteSubstep,
     updateTaskCost, updateSubstepCost, updateDocumentStatus,
@@ -83,6 +83,7 @@ export function useGoals() {
     addGoalWithTasks,
     deleteGoal,
     updateGoal,
+    reorderGoals,
     addTask,
     addPhase,
     updateTask,

@@ -12,6 +12,7 @@ import { conversationStore } from '@/lib/agent/conversationStore';
 import { notify } from '@/lib/email/notifications';
 import { trackActivity } from '@/lib/activity';
 import { Task, TaskStatus } from '@/types';
+import { getTodayInTimezone } from '@/lib/dateUtils';
 
 export const toolDefinition: ToolDefinition = {
   name: 'complete-task',
@@ -118,7 +119,7 @@ export async function executeCompleteTask(
 
     // Update streak and send milestone notifications only when completing
     if (args.status === 'completed') {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayInTimezone(user.timezone);
       const streakData = await prisma.streakData.findUnique({ where: { userId: user.id } });
 
       if (streakData) {

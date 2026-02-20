@@ -1,21 +1,19 @@
+import { getTodayInTimezone, isTodayInTimezone, isYesterdayInTimezone } from './dateUtils';
+
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
-export function getToday(): string {
-  return new Date().toISOString().split("T")[0];
+export function getToday(timezone?: string | null): string {
+  return getTodayInTimezone(timezone);
 }
 
-export function isToday(dateString: string | null): boolean {
-  if (!dateString) return false;
-  return dateString === getToday();
+export function isToday(dateString: string | null, timezone?: string | null): boolean {
+  return isTodayInTimezone(dateString, timezone);
 }
 
-export function isYesterday(dateString: string | null): boolean {
-  if (!dateString) return false;
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  return dateString === yesterday.toISOString().split("T")[0];
+export function isYesterday(dateString: string | null, timezone?: string | null): boolean {
+  return isYesterdayInTimezone(dateString, timezone);
 }
 
 export function formatCurrency(amount: number): string {
