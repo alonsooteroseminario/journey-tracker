@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { version } from '../../../../package.json';
 import { GET } from './route';
 
 describe('GET /api/health', () => {
@@ -8,7 +9,7 @@ describe('GET /api/health', () => {
 
     expect(response.status).toBe(200);
     expect(body.status).toBe('ok');
-    expect(body.version).toBe('0.1.0');
+    expect(body.version).toBe(version);
     expect(typeof body.timestamp).toBe('string');
     // Timestamp should be a valid ISO string
     expect(() => new Date(body.timestamp)).not.toThrow();
@@ -21,8 +22,9 @@ describe('GET /api/health', () => {
 
     const b1 = await r1.json();
     const b2 = await r2.json();
-    // Both valid ISO strings (may be equal in same ms — just check type)
-    expect(typeof b1.timestamp).toBe('string');
-    expect(typeof b2.timestamp).toBe('string');
+    // b2 timestamp must be >= b1 timestamp
+    expect(new Date(b2.timestamp).getTime()).toBeGreaterThanOrEqual(
+      new Date(b1.timestamp).getTime()
+    );
   });
 });
