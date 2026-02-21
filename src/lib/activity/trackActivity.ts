@@ -93,7 +93,22 @@ export async function trackActivity(params: TrackActivityParams): Promise<void> 
 
   if (!shouldCreateFeed) return;
 
-  // 3. Create FeedItem
+  // 3. Deduplication: skip if same user+type FeedItem exists within 60 seconds
+  // forceCreateFeed bypasses deduplication (e.g. streak milestones must always appear)
+  if (!forceCreateFeed) {
+    const sixtySecondsAgo = new Date(Date.now() - 60_000);
+    const recentItem = await prisma.feedItem.findFirst({
+      where: {
+        userId,
+        type,
+        createdAt: { gte: sixtySecondsAgo },
+      },
+    });
+
+    if (recentItem) return;
+  }
+
+  // 4. Create FeedItem
   await prisma.feedItem.create({
     data: {
       userId,
