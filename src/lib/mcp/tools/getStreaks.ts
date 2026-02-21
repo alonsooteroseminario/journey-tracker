@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { ToolDefinition, ToolResult } from '@/types/agent';
 import { resolveUser } from '@/lib/agent/resolveUser';
 import { getTodayInTimezone } from '@/lib/dateUtils';
+import { calculateStreakFromHistory } from '@/lib/streaks';
 
 export const toolDefinition: ToolDefinition = {
   name: 'get-streaks',
@@ -58,39 +59,31 @@ export async function executeGetStreaks(
       };
     }
 
-    // Check if streak needs to be reset
+    // Recalculate from history — single source of truth.
+    // Avoids timezone mismatch from lastActivityDate (stored as UTC DateTime).
     const today = getTodayInTimezone(user.timezone);
-    const lastActivity = streakData.lastActivityDate
-      ? new Date(streakData.lastActivityDate).toISOString().split('T')[0]
-      : null;
+    const currentStreak = calculateStreakFromHistory(streakData.streakHistory || [], today);
 
-    let currentStreak = streakData.currentStreak;
-
-    if (lastActivity) {
-      const lastDate = new Date(lastActivity);
-      const todayDate = new Date(today);
-      const diffDays = Math.floor(
-        (todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
-      );
-
-      // Reset streak if more than 1 day has passed
-      if (diffDays > 1) {
-        currentStreak = 0;
-        await prisma.streakData.update({
-          where: { userId: user.id },
-          data: { currentStreak: 0 },
-        });
-      }
+    // Sync stored value if it diverged
+    if (currentStreak !== streakData.currentStreak) {
+      await prisma.streakData.update({
+        where: { userId: user.id },
+        data: { currentStreak },
+      });
     }
+
+    // Derive lastActivityDate from history — avoids UTC vs local date confusion
+    const sortedHistory = [...(streakData.streakHistory || [])].sort();
+    const lastActivityDate = sortedHistory.length > 0
+      ? sortedHistory[sortedHistory.length - 1]
+      : null;
 
     return {
       success: true,
       data: {
         currentStreak,
         longestStreak: streakData.longestStreak,
-        lastActivityDate: streakData.lastActivityDate
-          ? new Date(streakData.lastActivityDate).toISOString().split('T')[0]
-          : null,
+        lastActivityDate,
         streakHistory: streakData.streakHistory || [],
       },
       message: currentStreak > 0
