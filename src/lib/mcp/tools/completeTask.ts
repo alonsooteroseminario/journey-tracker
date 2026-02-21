@@ -12,7 +12,7 @@ import { conversationStore } from '@/lib/agent/conversationStore';
 import { notify } from '@/lib/email/notifications';
 import { trackActivity } from '@/lib/activity';
 import { Task, TaskStatus } from '@/types';
-import { getTodayInTimezone } from '@/lib/dateUtils';
+import { recordStreakActivity } from '@/lib/streaks';
 
 export const toolDefinition: ToolDefinition = {
   name: 'complete-task',
@@ -119,55 +119,22 @@ export async function executeCompleteTask(
 
     // Update streak and send milestone notifications only when completing
     if (args.status === 'completed') {
-      const today = getTodayInTimezone(user.timezone);
-      const streakData = await prisma.streakData.findUnique({ where: { userId: user.id } });
+      const streakResult = await recordStreakActivity(user.id, user.timezone);
 
-      if (streakData) {
-        const streakHistory = streakData.streakHistory || [];
-        if (!streakHistory.includes(today)) {
-          streakHistory.push(today);
+      if (streakResult.milestone) {
+        notify(user.id, 'streakMilestone', {
+          userName: user.name,
+          streakCount: streakResult.milestone,
+        }).catch((err) => console.error('Failed to send streak milestone email:', err));
 
-          const sortedDates = streakHistory.sort();
-          let currentStreak = 1;
-          for (let i = sortedDates.length - 1; i > 0; i--) {
-            const current = new Date(sortedDates[i]);
-            const previous = new Date(sortedDates[i - 1]);
-            const diffDays = Math.floor((current.getTime() - previous.getTime()) / (1000 * 60 * 60 * 24));
-            if (diffDays === 1) {
-              currentStreak++;
-            } else {
-              break;
-            }
-          }
-
-          await prisma.streakData.update({
-            where: { userId: user.id },
-            data: {
-              currentStreak,
-              longestStreak: Math.max(currentStreak, streakData.longestStreak),
-              lastActivityDate: new Date(today),
-              streakHistory,
-            },
-          });
-
-          // Milestone: notify + feed item (forced, bypasses preferences)
-          const milestones = [7, 14, 30, 60, 100];
-          if (milestones.includes(currentStreak)) {
-            notify(user.id, 'streakMilestone', {
-              userName: user.name,
-              streakCount: currentStreak,
-            }).catch((err) => console.error('Failed to send streak milestone email:', err));
-
-            trackActivity({
-              userId: user.id,
-              type: 'streak_milestone',
-              action: `${user.name} reached a ${currentStreak}-day streak! 🔥`,
-              metadata: { streakCount: currentStreak },
-              createFeedItem: true,
-              feedVisibility: 'friends',
-            }).catch((err) => console.error('Failed to track streak milestone:', err));
-          }
-        }
+        trackActivity({
+          userId: user.id,
+          type: 'streak_milestone',
+          action: `${user.name} reached a ${streakResult.milestone}-day streak! 🔥`,
+          metadata: { streakCount: streakResult.milestone },
+          createFeedItem: true,
+          feedVisibility: 'friends',
+        }).catch((err) => console.error('Failed to track streak milestone:', err));
       }
 
       auditLogger.logTaskCompleted(userId, args.goalId, args.taskId);
