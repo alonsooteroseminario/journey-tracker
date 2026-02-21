@@ -10,6 +10,7 @@ import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { trackActivity } from '@/lib/activity';
 import { Task, TaskStatus } from '@/types';
+import { recordStreakActivity } from '@/lib/streaks';
 
 export const toolDefinition: ToolDefinition = {
   name: 'complete-substep',
@@ -127,8 +128,9 @@ export async function executeCompleteSubstep(
       },
     });
 
-    // Audit log for completions
+    // Update streak and audit log when completing
     if (args.status === 'completed') {
+      await recordStreakActivity(user.id, user.timezone);
       auditLogger.logSubstepCompleted(userId, args.goalId, args.taskId, args.substepId);
     }
 
