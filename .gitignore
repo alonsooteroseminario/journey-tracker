@@ -30,3 +30,6 @@ Thumbs.db
 
 # Git worktrees
 .worktrees/
+
+# Rendered marketing videos
+/videos/*.mp4
