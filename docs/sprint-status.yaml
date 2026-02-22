@@ -1,0 +1,242 @@
+version: "6.0.0"
+project_name: "Journey Tracker"
+project_level: 4
+current_sprint: 1
+sprint_plan_path: "docs/sprint-plan-journey-tracker-2026-02-20.md"
+last_updated: "2026-02-20T15:00:00Z"
+
+team:
+  size: 1
+  experience: "senior"
+  sprint_length_weeks: 2
+  capacity_per_sprint: 30
+
+velocity:
+  sprint_1: null   # Filled when sprint completes
+  sprint_2: null
+  sprint_3: null
+  sprint_4: null
+  rolling_average: null
+
+sprints:
+  - sprint_number: 1
+    start_date: "2026-02-21"
+    end_date: "2026-03-06"
+    capacity_points: 30
+    committed_points: 26
+    completed_points: 0
+    status: "not_started"
+    goal: "Deliver comprehensive activity logging across all mutation paths and an enhanced social feed"
+    stories:
+      - story_id: "STORY-001"
+        title: "ActivityLog Prisma Model & trackActivity() Utility"
+        points: 5
+        priority: "must_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-006"
+
+      - story_id: "STORY-002"
+        title: "Wire Activity Tracking into MCP Tools"
+        points: 5
+        priority: "must_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-006"
+        blocked_by: ["STORY-001"]
+
+      - story_id: "STORY-003"
+        title: "Wire Activity Tracking into REST API Routes"
+        points: 5
+        priority: "must_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-006"
+        blocked_by: ["STORY-001"]
+
+      - story_id: "STORY-004"
+        title: "Enhanced Social Feed Display"
+        points: 8
+        priority: "must_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-006"
+        blocked_by: ["STORY-001", "STORY-002", "STORY-003"]
+
+      - story_id: "STORY-005"
+        title: "Feed Filtering UI"
+        points: 3
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-006"
+        blocked_by: ["STORY-004"]
+
+  - sprint_number: 2
+    start_date: "2026-03-07"
+    end_date: "2026-03-20"
+    capacity_points: 30
+    committed_points: 26
+    completed_points: 0
+    status: "not_started"
+    goal: "Ship feed visibility controls and a fully functional Kanban board with drill-down and filters"
+    stories:
+      - story_id: "STORY-006"
+        title: "Feed Visibility Preferences Backend"
+        points: 5
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-010"
+        blocked_by: ["STORY-001"]
+
+      - story_id: "STORY-007"
+        title: "Feed Visibility Preferences UI"
+        points: 3
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-010"
+        blocked_by: ["STORY-006"]
+
+      - story_id: "STORY-009"
+        title: "Kanban Drill-Down Navigation"
+        points: 8
+        priority: "must_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-003"
+
+      - story_id: "STORY-010"
+        title: "Kanban Filters"
+        points: 5
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-003"
+        blocked_by: ["STORY-009"]
+
+      - story_id: "STORY-008"
+        title: "Feed Item Grouping"
+        points: 5
+        priority: "could_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-006"
+        blocked_by: ["STORY-004"]
+
+  - sprint_number: 3
+    start_date: "2026-03-21"
+    end_date: "2026-04-03"
+    capacity_points: 30
+    committed_points: 26
+    completed_points: 0
+    status: "not_started"
+    goal: "Launch the public landing page, mobile stats FAB, and complete the template marketplace"
+    stories:
+      - story_id: "STORY-011"
+        title: "Public Landing Page"
+        points: 8
+        priority: "must_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-011"
+
+      - story_id: "STORY-013"
+        title: "Activity Calendar Heatmap"
+        points: 5
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-004"
+
+      - story_id: "STORY-012"
+        title: "Mobile Stats FAB & Bottom Sheet"
+        points: 5
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-011"
+        blocked_by: ["STORY-013"]
+
+      - story_id: "STORY-014"
+        title: "Template Detail Page"
+        points: 5
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-008"
+
+      - story_id: "STORY-015"
+        title: "Template Visibility Control"
+        points: 3
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-008"
+
+  - sprint_number: 4
+    start_date: "2026-04-04"
+    end_date: "2026-04-17"
+    capacity_points: 30
+    committed_points: 24
+    completed_points: 0
+    status: "not_started"
+    goal: "Add task enhancements, AI onboarding, and ensure quality for private beta launch"
+    stories:
+      - story_id: "STORY-016"
+        title: "Task Priority Badges"
+        points: 3
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-003"
+
+      - story_id: "STORY-017"
+        title: "Task & Substep Due Dates"
+        points: 3
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-003"
+
+      - story_id: "STORY-018"
+        title: "Task Notes Field"
+        points: 3
+        priority: "should_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-002"
+        blocked_by: ["STORY-001"]
+
+      - story_id: "STORY-021"
+        title: "Health Check API Endpoint"
+        points: 2
+        priority: "must_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "infrastructure"
+
+      - story_id: "STORY-022"
+        title: "Test Coverage for New Features"
+        points: 5
+        priority: "must_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "infrastructure"
+
+      - story_id: "STORY-019"
+        title: "Streak-at-Risk Email Notification"
+        points: 5
+        priority: "could_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-004"
+
+      - story_id: "STORY-020"
+        title: "AI-Assisted Goal Creation Onboarding"
+        points: 3
+        priority: "could_have"
+        status: "not_started"
+        assigned_to: "alonsooteroseminario"
+        epic: "EPIC-005"

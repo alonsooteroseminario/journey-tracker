@@ -137,4 +137,111 @@ describe("FeedItemCard", () => {
     expect(card).toHaveClass("bg-orange-50");
     expect(card).toHaveClass("border-orange-200");
   });
+
+  it("shows Send Encouragement button for streak_at_risk items", () => {
+    const atRiskItem: FeedItem = { ...mockFeedItem, type: "streak_at_risk" };
+    render(
+      <FeedItemCard
+        item={atRiskItem}
+        isExpanded={false}
+        onToggleExpanded={vi.fn()}
+        onToggleCheer={vi.fn()}
+        onAddComment={vi.fn()}
+      />
+    );
+    expect(screen.getByText("Encourage")).toBeInTheDocument();
+  });
+
+  it("calls onAddComment and onToggleExpanded when Send Encouragement clicked (not expanded)", async () => {
+    const onAddComment = vi.fn().mockResolvedValue(undefined);
+    const onToggleExpanded = vi.fn();
+    const atRiskItem: FeedItem = { ...mockFeedItem, type: "streak_at_risk" };
+    render(
+      <FeedItemCard
+        item={atRiskItem}
+        isExpanded={false}
+        onToggleExpanded={onToggleExpanded}
+        onToggleCheer={vi.fn()}
+        onAddComment={onAddComment}
+      />
+    );
+    fireEvent.click(screen.getByText("Encourage"));
+    await vi.waitFor(() => expect(onAddComment).toHaveBeenCalledWith("feed-1", expect.any(String)));
+  });
+
+  it("does not show Send Encouragement button for non-streak_at_risk items", () => {
+    render(
+      <FeedItemCard
+        item={mockFeedItem}
+        isExpanded={false}
+        onToggleExpanded={vi.fn()}
+        onToggleCheer={vi.fn()}
+        onAddComment={vi.fn()}
+      />
+    );
+    expect(screen.queryByText("Encourage")).not.toBeInTheDocument();
+  });
+
+  it("renders diffs when metadata.diffs is present", () => {
+    const itemWithDiffs: FeedItem = {
+      ...mockFeedItem,
+      metadata: {
+        diffs: [
+          { field: "title", oldValue: "Old Title", newValue: "New Title" },
+          { field: "status", oldValue: "pending", newValue: "completed" },
+        ],
+      },
+    };
+    render(
+      <FeedItemCard
+        item={itemWithDiffs}
+        isExpanded={false}
+        onToggleExpanded={vi.fn()}
+        onToggleCheer={vi.fn()}
+        onAddComment={vi.fn()}
+      />
+    );
+    expect(screen.getByText("title:")).toBeInTheDocument();
+    expect(screen.getByText("Old Title")).toBeInTheDocument();
+    expect(screen.getByText("New Title")).toBeInTheDocument();
+  });
+
+  it("shows '+N more changes' when diffs exceed 3", () => {
+    const itemWithManyDiffs: FeedItem = {
+      ...mockFeedItem,
+      metadata: {
+        diffs: [
+          { field: "f1", oldValue: "a", newValue: "b" },
+          { field: "f2", oldValue: "c", newValue: "d" },
+          { field: "f3", oldValue: "e", newValue: "f" },
+          { field: "f4", oldValue: "g", newValue: "h" },
+        ],
+      },
+    };
+    render(
+      <FeedItemCard
+        item={itemWithManyDiffs}
+        isExpanded={false}
+        onToggleExpanded={vi.fn()}
+        onToggleCheer={vi.fn()}
+        onAddComment={vi.fn()}
+      />
+    );
+    expect(screen.getByText("+1 more changes")).toBeInTheDocument();
+  });
+
+  it("calls onToggleCheer via cheer button", async () => {
+    const onToggleCheer = vi.fn().mockResolvedValue(undefined);
+    render(
+      <FeedItemCard
+        item={mockFeedItem}
+        isExpanded={false}
+        onToggleExpanded={vi.fn()}
+        onToggleCheer={onToggleCheer}
+        onAddComment={vi.fn()}
+      />
+    );
+    fireEvent.click(screen.getAllByRole("button")[0]);
+    await vi.waitFor(() => expect(onToggleCheer).toHaveBeenCalledWith("feed-1"));
+  });
 });
