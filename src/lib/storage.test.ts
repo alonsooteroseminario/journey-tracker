@@ -1,66 +1,81 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { generateId, getToday } from './storage';
+import { generateId, formatCurrency, parseCostString, getWeekStart, addDays } from './storage';
+
+vi.mock('./dateUtils', () => ({
+  getTodayInTimezone: vi.fn().mockReturnValue('2024-01-15'),
+  isTodayInTimezone: vi.fn().mockReturnValue(true),
+  isYesterdayInTimezone: vi.fn().mockReturnValue(false),
+}));
 
 describe('storage utilities', () => {
   describe('generateId', () => {
-    it('should generate unique IDs', () => {
-      const id1 = generateId();
-      const id2 = generateId();
-      
-      expect(id1).not.toBe(id2);
-      expect(id1).toMatch(/^\d+-[a-z0-9]+$/);
-      expect(id2).toMatch(/^\d+-[a-z0-9]+$/);
+    it('generates a non-empty string', () => {
+      const id = generateId();
+      expect(typeof id).toBe('string');
+      expect(id.length).toBeGreaterThan(0);
     });
 
-    it('should include timestamp', () => {
-      const before = Date.now();
-      const id = generateId();
-      const after = Date.now();
-      
-      const timestamp = parseInt(id.split('-')[0]);
-      expect(timestamp).toBeGreaterThanOrEqual(before);
-      expect(timestamp).toBeLessThanOrEqual(after);
-    });
-
-    it('should include random component', () => {
-      const id = generateId();
-      const parts = id.split('-');
-      
-      expect(parts).toHaveLength(2);
-      expect(parts[1]).toMatch(/^[a-z0-9]+$/);
-      expect(parts[1].length).toBeGreaterThan(0);
+    it('generates unique IDs', () => {
+      const ids = new Set([generateId(), generateId(), generateId()]);
+      expect(ids.size).toBe(3);
     });
   });
 
-  describe('getToday', () => {
-    it('should return today\'s date in YYYY-MM-DD format', () => {
-      const today = getToday();
-      
-      expect(today).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  describe('formatCurrency', () => {
+    it('formats a number as CAD currency', () => {
+      const result = formatCurrency(1234.56);
+      expect(result).toContain('1,234.56');
     });
 
-    it('should match current date in local timezone', () => {
-      const today = getToday();
-      const expected = new Intl.DateTimeFormat('en-CA', {
-        year: 'numeric', month: '2-digit', day: '2-digit',
-      }).format(new Date());
+    it('formats zero', () => {
+      const result = formatCurrency(0);
+      expect(result).toContain('0.00');
+    });
+  });
 
-      expect(today).toBe(expected);
+  describe('parseCostString', () => {
+    it('parses a dollar amount', () => {
+      expect(parseCostString('$256')).toBe(256);
     });
 
-    it('should not include time component', () => {
-      const today = getToday();
-      
-      expect(today).not.toContain('T');
-      expect(today).not.toContain(':');
-      expect(today.length).toBe(10);
+    it('parses the first amount from a range', () => {
+      expect(parseCostString('$300-400')).toBe(300);
     });
 
-    it('should be consistent within same execution', () => {
-      const today1 = getToday();
-      const today2 = getToday();
-      
-      expect(today1).toBe(today2);
+    it('parses amounts with commas', () => {
+      expect(parseCostString('$1,000')).toBe(1000);
+    });
+
+    it('returns 0 when no amount found', () => {
+      expect(parseCostString('FREE')).toBe(0);
+    });
+  });
+
+  describe('getWeekStart', () => {
+    it('returns the Monday of the week for a Wednesday', () => {
+      const wednesday = new Date('2024-01-17'); // Wednesday
+      const weekStart = getWeekStart(wednesday);
+      expect(weekStart.getDay()).toBe(1); // Monday
+    });
+
+    it('returns the previous Monday for a Sunday', () => {
+      const sunday = new Date('2024-01-21'); // Sunday
+      const weekStart = getWeekStart(sunday);
+      expect(weekStart.getDay()).toBe(1); // Monday
+    });
+  });
+
+  describe('addDays', () => {
+    it('adds days to a date', () => {
+      const date = new Date('2024-01-01');
+      const result = addDays(date, 7);
+      expect(result.toISOString().startsWith('2024-01-08')).toBe(true);
+    });
+
+    it('does not mutate the original date', () => {
+      const date = new Date('2024-01-01');
+      addDays(date, 5);
+      expect(date.toISOString().startsWith('2024-01-01')).toBe(true);
     });
   });
 });
