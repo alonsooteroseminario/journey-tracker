@@ -1,10 +1,11 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { useGetMarketplaceTemplateByIdQuery } from "@/store/slices/templatesSlice";
 import { ForkButton } from "@/components/templates/ForkButton";
+import { TemplateEditor } from "@/components/templates/TemplateEditor";
 import { Header } from "@/components/Header";
 import type { Task } from "@/types";
 
@@ -22,6 +23,7 @@ export default function TemplateDetailPage({
   const { templateId } = use(params);
   const { user } = useUser();
   const { data: template, isLoading, error } = useGetMarketplaceTemplateByIdQuery(templateId);
+  const [isEditing, setIsEditing] = useState(false);
 
   const tasks = (template?.tasks as unknown as Task[]) || [];
   const isOwnTemplate = user?.id === template?.authorId;
@@ -103,9 +105,23 @@ export default function TemplateDetailPage({
               <div className="flex items-start gap-3 sm:gap-4 mb-4">
                 <span className="text-4xl sm:text-5xl">{template.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                    {template.title}
-                  </h1>
+                  <div className="flex items-start justify-between gap-2">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                      {template.title}
+                    </h1>
+                    {isOwnTemplate && (
+                      <button
+                        onClick={() => setIsEditing(!isEditing)}
+                        className={`px-3 py-1.5 text-xs sm:text-sm rounded-md shrink-0 ${
+                          isEditing
+                            ? "bg-green-600 text-white hover:bg-green-700"
+                            : "bg-indigo-600 text-white hover:bg-indigo-700"
+                        }`}
+                      >
+                        {isEditing ? "Done Editing" : "Edit Template"}
+                      </button>
+                    )}
+                  </div>
                   {/* Metadata Badges */}
                   <div className="flex flex-wrap gap-2">
                     <span className={`px-2.5 py-1 rounded-full text-xs sm:text-sm font-medium ${difficultyColors[template.difficulty]}`}>
@@ -212,47 +228,53 @@ export default function TemplateDetailPage({
               </div>
             )}
 
-            {/* Tasks Preview */}
-            {tasks.length > 0 && (
+            {/* Tasks — Editor or Read-Only */}
+            {isEditing ? (
               <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
-                  Tasks ({tasks.length})
-                </h2>
-                <div className="space-y-2">
-                  {tasks.map((task) => (
-                    <div
-                      key={task.id}
-                      className="border border-gray-200 rounded-lg p-3"
-                    >
-                      <div className="flex items-start gap-2">
-                        <span className="text-sm text-gray-400 mt-0.5">&#9744;</span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900">
-                            {task.title}
-                          </p>
-                          {task.description && (
-                            <p className="text-xs text-gray-500 mt-1">
-                              {task.description}
+                <TemplateEditor template={template} />
+              </div>
+            ) : (
+              tasks.length > 0 && (
+                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
+                    Tasks ({tasks.length})
+                  </h2>
+                  <div className="space-y-2">
+                    {tasks.map((task) => (
+                      <div
+                        key={task.id}
+                        className="border border-gray-200 rounded-lg p-3"
+                      >
+                        <div className="flex items-start gap-2">
+                          <span className="text-sm text-gray-400 mt-0.5">&#9744;</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900">
+                              {task.title}
                             </p>
-                          )}
-                          {task.substeps && task.substeps.length > 0 && (
-                            <div className="mt-2 ml-4 space-y-1">
-                              {task.substeps.map((substep) => (
-                                <div key={substep.id} className="flex items-start gap-2">
-                                  <span className="text-xs text-gray-400">&#9702;</span>
-                                  <p className="text-xs text-gray-600">
-                                    {substep.title}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          )}
+                            {task.description && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                {task.description}
+                              </p>
+                            )}
+                            {task.substeps && task.substeps.length > 0 && (
+                              <div className="mt-2 ml-4 space-y-1">
+                                {task.substeps.map((substep) => (
+                                  <div key={substep.id} className="flex items-start gap-2">
+                                    <span className="text-xs text-gray-400">&#9702;</span>
+                                    <p className="text-xs text-gray-600">
+                                      {substep.title}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )
             )}
 
             {/* Action Section */}
@@ -265,9 +287,19 @@ export default function TemplateDetailPage({
                 />
               )}
               {user && isOwnTemplate && (
-                <p className="text-sm text-gray-500 text-center py-2">
-                  This is your own template
-                </p>
+                <div className="text-center py-2">
+                  <p className="text-sm text-gray-500">
+                    This is your own template
+                  </p>
+                  {!isEditing && (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="mt-2 px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                    >
+                      Edit Template
+                    </button>
+                  )}
+                </div>
               )}
               {!user && (
                 <div className="text-center">

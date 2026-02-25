@@ -1,15 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import type { GoalTemplate, Task } from "@/types";
 import { ForkButton } from "./ForkButton";
 import { PublishButton } from "../marketplace/PublishButton";
+import { TemplateEditor } from "./TemplateEditor";
+import { useGetTemplateByIdQuery } from "@/store/slices/templatesSlice";
 
 interface TemplateDetailModalProps {
   template: GoalTemplate;
   onClose: () => void;
   showPublishButton?: boolean;
+  initialEditing?: boolean;
 }
 
 const difficultyColors = {
@@ -18,8 +22,14 @@ const difficultyColors = {
   advanced: "bg-red-100 text-red-800",
 };
 
-export function TemplateDetailModal({ template, onClose, showPublishButton }: TemplateDetailModalProps) {
+export function TemplateDetailModal({ template: initialTemplate, onClose, showPublishButton, initialEditing = false }: TemplateDetailModalProps) {
   const { user } = useUser();
+  const [isEditing, setIsEditing] = useState(initialEditing);
+
+  // Fetch live template data so editor mutations are reflected
+  const { data: liveTemplate } = useGetTemplateByIdQuery(initialTemplate.id);
+  const template = liveTemplate || initialTemplate;
+
   const tasks = (template.tasks as unknown as Task[]) || [];
   const isOwnTemplate = user?.id === template.authorId;
 
@@ -40,12 +50,26 @@ export function TemplateDetailModal({ template, onClose, showPublishButton }: Te
                 </p>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl sm:text-3xl ml-2"
-            >
-              ×
-            </button>
+            <div className="flex items-center gap-2 ml-2">
+              {isOwnTemplate && (
+                <button
+                  onClick={() => setIsEditing(!isEditing)}
+                  className={`px-3 py-1.5 text-xs sm:text-sm rounded-md ${
+                    isEditing
+                      ? "bg-green-600 text-white hover:bg-green-700"
+                      : "bg-indigo-600 text-white hover:bg-indigo-700"
+                  }`}
+                >
+                  {isEditing ? "Done Editing" : "Edit"}
+                </button>
+              )}
+              <button
+                onClick={onClose}
+                className="text-gray-500 hover:text-gray-700 text-2xl sm:text-3xl"
+              >
+                ×
+              </button>
+            </div>
           </div>
 
           {/* Metadata Badges */}
@@ -127,47 +151,53 @@ export function TemplateDetailModal({ template, onClose, showPublishButton }: Te
             </div>
           )}
 
-          {/* Tasks */}
-          {tasks.length > 0 && (
+          {/* Tasks — Editor or Read-Only */}
+          {isEditing ? (
             <div className="mb-4 sm:mb-6">
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">
-                ✓ Tasks ({tasks.length})
-              </h3>
-              <div className="space-y-2">
-                {tasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className="border border-gray-200 rounded-lg p-2 sm:p-3"
-                  >
-                    <div className="flex items-start gap-2">
-                      <span className="text-xs sm:text-sm">☐</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-medium text-gray-900">
-                          {task.title}
-                        </p>
-                        {task.description && (
-                          <p className="text-xs text-gray-600 mt-1">
-                            {task.description}
+              <TemplateEditor template={template} />
+            </div>
+          ) : (
+            tasks.length > 0 && (
+              <div className="mb-4 sm:mb-6">
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">
+                  Tasks ({tasks.length})
+                </h3>
+                <div className="space-y-2">
+                  {tasks.map((task) => (
+                    <div
+                      key={task.id}
+                      className="border border-gray-200 rounded-lg p-2 sm:p-3"
+                    >
+                      <div className="flex items-start gap-2">
+                        <span className="text-xs sm:text-sm">&#9744;</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs sm:text-sm font-medium text-gray-900">
+                            {task.title}
                           </p>
-                        )}
-                        {task.substeps && task.substeps.length > 0 && (
-                          <div className="mt-2 ml-3 sm:ml-4 space-y-1">
-                            {task.substeps.map((substep) => (
-                              <div key={substep.id} className="flex items-start gap-2">
-                                <span className="text-xs">▫</span>
-                                <p className="text-xs text-gray-600">
-                                  {substep.title}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                          {task.description && (
+                            <p className="text-xs text-gray-600 mt-1">
+                              {task.description}
+                            </p>
+                          )}
+                          {task.substeps && task.substeps.length > 0 && (
+                            <div className="mt-2 ml-3 sm:ml-4 space-y-1">
+                              {task.substeps.map((substep) => (
+                                <div key={substep.id} className="flex items-start gap-2">
+                                  <span className="text-xs">&#9643;</span>
+                                  <p className="text-xs text-gray-600">
+                                    {substep.title}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )
           )}
 
           {/* Action Buttons */}
