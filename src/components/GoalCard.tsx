@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Goal, Task, Substep } from "@/types";
 import { ProgressBar } from "./ProgressBar";
 import { TaskList } from "./TaskList";
@@ -14,6 +14,9 @@ import { AnalyticsDashboard } from "./AnalyticsDashboard";
 import { ShareGoalModal } from "./templates/ShareGoalModal";
 import { GoalGroupSelector } from "./GoalGroupSelector";
 import { useUpdateGoalMutation } from "@/store/slices/goalsSlice";
+import { StreakBadge } from "./StreakBadge";
+import { useGetGoalStreaksQuery } from "@/store/slices/streaksSlice";
+import { computeGoalTier } from "@/lib/streaks/computeTier";
 import { AnalyticsData, ActivityLogEntry } from "@/types";
 
 interface GoalCardProps {
@@ -70,6 +73,17 @@ export function GoalCard({
   const [isAddingPhase, setIsAddingPhase] = useState(false);
   const [newPhaseName, setNewPhaseName] = useState("");
   const [newPhaseDescription, setNewPhaseDescription] = useState("");
+
+  // Fetch per-goal streak data for badge
+  const { data: goalStreaks } = useGetGoalStreaksQuery();
+  const goalStreak = useMemo(
+    () => goalStreaks?.find((s) => s.goalId === goal.id),
+    [goalStreaks, goal.id]
+  );
+  const goalTier = useMemo(
+    () => computeGoalTier(goalStreak?.currentStreak ?? 0),
+    [goalStreak?.currentStreak]
+  );
 
   // Calculate completed and total counts including substeps
   let completedCount = 0;
@@ -128,6 +142,7 @@ export function GoalCard({
             <div className="flex items-center gap-1 sm:gap-2">
               <span className="text-lg sm:text-3xl flex-shrink-0">{goal.icon || '🎯'}</span>
               <h3 className="text-sm sm:text-xl font-bold text-gray-800 truncate">{goal.title}</h3>
+              <StreakBadge tier={goalTier} streak={goalStreak?.currentStreak} />
               {progress === 100 && (
                 <span className="text-base sm:text-2xl flex-shrink-0" title="Goal completed!">
                   🎉

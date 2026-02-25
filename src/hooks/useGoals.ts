@@ -8,6 +8,7 @@ import { useProfileData } from "./useProfileData";
 import { useFriendsData } from "./useFriendsData";
 import { useGoalsCRUD } from "./useGoalsCRUD";
 import { useGoalAnalytics } from "./useGoalAnalytics";
+import { useUpdateGoalStreakMutation } from "@/store/slices/streaksSlice";
 
 /**
  * useGoals - Backward-compatible composition hook.
@@ -26,6 +27,12 @@ export function useGoals() {
     hasCompletedTaskToday, getActivitiesForDate,
   } = useStreakData();
 
+  const [updateGoalStreakMutation] = useUpdateGoalStreakMutation();
+  const triggerGoalStreakUpdate = useCallback(
+    (goalId: string) => { updateGoalStreakMutation(goalId); },
+    [updateGoalStreakMutation]
+  );
+
   const {
     goals, goalsLoading,
     addGoal, addGoalWithTasks, deleteGoal, updateGoal, reorderGoals,
@@ -34,7 +41,7 @@ export function useGoals() {
     updateTaskCost, updateSubstepCost, updateDocumentStatus,
     addResource, deleteResource,
     getProgress, getTotalProgress,
-  } = useGoalsCRUD(logActivity, triggerStreakUpdate);
+  } = useGoalsCRUD(logActivity, triggerStreakUpdate, triggerGoalStreakUpdate);
 
   const { profile, profileLoading, updateProfile } = useProfileData();
 

@@ -101,6 +101,27 @@ export interface StreakData {
   streakHistory: string[]; // Array of ISO date strings when tasks were completed
 }
 
+export interface GoalStreak {
+  id: string;
+  goalId: string;
+  userId: string;
+  currentStreak: number;
+  longestStreak: number;
+  lastCompletionDate?: string;
+  streakHistory: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type StreakTier = "bronze" | "silver" | "gold" | null;
+
+export interface StreakTierSummary {
+  goalStreaks: Array<GoalStreak & { goalTitle: string; goalIcon?: string; tier: StreakTier }>;
+  hasGold: boolean;
+  silverCount: number;
+  bronzeCount: number;
+}
+
 // User Profile
 export interface UserProfile {
   id: string;

@@ -20,7 +20,8 @@ export function useGoalsCRUD(
     substepId?: string,
     metadata?: Record<string, unknown>
   ) => void,
-  triggerStreakUpdate: () => void
+  triggerStreakUpdate: () => void,
+  triggerGoalStreakUpdate?: (goalId: string) => void
 ) {
   const {
     data: apiGoals,
@@ -223,6 +224,7 @@ export function useGoalsCRUD(
         if (newStatus === 'completed') {
           logActivity("task_completed", goalId, `Completed task: ${taskTitle}`, taskId);
           triggerStreakUpdate();
+          triggerGoalStreakUpdate?.(goalId);
         } else {
           logActivity("task_uncompleted", goalId, `Uncompleted task: ${taskTitle}`, taskId);
         }
@@ -230,7 +232,7 @@ export function useGoalsCRUD(
         console.error("Failed to toggle task:", error);
       }
     },
-    [goals, updateGoalMutation, logActivity, triggerStreakUpdate]
+    [goals, updateGoalMutation, logActivity, triggerStreakUpdate, triggerGoalStreakUpdate]
   );
 
   const deleteTask = useCallback(
@@ -344,6 +346,7 @@ export function useGoalsCRUD(
         if (newStatus === 'completed') {
           logActivity("substep_completed", goalId, `Completed substep: ${substepTitle}`, taskId, substepId);
           triggerStreakUpdate();
+          triggerGoalStreakUpdate?.(goalId);
         } else {
           logActivity("substep_uncompleted", goalId, `Uncompleted substep: ${substepTitle}`, taskId, substepId);
         }
@@ -351,7 +354,7 @@ export function useGoalsCRUD(
         console.error("Failed to toggle substep:", error);
       }
     },
-    [goals, updateGoalMutation, logActivity, triggerStreakUpdate]
+    [goals, updateGoalMutation, logActivity, triggerStreakUpdate, triggerGoalStreakUpdate]
   );
 
   const deleteSubstep = useCallback(
