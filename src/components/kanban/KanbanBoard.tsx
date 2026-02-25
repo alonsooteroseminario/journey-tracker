@@ -124,8 +124,10 @@ export function KanbanBoard() {
   const filteredData = useMemo(() => {
     let data = viewData;
 
-    // Hide archived items unless toggle is on
-    if (!showArchived) {
+    // When archive toggle is on, show ONLY archived items; otherwise hide them
+    if (showArchived) {
+      data = data.filter((item: any) => item.isArchived);
+    } else {
       data = data.filter((item: any) => !item.isArchived);
     }
 

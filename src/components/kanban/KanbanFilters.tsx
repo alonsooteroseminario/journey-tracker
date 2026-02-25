@@ -157,9 +157,10 @@ export function KanbanFilters({
               ? "bg-amber-100 text-amber-700 border-amber-300"
               : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
           }`}
+          title={showArchived ? "Showing archived only" : "Show archived items"}
         >
           <span className="sm:hidden">{"\uD83D\uDCE6"}</span>
-          <span className="hidden sm:inline">{"\uD83D\uDCE6"} Archived</span>
+          <span className="hidden sm:inline">{"\uD83D\uDCE6"} {showArchived ? "Archived Only" : "Archived"}</span>
         </button>
       </div>
     </div>
