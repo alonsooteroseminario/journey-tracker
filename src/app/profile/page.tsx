@@ -273,6 +273,37 @@ export default function ProfilePage() {
           <EmailPreferencesPanel />
         </div>
 
+        {/* Task Display Settings */}
+        <div className="mb-6">
+          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Task Display</h3>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Auto-hide completed tasks after
+              </label>
+              <select
+                value={profile.hideCompletedAfterDays ?? ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  const newVal = val === "" ? null : parseInt(val);
+                  updateProfile({ hideCompletedAfterDays: newVal });
+                }}
+                className="w-full sm:w-auto px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Never (show all)</option>
+                <option value="1">1 day</option>
+                <option value="3">3 days</option>
+                <option value="7">7 days</option>
+                <option value="14">14 days</option>
+                <option value="30">30 days</option>
+              </select>
+              <p className="text-xs text-gray-500 mt-1">
+                Completed tasks older than this will be hidden from goal cards. They still exist and can be seen by disabling this setting.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Feed Visibility Preferences */}
         <div className="mb-6">
           <FeedPreferencesPanel />

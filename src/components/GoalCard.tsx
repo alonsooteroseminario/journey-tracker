@@ -39,6 +39,7 @@ interface GoalCardProps {
   onAddPhase?: (goalId: string, name: string, description: string) => void;
   onAddResource?: (goalId: string, category: string, name: string, url: string) => void;
   onDeleteResource?: (goalId: string, category: string, resourceIndex: number) => void;
+  hideCompletedAfterDays?: number | null;
 }
 
 type ViewMode = "tasks" | "phases" | "info" | "calendar" | "analytics";
@@ -63,6 +64,7 @@ export function GoalCard({
   onAddPhase,
   onAddResource,
   onDeleteResource,
+  hideCompletedAfterDays,
 }: GoalCardProps) {
   const [updateGoalMutation] = useUpdateGoalMutation();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -85,11 +87,25 @@ export function GoalCard({
     [goalStreak?.currentStreak]
   );
 
+  // Filter out old completed tasks if preference is set
+  const visibleTasks = useMemo(() => {
+    if (!hideCompletedAfterDays) return goal.tasks;
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - hideCompletedAfterDays);
+    return goal.tasks.filter((t) => {
+      if (t.status !== "completed") return true;
+      if (!t.completedAt) return true;
+      return new Date(t.completedAt) > cutoff;
+    });
+  }, [goal.tasks, hideCompletedAfterDays]);
+
+  const hiddenTaskCount = goal.tasks.length - visibleTasks.length;
+
   // Calculate completed and total counts including substeps
   let completedCount = 0;
   let totalCount = 0;
 
-  goal.tasks.forEach((task) => {
+  visibleTasks.forEach((task) => {
     const substeps = task.substeps || [];
 
     if (substeps.length > 0) {
@@ -107,12 +123,12 @@ export function GoalCard({
   const getTasksForPhase = (phaseId: string): Task[] => {
     const phase = goal.phases?.find((p) => p.id === phaseId);
     if (!phase) return [];
-    return goal.tasks.filter((t) => phase.taskIds.includes(t.id));
+    return visibleTasks.filter((t) => phase.taskIds.includes(t.id));
   };
 
   const displayedTasks = selectedPhase
     ? getTasksForPhase(selectedPhase)
-    : goal.tasks;
+    : visibleTasks;
 
   const selectedPhaseName = selectedPhase
     ? goal.phases?.find((p) => p.id === selectedPhase)?.name
@@ -478,18 +494,25 @@ export function GoalCard({
 
           {/* Tasks View */}
           {viewMode === "tasks" && (
-            <TaskList
-              tasks={goal.tasks}
-              onToggleTask={(taskId) => onToggleTask(goal.id, taskId)}
-              onUpdateTask={(taskId, updates) => onUpdateTask(goal.id, taskId, updates)}
-              onDeleteTask={(taskId) => onDeleteTask(goal.id, taskId)}
-              onAddTask={(title, desc) => onAddTask(goal.id, title, desc)}
-              onAddSubstep={(taskId, title, desc) => onAddSubstep(goal.id, taskId, title, desc)}
-              onUpdateSubstep={(taskId, substepId, updates) => onUpdateSubstep(goal.id, taskId, substepId, updates)}
-              onToggleSubstep={(taskId, substepId) => onToggleSubstep(goal.id, taskId, substepId)}
-              onDeleteSubstep={(taskId, substepId) => onDeleteSubstep(goal.id, taskId, substepId)}
-              onReorderTasks={(tasks) => onReorderTasks?.(goal.id, tasks)}
-            />
+            <>
+              <TaskList
+                tasks={visibleTasks}
+                onToggleTask={(taskId) => onToggleTask(goal.id, taskId)}
+                onUpdateTask={(taskId, updates) => onUpdateTask(goal.id, taskId, updates)}
+                onDeleteTask={(taskId) => onDeleteTask(goal.id, taskId)}
+                onAddTask={(title, desc) => onAddTask(goal.id, title, desc)}
+                onAddSubstep={(taskId, title, desc) => onAddSubstep(goal.id, taskId, title, desc)}
+                onUpdateSubstep={(taskId, substepId, updates) => onUpdateSubstep(goal.id, taskId, substepId, updates)}
+                onToggleSubstep={(taskId, substepId) => onToggleSubstep(goal.id, taskId, substepId)}
+                onDeleteSubstep={(taskId, substepId) => onDeleteSubstep(goal.id, taskId, substepId)}
+                onReorderTasks={(tasks) => onReorderTasks?.(goal.id, tasks)}
+              />
+              {hiddenTaskCount > 0 && (
+                <p className="text-xs text-gray-400 mt-1">
+                  ({hiddenTaskCount} completed task{hiddenTaskCount !== 1 ? "s" : ""} hidden)
+                </p>
+              )}
+            </>
           )}
 
           {/* Calendar View */}

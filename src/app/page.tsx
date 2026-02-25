@@ -370,6 +370,7 @@ export default function Home() {
                         onReorderTasks={reorderTasks}
                         onAddResource={addResource}
                         onDeleteResource={deleteResource}
+                        hideCompletedAfterDays={profile?.hideCompletedAfterDays}
                       />
                     ))}
                   </div>
