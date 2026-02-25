@@ -13,6 +13,8 @@ interface KanbanFiltersProps {
   showPriorityFilter: boolean;
   viewLevel: ViewLevel;
   onViewLevelChange: (level: ViewLevel) => void;
+  showArchived?: boolean;
+  onShowArchivedChange?: (val: boolean) => void;
 }
 
 export function KanbanFilters({
@@ -26,6 +28,8 @@ export function KanbanFilters({
   showPriorityFilter,
   viewLevel,
   onViewLevelChange,
+  showArchived,
+  onShowArchivedChange,
 }: KanbanFiltersProps) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-2 sm:p-4">
@@ -126,6 +130,19 @@ export function KanbanFilters({
             Clear filters
           </button>
         )}
+
+        {/* Show Archived toggle */}
+        <button
+          onClick={() => onShowArchivedChange?.(!showArchived)}
+          className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors whitespace-nowrap ${
+            showArchived
+              ? "bg-amber-100 text-amber-700 border-amber-300"
+              : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+          }`}
+        >
+          <span className="sm:hidden">{"\uD83D\uDCE6"}</span>
+          <span className="hidden sm:inline">{"\uD83D\uDCE6"} Archived</span>
+        </button>
       </div>
     </div>
   );

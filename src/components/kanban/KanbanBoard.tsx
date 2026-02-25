@@ -27,6 +27,7 @@ export function KanbanBoard() {
   const [dateFilter, setDateFilter] = useState<"all" | "overdue" | "today" | "week">("all");
   const [priorityFilter, setPriorityFilter] = useState<"all" | "low" | "medium" | "high" | "critical">("all");
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
 
   // Collapsible columns — persisted in localStorage
   const [collapsedColumns, setCollapsedColumns] = useState<Record<string, boolean>>(() => {
@@ -107,6 +108,11 @@ export function KanbanBoard() {
   const filteredData = useMemo(() => {
     let data = viewData;
 
+    // Hide archived items unless toggle is on
+    if (!showArchived) {
+      data = data.filter((item: any) => !item.isArchived);
+    }
+
     // Search filter
     if (searchTerm) {
       data = data.filter((item: any) =>
@@ -139,7 +145,7 @@ export function KanbanBoard() {
     }
 
     return data;
-  }, [viewData, searchTerm, dateFilter, priorityFilter, effectiveLevel]);
+  }, [viewData, searchTerm, dateFilter, priorityFilter, effectiveLevel, showArchived]);
 
   // Group by status
   const columns = useMemo(() => {
@@ -182,6 +188,26 @@ export function KanbanBoard() {
       if (goalId && taskId) updateSubstep(goalId, taskId, itemId, { status: newStatus });
     }
   };
+
+  const handleArchive = useCallback((itemId: string) => {
+    const item = filteredData.find((d: any) => d.id === itemId) as FlatItem | undefined;
+    if (!item) return;
+
+    const isArchived = !(item as any).isArchived;
+    const archiveUpdates = {
+      isArchived,
+      archivedAt: isArchived ? new Date().toISOString() : undefined,
+    };
+
+    if (effectiveLevel === "tasks" || (effectiveLevel === "goals" && drillDown.level === "tasks")) {
+      const goalId = item._goalId || drillDown.goalId;
+      if (goalId) updateTask(goalId, itemId, archiveUpdates);
+    } else if (effectiveLevel === "substeps" || (effectiveLevel === "goals" && drillDown.level === "substeps")) {
+      const goalId = item._goalId || drillDown.goalId;
+      const taskId = item._taskId || drillDown.taskId;
+      if (goalId && taskId) updateSubstep(goalId, taskId, itemId, archiveUpdates);
+    }
+  }, [filteredData, effectiveLevel, drillDown, updateTask, updateSubstep]);
 
   const handleDrillDown = (itemId: string) => {
     if (effectiveLevel === "goals") {
@@ -267,6 +293,8 @@ export function KanbanBoard() {
         showPriorityFilter={effectiveLevel === "tasks"}
         viewLevel={viewLevel}
         onViewLevelChange={handleViewLevelChange}
+        showArchived={showArchived}
+        onShowArchivedChange={setShowArchived}
       />
 
       {/* Kanban Columns */}
@@ -300,6 +328,7 @@ export function KanbanBoard() {
             items={columns.completed}
             level={effectiveLevel}
             onDrillDown={handleDrillDown}
+            onArchive={handleArchive}
             isCollapsed={!!collapsedColumns["completed"]}
             onToggleCollapse={toggleColumnCollapse}
           />
