@@ -20,6 +20,13 @@ export interface UpdateTemplateRequest {
   difficulty?: "beginner" | "intermediate" | "advanced";
   category?: string;
   tags?: string[];
+  visibility?: "friends" | "public";
+  isPublished?: boolean;
+  action?: "addTask" | "updateTask" | "removeTask"
+    | "addPhase" | "updatePhase" | "removePhase"
+    | "addSubstep" | "updateSubstep" | "removeSubstep"
+    | "addResource" | "updateResource" | "removeResource";
+  payload?: Record<string, unknown>;
 }
 
 export interface ForkTemplateRequest {
