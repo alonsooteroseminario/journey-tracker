@@ -41,22 +41,25 @@ function SortableGoalCard(props: React.ComponentProps<typeof GoalCard>) {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : undefined,
-    position: "relative" as const,
   };
 
   return (
-    <div ref={setNodeRef} style={style}>
-      {/* Drag handle — grip icon in top-right */}
-      <button
+    <div ref={setNodeRef} style={style} className="relative pl-6">
+      {/* Drag handle — always visible on left edge */}
+      <div
+        className="absolute top-0 left-0 bottom-0 w-6 flex items-center justify-center text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing transition-colors"
         {...attributes}
         {...listeners}
-        className="absolute top-2 right-28 sm:top-5 sm:right-32 z-10 p-1 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity"
-        aria-label="Drag to reorder"
       >
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M7 2a2 2 0 10.001 4.001A2 2 0 007 2zm0 6a2 2 0 10.001 4.001A2 2 0 007 8zm0 6a2 2 0 10.001 4.001A2 2 0 007 14zm6-8a2 2 0 10-.001-4.001A2 2 0 0013 6zm0 2a2 2 0 10.001 4.001A2 2 0 0013 8zm0 6a2 2 0 10.001 4.001A2 2 0 0013 14z" />
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <circle cx="9" cy="5" r="1.5" />
+          <circle cx="15" cy="5" r="1.5" />
+          <circle cx="9" cy="12" r="1.5" />
+          <circle cx="15" cy="12" r="1.5" />
+          <circle cx="9" cy="19" r="1.5" />
+          <circle cx="15" cy="19" r="1.5" />
         </svg>
-      </button>
+      </div>
       <GoalCard {...props} />
     </div>
   );
