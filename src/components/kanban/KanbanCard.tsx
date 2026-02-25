@@ -1,8 +1,12 @@
 "use client";
 
+import { useMemo } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Goal, Task, Substep } from "@/types";
+import { StreakBadge } from "@/components/StreakBadge";
+import { useGetGoalStreaksQuery } from "@/store/slices/streaksSlice";
+import { computeGoalTier } from "@/lib/streaks/computeTier";
 
 interface KanbanCardProps {
   item: Goal | Task | Substep;
@@ -25,6 +29,17 @@ export function KanbanCard({ item, level, onDrillDown }: KanbanCardProps) {
   const substep = item as Substep;
   const goal = item as Goal;
 
+  // Fetch per-goal streak data for badge (only used at goals level)
+  const { data: goalStreaks } = useGetGoalStreaksQuery(undefined, { skip: level !== "goals" });
+  const goalStreak = useMemo(
+    () => (level === "goals" ? goalStreaks?.find((s) => s.goalId === item.id) : undefined),
+    [goalStreaks, item.id, level]
+  );
+  const goalTier = useMemo(
+    () => computeGoalTier(goalStreak?.currentStreak ?? 0),
+    [goalStreak?.currentStreak]
+  );
+
   // Determine if item has children to drill down into
   const hasChildren =
     (level === "goals" && goal.tasks && goal.tasks.length > 0) ||
@@ -40,9 +55,12 @@ export function KanbanCard({ item, level, onDrillDown }: KanbanCardProps) {
     >
       {/* Title */}
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h4 className="font-medium text-gray-900 text-xs sm:text-sm flex-1">
-          {item.title}
-        </h4>
+        <div className="flex items-center gap-1 flex-1 min-w-0">
+          <h4 className="font-medium text-gray-900 text-xs sm:text-sm truncate">
+            {item.title}
+          </h4>
+          {level === "goals" && <StreakBadge tier={goalTier} streak={goalStreak?.currentStreak} />}
+        </div>
         {hasChildren && (
           <button
             onClick={(e) => {

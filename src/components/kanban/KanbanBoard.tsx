@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useGoalsCRUD } from "@/hooks/useGoalsCRUD";
 import { useStreakData } from "@/hooks/useStreakData";
+import { useUpdateGoalStreakMutation } from "@/store/slices/streaksSlice";
 import { Goal, Task, Substep, TaskStatus } from "@/types";
 import { KanbanColumn } from "./KanbanColumn";
 import { KanbanBreadcrumb } from "./KanbanBreadcrumb";
@@ -48,6 +49,12 @@ export function KanbanBoard() {
 
   const { triggerStreakUpdate, logActivity } = useStreakData();
 
+  const [updateGoalStreakMutation] = useUpdateGoalStreakMutation();
+  const triggerGoalStreakUpdate = useCallback(
+    (goalId: string) => { updateGoalStreakMutation(goalId); },
+    [updateGoalStreakMutation]
+  );
+
   const {
     goals,
     goalsLoading,
@@ -56,7 +63,7 @@ export function KanbanBoard() {
     updateTask,
     updateSubstep,
     updateGoal,
-  } = useGoalsCRUD(logActivity, triggerStreakUpdate);
+  } = useGoalsCRUD(logActivity, triggerStreakUpdate, triggerGoalStreakUpdate);
 
   // Determine effective level: viewLevel filter takes priority over drill-down
   const effectiveLevel = viewLevel !== "goals" ? viewLevel : drillDown.level;
