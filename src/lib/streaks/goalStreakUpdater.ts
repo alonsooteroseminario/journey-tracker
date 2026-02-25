@@ -1,12 +1,17 @@
 import { prisma } from "@/lib/prisma";
 
-function toDateStr(d: Date): string {
-  return d.toISOString().split("T")[0];
+function toLocalDateStr(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 export async function updateGoalStreak(goalId: string, userId: string): Promise<void> {
-  const todayStr = toDateStr(new Date());
-  const today = new Date();
+  const now = new Date();
+  const todayStr = toLocalDateStr(now);
+
+  const today = new Date(now);
   today.setHours(0, 0, 0, 0);
 
   const yesterday = new Date(today);
@@ -26,7 +31,7 @@ export async function updateGoalStreak(goalId: string, userId: string): Promise<
 
     if (lastDate) {
       lastDate.setHours(0, 0, 0, 0);
-      const lastDateStr = toDateStr(lastDate);
+      const lastDateStr = toLocalDateStr(lastDate);
 
       if (lastDateStr === todayStr) {
         // Already completed today — no change needed

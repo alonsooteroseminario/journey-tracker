@@ -42,7 +42,7 @@ export const RemotionRoot: React.FC = () => {
       {/* Marketing compositions — landscape */}
       <Composition
         id="example-promo-landscape"
-        component={ExamplePromo}
+        component={ExamplePromo as any}
         durationInFrames={150}
         fps={30}
         width={1920}
@@ -56,7 +56,7 @@ export const RemotionRoot: React.FC = () => {
       {/* Marketing compositions — square */}
       <Composition
         id="example-promo-square"
-        component={ExamplePromo}
+        component={ExamplePromo as any}
         durationInFrames={150}
         fps={30}
         width={1080}
@@ -70,7 +70,7 @@ export const RemotionRoot: React.FC = () => {
       {/* Marketing compositions — vertical (Stories/Reels) */}
       <Composition
         id="example-promo-vertical"
-        component={ExamplePromo}
+        component={ExamplePromo as any}
         durationInFrames={150}
         fps={30}
         width={1080}
@@ -85,7 +85,7 @@ export const RemotionRoot: React.FC = () => {
       {/* HeroOverview — Product overview promo */}
       <Composition
         id="hero-overview-landscape"
-        component={HeroOverview}
+        component={HeroOverview as any}
         durationInFrames={300}
         fps={30}
         width={1920}
@@ -94,7 +94,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="hero-overview-square"
-        component={HeroOverview}
+        component={HeroOverview as any}
         durationInFrames={300}
         fps={30}
         width={1080}
@@ -103,7 +103,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="hero-overview-vertical"
-        component={HeroOverview}
+        component={HeroOverview as any}
         durationInFrames={300}
         fps={30}
         width={1080}
@@ -114,7 +114,7 @@ export const RemotionRoot: React.FC = () => {
       {/* StreakStory — Streak emotional journey */}
       <Composition
         id="streak-story-landscape"
-        component={StreakStory}
+        component={StreakStory as any}
         durationInFrames={300}
         fps={30}
         width={1920}
@@ -123,7 +123,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="streak-story-square"
-        component={StreakStory}
+        component={StreakStory as any}
         durationInFrames={300}
         fps={30}
         width={1080}
@@ -132,7 +132,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="streak-story-vertical"
-        component={StreakStory}
+        component={StreakStory as any}
         durationInFrames={300}
         fps={30}
         width={1080}
@@ -143,7 +143,7 @@ export const RemotionRoot: React.FC = () => {
       {/* AIAgent — AI feature highlight */}
       <Composition
         id="ai-agent-landscape"
-        component={AIAgent}
+        component={AIAgent as any}
         durationInFrames={270}
         fps={30}
         width={1920}
@@ -152,7 +152,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="ai-agent-square"
-        component={AIAgent}
+        component={AIAgent as any}
         durationInFrames={270}
         fps={30}
         width={1080}
@@ -161,7 +161,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="ai-agent-vertical"
-        component={AIAgent}
+        component={AIAgent as any}
         durationInFrames={270}
         fps={30}
         width={1080}
@@ -172,7 +172,7 @@ export const RemotionRoot: React.FC = () => {
       {/* UserJourney — Alex's story */}
       <Composition
         id="user-journey-landscape"
-        component={UserJourney}
+        component={UserJourney as any}
         durationInFrames={360}
         fps={30}
         width={1920}
@@ -181,7 +181,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="user-journey-square"
-        component={UserJourney}
+        component={UserJourney as any}
         durationInFrames={360}
         fps={30}
         width={1080}
@@ -190,7 +190,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="user-journey-vertical"
-        component={UserJourney}
+        component={UserJourney as any}
         durationInFrames={360}
         fps={30}
         width={1080}

@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
-  experimental: {
-    serverComponentsExternalPackages: ['@remotion/bundler', '@remotion/renderer', 'playwright'],
-  },
+  serverExternalPackages: ['@remotion/bundler', '@remotion/renderer', 'playwright'],
   webpack(config, { dev, isServer }) {
     if (dev) {
       config.cache = { type: 'memory' };

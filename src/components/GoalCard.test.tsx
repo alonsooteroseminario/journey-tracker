@@ -3,6 +3,20 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { GoalCard } from './GoalCard';
 import { Goal, AnalyticsData, ActivityLogEntry } from '@/types';
 
+// Mock RTK Query hooks added by goal-groups and streak-tiers features
+vi.mock('@/store/slices/goalsSlice', () => ({
+  useUpdateGoalMutation: () => [vi.fn(), { isLoading: false }],
+}));
+vi.mock('@/store/slices/streaksSlice', () => ({
+  useGetGoalStreaksQuery: () => ({ data: [] }),
+}));
+vi.mock('./GoalGroupSelector', () => ({
+  GoalGroupSelector: () => null,
+}));
+vi.mock('./StreakBadge', () => ({
+  StreakBadge: () => null,
+}));
+
 describe('GoalCard', () => {
   const mockGoal: Goal = {
     id: 'goal-1',
@@ -286,6 +300,9 @@ describe('GoalCard', () => {
         />
       );
 
+      // Expand first — tabs are hidden when collapsed
+      fireEvent.click(screen.getByTitle('Expand'));
+
       // getByText returns the inner <span>; get the parent <button> for class assertions
       const tasksTab = screen.getByText('✅ Tasks').closest('button')!;
       fireEvent.click(tasksTab);
@@ -306,6 +323,7 @@ describe('GoalCard', () => {
         />
       );
 
+      fireEvent.click(screen.getByTitle('Expand'));
       const calendarTab = screen.getByText('📅 Calendar').closest('button')!;
       fireEvent.click(calendarTab);
 
@@ -324,6 +342,7 @@ describe('GoalCard', () => {
         />
       );
 
+      fireEvent.click(screen.getByTitle('Expand'));
       const analyticsTab = screen.getByText('📈 Analytics').closest('button')!;
       fireEvent.click(analyticsTab);
 
@@ -356,6 +375,7 @@ describe('GoalCard', () => {
         />
       );
 
+      fireEvent.click(screen.getByTitle('Expand'));
       expect(screen.getByText('📊 Phases')).toBeInTheDocument();
     });
 
@@ -384,6 +404,7 @@ describe('GoalCard', () => {
         />
       );
 
+      fireEvent.click(screen.getByTitle('Expand'));
       expect(screen.getByText('ℹ️ Resources')).toBeInTheDocument();
     });
 
@@ -399,12 +420,12 @@ describe('GoalCard', () => {
         />
       );
 
-      // Phases tab is always visible
-      expect(screen.getByText('📊 Phases')).toBeInTheDocument();
-
-      // Expand card and click Phases tab to see empty state
+      // Expand card first — tabs are hidden when collapsed
       const expandBtn = screen.getByTitle('Expand');
       fireEvent.click(expandBtn);
+
+      // Phases tab visible when expanded
+      expect(screen.getByText('📊 Phases')).toBeInTheDocument();
 
       const phasesTab = screen.getByText('📊 Phases');
       fireEvent.click(phasesTab);

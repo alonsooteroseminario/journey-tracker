@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { version } from '../../../../package.json';
+import pkg from '../../../../package.json';
+const { version } = pkg;
 
 export async function GET() {
   try {
