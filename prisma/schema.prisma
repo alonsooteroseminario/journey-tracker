@@ -44,6 +44,8 @@ model User {
   goalGroups       GoalGroup[]
   goalStreaks       GoalStreak[]  @relation("UserGoalStreaks")
 
+  hideCompletedAfterDays Int?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

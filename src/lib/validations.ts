@@ -123,6 +123,7 @@ export const UpdateProfileSchema = z.object({
   location: z.string().max(100, "Location too long").optional(),
   timezone: z.string().max(50, "Timezone too long").optional(),
   profileImage: z.string().optional(), // Base64 or URL - validated separately for size
+  hideCompletedAfterDays: z.number().int().min(1).max(365).nullable().optional(),
 });
 
 export const ProfileImageSchema = z.object({

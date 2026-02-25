@@ -132,6 +132,7 @@ export interface UserProfile {
   joinedDate: string;
   location?: string;
   timezone?: string;
+  hideCompletedAfterDays?: number | null;
 }
 
 // Friend
