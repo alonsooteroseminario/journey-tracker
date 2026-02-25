@@ -33,3 +33,4 @@ Thumbs.db
 
 # Rendered marketing videos
 /videos/*.mp4
+.claude/worktrees/
