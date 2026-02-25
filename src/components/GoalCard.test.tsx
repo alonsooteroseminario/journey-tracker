@@ -4,8 +4,9 @@ import { GoalCard } from './GoalCard';
 import { Goal, AnalyticsData, ActivityLogEntry } from '@/types';
 
 // Mock RTK Query hooks added by goal-groups and streak-tiers features
+const mockUpdateGoalMutation = vi.fn().mockResolvedValue({});
 vi.mock('@/store/slices/goalsSlice', () => ({
-  useUpdateGoalMutation: () => [vi.fn(), { isLoading: false }],
+  useUpdateGoalMutation: () => [mockUpdateGoalMutation, { isLoading: false }],
 }));
 vi.mock('@/store/slices/streaksSlice', () => ({
   useGetGoalStreaksQuery: () => ({ data: [] }),
@@ -431,6 +432,174 @@ describe('GoalCard', () => {
       fireEvent.click(phasesTab);
 
       expect(screen.getByText('No phases yet')).toBeInTheDocument();
+    });
+  });
+
+  describe('Inline Editing', () => {
+    it('should show edit button and toggle edit mode', () => {
+      render(
+        <GoalCard
+          goal={mockGoal}
+          progress={50}
+          analytics={mockAnalytics}
+          activityLog={mockActivityLog}
+          streakHistory={mockStreakHistory}
+          {...mockHandlers}
+        />
+      );
+      const editBtn = screen.getByTitle('Edit goal');
+      fireEvent.click(editBtn);
+      // Should show input for title
+      expect(screen.getByDisplayValue('Learn Spanish')).toBeInTheDocument();
+    });
+
+    it('should show description textarea and Save/Cancel buttons in edit mode', () => {
+      render(
+        <GoalCard
+          goal={mockGoal}
+          progress={50}
+          analytics={mockAnalytics}
+          activityLog={mockActivityLog}
+          streakHistory={mockStreakHistory}
+          {...mockHandlers}
+        />
+      );
+      fireEvent.click(screen.getByTitle('Edit goal'));
+      expect(screen.getByDisplayValue('Complete B2 level')).toBeInTheDocument();
+      expect(screen.getByText('Save')).toBeInTheDocument();
+      expect(screen.getByText('Cancel')).toBeInTheDocument();
+    });
+
+    it('should cancel editing on ESC key in title input', () => {
+      render(
+        <GoalCard
+          goal={mockGoal}
+          progress={50}
+          analytics={mockAnalytics}
+          activityLog={mockActivityLog}
+          streakHistory={mockStreakHistory}
+          {...mockHandlers}
+        />
+      );
+      fireEvent.click(screen.getByTitle('Edit goal'));
+      const input = screen.getByDisplayValue('Learn Spanish');
+      fireEvent.keyDown(input, { key: 'Escape' });
+      // Should return to non-edit mode
+      expect(screen.queryByDisplayValue('Learn Spanish')).not.toBeInTheDocument();
+      expect(screen.getByText('Learn Spanish')).toBeInTheDocument();
+    });
+
+    it('should cancel editing on Cancel button click', () => {
+      render(
+        <GoalCard
+          goal={mockGoal}
+          progress={50}
+          analytics={mockAnalytics}
+          activityLog={mockActivityLog}
+          streakHistory={mockStreakHistory}
+          {...mockHandlers}
+        />
+      );
+      fireEvent.click(screen.getByTitle('Edit goal'));
+      expect(screen.getByDisplayValue('Learn Spanish')).toBeInTheDocument();
+      fireEvent.click(screen.getByText('Cancel'));
+      expect(screen.queryByDisplayValue('Learn Spanish')).not.toBeInTheDocument();
+    });
+
+    it('should save changes on Save button click', async () => {
+      render(
+        <GoalCard
+          goal={mockGoal}
+          progress={50}
+          analytics={mockAnalytics}
+          activityLog={mockActivityLog}
+          streakHistory={mockStreakHistory}
+          {...mockHandlers}
+        />
+      );
+      fireEvent.click(screen.getByTitle('Edit goal'));
+      const input = screen.getByDisplayValue('Learn Spanish');
+      fireEvent.change(input, { target: { value: 'Learn French' } });
+      fireEvent.click(screen.getByText('Save'));
+      expect(mockUpdateGoalMutation).toHaveBeenCalledWith({
+        id: 'goal-1',
+        updates: { title: 'Learn French' },
+      });
+    });
+
+    it('should save on Enter key in title input', async () => {
+      render(
+        <GoalCard
+          goal={mockGoal}
+          progress={50}
+          analytics={mockAnalytics}
+          activityLog={mockActivityLog}
+          streakHistory={mockStreakHistory}
+          {...mockHandlers}
+        />
+      );
+      fireEvent.click(screen.getByTitle('Edit goal'));
+      const input = screen.getByDisplayValue('Learn Spanish');
+      fireEvent.change(input, { target: { value: 'Learn Italian' } });
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(mockUpdateGoalMutation).toHaveBeenCalledWith({
+        id: 'goal-1',
+        updates: { title: 'Learn Italian' },
+      });
+    });
+
+    it('should show emoji picker when clicking icon in edit mode', () => {
+      render(
+        <GoalCard
+          goal={mockGoal}
+          progress={50}
+          analytics={mockAnalytics}
+          activityLog={mockActivityLog}
+          streakHistory={mockStreakHistory}
+          {...mockHandlers}
+        />
+      );
+      fireEvent.click(screen.getByTitle('Edit goal'));
+      fireEvent.click(screen.getByTitle('Change icon'));
+      // Emoji picker should show emoji options
+      expect(screen.getByText('📚')).toBeInTheDocument();
+      expect(screen.getByText('💪')).toBeInTheDocument();
+    });
+
+    it('should select emoji from picker and close picker', () => {
+      render(
+        <GoalCard
+          goal={mockGoal}
+          progress={50}
+          analytics={mockAnalytics}
+          activityLog={mockActivityLog}
+          streakHistory={mockStreakHistory}
+          {...mockHandlers}
+        />
+      );
+      fireEvent.click(screen.getByTitle('Edit goal'));
+      fireEvent.click(screen.getByTitle('Change icon'));
+      // Click an emoji
+      const bookEmoji = screen.getAllByText('📚')[0];
+      fireEvent.click(bookEmoji);
+      // Picker should close (💪 from picker grid should be gone)
+      expect(screen.queryByText('💪')).not.toBeInTheDocument();
+    });
+
+    it('should not call mutation when no changes made', () => {
+      render(
+        <GoalCard
+          goal={mockGoal}
+          progress={50}
+          analytics={mockAnalytics}
+          activityLog={mockActivityLog}
+          streakHistory={mockStreakHistory}
+          {...mockHandlers}
+        />
+      );
+      fireEvent.click(screen.getByTitle('Edit goal'));
+      fireEvent.click(screen.getByText('Save'));
+      expect(mockUpdateGoalMutation).not.toHaveBeenCalled();
     });
   });
 });
