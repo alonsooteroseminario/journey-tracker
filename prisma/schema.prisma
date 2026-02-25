@@ -41,6 +41,7 @@ model User {
   marketingCampaigns MarketingCampaign[]
   videos           Video[]
   recordings       Recording[]
+  goalGroups       GoalGroup[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -77,11 +78,34 @@ model Goal {
   // Full transparency for friends
   isPublic Boolean @default(true)
 
+  // Goal group (optional)
+  groupId String?    @db.ObjectId
+  group   GoalGroup? @relation(fields: [groupId], references: [id])
+
   // User-defined display order
   order    Int?
 
   @@index([userId])
   @@map("goals")
+}
+
+// ============== Goal Group Model ==============
+model GoalGroup {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name  String
+  color String  @default("#6366f1")
+  icon  String?
+  order Int     @default(0)
+
+  goals Goal[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("goal_groups")
 }
 
 // ============== Streak Data Model ==============

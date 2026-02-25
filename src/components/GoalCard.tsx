@@ -12,6 +12,8 @@ import { ResourcesPanel } from "./ResourcesPanel";
 import { Calendar } from "./Calendar";
 import { AnalyticsDashboard } from "./AnalyticsDashboard";
 import { ShareGoalModal } from "./templates/ShareGoalModal";
+import { GoalGroupSelector } from "./GoalGroupSelector";
+import { useUpdateGoalMutation } from "@/store/slices/goalsSlice";
 import { AnalyticsData, ActivityLogEntry } from "@/types";
 
 interface GoalCardProps {
@@ -59,6 +61,7 @@ export function GoalCard({
   onAddResource,
   onDeleteResource,
 }: GoalCardProps) {
+  const [updateGoalMutation] = useUpdateGoalMutation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -134,6 +137,18 @@ export function GoalCard({
             {goal.description && (
               <p className="text-xs sm:text-base text-gray-600 mt-0.5 sm:mt-1 line-clamp-2">{goal.description}</p>
             )}
+            <div className="mt-1">
+              <GoalGroupSelector
+                goalId={goal.id}
+                currentGroupId={goal.groupId}
+                onGroupChange={(goalId, groupId) => {
+                  updateGoalMutation({
+                    id: goalId,
+                    updates: { groupId: groupId || undefined },
+                  });
+                }}
+              />
+            </div>
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">

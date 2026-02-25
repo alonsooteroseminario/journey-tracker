@@ -30,6 +30,7 @@ import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { Header } from "@/components/Header";
 import { MobileStatsPanel } from "@/components/MobileStatsPanel";
 import { LandingPage } from "@/components/LandingPage";
+import { GoalGroupFilter } from "@/components/GoalGroupFilter";
 
 function SortableGoalCard(props: React.ComponentProps<typeof GoalCard>) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -109,6 +110,7 @@ export default function Home() {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [showGlobalAnalytics, setShowGlobalAnalytics] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
   // Goal drag-and-drop reordering
   const sensors = useSensors(
@@ -162,6 +164,11 @@ export default function Home() {
   );
 
   const globalAnalytics = getAnalytics();
+
+  // Filter goals by selected group
+  const filteredGoals = selectedGroupId
+    ? goals.filter((g) => g.groupId === selectedGroupId)
+    : goals;
 
   return (
     <main className="min-h-screen pb-4 md:pb-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -324,6 +331,12 @@ export default function Home() {
                 </button>
               </div>
 
+              {/* Goal Group Filter */}
+              <GoalGroupFilter
+                selectedGroupId={selectedGroupId}
+                onGroupSelect={setSelectedGroupId}
+              />
+
               {/* Goals List — drag to reorder */}
               <DndContext
                 sensors={sensors}
@@ -331,11 +344,11 @@ export default function Home() {
                 onDragEnd={handleGoalDragEnd}
               >
                 <SortableContext
-                  items={goals.map((g) => g.id)}
+                  items={filteredGoals.map((g) => g.id)}
                   strategy={verticalListSortingStrategy}
                 >
                   <div className="space-y-2 sm:space-y-4">
-                    {goals.map((goal) => (
+                    {filteredGoals.map((goal) => (
                       <SortableGoalCard
                         key={goal.id}
                         goal={goal}

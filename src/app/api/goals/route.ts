@@ -36,6 +36,7 @@ export async function GET() {
       updatedAt: goal.updatedAt.toISOString(),
       isPublic: goal.isPublic,
       order: goal.order,
+      groupId: goal.groupId || undefined,
     }));
 
     return NextResponse.json(transformed, {

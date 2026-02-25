@@ -40,6 +40,7 @@ export async function GET(
       createdAt: goal.createdAt.toISOString(),
       updatedAt: goal.updatedAt.toISOString(),
       order: goal.order,
+      groupId: goal.groupId || undefined,
     });
   } catch (error) {
     console.error("GET /api/goals/:id error:", error);
@@ -98,6 +99,7 @@ export async function PATCH(
     if (validatedData.targetDate !== undefined)
       updateData.targetDate = validatedData.targetDate ? new Date(validatedData.targetDate) : null;
     if (validatedData.isPublic !== undefined) updateData.isPublic = validatedData.isPublic;
+    if (validatedData.groupId !== undefined) updateData.groupId = validatedData.groupId;
 
     const goal = await prisma.goal.update({
       where: { id: goalId },
@@ -115,6 +117,7 @@ export async function PATCH(
       createdAt: goal.createdAt.toISOString(),
       updatedAt: goal.updatedAt.toISOString(),
       order: goal.order,
+      groupId: goal.groupId || undefined,
     });
   } catch (error) {
     console.error("PATCH /api/goals/:id error:", error);

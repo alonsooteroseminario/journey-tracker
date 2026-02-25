@@ -5,6 +5,7 @@ import friendsReducer, { friendsApi } from "./slices/friendsSlice";
 import streaksReducer, { streaksApi } from "./slices/streaksSlice";
 import feedReducer, { feedApi } from "./slices/feedSlice";
 import { templatesApi } from "./slices/templatesSlice";
+import { groupsApi } from "./slices/groupsSlice";
 import adminUIReducer, { adminApi } from "./slices/adminSlice";
 import chatReducer from "./slices/chatSlice";
 import uiReducer from "./slices/uiSlice";
@@ -28,6 +29,7 @@ export const store = configureStore({
     [feedApi.reducerPath]: feedApi.reducer,
     [templatesApi.reducerPath]: templatesApi.reducer,
     [adminApi.reducerPath]: adminApi.reducer,
+    [groupsApi.reducerPath]: groupsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -37,7 +39,8 @@ export const store = configureStore({
       streaksApi.middleware,
       feedApi.middleware,
       templatesApi.middleware,
-      adminApi.middleware
+      adminApi.middleware,
+      groupsApi.middleware
     ),
 });
 

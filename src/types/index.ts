@@ -66,6 +66,18 @@ export interface Goal {
   targetDate?: string; // Goal completion target
   startDate?: string; // When journey started
   order?: number; // User-defined display order
+  groupId?: string; // Goal group assignment
+}
+
+export interface GoalGroup {
+  id: string;
+  userId: string;
+  name: string;
+  color: string;
+  icon?: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Phase {
