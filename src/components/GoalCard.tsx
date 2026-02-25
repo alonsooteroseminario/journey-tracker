@@ -73,6 +73,23 @@ export function GoalCard({
   const [isAddingPhase, setIsAddingPhase] = useState(false);
   const [newPhaseName, setNewPhaseName] = useState("");
   const [newPhaseDescription, setNewPhaseDescription] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(goal.title);
+  const [editDescription, setEditDescription] = useState(goal.description || "");
+  const [editIcon, setEditIcon] = useState(goal.icon || "🎯");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleSaveEdit = async () => {
+    const updates: Record<string, string> = {};
+    if (editTitle !== goal.title) updates.title = editTitle;
+    if (editDescription !== (goal.description || "")) updates.description = editDescription;
+    if (editIcon !== (goal.icon || "🎯")) updates.icon = editIcon;
+
+    if (Object.keys(updates).length > 0) {
+      await updateGoalMutation({ id: goal.id, updates });
+    }
+    setIsEditing(false);
+  };
 
   // Fetch per-goal streak data for badge
   const { data: goalStreaks } = useGetGoalStreaksQuery();
@@ -140,8 +157,46 @@ export function GoalCard({
         <div className="flex items-start justify-between gap-1.5">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1 sm:gap-2">
-              <span className="text-lg sm:text-3xl flex-shrink-0">{goal.icon || '🎯'}</span>
-              <h3 className="text-sm sm:text-xl font-bold text-gray-800 truncate">{goal.title}</h3>
+              {isEditing ? (
+                <div className="relative flex-shrink-0">
+                  <button
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className="text-lg sm:text-3xl hover:bg-gray-100 rounded-lg p-1 transition-colors"
+                    title="Change icon"
+                  >
+                    {editIcon}
+                  </button>
+                  {showEmojiPicker && (
+                    <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-50 grid grid-cols-6 gap-1">
+                      {["🎯", "📚", "💪", "🏃", "💻", "🎨", "🎵", "✈️", "💰", "🏠", "❤️", "⭐", "🔥", "🌱", "📈", "🎓", "🧘", "🍎"].map((emoji) => (
+                        <button
+                          key={emoji}
+                          onClick={() => { setEditIcon(emoji); setShowEmojiPicker(false); }}
+                          className="text-xl p-1.5 hover:bg-gray-100 rounded transition-colors"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <span className="text-lg sm:text-3xl flex-shrink-0">{goal.icon || '🎯'}</span>
+              )}
+              {isEditing ? (
+                <input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSaveEdit();
+                    if (e.key === "Escape") setIsEditing(false);
+                  }}
+                  className="text-sm sm:text-xl font-bold bg-transparent border-b-2 border-blue-400 focus:border-blue-600 outline-none w-full text-gray-800"
+                  autoFocus
+                />
+              ) : (
+                <h3 className="text-sm sm:text-xl font-bold text-gray-800 truncate">{goal.title}</h3>
+              )}
               <StreakBadge tier={goalTier} streak={goalStreak?.currentStreak} />
               {progress === 100 && (
                 <span className="text-base sm:text-2xl flex-shrink-0" title="Goal completed!">
@@ -149,8 +204,37 @@ export function GoalCard({
                 </span>
               )}
             </div>
-            {goal.description && (
-              <p className="text-xs sm:text-base text-gray-600 mt-0.5 sm:mt-1 line-clamp-2">{goal.description}</p>
+            {isEditing ? (
+              <textarea
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setIsEditing(false);
+                }}
+                rows={2}
+                className="text-xs sm:text-sm bg-transparent border border-gray-300 rounded px-2 py-1 focus:border-blue-400 outline-none w-full text-gray-600 resize-none mt-1"
+                placeholder="Add a description..."
+              />
+            ) : (
+              goal.description && (
+                <p className="text-xs sm:text-base text-gray-600 mt-0.5 sm:mt-1 line-clamp-2">{goal.description}</p>
+              )
+            )}
+            {isEditing && (
+              <div className="flex items-center gap-2 mt-2">
+                <button
+                  onClick={handleSaveEdit}
+                  className="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="px-3 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
             )}
             <div className="mt-1">
               <GoalGroupSelector
@@ -167,6 +251,26 @@ export function GoalCard({
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <button
+              onClick={() => {
+                setIsEditing(!isEditing);
+                setEditTitle(goal.title);
+                setEditDescription(goal.description || "");
+                setEditIcon(goal.icon || "🎯");
+                setShowEmojiPicker(false);
+              }}
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              title={isEditing ? "Cancel editing" : "Edit goal"}
+              aria-label={isEditing ? "Cancel editing" : "Edit goal"}
+            >
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isEditing ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                )}
+              </svg>
+            </button>
             <button
               onClick={() => setShowShareModal(true)}
               className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-colors"
