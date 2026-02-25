@@ -11,11 +11,12 @@ interface KanbanColumnProps {
   items: any[];
   level: "goals" | "tasks" | "substeps";
   onDrillDown: (itemId: string) => void;
+  onArchive?: (itemId: string) => void;
   isCollapsed?: boolean;
   onToggleCollapse?: (status: string) => void;
 }
 
-export function KanbanColumn({ title, status, items, level, onDrillDown, isCollapsed, onToggleCollapse }: KanbanColumnProps) {
+export function KanbanColumn({ title, status, items, level, onDrillDown, onArchive, isCollapsed, onToggleCollapse }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
 
   const columnColors = {
@@ -80,6 +81,7 @@ export function KanbanColumn({ title, status, items, level, onDrillDown, isColla
                 level={level}
                 columnStatus={status}
                 onDrillDown={() => onDrillDown(item.id)}
+                onArchive={() => onArchive?.(item.id)}
               />
             ))}
           </SortableContext>

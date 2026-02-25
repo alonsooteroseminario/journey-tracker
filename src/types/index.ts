@@ -26,6 +26,8 @@ export interface Substep {
   dueDate?: string; // ISO date string
   notes?: string;
   order: number;
+  isArchived?: boolean;
+  archivedAt?: string;
 }
 
 export interface Task {
@@ -48,6 +50,8 @@ export interface Task {
   substeps?: Substep[]; // Mini-tasks within this task
   priority?: 'low' | 'medium' | 'high' | 'critical';
   tags?: string[];
+  isArchived?: boolean;
+  archivedAt?: string;
 }
 
 export interface Goal {

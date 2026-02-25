@@ -9,9 +9,10 @@ interface KanbanCardProps {
   level: "goals" | "tasks" | "substeps";
   columnStatus: "not_started" | "in_progress" | "completed";
   onDrillDown: () => void;
+  onArchive?: () => void;
 }
 
-export function KanbanCard({ item, level, columnStatus, onDrillDown }: KanbanCardProps) {
+export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
   });
@@ -37,7 +38,9 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown }: KanbanCar
       style={style}
       {...attributes}
       {...listeners}
-      className="bg-white rounded-lg border border-gray-200 p-2 sm:p-3 pl-5 sm:pl-6 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing group relative"
+      className={`bg-white rounded-lg border border-gray-200 p-2 sm:p-3 pl-5 sm:pl-6 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing group relative ${
+        (item as Task).isArchived ? "opacity-60 !bg-gray-50" : ""
+      }`}
     >
       {/* Parent breadcrumb for flat views */}
       {level === "tasks" && (item as any)._goalTitle && (
@@ -59,6 +62,11 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown }: KanbanCar
       <div className="flex items-start justify-between gap-2 mb-2">
         <h4 className="font-medium text-gray-900 text-xs sm:text-sm flex-1">
           {item.title}
+          {(item as Task).isArchived && (
+            <span className="ml-1 px-1 py-0.5 text-[8px] bg-amber-100 text-amber-600 rounded font-medium">
+              ARCHIVED
+            </span>
+          )}
         </h4>
         {hasChildren && (
           <button
@@ -286,6 +294,23 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown }: KanbanCar
             <> · Done {new Date((item as Task).completedAt!).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</>
           )}
         </div>
+      )}
+
+      {/* Archive button — only in Done column */}
+      {columnStatus === "completed" && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onArchive?.();
+          }}
+          className="mt-1.5 flex items-center gap-1 text-[10px] text-gray-400 hover:text-amber-600 transition-colors"
+          title={(item as Task).isArchived ? "Unarchive" : "Archive"}
+        >
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+          </svg>
+          <span>{(item as Task).isArchived ? "Unarchive" : "Archive"}</span>
+        </button>
       )}
 
       {/* Drag indicator — top-left corner */}
