@@ -8,6 +8,7 @@ import { KanbanColumn } from "./KanbanColumn";
 import { KanbanBreadcrumb } from "./KanbanBreadcrumb";
 import { KanbanFilters } from "./KanbanFilters";
 import { DndContext, DragEndEvent, DragOverlay, closestCenter } from "@dnd-kit/core";
+import { GoalGroupFilter } from "@/components/GoalGroupFilter";
 
 type ViewLevel = "goals" | "tasks" | "substeps";
 
@@ -29,6 +30,7 @@ export function KanbanBoard() {
   const [doneToday, setDoneToday] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [showArchived, setShowArchived] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
   // Collapsible columns — persisted in localStorage
   const [collapsedColumns, setCollapsedColumns] = useState<Record<string, boolean>>(() => {
@@ -60,6 +62,12 @@ export function KanbanBoard() {
     updateGoal,
   } = useGoalsCRUD(logActivity, triggerStreakUpdate);
 
+  // Filter goals by selected group
+  const groupFilteredGoals = useMemo(() => {
+    if (!selectedGroupId) return goals;
+    return goals.filter((g) => g.groupId === selectedGroupId);
+  }, [goals, selectedGroupId]);
+
   // Determine effective level: viewLevel filter takes priority over drill-down
   const effectiveLevel = viewLevel !== "goals" ? viewLevel : drillDown.level;
 
@@ -67,14 +75,14 @@ export function KanbanBoard() {
   const viewData: Array<FlatItem> = useMemo(() => {
     // Flat "all tasks" view
     if (viewLevel === "tasks") {
-      return goals.flatMap((g) =>
+      return groupFilteredGoals.flatMap((g) =>
         (g.tasks || []).map((t) => ({ ...t, _goalId: g.id, _goalTitle: g.title, _goalIcon: g.icon } as FlatItem))
       );
     }
 
     // Flat "all substeps" view
     if (viewLevel === "substeps") {
-      return goals.flatMap((g) =>
+      return groupFilteredGoals.flatMap((g) =>
         (g.tasks || []).flatMap((t) =>
           (t.substeps || []).map((s) => ({ ...s, _goalId: g.id, _goalTitle: g.title, _goalIcon: g.icon, _taskId: t.id, _taskTitle: t.title } as FlatItem))
         )
@@ -83,7 +91,7 @@ export function KanbanBoard() {
 
     // Goals view (with drill-down)
     if (drillDown.level === "goals") {
-      return goals.map((g) => {
+      return groupFilteredGoals.map((g) => {
         const tasks = g.tasks || [];
         let status: TaskStatus = "not_started";
         if (tasks.length > 0) {
@@ -95,15 +103,15 @@ export function KanbanBoard() {
         return { ...g, status } as FlatItem;
       });
     } else if (drillDown.level === "tasks" && drillDown.goalId) {
-      const goal = goals.find((g) => g.id === drillDown.goalId);
+      const goal = groupFilteredGoals.find((g) => g.id === drillDown.goalId);
       return ((goal?.tasks || []) as FlatItem[]).map((t) => ({ ...t, _goalId: drillDown.goalId, _goalTitle: goal?.title, _goalIcon: goal?.icon } as FlatItem));
     } else if (drillDown.level === "substeps" && drillDown.goalId && drillDown.taskId) {
-      const goal = goals.find((g) => g.id === drillDown.goalId);
+      const goal = groupFilteredGoals.find((g) => g.id === drillDown.goalId);
       const task = goal?.tasks.find((t) => t.id === drillDown.taskId);
       return ((task?.substeps || []) as FlatItem[]).map((s) => ({ ...s, _goalId: drillDown.goalId, _goalTitle: goal?.title, _goalIcon: goal?.icon, _taskId: drillDown.taskId, _taskTitle: task?.title } as FlatItem));
     }
     return [];
-  }, [goals, drillDown, viewLevel]);
+  }, [groupFilteredGoals, drillDown, viewLevel]);
 
   // Apply filters
   const filteredData = useMemo(() => {
@@ -290,6 +298,12 @@ export function KanbanBoard() {
           onNavigate={handleBreadcrumbClick}
         />
       )}
+
+      {/* Goal Group Filter */}
+      <GoalGroupFilter
+        selectedGroupId={selectedGroupId}
+        onGroupSelect={setSelectedGroupId}
+      />
 
       {/* Filters */}
       <KanbanFilters

@@ -82,6 +82,7 @@ export const UpdateGoalSchema = z.object({
   timeline: z.any().optional(),
   documents: z.any().optional(),
   resources: z.any().optional(),
+  groupId: z.string().nullable().optional(),
 });
 
 // ==========================================
