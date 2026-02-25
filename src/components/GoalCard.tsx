@@ -187,64 +187,66 @@ export function GoalCard({
           <ProgressBar progress={progress} showPercentage={true} size="md" />
         </div>
 
-        {/* View Mode Tabs - Responsive Grid on Mobile */}
-        <div role="tablist" className="mt-2 sm:mt-4 grid grid-cols-5 md:flex gap-0.5 sm:gap-2">
-          <button
-            role="tab"
-            aria-selected={viewMode === "phases"}
-            onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
-            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-              viewMode === "phases" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
-            }`}
-          >
-            <span className="block sm:hidden">📊</span>
-            <span className="hidden sm:inline">📊 Phases</span>
-          </button>
-          <button
-            role="tab"
-            aria-selected={viewMode === "tasks"}
-            onClick={() => { setViewMode("tasks"); setSelectedPhase(null); }}
-            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-              viewMode === "tasks" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
-            }`}
-          >
-            <span className="block sm:hidden">✅</span>
-            <span className="hidden sm:inline">✅ Tasks</span>
-          </button>
-          <button
-            role="tab"
-            aria-selected={viewMode === "calendar"}
-            onClick={() => setViewMode("calendar")}
-            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-              viewMode === "calendar" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
-            }`}
-          >
-            <span className="block sm:hidden">📅</span>
-            <span className="hidden sm:inline">📅 Calendar</span>
-          </button>
-          <button
-            role="tab"
-            aria-selected={viewMode === "analytics"}
-            onClick={() => setViewMode("analytics")}
-            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-              viewMode === "analytics" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
-            }`}
-          >
-            <span className="block sm:hidden">📈</span>
-            <span className="hidden sm:inline">📈 Analytics</span>
-          </button>
-          <button
-            role="tab"
-            aria-selected={viewMode === "info"}
-            onClick={() => setViewMode("info")}
-            className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-              viewMode === "info" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
-            }`}
-          >
-            <span className="block sm:hidden">ℹ️</span>
-            <span className="hidden sm:inline">ℹ️ Resources</span>
-          </button>
-        </div>
+        {/* View Mode Tabs — only visible when expanded */}
+        {isExpanded && (
+          <div role="tablist" className="mt-2 sm:mt-4 grid grid-cols-5 md:flex gap-0.5 sm:gap-2">
+            <button
+              role="tab"
+              aria-selected={viewMode === "phases"}
+              onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
+              className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
+                viewMode === "phases" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+              }`}
+            >
+              <span className="block sm:hidden">📊</span>
+              <span className="hidden sm:inline">📊 Phases</span>
+            </button>
+            <button
+              role="tab"
+              aria-selected={viewMode === "tasks"}
+              onClick={() => { setViewMode("tasks"); setSelectedPhase(null); }}
+              className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
+                viewMode === "tasks" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+              }`}
+            >
+              <span className="block sm:hidden">✅</span>
+              <span className="hidden sm:inline">✅ Tasks</span>
+            </button>
+            <button
+              role="tab"
+              aria-selected={viewMode === "calendar"}
+              onClick={() => setViewMode("calendar")}
+              className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
+                viewMode === "calendar" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+              }`}
+            >
+              <span className="block sm:hidden">📅</span>
+              <span className="hidden sm:inline">📅 Calendar</span>
+            </button>
+            <button
+              role="tab"
+              aria-selected={viewMode === "analytics"}
+              onClick={() => setViewMode("analytics")}
+              className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
+                viewMode === "analytics" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+              }`}
+            >
+              <span className="block sm:hidden">📈</span>
+              <span className="hidden sm:inline">📈 Analytics</span>
+            </button>
+            <button
+              role="tab"
+              aria-selected={viewMode === "info"}
+              onClick={() => setViewMode("info")}
+              className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
+                viewMode === "info" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+              }`}
+            >
+              <span className="block sm:hidden">ℹ️</span>
+              <span className="hidden sm:inline">ℹ️ Resources</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Content Section */}

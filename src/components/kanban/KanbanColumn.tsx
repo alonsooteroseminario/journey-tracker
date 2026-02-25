@@ -78,6 +78,7 @@ export function KanbanColumn({ title, status, items, level, onDrillDown, isColla
                 key={item.id}
                 item={item}
                 level={level}
+                columnStatus={status}
                 onDrillDown={() => onDrillDown(item.id)}
               />
             ))}

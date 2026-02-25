@@ -17,8 +17,8 @@ interface DrillDownContext {
   taskId?: string;
 }
 
-// Augmented item carrying parent IDs for flat views
-type FlatItem = (Goal | Task | Substep) & { _goalId?: string; _taskId?: string };
+// Augmented item carrying parent IDs and metadata for flat views
+type FlatItem = (Goal | Task | Substep) & { _goalId?: string; _goalTitle?: string; _goalIcon?: string; _taskId?: string; _taskTitle?: string };
 
 export function KanbanBoard() {
   const [drillDown, setDrillDown] = useState<DrillDownContext>({ level: "goals" });
@@ -26,6 +26,7 @@ export function KanbanBoard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [dateFilter, setDateFilter] = useState<"all" | "overdue" | "today" | "week">("all");
   const [priorityFilter, setPriorityFilter] = useState<"all" | "low" | "medium" | "high" | "critical">("all");
+  const [doneToday, setDoneToday] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
 
   // Collapsible columns — persisted in localStorage
@@ -66,7 +67,7 @@ export function KanbanBoard() {
     // Flat "all tasks" view
     if (viewLevel === "tasks") {
       return goals.flatMap((g) =>
-        (g.tasks || []).map((t) => ({ ...t, _goalId: g.id } as FlatItem))
+        (g.tasks || []).map((t) => ({ ...t, _goalId: g.id, _goalTitle: g.title, _goalIcon: g.icon } as FlatItem))
       );
     }
 
@@ -74,7 +75,7 @@ export function KanbanBoard() {
     if (viewLevel === "substeps") {
       return goals.flatMap((g) =>
         (g.tasks || []).flatMap((t) =>
-          (t.substeps || []).map((s) => ({ ...s, _goalId: g.id, _taskId: t.id } as FlatItem))
+          (t.substeps || []).map((s) => ({ ...s, _goalId: g.id, _goalTitle: g.title, _goalIcon: g.icon, _taskId: t.id, _taskTitle: t.title } as FlatItem))
         )
       );
     }
@@ -94,11 +95,11 @@ export function KanbanBoard() {
       });
     } else if (drillDown.level === "tasks" && drillDown.goalId) {
       const goal = goals.find((g) => g.id === drillDown.goalId);
-      return ((goal?.tasks || []) as FlatItem[]).map((t) => ({ ...t, _goalId: drillDown.goalId } as FlatItem));
+      return ((goal?.tasks || []) as FlatItem[]).map((t) => ({ ...t, _goalId: drillDown.goalId, _goalTitle: goal?.title, _goalIcon: goal?.icon } as FlatItem));
     } else if (drillDown.level === "substeps" && drillDown.goalId && drillDown.taskId) {
       const goal = goals.find((g) => g.id === drillDown.goalId);
       const task = goal?.tasks.find((t) => t.id === drillDown.taskId);
-      return ((task?.substeps || []) as FlatItem[]).map((s) => ({ ...s, _goalId: drillDown.goalId, _taskId: drillDown.taskId } as FlatItem));
+      return ((task?.substeps || []) as FlatItem[]).map((s) => ({ ...s, _goalId: drillDown.goalId, _goalTitle: goal?.title, _goalIcon: goal?.icon, _taskId: drillDown.taskId, _taskTitle: task?.title } as FlatItem));
     }
     return [];
   }, [goals, drillDown, viewLevel]);
@@ -138,8 +139,17 @@ export function KanbanBoard() {
       });
     }
 
+    // Done Today filter
+    if (doneToday) {
+      const todayStr = new Date().toISOString().split("T")[0];
+      data = data.filter((item: any) => {
+        if (!item.completedAt) return false;
+        return item.completedAt.split("T")[0] === todayStr;
+      });
+    }
+
     return data;
-  }, [viewData, searchTerm, dateFilter, priorityFilter, effectiveLevel]);
+  }, [viewData, searchTerm, dateFilter, priorityFilter, effectiveLevel, doneToday]);
 
   // Group by status
   const columns = useMemo(() => {
@@ -267,6 +277,8 @@ export function KanbanBoard() {
         showPriorityFilter={effectiveLevel === "tasks"}
         viewLevel={viewLevel}
         onViewLevelChange={handleViewLevelChange}
+        doneToday={doneToday}
+        onDoneTodayChange={setDoneToday}
       />
 
       {/* Kanban Columns */}
@@ -320,7 +332,7 @@ export function KanbanBoard() {
           <div className="text-4xl mb-2">📋</div>
           <p className="text-gray-600">No items found</p>
           <p className="text-sm text-gray-400 mt-1">
-            {searchTerm || dateFilter !== "all" || priorityFilter !== "all"
+            {searchTerm || dateFilter !== "all" || priorityFilter !== "all" || doneToday
               ? "Try adjusting your filters"
               : effectiveLevel === "goals"
               ? "Create a goal to get started"
