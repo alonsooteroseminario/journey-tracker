@@ -138,7 +138,7 @@ export function CreateGoalModal({
                       Complete end-to-end checklist from Day 1 to PR Card Receipt
                     </p>
                     <div className="flex flex-wrap gap-2 mt-2 sm:mt-3">
-                      <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">
+                      <span className="px-2 py-1 bg-brand-light text-brand-primary text-xs rounded-full font-medium">
                         55 Steps
                       </span>
                       <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
@@ -181,7 +181,7 @@ export function CreateGoalModal({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Learn Spanish, Complete Course..."
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all"
                 autoFocus={!showTemplates}
               />
             </div>
@@ -199,7 +199,7 @@ export function CreateGoalModal({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Why is this goal important to you?"
                 rows={3}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all resize-none"
               />
             </div>
 
@@ -210,7 +210,7 @@ export function CreateGoalModal({
                 id="usePhases"
                 checked={usePhases}
                 onChange={(e) => setUsePhases(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                className="w-4 h-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
               />
               <label htmlFor="usePhases" className="text-sm text-gray-700 cursor-pointer select-none">
                 Organize tasks with Phases
@@ -219,8 +219,8 @@ export function CreateGoalModal({
 
             {/* Phases input section */}
             {usePhases && (
-              <div className="border border-blue-200 rounded-xl p-4 bg-blue-50/40 space-y-3">
-                <p className="text-xs text-blue-600 font-medium">
+              <div className="border border-brand-light rounded-xl p-4 bg-brand-light/40 space-y-3">
+                <p className="text-xs text-brand-primary font-medium">
                   Add phases to break your goal into milestones. You can assign tasks to phases after creation.
                 </p>
 
@@ -232,20 +232,20 @@ export function CreateGoalModal({
                     onChange={(e) => setNewPhaseName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addPhase(); } }}
                     placeholder="Phase name (e.g. Preparation)"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                   />
                   <input
                     type="text"
                     value={newPhaseDesc}
                     onChange={(e) => setNewPhaseDesc(e.target.value)}
                     placeholder="Description (optional, e.g. Weeks 1–4)"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                   />
                   <button
                     type="button"
                     onClick={addPhase}
                     disabled={!newPhaseName.trim()}
-                    className="w-full py-2 min-h-[40px] bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    className="w-full py-2 min-h-[40px] bg-brand-light text-brand-primary rounded-lg text-sm font-medium hover:bg-brand-light/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
                     + Add Phase
                   </button>
@@ -257,7 +257,7 @@ export function CreateGoalModal({
                     {phases.map((phase, i) => (
                       <div
                         key={i}
-                        className="flex items-start justify-between gap-2 bg-white border border-blue-200 rounded-lg px-3 py-2"
+                        className="flex items-start justify-between gap-2 bg-white border border-brand-light rounded-lg px-3 py-2"
                       >
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-gray-800">
@@ -293,7 +293,7 @@ export function CreateGoalModal({
               <button
                 type="submit"
                 disabled={!title.trim()}
-                className="flex-1 py-3 min-h-[48px] bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
+                className="flex-1 py-3 min-h-[48px] bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
               >
                 Create Goal
               </button>
