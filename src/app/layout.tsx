@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   description:
     "A motivational goal tracking app with Duolingo-style streaks. Set goals, split tasks, and track your daily progress.",
   keywords: ["goal tracker", "habit tracker", "streak", "productivity", "tasks"],
+  icons: {
+    icon: "/brand-icon.png",
+    apple: "/brand-icon.png",
+  },
 };
 
 export default function RootLayout({
