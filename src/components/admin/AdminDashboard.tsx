@@ -16,7 +16,7 @@ export function AdminDashboard() {
         </div>
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
+            <div className="w-16 h-16 border-4 border-gray-300 border-t-brand-primary rounded-full animate-spin mx-auto mb-4" />
             <p className="text-gray-500">Fetching data from database...</p>
           </div>
         </div>

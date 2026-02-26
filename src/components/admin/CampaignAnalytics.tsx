@@ -117,7 +117,7 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
         <h3 className="text-lg font-semibold mb-4">Engagement Breakdown</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-brand-primary">
               {totalLikes.toLocaleString()}
             </div>
             <div className="text-sm text-gray-600">Likes</div>
@@ -129,7 +129,7 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
             <div className="text-sm text-gray-600">Shares</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-purple-600">
+            <div className="text-2xl font-bold text-brand-primary">
               {totalComments.toLocaleString()}
             </div>
             <div className="text-sm text-gray-600">Comments</div>

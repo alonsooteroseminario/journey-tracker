@@ -44,7 +44,7 @@ export function CommentSection({
         <div className="space-y-3 mb-4">
           {comments.map((comment) => (
             <div key={comment.id} className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+              <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center text-white text-sm font-semibold">
                 {comment.userName?.[0]?.toUpperCase() || "?"}
               </div>
               <div className="flex-1 min-w-0">
@@ -76,12 +76,12 @@ export function CommentSection({
           placeholder="Add a comment..."
           maxLength={500}
           disabled={isSubmitting}
-          className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+          className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={!commentText.trim() || isSubmitting}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-brand-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isSubmitting ? "..." : "Post"}
         </button>

@@ -17,7 +17,7 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4 hover:shadow-lg hover:border-blue-200 transition-all cursor-pointer"
+      className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4 hover:shadow-lg hover:border-brand-light transition-all cursor-pointer"
     >
       {/* Header */}
       <div className="flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3">
@@ -52,7 +52,7 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
 
         {/* Category */}
         {template.category && (
-          <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-full">
+          <span className="px-2 py-1 bg-brand-light text-brand-primary rounded-full">
             {template.category}
           </span>
         )}

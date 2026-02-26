@@ -60,7 +60,7 @@ export function BudgetSummary({ budget }: BudgetSummaryProps) {
           </div>
           <div className="bg-white/60 rounded-lg sm:rounded-xl p-2 sm:p-3">
             <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wide">Express Entry</p>
-            <p className="text-sm sm:text-lg font-bold text-blue-600">{budget.totalExpressEntry}</p>
+            <p className="text-sm sm:text-lg font-bold text-brand-primary">{budget.totalExpressEntry}</p>
             <p className="text-[10px] sm:text-xs text-gray-500">~16 months</p>
           </div>
         </div>
@@ -107,9 +107,9 @@ export function BudgetSummary({ budget }: BudgetSummaryProps) {
                 <span className="font-semibold text-emerald-800 text-xs sm:text-base">Total (Base BC PNP)</span>
                 <span className="text-base sm:text-xl font-bold text-emerald-600">{budget.totalBase}</span>
               </div>
-              <div className="flex justify-between items-center p-2 sm:p-3 bg-blue-50 rounded-lg">
-                <span className="font-semibold text-blue-800 text-xs sm:text-base">Total (Express Entry)</span>
-                <span className="text-base sm:text-xl font-bold text-blue-600">{budget.totalExpressEntry}</span>
+              <div className="flex justify-between items-center p-2 sm:p-3 bg-brand-light rounded-lg">
+                <span className="font-semibold text-brand-primary text-xs sm:text-base">Total (Express Entry)</span>
+                <span className="text-base sm:text-xl font-bold text-brand-primary">{budget.totalExpressEntry}</span>
               </div>
             </div>
           </div>

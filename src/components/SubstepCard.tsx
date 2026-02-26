@@ -56,12 +56,12 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
 
   if (isEditing) {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 sm:p-3 space-y-1.5 sm:space-y-2">
+      <div className="bg-brand-light border border-brand-light rounded-lg p-2 sm:p-3 space-y-1.5 sm:space-y-2">
         <input
           type="text"
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
-          className="w-full px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
           placeholder="Substep title"
           autoFocus
         />
@@ -72,7 +72,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
               type="number"
               value={editCost}
               onChange={(e) => setEditCost(e.target.value)}
-              className="w-full pl-5 sm:pl-6 pr-2 sm:pr-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-5 sm:pl-6 pr-2 sm:pr-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
               placeholder="Cost"
             />
           </div>
@@ -80,7 +80,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
             type="text"
             value={editNotes}
             onChange={(e) => setEditNotes(e.target.value)}
-            className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
             placeholder="Notes"
           />
         </div>
@@ -117,7 +117,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
           <button
             onClick={handleSave}
             disabled={!editTitle.trim()}
-            className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+            className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm bg-brand-primary text-white rounded-md hover:bg-brand-secondary disabled:opacity-50"
           >
             Save
           </button>
@@ -206,7 +206,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={() => setIsEditing(true)}
-          className="p-1 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded transition-colors"
+          className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
           title="Edit"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

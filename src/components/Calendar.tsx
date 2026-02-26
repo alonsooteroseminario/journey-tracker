@@ -146,7 +146,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-2 sm:p-3">
+      <div className="bg-gradient-to-r from-brand-primary to-brand-secondary p-2 sm:p-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-1">
             <span className="text-xs sm:text-sm">📅</span> <span className="hidden sm:inline">Calendar</span><span className="sm:hidden">Cal</span>
@@ -227,7 +227,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
                   relative aspect-square p-0.5 sm:p-1 rounded transition-all text-xs sm:text-sm
                   ${day.isCurrentMonth ? "text-gray-800" : "text-gray-400"}
                   ${day.isToday ? "ring-1 ring-indigo-500 font-bold" : ""}
-                  ${selectedDate === day.date ? "bg-indigo-100" : "hover:bg-gray-100"}
+                  ${selectedDate === day.date ? "bg-brand-light" : "hover:bg-gray-100"}
                   ${day.hasActivity && day.isCurrentMonth ? "bg-green-50" : ""}
                 `}
               >
@@ -236,7 +236,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
                   <div className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 flex gap-0.5">
                     <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-green-500 rounded-full"></span>
                     {day.tasksCompleted > 0 && (
-                      <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-blue-500 rounded-full"></span>
+                      <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-brand-primary rounded-full"></span>
                     )}
                   </div>
                 )}
@@ -262,12 +262,12 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
               {/* Day Summary */}
               <div className="flex gap-1.5 sm:gap-3 text-[10px] sm:text-sm">
                 {selectedDayData.tasksCompleted > 0 && (
-                  <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-blue-100 text-blue-700 rounded-full">
+                  <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-brand-light text-brand-primary rounded-full">
                     {selectedDayData.tasksCompleted} tasks
                   </span>
                 )}
                 {selectedDayData.substepsCompleted > 0 && (
-                  <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-purple-100 text-purple-700 rounded-full">
+                  <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-brand-light/40 text-brand-primary rounded-full">
                     {selectedDayData.substepsCompleted} substeps
                   </span>
                 )}
@@ -317,11 +317,11 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
           <span className="text-[10px] sm:text-xs">Active</span>
         </div>
         <div className="flex items-center gap-0.5 sm:gap-1">
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full"></span>
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand-primary rounded-full"></span>
           <span className="text-[10px] sm:text-xs">Tasks</span>
         </div>
         <div className="flex items-center gap-0.5 sm:gap-1">
-          <div className="w-3 h-3 sm:w-4 sm:h-4 ring-1 sm:ring-2 ring-indigo-500 rounded"></div>
+          <div className="w-3 h-3 sm:w-4 sm:h-4 ring-1 sm:ring-2 ring-brand-primary rounded"></div>
           <span className="text-[10px] sm:text-xs">Today</span>
         </div>
       </div>

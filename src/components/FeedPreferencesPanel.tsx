@@ -104,9 +104,9 @@ export function FeedPreferencesPanel() {
         {feedCategories.map((category) => (
           <div
             key={category.key}
-            className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors"
+            className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 hover:border-brand-primary transition-colors"
           >
-            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg flex items-center justify-center text-xl">
+            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-brand-light to-brand-light/40 rounded-lg flex items-center justify-center text-xl">
               {category.icon}
             </div>
             <div className="flex-1 min-w-0">
@@ -119,7 +119,7 @@ export function FeedPreferencesPanel() {
                     onChange={(e) => handleToggle(category.key, e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
                 </label>
               </div>
               <p className="text-sm text-gray-500">{category.description}</p>
@@ -128,14 +128,14 @@ export function FeedPreferencesPanel() {
         ))}
       </div>
 
-      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mt-6 p-4 bg-brand-light border border-brand-light rounded-lg">
         <div className="flex items-start gap-3">
           <span className="text-xl">ℹ️</span>
           <div className="flex-1">
-            <p className="text-sm text-blue-900 font-medium mb-1">
+            <p className="text-sm text-brand-primary font-medium mb-1">
               About Feed Visibility
             </p>
-            <p className="text-sm text-blue-700">
+            <p className="text-sm text-brand-primary">
               These settings control what appears in your activity feed. Disabling a
               category won't affect your goals or tasks—it only hides those events
               from the feed view.

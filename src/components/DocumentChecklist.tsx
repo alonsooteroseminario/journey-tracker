@@ -153,7 +153,7 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-xs sm:text-base text-gray-800 truncate">{doc.name}</p>
                   <div className="flex gap-1 sm:gap-2 text-[10px] sm:text-xs text-gray-500">
-                    <span className="bg-blue-100 text-blue-700 px-1.5 sm:px-2 py-0.5 rounded">
+                    <span className="bg-brand-light text-brand-primary px-1.5 sm:px-2 py-0.5 rounded">
                       {doc.requiredFor}
                     </span>
                     <span>{doc.whenNeeded}</span>

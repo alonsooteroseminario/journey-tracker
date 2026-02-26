@@ -30,7 +30,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl sm:rounded-2xl p-3 sm:p-6 text-white">
+      <div className="bg-gradient-to-r from-brand-primary to-brand-secondary rounded-xl sm:rounded-2xl p-3 sm:p-6 text-white">
         <h2 className="text-base sm:text-2xl font-bold flex items-center gap-1.5 sm:gap-2">
           <span className="text-sm sm:text-base">📊</span>
           Analytics
@@ -126,7 +126,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
           </div>
           <div className="mt-2 sm:mt-4 grid grid-cols-2 gap-2 sm:gap-4 text-center">
             <div>
-              <p className="text-lg sm:text-2xl font-bold text-blue-600">{analytics.completedTasks}</p>
+              <p className="text-lg sm:text-2xl font-bold text-brand-primary">{analytics.completedTasks}</p>
               <p className="text-xs sm:text-sm text-gray-500">Tasks Done</p>
             </div>
             <div>
@@ -141,7 +141,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
           <h3 className="font-bold text-gray-800 mb-2 sm:mb-4 text-sm sm:text-base">Projected Completion</h3>
           <div className="text-center py-2 sm:py-4">
             <div className="text-3xl sm:text-5xl mb-1 sm:mb-2">🎯</div>
-            <p className="text-base sm:text-2xl font-bold text-purple-600">{formattedProjectedDate}</p>
+            <p className="text-base sm:text-2xl font-bold text-brand-primary">{formattedProjectedDate}</p>
             <p className="text-xs sm:text-sm text-gray-500 mt-1">
               {analytics.daysRemaining
                 ? `${analytics.daysRemaining} days from now`
@@ -156,7 +156,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
                 {analytics.velocityTrend.slice(-14).map((point, index) => (
                   <div
                     key={point.date}
-                    className="flex-1 bg-purple-200 rounded-t transition-all hover:bg-purple-300"
+                    className="flex-1 bg-brand-light rounded-t transition-all hover:bg-brand-light"
                     style={{
                       height: `${Math.max((point.velocity / Math.max(...analytics.velocityTrend.map((v) => v.velocity), 1)) * 100, 10)}%`,
                     }}
@@ -183,30 +183,30 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
                 <div className="flex-1 min-w-0">
                   <div className="h-4 sm:h-6 bg-gray-100 rounded-full overflow-hidden flex">
                     <div
-                      className="h-full bg-blue-500 transition-all"
+                      className="h-full bg-brand-primary transition-all"
                       style={{ width: `${(week.tasksCompleted / maxWeeklyTasks) * 100}%` }}
                     />
                     <div
-                      className="h-full bg-purple-400 transition-all"
+                      className="h-full bg-brand-secondary transition-all"
                       style={{ width: `${(week.substepsCompleted / (maxWeeklyTasks * 3)) * 100}%` }}
                     />
                   </div>
                 </div>
                 <div className="w-12 sm:w-20 text-right text-[10px] sm:text-sm flex-shrink-0">
-                  <span className="text-blue-600 font-medium">{week.tasksCompleted}</span>
+                  <span className="text-brand-primary font-medium">{week.tasksCompleted}</span>
                   <span className="text-gray-400">/</span>
-                  <span className="text-purple-500">{week.substepsCompleted}</span>
+                  <span className="text-brand-secondary">{week.substepsCompleted}</span>
                 </div>
               </div>
             ))}
           </div>
           <div className="mt-4 flex gap-4 text-xs text-gray-500">
             <div className="flex items-center gap-1">
-              <span className="w-3 h-3 bg-blue-500 rounded"></span>
+              <span className="w-3 h-3 bg-brand-primary rounded"></span>
               <span>Tasks</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="w-3 h-3 bg-purple-400 rounded"></span>
+              <span className="w-3 h-3 bg-brand-secondary rounded"></span>
               <span>Substeps</span>
             </div>
           </div>
@@ -255,7 +255,7 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
               <p className="text-[10px] sm:text-xs text-gray-500">Spent</p>
             </div>
             <div>
-              <p className={`text-sm sm:text-lg font-bold truncate ${analytics.totalEstimatedCost - analytics.totalActualCost >= 0 ? "text-blue-600" : "text-red-500"}`}>
+              <p className={`text-sm sm:text-lg font-bold truncate ${analytics.totalEstimatedCost - analytics.totalActualCost >= 0 ? "text-brand-primary" : "text-red-500"}`}>
                 {formatCurrency(Math.abs(analytics.totalEstimatedCost - analytics.totalActualCost))}
               </p>
               <p className="text-[10px] sm:text-xs text-gray-500">
@@ -274,13 +274,13 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
             <div className="flex-1 min-w-0">
               <div className="h-3 sm:h-4 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all"
+                  className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full transition-all"
                   style={{ width: `${(analytics.completedSubsteps / analytics.totalSubsteps) * 100}%` }}
                 />
               </div>
             </div>
             <div className="text-right flex-shrink-0">
-              <p className="text-base sm:text-xl font-bold text-purple-600">
+              <p className="text-base sm:text-xl font-bold text-brand-primary">
                 {analytics.completedSubsteps}/{analytics.totalSubsteps}
               </p>
               <p className="text-[10px] sm:text-xs text-gray-500">Substeps Complete</p>
@@ -298,12 +298,12 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
               <div key={goal.goalId} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-xs sm:text-sm font-semibold text-gray-700 truncate flex-1">{goal.title}</h4>
-                  <span className="text-xs sm:text-sm font-bold text-blue-600 ml-2">{goal.completionRate}%</span>
+                  <span className="text-xs sm:text-sm font-bold text-brand-primary ml-2">{goal.completionRate}%</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full transition-all"
+                      className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full transition-all"
                       style={{ width: `${goal.completionRate}%` }}
                     />
                   </div>
@@ -326,12 +326,12 @@ export function AnalyticsDashboard({ analytics, goalTitle }: AnalyticsDashboardP
               <div key={phase.phaseId} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-xs sm:text-sm font-semibold text-gray-700 truncate flex-1">{phase.name}</h4>
-                  <span className="text-xs sm:text-sm font-bold text-purple-600 ml-2">{phase.completionRate}%</span>
+                  <span className="text-xs sm:text-sm font-bold text-brand-primary ml-2">{phase.completionRate}%</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all"
+                      className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full transition-all"
                       style={{ width: `${phase.completionRate}%` }}
                     />
                   </div>
@@ -359,11 +359,11 @@ interface MetricCardProps {
 
 function MetricCard({ title, value, subtitle, icon, color }: MetricCardProps) {
   const colorStyles = {
-    blue: "from-blue-500 to-blue-600",
+    blue: "from-brand-primary to-brand-secondary",
     amber: "from-amber-500 to-orange-500",
     emerald: "from-emerald-500 to-teal-500",
-    purple: "from-purple-500 to-violet-500",
-    pink: "from-pink-500 to-rose-500",
+    purple: "from-brand-primary to-brand-secondary",
+    pink: "from-brand-primary to-brand-secondary",
   };
 
   return (

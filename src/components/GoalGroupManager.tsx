@@ -108,7 +108,7 @@ export function GoalGroupManager({ isOpen, onClose }: GoalGroupManagerProps) {
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSaveEdit()}
-                    className="flex-1 min-w-0 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 min-w-0 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                     autoFocus
                   />
                   <button
@@ -200,7 +200,7 @@ export function GoalGroupManager({ isOpen, onClose }: GoalGroupManagerProps) {
               onChange={(e) => setNewName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleCreate()}
               placeholder="New group name..."
-              className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
             />
             <button
               onClick={handleCreate}

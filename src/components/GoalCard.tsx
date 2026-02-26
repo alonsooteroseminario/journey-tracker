@@ -663,7 +663,7 @@ export function GoalCard({
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-purple-50/50 rounded-xl border border-purple-100 border-dashed">
+              <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-brand-light/30 rounded-xl border border-brand-light border-dashed">
                 <span className="text-3xl mb-2">📦</span>
                 <p className="text-sm font-semibold text-gray-700">No resources yet</p>
                 <p className="text-xs text-gray-500 mt-1 max-w-[260px]">

@@ -92,7 +92,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
               e.stopPropagation();
               onDrillDown();
             }}
-            className="flex-shrink-0 p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            className="flex-shrink-0 p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
             title="Drill down"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +151,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
             </div>
             <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all ${pct === 100 ? "bg-green-500" : "bg-blue-500"}`}
+                className={`h-full rounded-full transition-all ${pct === 100 ? "bg-green-500" : "bg-brand-primary"}`}
                 style={{ width: `${pct}%` }}
               />
             </div>
@@ -192,7 +192,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
       <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs">
         {/* Goal: Show task count */}
         {level === "goals" && goal.tasks && (
-          <span className="px-1.5 sm:px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">
+          <span className="px-1.5 sm:px-2 py-0.5 bg-brand-light/40 text-brand-primary rounded-full">
             {goal.tasks.length} tasks
           </span>
         )}
@@ -278,7 +278,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
 
         {/* Task: Show tags */}
         {level === "tasks" && task.tags && task.tags.length > 0 && task.tags.map((tag) => (
-          <span key={tag} className="px-1.5 sm:px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">
+          <span key={tag} className="px-1.5 sm:px-2 py-0.5 bg-brand-light text-brand-primary rounded-full">
             {tag}
           </span>
         ))}

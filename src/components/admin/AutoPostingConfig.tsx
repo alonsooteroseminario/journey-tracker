@@ -87,7 +87,7 @@ export function AutoPostingConfig({
           onChange={(e) =>
             setSchedule({ ...schedule, frequency: e.target.value })
           }
-          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary"
         >
           <option value="daily">Daily</option>
           <option value="weekly">Weekly</option>
@@ -105,7 +105,7 @@ export function AutoPostingConfig({
               onClick={() => toggleDay(index)}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 schedule.daysOfWeek.includes(index)
-                  ? "bg-blue-600 text-white"
+                  ? "bg-brand-primary text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >
@@ -125,7 +125,7 @@ export function AutoPostingConfig({
                 type="time"
                 value={time}
                 onChange={(e) => updateTime(index, e.target.value)}
-                className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary"
               />
               {schedule.times.length > 1 && (
                 <button
@@ -139,7 +139,7 @@ export function AutoPostingConfig({
           ))}
           <button
             onClick={addTime}
-            className="text-sm text-blue-600 hover:text-blue-800"
+            className="text-sm text-brand-primary hover:text-brand-secondary"
           >
             + Add another time
           </button>
@@ -154,7 +154,7 @@ export function AutoPostingConfig({
           onChange={(e) =>
             setSchedule({ ...schedule, timezone: e.target.value })
           }
-          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary"
         >
           <option value="America/New_York">Eastern Time (ET)</option>
           <option value="America/Chicago">Central Time (CT)</option>
@@ -168,11 +168,11 @@ export function AutoPostingConfig({
       </div>
 
       {/* Preview */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="text-sm font-medium text-blue-900 mb-2">
+      <div className="bg-brand-light border border-brand-light rounded-lg p-4">
+        <div className="text-sm font-medium text-brand-primary mb-2">
           Schedule Preview
         </div>
-        <div className="text-sm text-blue-800">
+        <div className="text-sm text-brand-primary">
           Posts will be published on{" "}
           {schedule.daysOfWeek.map((d: number) => dayNames[d]).join(", ")} at{" "}
           {schedule.times.join(", ")} ({schedule.timezone})
@@ -183,7 +183,7 @@ export function AutoPostingConfig({
       <button
         onClick={handleSave}
         disabled={isSaving}
-        className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-brand-primary text-white px-4 py-2 rounded-lg hover:bg-brand-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isSaving ? "Saving..." : "Save Schedule"}
       </button>

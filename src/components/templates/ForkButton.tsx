@@ -82,7 +82,7 @@ export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkB
   if (isPublic) {
     return (
       <div className="w-full sm:flex-1 space-y-2 sm:space-y-3">
-        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 sm:p-4 rounded-md">
+        <div className="bg-brand-light dark:bg-brand-primary/20 p-3 sm:p-4 rounded-md">
           <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
             This will create a new goal based on this template. All tasks will start uncompleted.
           </p>
@@ -121,7 +121,7 @@ export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkB
   // Friends-only fork request confirmation
   return (
     <div className="w-full sm:flex-1 space-y-2 sm:space-y-3">
-      <div className="bg-purple-50 dark:bg-purple-900/20 p-3 sm:p-4 rounded-md">
+      <div className="bg-brand-light/40 dark:bg-brand-primary/20 p-3 sm:p-4 rounded-md">
         <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
           This template requires the creator&apos;s permission to fork. Send a request and they&apos;ll be notified.
         </p>

@@ -14,7 +14,7 @@ export function KanbanBreadcrumb({ level, goalName, taskName, onNavigate }: Kanb
         onClick={() => onNavigate("goals")}
         className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors ${
           level === "goals"
-            ? "bg-blue-100 text-blue-700 font-semibold"
+            ? "bg-brand-light text-brand-primary font-semibold"
             : "text-gray-600 hover:bg-gray-100"
         }`}
       >
@@ -30,7 +30,7 @@ export function KanbanBreadcrumb({ level, goalName, taskName, onNavigate }: Kanb
             onClick={() => onNavigate("tasks")}
             className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors ${
               level === "tasks"
-                ? "bg-blue-100 text-blue-700 font-semibold"
+                ? "bg-brand-light text-brand-primary font-semibold"
                 : "text-gray-600 hover:bg-gray-100"
             }`}
           >
@@ -44,7 +44,7 @@ export function KanbanBreadcrumb({ level, goalName, taskName, onNavigate }: Kanb
           <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
-          <span className="px-2 sm:px-3 py-1 sm:py-1.5 bg-blue-100 text-blue-700 font-semibold rounded-lg">
+          <span className="px-2 sm:px-3 py-1 sm:py-1.5 bg-brand-light text-brand-primary font-semibold rounded-lg">
             ✓ {taskName}
           </span>
         </>

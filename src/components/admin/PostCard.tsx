@@ -14,7 +14,7 @@ interface PostCardProps {
 
 const STATUS_COLORS = {
   draft: "bg-zinc-700 text-zinc-300",
-  scheduled: "bg-blue-900/30 text-blue-400",
+  scheduled: "bg-brand-primary/20 text-brand-muted",
   posted: "bg-green-900/30 text-green-400",
   failed: "bg-red-900/30 text-red-400",
 };
@@ -87,7 +87,7 @@ export function PostCard({ post, onEdit }: PostCardProps) {
           {post.content}
         </p>
         {post.hashtags.length > 0 && (
-          <p className="text-xs text-blue-400 mt-1">
+          <p className="text-xs text-brand-muted mt-1">
             {post.hashtags.map((tag) => `#${tag}`).join(" ")}
           </p>
         )}
@@ -138,7 +138,7 @@ export function PostCard({ post, onEdit }: PostCardProps) {
           href={post.postUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-blue-400 hover:underline block mb-3"
+          className="text-xs text-brand-muted hover:underline block mb-3"
         >
           View on {post.account.platform} →
         </a>
@@ -158,7 +158,7 @@ export function PostCard({ post, onEdit }: PostCardProps) {
           <button
             onClick={handlePublish}
             disabled={isPublishing}
-            className="px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 rounded transition disabled:opacity-50"
+            className="px-3 py-1.5 text-sm bg-brand-primary hover:bg-brand-secondary rounded transition disabled:opacity-50"
           >
             {isPublishing ? "Publishing..." : "Publish Now"}
           </button>

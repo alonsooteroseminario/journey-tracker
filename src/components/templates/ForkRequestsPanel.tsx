@@ -28,9 +28,9 @@ export function ForkRequestsPanel() {
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-purple-200">
+    <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-brand-light">
       <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-        <span className="w-6 h-6 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-xs font-bold">
+        <span className="w-6 h-6 bg-brand-light/40 text-brand-primary rounded-full flex items-center justify-center text-xs font-bold">
           {pendingRequests.length}
         </span>
         Fork Requests
@@ -49,7 +49,7 @@ export function ForkRequestsPanel() {
                   className="w-10 h-10 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white font-bold text-sm">
                   {(request.requester?.name || "?").charAt(0).toUpperCase()}
                 </div>
               )}

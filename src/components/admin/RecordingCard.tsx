@@ -10,7 +10,7 @@ interface RecordingCardProps {
 
 const STATUS_COLORS = {
   pending: "bg-zinc-700 text-zinc-300",
-  recording: "bg-blue-900/30 text-blue-400",
+  recording: "bg-brand-primary/20 text-brand-muted",
   completed: "bg-green-900/30 text-green-400",
   failed: "bg-red-900/30 text-red-400",
 };
@@ -60,7 +60,7 @@ export function RecordingCard({ recording }: RecordingCardProps) {
         <div className="w-full aspect-video bg-zinc-900 rounded mb-3 flex items-center justify-center text-zinc-600">
           {recording.status === "recording" ? (
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary mx-auto mb-2"></div>
               <p className="text-sm">Recording...</p>
             </div>
           ) : recording.status === "failed" ? (
@@ -121,7 +121,7 @@ export function RecordingCard({ recording }: RecordingCardProps) {
           <a
             href={recording.videoUrl}
             download
-            className="px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 rounded transition"
+            className="px-3 py-1.5 text-sm bg-brand-primary hover:bg-brand-secondary rounded transition"
           >
             Download
           </a>

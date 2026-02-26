@@ -135,7 +135,7 @@ export function MobileStatsPanel({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Substeps</span>
-                    <span className="font-bold text-purple-600">{totalSubsteps}</span>
+                    <span className="font-bold text-brand-primary">{totalSubsteps}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Done</span>
@@ -143,7 +143,7 @@ export function MobileStatsPanel({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Days Active</span>
-                    <span className="font-bold text-blue-600">{streak.streakHistory.length}</span>
+                    <span className="font-bold text-brand-primary">{streak.streakHistory.length}</span>
                   </div>
                 </div>
               </div>

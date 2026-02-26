@@ -62,17 +62,17 @@ export function NotificationBanner({
   }
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl p-2.5 sm:p-4 flex items-center gap-2 sm:gap-3">
+    <div className="bg-brand-light border border-brand-light rounded-lg sm:rounded-xl p-2.5 sm:p-4 flex items-center gap-2 sm:gap-3">
       <span className="text-base sm:text-2xl flex-shrink-0">🔔</span>
       <div className="flex-1">
-        <p className="font-medium text-blue-800 text-xs sm:text-base">Enable Reminders</p>
-        <p className="text-[10px] sm:text-sm text-blue-600">
+        <p className="font-medium text-brand-primary text-xs sm:text-base">Enable Reminders</p>
+        <p className="text-[10px] sm:text-sm text-brand-primary">
           Get notified to keep your streak alive!
         </p>
       </div>
       <button
         onClick={onEnable}
-        className="px-2 sm:px-4 py-1.5 sm:py-2 bg-blue-500 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors flex-shrink-0"
+        className="px-2 sm:px-4 py-1.5 sm:py-2 bg-brand-primary text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-brand-secondary transition-colors flex-shrink-0"
       >
         Enable
       </button>
