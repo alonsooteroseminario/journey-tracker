@@ -23,7 +23,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body 
-          className="antialiased min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
+          className="antialiased min-h-screen bg-gradient-to-br from-white via-brand-light/30 to-indigo-50/60"
           suppressHydrationWarning
         >
           <AppShell>
