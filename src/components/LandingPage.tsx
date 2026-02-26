@@ -9,7 +9,7 @@ export function LandingPage() {
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🎯</span>
+            <img src="/brand-icon.png" alt="Journey Tracker" className="w-8 h-8 rounded-xl object-contain" />
             <span className="text-xl font-bold text-brand-primary">
               Journey Tracker
             </span>
