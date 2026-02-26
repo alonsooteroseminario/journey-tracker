@@ -36,11 +36,13 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
           <div className="flex items-center justify-between h-16">
             {/* Logo/Brand */}
             <Link href="/" className="flex items-center gap-1.5 sm:gap-2 min-h-[48px]">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-xl sm:text-2xl">🚀</span>
-              </div>
+              <img
+                src="/brand-icon.png"
+                alt="Journey Tracker"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl object-contain"
+              />
               <div className="hidden sm:block">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold text-brand-primary">
                   Journey Tracker
                 </h1>
               </div>
@@ -54,7 +56,7 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
                   href={item.href}
                   className={`px-4 py-2 min-h-[48px] rounded-lg font-medium transition-all flex items-center gap-2 ${
                     isActive(item.href)
-                      ? "bg-blue-100 text-blue-700"
+                      ? "bg-brand-light text-brand-primary"
                       : "text-gray-600 hover:bg-gray-100"
                   }`}
                 >
@@ -85,7 +87,7 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
                     className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-gray-200"
                   />
                 ) : (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white font-bold">
                     {profile.name.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -107,7 +109,7 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
               href={item.href}
               className={`flex flex-col items-center gap-0.5 px-2 py-1.5 min-w-[56px] min-h-[52px] rounded-lg transition-all ${
                 isActive(item.href)
-                  ? "bg-blue-100 text-blue-700"
+                  ? "bg-brand-light text-brand-primary"
                   : "text-gray-600 active:bg-gray-100"
               }`}
             >
