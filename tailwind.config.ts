@@ -13,6 +13,14 @@ const config: Config = {
         'fold': '600px',  // Foldable devices
       },
       colors: {
+        brand: {
+          primary: "#5B50E8",
+          secondary: "#7B6FFF",
+          light: "#EAE8FF",
+          dark: "#2D1B8E",
+          accent: "#F08080",
+          muted: "#8B85C1",
+        },
         streak: {
           fire: "#FF9600",
           gold: "#FFC800",

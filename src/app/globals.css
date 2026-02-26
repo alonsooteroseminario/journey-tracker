@@ -5,6 +5,12 @@
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
+  --brand-primary: #5B50E8;
+  --brand-secondary: #7B6FFF;
+  --brand-light: #EAE8FF;
+  --brand-dark: #2D1B8E;
+  --brand-accent: #F08080;
+  --brand-muted: #8B85C1;
 }
 
 html, body {
@@ -46,12 +52,12 @@ p, h1, h2, h3, h4, h5, h6, span, li, td, th, label {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--brand-muted);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--brand-primary);
 }
 
 /* Animations */
