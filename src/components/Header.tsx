@@ -48,8 +48,12 @@ export function Header({
               href="/"
               className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity"
             >
-              <span className="text-lg sm:text-2xl">🚀</span>
-              <h1 className="text-sm sm:text-xl font-bold text-gray-800">
+              <img
+                src="/brand-icon.png"
+                alt="Journey Tracker"
+                className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl object-contain"
+              />
+              <h1 className="text-sm sm:text-xl font-bold text-brand-primary">
                 <span className="hidden sm:inline">Journey Tracker</span>
                 <span className="sm:hidden">Journey</span>
               </h1>
@@ -82,7 +86,7 @@ export function Header({
                 {/* Friends Button */}
                 <Link
                   href="/friends"
-                  className="p-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded hover:opacity-90 transition-all font-medium flex items-center gap-1"
+                  className="p-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded hover:opacity-90 transition-all font-medium flex items-center gap-1"
                 >
                   <svg
                     className="w-3 h-3 sm:w-4 sm:h-4"
@@ -113,7 +117,7 @@ export function Header({
                       className="w-6 h-6 sm:w-9 sm:h-9 rounded-full object-cover border border-gray-200 group-hover:border-blue-400 transition-all"
                     />
                   ) : (
-                    <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-[10px] sm:text-sm border border-transparent group-hover:border-blue-400 transition-all">
+                    <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white font-bold text-[10px] sm:text-sm border border-transparent group-hover:border-brand-primary transition-all">
                       {profileName ? profileName.charAt(0).toUpperCase() : "?"}
                     </div>
                   )}
@@ -126,7 +130,7 @@ export function Header({
                 {showNewGoalButton && onNewGoalClick && pathname === "/" && (
                   <button
                     onClick={onNewGoalClick}
-                    className="p-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded hover:opacity-90 transition-all font-medium flex items-center gap-1"
+                    className="p-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded hover:opacity-90 transition-all font-medium flex items-center gap-1"
                   >
                     <svg
                       className="w-3 h-3 sm:w-4 sm:h-4"
@@ -156,7 +160,7 @@ export function Header({
                 </Link>
                 <Link
                   href="/sign-up"
-                  className="px-3 py-1.5 text-xs sm:text-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded hover:opacity-90 transition-all font-medium"
+                  className="px-3 py-1.5 text-xs sm:text-sm bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded hover:opacity-90 transition-all font-medium"
                 >
                   Sign Up
                 </Link>
@@ -175,7 +179,7 @@ export function Header({
                 title={item.label}
                 className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                   isActive(item.href)
-                    ? "bg-blue-100 text-blue-700 shadow-sm"
+                    ? "bg-brand-light text-brand-primary shadow-sm"
                     : "bg-gray-50 text-gray-700 hover:bg-gray-100"
                 }`}
               >
