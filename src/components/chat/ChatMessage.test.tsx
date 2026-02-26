@@ -18,7 +18,7 @@ describe('ChatMessage', () => {
       expect(screen.getByText('Hi there')).toBeInTheDocument();
       const wrapper = container.firstElementChild;
       expect(wrapper).toHaveClass('justify-end');
-      expect(wrapper?.firstElementChild).toHaveClass('bg-blue-500', 'text-white');
+      expect(wrapper?.firstElementChild).toHaveClass('bg-brand-primary', 'text-white');
     });
   });
 

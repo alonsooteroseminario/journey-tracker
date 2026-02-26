@@ -20,7 +20,7 @@ export function ChatStatusIndicator({ status, toolName, processingLog = [] }: Ch
         <div className="mb-2 space-y-0.5">
           {processingLog.map((event, i) => (
             <div key={i} className="flex items-center gap-1.5 text-xs">
-              <span className={event.success === null ? 'text-blue-500' : event.success ? 'text-green-600' : 'text-red-500'}>
+              <span className={event.success === null ? 'text-brand-primary' : event.success ? 'text-green-600' : 'text-red-500'}>
                 {event.success === null ? '⟳' : event.success ? '✓' : '✗'}
               </span>
               <code className="text-gray-700 dark:text-gray-300">{event.toolName}</code>
@@ -38,9 +38,9 @@ export function ChatStatusIndicator({ status, toolName, processingLog = [] }: Ch
       {/* Bouncing dots + current status text */}
       <div className="flex items-center gap-2">
         <div className="flex gap-1">
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          <div className="w-2 h-2 bg-brand-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+          <div className="w-2 h-2 bg-brand-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+          <div className="w-2 h-2 bg-brand-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
         <span>
           {status === 'thinking' && 'Thinking...'}
