@@ -207,7 +207,7 @@ export function GoalCard({
                     if (e.key === "Enter") handleSaveEdit();
                     if (e.key === "Escape") setIsEditing(false);
                   }}
-                  className="text-sm sm:text-xl font-bold bg-transparent border-b-2 border-blue-400 focus:border-blue-600 outline-none w-full text-gray-800"
+                  className="text-sm sm:text-xl font-bold bg-transparent border-b-2 border-brand-primary focus:border-brand-primary outline-none w-full text-gray-800"
                   autoFocus
                 />
               ) : (
@@ -228,7 +228,7 @@ export function GoalCard({
                   if (e.key === "Escape") setIsEditing(false);
                 }}
                 rows={2}
-                className="text-xs sm:text-sm bg-transparent border border-gray-300 rounded px-2 py-1 focus:border-blue-400 outline-none w-full text-gray-600 resize-none mt-1"
+                className="text-xs sm:text-sm bg-transparent border border-gray-300 rounded px-2 py-1 focus:border-brand-primary outline-none w-full text-gray-600 resize-none mt-1"
                 placeholder="Add a description..."
               />
             ) : (
@@ -240,7 +240,7 @@ export function GoalCard({
               <div className="flex items-center gap-2 mt-2">
                 <button
                   onClick={handleSaveEdit}
-                  className="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-3 py-1 text-xs font-medium bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 transition-colors"
                 >
                   Save
                 </button>
@@ -275,7 +275,7 @@ export function GoalCard({
                 setEditIcon(goal.icon || "🎯");
                 setShowEmojiPicker(false);
               }}
-              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded-lg transition-colors"
               title={isEditing ? "Cancel editing" : "Edit goal"}
               aria-label={isEditing ? "Cancel editing" : "Edit goal"}
             >
@@ -289,7 +289,7 @@ export function GoalCard({
             </button>
             <button
               onClick={() => setShowShareModal(true)}
-              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-colors"
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 hover:text-brand-primary hover:bg-white/50 rounded-lg transition-colors"
               title="Share as template"
               aria-label="Share goal as template"
             >
@@ -345,7 +345,7 @@ export function GoalCard({
               aria-selected={viewMode === "phases"}
               onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
               className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "phases" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+                viewMode === "phases" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
               }`}
             >
               <span className="block sm:hidden">📊</span>
@@ -356,7 +356,7 @@ export function GoalCard({
               aria-selected={viewMode === "tasks"}
               onClick={() => { setViewMode("tasks"); setSelectedPhase(null); }}
               className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "tasks" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+                viewMode === "tasks" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
               }`}
             >
               <span className="block sm:hidden">✅</span>
@@ -367,7 +367,7 @@ export function GoalCard({
               aria-selected={viewMode === "calendar"}
               onClick={() => setViewMode("calendar")}
               className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "calendar" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+                viewMode === "calendar" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
               }`}
             >
               <span className="block sm:hidden">📅</span>
@@ -378,7 +378,7 @@ export function GoalCard({
               aria-selected={viewMode === "analytics"}
               onClick={() => setViewMode("analytics")}
               className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "analytics" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+                viewMode === "analytics" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
               }`}
             >
               <span className="block sm:hidden">📈</span>
@@ -389,7 +389,7 @@ export function GoalCard({
               aria-selected={viewMode === "info"}
               onClick={() => setViewMode("info")}
               className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "info" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:bg-white/50"
+                viewMode === "info" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
               }`}
             >
               <span className="block sm:hidden">ℹ️</span>
@@ -407,13 +407,13 @@ export function GoalCard({
             goal.phases && goal.phases.length > 0 ? (
               <div className="space-y-6">
                 {isAddingPhase ? (
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-2.5 sm:p-4 space-y-2 sm:space-y-3">
+                  <div className="bg-brand-light/40 border border-brand-light rounded-xl p-2.5 sm:p-4 space-y-2 sm:space-y-3">
                     <input
                       type="text"
                       placeholder="Phase name (e.g., Phase 2: Implementation)"
                       value={newPhaseName}
                       onChange={(e) => setNewPhaseName(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === "Escape") {
@@ -428,7 +428,7 @@ export function GoalCard({
                       placeholder="Description (e.g., Weeks 5-8 - Core implementation)"
                       value={newPhaseDescription}
                       onChange={(e) => setNewPhaseDescription(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && newPhaseName.trim()) {
                           onAddPhase?.(goal.id, newPhaseName.trim(), newPhaseDescription.trim());
@@ -454,7 +454,7 @@ export function GoalCard({
                           }
                         }}
                         disabled={!newPhaseName.trim()}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         Add Phase
                       </button>
@@ -481,7 +481,7 @@ export function GoalCard({
                   <div>
                     <button
                       onClick={() => setSelectedPhase(null)}
-                      className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 font-medium"
+                      className="flex items-center gap-2 text-brand-primary hover:text-brand-primary/80 mb-4 font-medium"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -489,9 +489,9 @@ export function GoalCard({
                       Back to Phases
                     </button>
 
-                    <div className="mb-4 p-4 bg-blue-50 rounded-xl">
-                      <h4 className="font-bold text-blue-800">{selectedPhaseName}</h4>
-                      <p className="text-sm text-blue-600">
+                    <div className="mb-4 p-4 bg-brand-light/40 rounded-xl">
+                      <h4 className="font-bold text-brand-primary">{selectedPhaseName}</h4>
+                      <p className="text-sm text-brand-primary">
                         {displayedTasks.filter((t) => t.status === 'completed').length} of {displayedTasks.length} tasks completed
                       </p>
                     </div>
@@ -514,13 +514,13 @@ export function GoalCard({
             ) : (
               <div className="space-y-4">
                 {isAddingPhase ? (
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-2.5 sm:p-4 space-y-2 sm:space-y-3">
+                  <div className="bg-brand-light/40 border border-brand-light rounded-xl p-2.5 sm:p-4 space-y-2 sm:space-y-3">
                     <input
                       type="text"
                       placeholder="Phase name (e.g., Phase 1: Planning)"
                       value={newPhaseName}
                       onChange={(e) => setNewPhaseName(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === "Escape") {
@@ -535,7 +535,7 @@ export function GoalCard({
                       placeholder="Description (e.g., Weeks 1-4 - Planning and preparation)"
                       value={newPhaseDescription}
                       onChange={(e) => setNewPhaseDescription(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && newPhaseName.trim()) {
                           onAddPhase?.(goal.id, newPhaseName.trim(), newPhaseDescription.trim());
@@ -561,7 +561,7 @@ export function GoalCard({
                           }
                         }}
                         disabled={!newPhaseName.trim()}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         Add Phase
                       </button>
@@ -578,7 +578,7 @@ export function GoalCard({
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-blue-50/50 rounded-xl border border-blue-100 border-dashed">
+                  <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-brand-light/30 rounded-xl border border-brand-light border-dashed">
                     <span className="text-3xl mb-2">📊</span>
                     <p className="text-sm font-semibold text-gray-700">No phases yet</p>
                     <p className="text-xs text-gray-500 mt-1 mb-3 max-w-[260px]">
@@ -586,7 +586,7 @@ export function GoalCard({
                     </p>
                     <button
                       onClick={() => setIsAddingPhase(true)}
-                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+                      className="px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 transition-colors text-sm font-medium"
                     >
                       Add First Phase
                     </button>

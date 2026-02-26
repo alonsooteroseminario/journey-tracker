@@ -309,7 +309,7 @@ describe('GoalCard', () => {
       fireEvent.click(tasksTab);
 
       // Tasks is the default active tab (no phases on mockGoal)
-      expect(tasksTab).toHaveClass('bg-white', 'text-blue-600');
+      expect(tasksTab).toHaveClass('bg-white', 'text-brand-primary');
     });
 
     it('should switch to calendar view when clicking calendar tab', () => {
@@ -328,7 +328,7 @@ describe('GoalCard', () => {
       const calendarTab = screen.getByText('📅 Calendar').closest('button')!;
       fireEvent.click(calendarTab);
 
-      expect(calendarTab).toHaveClass('bg-white', 'text-blue-600');
+      expect(calendarTab).toHaveClass('bg-white', 'text-brand-primary');
     });
 
     it('should switch to analytics view when clicking analytics tab', () => {
@@ -347,7 +347,7 @@ describe('GoalCard', () => {
       const analyticsTab = screen.getByText('📈 Analytics').closest('button')!;
       fireEvent.click(analyticsTab);
 
-      expect(analyticsTab).toHaveClass('bg-white', 'text-blue-600');
+      expect(analyticsTab).toHaveClass('bg-white', 'text-brand-primary');
     });
   });
 
