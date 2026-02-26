@@ -124,7 +124,7 @@ export function TaskMiniCard({
 
   const priorityStyles = {
     low: "border-l-gray-300",
-    medium: "border-l-blue-400",
+    medium: "border-l-brand-primary",
     high: "border-l-orange-400",
     critical: "border-l-red-500",
   };
@@ -193,7 +193,7 @@ export function TaskMiniCard({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
                 {task.stepNumber && (
-                  <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] sm:text-xs font-mono font-bold rounded">
+                  <span className="px-1.5 py-0.5 bg-brand-light text-brand-primary text-[10px] sm:text-xs font-mono font-bold rounded">
                     {task.stepNumber}
                   </span>
                 )}
@@ -220,7 +220,7 @@ export function TaskMiniCard({
                   </span>
                 )}
                 {hasSubsteps && (
-                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-purple-100 text-purple-700 text-[10px] sm:text-xs rounded-full">
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-brand-light/40 text-brand-primary text-[10px] sm:text-xs rounded-full">
                     <span>📋</span>
                     {completedSubsteps}/{substeps.length} substeps
                   </span>
@@ -251,7 +251,7 @@ export function TaskMiniCard({
                 <div className="mt-2">
                   <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-purple-500 rounded-full transition-all duration-300"
+                      className="h-full bg-brand-primary rounded-full transition-all duration-300"
                       style={{ width: `${substepProgress}%` }}
                     />
                   </div>
@@ -277,7 +277,7 @@ export function TaskMiniCard({
               </button>
               <button
                 onClick={() => setIsEditing(true)}
-                className="p-1 sm:p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                className="p-1 sm:p-1.5 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded-lg transition-colors"
                 title="Edit"
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,12 +324,12 @@ export function TaskMiniCard({
                   </div>
                   <div className="bg-white/60 rounded p-1.5 sm:p-2 col-span-2">
                     <p className="text-gray-600 mb-0.5">Spent on Completed Items</p>
-                    <p className="text-blue-700 font-bold text-sm sm:text-base">
+                    <p className="text-brand-primary font-bold text-sm sm:text-base">
                       {formatCurrency(spentSoFar)}
                     </p>
                     <div className="mt-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-500 rounded-full transition-all"
+                        className="h-full bg-brand-primary rounded-full transition-all"
                         style={{
                           width: `${totalEstimatedCost > 0 ? (spentSoFar / totalEstimatedCost) * 100 : 0}%`,
                         }}
@@ -362,7 +362,7 @@ export function TaskMiniCard({
                 <h5 className="text-xs sm:text-sm font-semibold text-gray-700">Substeps</h5>
                 <button
                   onClick={() => setIsAddingSubstep(true)}
-                  className="text-[10px] sm:text-xs text-blue-500 hover:text-blue-600 font-medium flex items-center gap-0.5 sm:gap-1"
+                  className="text-[10px] sm:text-xs text-brand-primary hover:text-brand-secondary font-medium flex items-center gap-0.5 sm:gap-1"
                 >
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -403,7 +403,7 @@ export function TaskMiniCard({
                     value={newSubstepTitle}
                     onChange={(e) => setNewSubstepTitle(e.target.value)}
                     placeholder="Enter substep..."
-                    className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleAddSubstep();
@@ -416,7 +416,7 @@ export function TaskMiniCard({
                   <button
                     onClick={handleAddSubstep}
                     disabled={!newSubstepTitle.trim()}
-                    className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+                    className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-brand-primary text-white rounded-lg hover:bg-brand-secondary disabled:opacity-50"
                   >
                     Add
                   </button>

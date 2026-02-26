@@ -15,7 +15,7 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-3 sm:p-6 text-left bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 transition-colors"
+        className="w-full p-3 sm:p-6 text-left bg-gradient-to-r from-brand-light to-brand-light/40 hover:from-brand-light hover:to-brand-light transition-colors"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -46,7 +46,7 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
         <div className="mt-2 sm:mt-4 flex items-center justify-center gap-2 sm:gap-4">
           <div className="text-center bg-white/60 rounded-lg sm:rounded-xl p-2 sm:p-4 flex-1 min-w-0">
             <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wide mb-0.5 sm:mb-1">Base BC PNP</p>
-            <p className="text-base sm:text-2xl font-bold text-purple-600">{timeline.totalBase}</p>
+            <p className="text-base sm:text-2xl font-bold text-brand-primary">{timeline.totalBase}</p>
           </div>
           <div className="flex flex-col items-center flex-shrink-0">
             <span className="text-base sm:text-2xl">⚡</span>
@@ -55,7 +55,7 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
           </div>
           <div className="text-center bg-white/60 rounded-lg sm:rounded-xl p-2 sm:p-4 flex-1 min-w-0">
             <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wide mb-0.5 sm:mb-1">Express Entry</p>
-            <p className="text-base sm:text-2xl font-bold text-indigo-600">{timeline.totalExpress}</p>
+            <p className="text-base sm:text-2xl font-bold text-brand-secondary">{timeline.totalExpress}</p>
           </div>
         </div>
       </button>
@@ -69,8 +69,8 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
               <thead>
                 <tr className="border-b border-gray-200">
                   <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-gray-600">Phase</th>
-                  <th className="text-center py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-purple-600">Base</th>
-                  <th className="text-center py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-indigo-600">Express</th>
+                  <th className="text-center py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-brand-primary">Base</th>
+                  <th className="text-center py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-brand-secondary">Express</th>
                   <th className="text-center py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-green-600">Saved</th>
                 </tr>
               </thead>
@@ -100,8 +100,8 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
               <tfoot>
                 <tr className="bg-gray-50 font-bold">
                   <td className="py-2 sm:py-3 px-1 sm:px-2 text-gray-800 text-xs sm:text-sm">TOTAL</td>
-                  <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-purple-600 text-xs sm:text-sm">{timeline.totalBase}</td>
-                  <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-indigo-600 text-xs sm:text-sm">{timeline.totalExpress}</td>
+                  <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-brand-primary text-xs sm:text-sm">{timeline.totalBase}</td>
+                  <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-brand-secondary text-xs sm:text-sm">{timeline.totalExpress}</td>
                   <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-green-600 text-xs sm:text-sm">{timeline.totalTimeSaved}</td>
                 </tr>
               </tfoot>
@@ -110,14 +110,14 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
 
           {/* Advantages Comparison */}
           <div className="mt-4 sm:mt-6 grid md:grid-cols-2 gap-3 sm:gap-4">
-            <div className="bg-purple-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
-              <h4 className="font-bold text-purple-800 mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-base">
+            <div className="bg-brand-light rounded-lg sm:rounded-xl p-3 sm:p-4">
+              <h4 className="font-bold text-brand-primary mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-base">
                 <span>🔷</span> Base BC PNP Advantages
               </h4>
               <ul className="space-y-2">
                 {timeline.baseAdvantages.map((adv, index) => (
-                  <li key={index} className="flex items-center gap-2 text-sm text-purple-700">
-                    <svg className="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                  <li key={index} className="flex items-center gap-2 text-sm text-brand-primary">
+                    <svg className="w-4 h-4 text-brand-primary" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -129,14 +129,14 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
                 ))}
               </ul>
             </div>
-            <div className="bg-indigo-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
-              <h4 className="font-bold text-indigo-800 mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-base">
+            <div className="bg-brand-light/40 rounded-lg sm:rounded-xl p-3 sm:p-4">
+              <h4 className="font-bold text-brand-primary mb-2 sm:mb-3 flex items-center gap-2 text-xs sm:text-base">
                 <span>⚡</span> Express Entry Advantages
               </h4>
               <ul className="space-y-2">
                 {timeline.expressAdvantages.map((adv, index) => (
-                  <li key={index} className="flex items-center gap-2 text-sm text-indigo-700">
-                    <svg className="w-4 h-4 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
+                  <li key={index} className="flex items-center gap-2 text-sm text-brand-primary">
+                    <svg className="w-4 h-4 text-brand-secondary" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"

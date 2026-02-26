@@ -114,7 +114,7 @@ export function CampaignManager() {
       {!isCreating && (
         <button
           onClick={() => setIsCreating(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          className="bg-brand-primary text-white px-4 py-2 rounded-lg hover:bg-brand-secondary transition-colors"
         >
           + New Campaign
         </button>
@@ -131,7 +131,7 @@ export function CampaignManager() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary"
                 placeholder="Q1 Goal Progress Campaign"
                 required
               />
@@ -142,7 +142,7 @@ export function CampaignManager() {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary"
                 placeholder="Weekly updates on user goal progress..."
                 rows={3}
               />
@@ -175,7 +175,7 @@ export function CampaignManager() {
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                className="bg-brand-primary text-white px-4 py-2 rounded-lg hover:bg-brand-secondary"
               >
                 Create Campaign
               </button>
@@ -216,7 +216,7 @@ export function CampaignManager() {
                         ? "bg-yellow-100 text-yellow-800"
                         : campaign.status === "completed"
                         ? "bg-gray-100 text-gray-800"
-                        : "bg-blue-100 text-blue-800"
+                        : "bg-brand-light text-brand-primary"
                     }`}
                   >
                     {campaign.status}

@@ -141,7 +141,7 @@ export function CreateGoalModal({
                       <span className="px-2 py-1 bg-brand-light text-brand-primary text-xs rounded-full font-medium">
                         55 Steps
                       </span>
-                      <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+                      <span className="px-2 py-1 bg-brand-light text-brand-primary text-xs rounded-full font-medium">
                         8 Phases
                       </span>
                       <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">

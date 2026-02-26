@@ -10,7 +10,7 @@ interface VideoCardProps {
 
 const STATUS_COLORS = {
   pending: "bg-zinc-700 text-zinc-300",
-  rendering: "bg-blue-900/30 text-blue-400",
+  rendering: "bg-brand-primary/20 text-brand-muted",
   completed: "bg-green-900/30 text-green-400",
   failed: "bg-red-900/30 text-red-400",
 };
@@ -59,7 +59,7 @@ export function VideoCard({ video }: VideoCardProps) {
         <div className="w-full aspect-video bg-zinc-900 rounded mb-3 flex items-center justify-center text-zinc-600">
           {video.status === "rendering" ? (
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary mx-auto mb-2"></div>
               <p className="text-sm">Rendering...</p>
             </div>
           ) : video.status === "failed" ? (
@@ -123,7 +123,7 @@ export function VideoCard({ video }: VideoCardProps) {
           <a
             href={video.videoUrl}
             download
-            className="px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 rounded transition"
+            className="px-3 py-1.5 text-sm bg-brand-primary hover:bg-brand-secondary rounded transition"
           >
             Download
           </a>

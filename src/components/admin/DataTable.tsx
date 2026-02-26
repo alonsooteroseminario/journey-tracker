@@ -84,7 +84,7 @@ export function DataTable({
             onClick={() => toggleColumn(column)}
             className={`px-3 py-1 text-xs rounded-full transition-colors ${
               visibleColumns.has(column)
-                ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                ? "bg-brand-light text-brand-primary hover:bg-brand-light"
                 : "bg-gray-100 text-gray-500 hover:bg-gray-200"
             }`}
           >
@@ -114,7 +114,7 @@ export function DataTable({
                       <div className="flex items-center gap-2">
                         <span>{column}</span>
                         {isSortable && isActive && (
-                          <span className="text-blue-600">
+                          <span className="text-brand-primary">
                             {order === "asc" ? "↑" : "↓"}
                           </span>
                         )}

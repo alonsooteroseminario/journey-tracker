@@ -22,7 +22,7 @@ export function MarketingDashboard() {
             onClick={() => setActivePanel("campaigns")}
             className={`px-4 py-2 font-medium border-b-2 transition-colors ${
               activePanel === "campaigns"
-                ? "border-blue-600 text-blue-600"
+                ? "border-brand-primary text-brand-primary"
                 : "border-transparent text-gray-600 hover:text-gray-900"
             }`}
           >
@@ -32,7 +32,7 @@ export function MarketingDashboard() {
             onClick={() => setActivePanel("posts")}
             className={`px-4 py-2 font-medium border-b-2 transition-colors ${
               activePanel === "posts"
-                ? "border-blue-600 text-blue-600"
+                ? "border-brand-primary text-brand-primary"
                 : "border-transparent text-gray-600 hover:text-gray-900"
             }`}
           >
@@ -62,7 +62,7 @@ export function MarketingDashboard() {
                           ? "bg-yellow-100 text-yellow-800"
                           : campaign.status === "completed"
                           ? "bg-gray-100 text-gray-800"
-                          : "bg-blue-100 text-blue-800"
+                          : "bg-brand-light text-brand-primary"
                       }`}
                     >
                       {campaign.status}
@@ -122,7 +122,7 @@ export function MarketingDashboard() {
                     {post.content}
                   </p>
                   {post.hashtags && post.hashtags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 text-xs text-blue-600">
+                    <div className="flex flex-wrap gap-1 text-xs text-brand-primary">
                       {post.hashtags.map((tag) => (
                         <span key={tag}>#{tag}</span>
                       ))}

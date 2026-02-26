@@ -116,7 +116,7 @@ export function SocialConnectionCard({ account }: SocialConnectionCardProps) {
                 <p>Followers: {account.metadata.followersCount.toLocaleString()}</p>
               )}
               {account.metadata.verified && (
-                <p className="text-blue-400">✓ Verified</p>
+                <p className="text-brand-muted">✓ Verified</p>
               )}
             </>
           )}

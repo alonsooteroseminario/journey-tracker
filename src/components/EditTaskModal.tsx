@@ -62,7 +62,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
 
   const priorityColors = {
     low: "bg-gray-100 text-gray-700 border-gray-300",
-    medium: "bg-blue-100 text-blue-700 border-blue-300",
+    medium: "bg-brand-light text-brand-primary border-brand-light",
     high: "bg-orange-100 text-orange-700 border-orange-300",
     critical: "bg-red-100 text-red-700 border-red-300",
   };
@@ -76,12 +76,12 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
     >
       <div ref={focusTrapRef} className="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 sm:p-6">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-secondary p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 id="edit-task-title" className="text-xl font-bold text-white">Edit Task</h2>
               {task.stepNumber && (
-                <span className="text-blue-100 text-sm">Step {task.stepNumber}</span>
+                <span className="text-white/80 text-sm">Step {task.stepNumber}</span>
               )}
             </div>
             <button
@@ -107,7 +107,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
             />
           </div>
 
@@ -120,7 +120,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none"
             />
           </div>
 
@@ -137,7 +137,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
                   value={estimatedCost}
                   onChange={(e) => setEstimatedCost(e.target.value)}
                   placeholder="0.00"
-                  className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                 />
               </div>
               {task.cost && (
@@ -170,7 +170,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
             />
           </div>
 
@@ -238,7 +238,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
               placeholder="Add personal notes, reminders, or links..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none"
             />
           </div>
 
@@ -262,7 +262,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
           <button
             onClick={handleSave}
             disabled={!title.trim()}
-            className="flex-1 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="flex-1 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             Save Changes
           </button>

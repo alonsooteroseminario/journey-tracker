@@ -100,7 +100,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
               key={phase.id}
               className={`relative p-1.5 sm:p-3 rounded-md transition-all cursor-pointer ${
                 isCurrent
-                  ? "bg-blue-50 border border-blue-300"
+                  ? "bg-brand-light border border-brand-primary"
                   : isComplete
                   ? "bg-green-50 border border-green-200"
                   : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
@@ -114,7 +114,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
                     isComplete
                       ? "bg-green-500 text-white"
                       : isCurrent
-                      ? "bg-blue-500 text-white animate-pulse"
+                      ? "bg-brand-primary text-white animate-pulse"
                       : "bg-gray-200"
                   }`}
                 >
@@ -126,7 +126,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
                       {phase.name}
                     </h4>
                     {isCurrent && (
-                      <span className="hidden sm:inline px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full flex-shrink-0">
+                      <span className="hidden sm:inline px-2 py-0.5 bg-brand-primary text-white text-xs rounded-full flex-shrink-0">
                         Current
                       </span>
                     )}
@@ -139,7 +139,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
                       isComplete
                         ? "text-green-600"
                         : isCurrent
-                        ? "text-blue-600"
+                        ? "text-brand-primary"
                         : "text-gray-400"
                     }`}
                   >
@@ -158,7 +158,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
                     isComplete
                       ? "bg-green-500"
                       : isCurrent
-                      ? "bg-blue-500"
+                      ? "bg-brand-primary"
                       : "bg-gray-300"
                   }`}
                   style={{ width: `${progress}%` }}
@@ -186,7 +186,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
             <span className="hidden sm:inline">Overall Progress</span>
             <span className="sm:hidden">Total</span>
           </span>
-          <span className="text-sm sm:text-lg font-bold text-blue-600">
+          <span className="text-sm sm:text-lg font-bold text-brand-primary">
             {Math.round(
               phases.reduce((acc, phase) => acc + getPhaseProgress(phase), 0) / phases.length
             )}%
@@ -194,7 +194,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
         </div>
         <div className="h-2 sm:h-3 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full transition-all duration-500"
             style={{
               width: `${Math.round(
                 phases.reduce((acc, phase) => acc + getPhaseProgress(phase), 0) / phases.length
@@ -208,7 +208,7 @@ export function PhaseProgress({ phases, tasks, onPhaseClick, onAddPhase }: Phase
       {onAddPhase && (
         <button
           onClick={onAddPhase}
-          className="w-full py-2 sm:py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-base mt-4"
+          className="w-full py-2 sm:py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-brand-primary hover:text-brand-primary transition-colors flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-base mt-4"
         >
           <svg
             className="w-4 h-4 sm:w-5 sm:h-5"

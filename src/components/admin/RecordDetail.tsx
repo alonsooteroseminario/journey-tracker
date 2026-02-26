@@ -111,13 +111,13 @@ export function RecordDetail({
                         }
                       }}
                       rows={6}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary font-mono text-sm"
                     />
                   ) : typeof value === "boolean" ? (
                     <select
                       value={editedData[key] !== undefined ? String(editedData[key]) : String(value)}
                       onChange={(e) => setEditedData({ ...editedData, [key]: e.target.value === "true" })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary"
                     >
                       <option value="true">true</option>
                       <option value="false">false</option>
@@ -127,7 +127,7 @@ export function RecordDetail({
                       type="text"
                       value={editedData[key] !== undefined ? editedData[key] : formatValue(value, key)}
                       onChange={(e) => setEditedData({ ...editedData, [key]: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary"
                     />
                   )
                 ) : (
@@ -171,7 +171,7 @@ export function RecordDetail({
                 <button
                   onClick={handleSave}
                   disabled={isLoading}
-                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 text-sm bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors disabled:opacity-50"
                 >
                   {isLoading ? "Saving..." : "Save Changes"}
                 </button>
@@ -186,7 +186,7 @@ export function RecordDetail({
                 </button>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 text-sm bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors"
                 >
                   Edit
                 </button>

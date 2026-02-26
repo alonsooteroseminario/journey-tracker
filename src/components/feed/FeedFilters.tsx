@@ -50,8 +50,8 @@ export function FeedFilters({
             whitespace-nowrap transition-all duration-200
             ${
               activeFilter === filter.value
-                ? "bg-blue-600 text-white shadow-md scale-105"
-                : "bg-white text-gray-700 border border-gray-300 hover:border-blue-400 hover:text-blue-600"
+                ? "bg-brand-primary text-white shadow-md scale-105"
+                : "bg-white text-gray-700 border border-gray-300 hover:border-brand-primary hover:text-brand-primary"
             }
           `}
         >

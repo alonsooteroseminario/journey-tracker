@@ -70,7 +70,7 @@ export function ProgressBar({
           className={`${heights[size]} rounded-full transition-all duration-1000 ease-out relative overflow-hidden ${
             progress === 100
               ? "bg-gradient-to-r from-green-500 to-emerald-400"
-              : "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+              : "bg-gradient-to-r from-brand-primary to-brand-secondary"
           }`}
           style={{ width: `${displayProgress}%` }}
         >

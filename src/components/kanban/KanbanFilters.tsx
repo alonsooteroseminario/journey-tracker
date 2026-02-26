@@ -81,7 +81,7 @@ export function KanbanFilters({
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search..."
-              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm"
             />
           </div>
         </div>
@@ -106,7 +106,7 @@ export function KanbanFilters({
             <select
               value={dateFilter}
               onChange={(e) => onDateFilterChange(e.target.value as any)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm"
             >
               <option value="all">All dates</option>
               <option value="overdue">Overdue</option>
@@ -123,7 +123,7 @@ export function KanbanFilters({
             <select
               value={priorityFilter}
               onChange={(e) => onPriorityFilterChange(e.target.value as any)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm"
             >
               <option value="all">All</option>
               <option value="low">Low</option>

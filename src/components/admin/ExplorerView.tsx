@@ -128,7 +128,7 @@ export function ExplorerView() {
                 onClick={() => handleModelChange(modelName)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-blue-600 text-white"
+                    ? "bg-brand-primary text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -157,7 +157,7 @@ export function ExplorerView() {
       {isLoading ? (
         <div className="flex items-center justify-center h-64 bg-white rounded-lg border border-gray-200">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
+            <div className="w-12 h-12 border-4 border-gray-300 border-t-brand-primary rounded-full animate-spin mx-auto mb-4" />
             <p className="text-gray-500">Loading {metadata.label.toLowerCase()}...</p>
           </div>
         </div>

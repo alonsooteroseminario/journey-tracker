@@ -66,7 +66,7 @@ export function Header({
             {isAuthenticated && totalProgress !== undefined && (
               <div className="hidden md:flex items-center gap-3 sm:gap-4">
                 <div className="text-center">
-                  <div className="text-sm sm:text-base font-bold text-blue-600">
+                  <div className="text-sm sm:text-base font-bold text-brand-primary">
                     {totalProgress}%
                   </div>
                   <div className="text-xs text-gray-500">Progress</div>
@@ -114,14 +114,14 @@ export function Header({
                     <img
                       src={profileImage}
                       alt={profileName}
-                      className="w-6 h-6 sm:w-9 sm:h-9 rounded-full object-cover border border-gray-200 group-hover:border-blue-400 transition-all"
+                      className="w-6 h-6 sm:w-9 sm:h-9 rounded-full object-cover border border-gray-200 group-hover:border-brand-primary transition-all"
                     />
                   ) : (
                     <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white font-bold text-[10px] sm:text-sm border border-transparent group-hover:border-brand-primary transition-all">
                       {profileName ? profileName.charAt(0).toUpperCase() : "?"}
                     </div>
                   )}
-                  <span className="hidden lg:block text-xs font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
+                  <span className="hidden lg:block text-xs font-medium text-gray-700 group-hover:text-brand-primary transition-colors">
                     {profileName}
                   </span>
                 </Link>

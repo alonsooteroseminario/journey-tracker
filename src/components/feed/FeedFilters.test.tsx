@@ -24,7 +24,7 @@ describe("FeedFilters", () => {
       btn.textContent?.includes("🔥")
     );
 
-    expect(streaksButton).toHaveClass("bg-blue-600");
+    expect(streaksButton).toHaveClass("bg-brand-primary");
     expect(streaksButton).toHaveClass("text-white");
   });
 

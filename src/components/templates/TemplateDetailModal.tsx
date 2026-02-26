@@ -87,7 +87,7 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
               </span>
             )}
             {template.estimatedDuration && (
-              <span className="px-2 sm:px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs sm:text-sm">
+              <span className="px-2 sm:px-3 py-1 bg-brand-light text-brand-primary rounded-full text-xs sm:text-sm">
                 ⏱ {template.estimatedDuration}
               </span>
             )}

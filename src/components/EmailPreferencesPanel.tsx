@@ -110,7 +110,7 @@ export function EmailPreferencesPanel() {
             type="checkbox"
             checked={preferences.enabled}
             onChange={(e) => handleToggle("enabled", e.target.checked)}
-            className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+            className="w-5 h-5 text-brand-primary rounded focus:ring-2 focus:ring-brand-primary"
           />
         </label>
       </div>
@@ -129,7 +129,7 @@ export function EmailPreferencesPanel() {
                 value="immediate"
                 checked={preferences.frequency === "immediate"}
                 onChange={() => handleFrequencyChange("immediate")}
-                className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                className="w-4 h-4 text-brand-primary focus:ring-2 focus:ring-brand-primary"
               />
               <span className="ml-3">
                 <span className="block text-sm font-medium text-gray-900">
@@ -147,7 +147,7 @@ export function EmailPreferencesPanel() {
                 value="daily"
                 checked={preferences.frequency === "daily"}
                 onChange={() => handleFrequencyChange("daily")}
-                className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                className="w-4 h-4 text-brand-primary focus:ring-2 focus:ring-brand-primary"
               />
               <span className="ml-3">
                 <span className="block text-sm font-medium text-gray-900">
@@ -165,7 +165,7 @@ export function EmailPreferencesPanel() {
                 value="weekly"
                 checked={preferences.frequency === "weekly"}
                 onChange={() => handleFrequencyChange("weekly")}
-                className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                className="w-4 h-4 text-brand-primary focus:ring-2 focus:ring-brand-primary"
               />
               <span className="ml-3">
                 <span className="block text-sm font-medium text-gray-900">
@@ -199,7 +199,7 @@ export function EmailPreferencesPanel() {
                       type="checkbox"
                       checked={preferences[item.key]}
                       onChange={(e) => handleToggle(item.key, e.target.checked)}
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                      className="w-4 h-4 text-brand-primary rounded focus:ring-2 focus:ring-brand-primary"
                     />
                   </label>
                 ))}

@@ -51,7 +51,7 @@ export function PostsListView() {
   if (postsLoading || accountsLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div>
       </div>
     );
   }
@@ -67,7 +67,7 @@ export function PostsListView() {
           </p>
           <a
             href="/admin/social"
-            className="mt-4 inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded transition text-white"
+            className="mt-4 inline-block px-4 py-2 bg-brand-primary hover:bg-brand-secondary rounded transition text-white"
           >
             Connect Account
           </a>
@@ -83,7 +83,7 @@ export function PostsListView() {
         <h1 className="text-2xl font-bold">Social Media Posts</h1>
         <button
           onClick={handleNewPost}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded transition"
+          className="px-4 py-2 bg-brand-primary hover:bg-brand-secondary rounded transition"
         >
           + New Post
         </button>
@@ -103,7 +103,7 @@ export function PostsListView() {
             onClick={() => setFilterStatus(filter.key)}
             className={`px-4 py-2 rounded whitespace-nowrap transition ${
               filterStatus === filter.key
-                ? "bg-blue-600 text-white"
+                ? "bg-brand-primary text-white"
                 : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
             }`}
           >

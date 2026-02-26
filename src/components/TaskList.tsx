@@ -101,7 +101,7 @@ export function TaskList({
             onClick={() => setViewMode("cards")}
             className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-sm font-medium transition-colors ${
               viewMode === "cards"
-                ? "bg-blue-100 text-blue-700"
+                ? "bg-brand-light text-brand-primary"
                 : "text-gray-500 hover:bg-gray-100"
             }`}
           >
@@ -116,7 +116,7 @@ export function TaskList({
             onClick={() => setViewMode("list")}
             className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-sm font-medium transition-colors ${
               viewMode === "list"
-                ? "bg-blue-100 text-blue-700"
+                ? "bg-brand-light text-brand-primary"
                 : "text-gray-500 hover:bg-gray-100"
             }`}
           >
@@ -137,7 +137,7 @@ export function TaskList({
       {pendingTasks.length > 0 && (
         <div className="space-y-2 sm:space-y-3">
           <h4 className="text-[10px] sm:text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-1.5 sm:gap-2">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full"></span>
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand-primary rounded-full"></span>
             To Do ({pendingTasks.length})
           </h4>
           <DndContext
@@ -171,13 +171,13 @@ export function TaskList({
 
       {/* Add Task Form */}
       {isAdding ? (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-2.5 sm:p-4 space-y-2 sm:space-y-3">
+        <div className="bg-brand-light border border-brand-light rounded-xl p-2.5 sm:p-4 space-y-2 sm:space-y-3">
           <input
             type="text"
             placeholder="Task title"
             value={newTaskTitle}
             onChange={(e) => setNewTaskTitle(e.target.value)}
-            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
             autoFocus
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -193,7 +193,7 @@ export function TaskList({
             placeholder="Description (optional)"
             value={newTaskDescription}
             onChange={(e) => setNewTaskDescription(e.target.value)}
-            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleAddTask();
@@ -207,7 +207,7 @@ export function TaskList({
             <button
               onClick={handleAddTask}
               disabled={!newTaskTitle.trim()}
-              className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base bg-brand-primary text-white rounded-lg hover:bg-brand-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Add Task
             </button>
@@ -222,7 +222,7 @@ export function TaskList({
       ) : (
         <button
           onClick={() => setIsAdding(true)}
-          className="w-full py-2 sm:py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-blue-400 hover:text-blue-500 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-base"
+          className="w-full py-2 sm:py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-brand-primary hover:text-brand-primary transition-colors flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-base"
         >
           <svg
             className="w-4 h-4 sm:w-5 sm:h-5"

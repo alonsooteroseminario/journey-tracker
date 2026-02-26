@@ -371,7 +371,7 @@ export function KanbanBoard() {
 
         <DragOverlay>
           {activeId ? (
-            <div className="bg-white p-4 rounded-lg shadow-lg border-2 border-blue-500 opacity-90">
+            <div className="bg-white p-4 rounded-lg shadow-lg border-2 border-brand-primary opacity-90">
               {filteredData.find((d: any) => d.id === activeId)?.title}
             </div>
           ) : null}

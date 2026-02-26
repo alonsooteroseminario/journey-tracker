@@ -256,7 +256,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
 
               {/* Publish to Marketplace Checkbox */}
               {formData.visibility === "public" && (
-                <label className="mt-3 flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md cursor-pointer">
+                <label className="mt-3 flex items-start gap-2 p-3 bg-brand-light dark:bg-brand-primary/20 rounded-md cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formData.publishToMarketplace}

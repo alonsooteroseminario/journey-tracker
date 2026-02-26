@@ -56,10 +56,10 @@ const FEED_TYPE_COLORS: Record<string, string> = {
   streak_at_risk: "bg-red-50 border-red-200",
 
   // Goals
-  goal_created: "bg-blue-50 border-blue-200",
-  goal_updated: "bg-blue-50 border-blue-200",
+  goal_created: "bg-brand-light border-brand-light",
+  goal_updated: "bg-brand-light border-brand-light",
   goal_deleted: "bg-gray-50 border-gray-300",
-  goal_shared: "bg-purple-50 border-purple-200",
+  goal_shared: "bg-brand-light/40 border-brand-light",
   goal_published: "bg-yellow-50 border-yellow-200",
   goal_forked: "bg-indigo-50 border-indigo-200",
 
@@ -179,7 +179,7 @@ export function FeedItemCard({
       {/* Header */}
       <div className="flex items-start gap-3">
         {/* Avatar */}
-        <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-base sm:text-lg font-bold shadow-md">
+        <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center text-white text-base sm:text-lg font-bold shadow-md">
           {item.userName?.[0]?.toUpperCase() || "?"}
         </div>
 
