@@ -223,7 +223,7 @@ export function ChatWidget() {
         {/* ripple ring – visible while the user is holding, disappears once drag starts or is cancelled */}
         {holding && !dragging && (
           <div
-            className="absolute inset-0 rounded-full border-2 border-blue-400 pointer-events-none"
+            className="absolute inset-0 rounded-full border-2 border-brand-primary pointer-events-none"
             style={{ animation: `chatHoldRipple ${HOLD_MS / 1000}s ease-out forwards` }}
           />
         )}
@@ -242,7 +242,7 @@ export function ChatWidget() {
                 : undefined,
             touchAction: 'none',
           }}
-          className="w-14 h-14 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 flex items-center justify-center select-none"
+          className="w-14 h-14 bg-brand-primary text-white rounded-full shadow-lg hover:bg-brand-secondary flex items-center justify-center select-none"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
@@ -309,7 +309,7 @@ export function ChatWidget() {
       {/* floating close button at the stored position */}
       <button
         style={{ position: 'fixed', left: position.x, top: position.y, zIndex: 51 }}
-        className="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 flex items-center justify-center transition-colors"
+        className="w-14 h-14 bg-brand-primary text-white rounded-full shadow-lg hover:bg-brand-secondary flex items-center justify-center transition-colors"
         onClick={toggleOpen}
         aria-label="Close chat"
       >
@@ -338,13 +338,13 @@ export function ChatWidget() {
         className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-2xl"
       >
         {/* header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-blue-500 text-white rounded-t-lg">
+        <div className="flex items-center justify-between px-4 py-3 bg-brand-primary text-white rounded-t-lg">
           <h3 className="font-semibold">Journey Tracker Assistant</h3>
           <div className="flex gap-2">
             {messages.length > 0 && (
               <button
                 onClick={clearMessages}
-                className="text-white hover:bg-blue-600 rounded p-1 transition-colors"
+                className="text-white hover:bg-brand-secondary rounded p-1 transition-colors"
                 aria-label="Clear messages"
               >
                 <svg

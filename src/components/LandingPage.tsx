@@ -4,13 +4,13 @@ import Link from "next/link";
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-white via-brand-light/30 to-indigo-50/60">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🎯</span>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+            <span className="text-xl font-bold text-brand-primary">
               Journey Tracker
             </span>
           </div>
@@ -23,7 +23,7 @@ export function LandingPage() {
             </Link>
             <Link
               href="/sign-up"
-              className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:opacity-90 transition-all shadow-md shadow-blue-500/25"
+              className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-lg hover:opacity-90 transition-all shadow-md shadow-brand-primary/25"
             >
               Sign Up
             </Link>
@@ -36,7 +36,7 @@ export function LandingPage() {
         <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6">
           Turn Big Dreams into
           <br />
-          <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-transparent bg-clip-text">
+          <span className="bg-gradient-to-r from-brand-primary to-brand-secondary text-transparent bg-clip-text">
             Daily Wins
           </span>
         </h1>
@@ -46,7 +46,7 @@ export function LandingPage() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/sign-up"
-            className="w-full sm:w-auto px-8 py-4 text-lg font-medium bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all shadow-lg shadow-blue-500/25"
+            className="w-full sm:w-auto px-8 py-4 text-lg font-medium bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl hover:opacity-90 transition-all shadow-lg shadow-brand-primary/25"
           >
             Get Started Free
           </Link>
@@ -71,10 +71,10 @@ export function LandingPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Step 1 */}
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-brand-light rounded-xl flex items-center justify-center mb-4">
               <span className="text-2xl">🎯</span>
             </div>
-            <div className="text-sm font-bold text-blue-600 mb-2">STEP 1</div>
+            <div className="text-sm font-bold text-brand-primary mb-2">STEP 1</div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">Set Your Goal</h3>
             <p className="text-gray-600">
               Define what you want to achieve. Whether it&apos;s learning a skill, completing a project, or building a habit.
@@ -83,10 +83,10 @@ export function LandingPage() {
 
           {/* Step 2 */}
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-brand-light rounded-xl flex items-center justify-center mb-4">
               <span className="text-2xl">✂️</span>
             </div>
-            <div className="text-sm font-bold text-purple-600 mb-2">STEP 2</div>
+            <div className="text-sm font-bold text-brand-secondary mb-2">STEP 2</div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">Break It Down</h3>
             <p className="text-gray-600">
               Split your goal into phases, tasks, and substeps. Make every action bite-sized and achievable.
@@ -95,10 +95,10 @@ export function LandingPage() {
 
           {/* Step 3 */}
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-brand-light rounded-xl flex items-center justify-center mb-4">
               <span className="text-2xl">📊</span>
             </div>
-            <div className="text-sm font-bold text-pink-600 mb-2">STEP 3</div>
+            <div className="text-sm font-bold text-brand-accent mb-2">STEP 3</div>
             <h3 className="text-xl font-bold text-gray-900 mb-3">Track Progress</h3>
             <p className="text-gray-600">
               Visualize your journey with analytics, charts, and completion projections. See how far you&apos;ve come.
@@ -187,7 +187,7 @@ export function LandingPage() {
 
       {/* Final CTA Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
-        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl p-12 text-center text-white">
+        <div className="bg-gradient-to-r from-brand-primary to-brand-dark rounded-3xl p-12 text-center text-white">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
             Ready to Start Your Journey?
           </h2>
