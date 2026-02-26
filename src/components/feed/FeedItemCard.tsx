@@ -83,7 +83,7 @@ const FEED_TYPE_COLORS: Record<string, string> = {
 
   // Profile & Friends
   profile_updated: "bg-indigo-50 border-indigo-200",
-  friend_added: "bg-pink-50 border-pink-200",
+  friend_added: "bg-brand-light/40 border-brand-light",
   friend_changed: "bg-rose-50 border-rose-200",
 };
 

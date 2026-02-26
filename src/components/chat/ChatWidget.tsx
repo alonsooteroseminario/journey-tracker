@@ -365,7 +365,7 @@ export function ChatWidget() {
             )}
             <button
               onClick={toggleOpen}
-              className="text-white hover:bg-blue-600 rounded p-1 transition-colors"
+              className="text-white hover:bg-brand-secondary rounded p-1 transition-colors"
               aria-label="Close chat"
             >
               <svg

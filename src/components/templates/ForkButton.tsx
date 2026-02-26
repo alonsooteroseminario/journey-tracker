@@ -149,7 +149,7 @@ export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkB
         <button
           onClick={handleRequest}
           disabled={isRequesting}
-          className="w-full sm:flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
+          className="w-full sm:flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm bg-brand-primary text-white rounded-md hover:bg-brand-secondary disabled:opacity-50"
         >
           {isRequesting ? "Sending..." : "Send Request"}
         </button>
