@@ -4,7 +4,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Message } from '@/types/agent';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAppDispatch } from '@/store/hooks';
 import { toggleChat } from '@/store/slices/chatSlice';
 import { goalsApi } from '@/store/slices/goalsSlice';
 import { streaksApi } from '@/store/slices/streaksSlice';
@@ -27,7 +27,6 @@ export interface UseChatReturn {
   sendMessage: (content: string) => Promise<void>;
   cancelRequest: () => void;
   clearMessages: () => void;
-  isOpen: boolean;
   toggleOpen: () => void;
 }
 
@@ -63,7 +62,6 @@ export function useChat(): UseChatReturn {
   const [currentTool, setCurrentTool] = useState<string | null>(null);
   const [processingLog, setProcessingLog] = useState<ProcessingEvent[]>([]);
   const dispatch = useAppDispatch();
-  const isOpen = useAppSelector((s) => s.chat.isOpen);
 
   const toggleOpen = useCallback(() => {
     dispatch(toggleChat());
@@ -283,7 +281,6 @@ export function useChat(): UseChatReturn {
     sendMessage,
     cancelRequest,
     clearMessages,
-    isOpen,
     toggleOpen,
   };
 }
