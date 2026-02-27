@@ -32,13 +32,14 @@ Each session: read this file first to orient yourself. Check **Status** and **No
 | `2026-02-25-drag-handle-goalcard-plan.md` | GoalCard Drag Handle | ✅ Done | Always visible on left edge |
 | `2026-02-25-profile-timezone-plan.md` | Profile Timezone | ✅ Done | Timezone dropdown + "Saved!" indicator |
 | `2026-02-25-auto-hide-completed-plan.md` | Auto-Hide Completed | ✅ Done | hideCompletedAfterDays pref + GoalCard filter |
+| `2026-02-26-brand-identity-plan.md` | Brand Identity Rebrand | ✅ Done | All 3 sessions merged to main (commit 1958c0d) |
+| `2026-02-26-chat-header-splitview-plan.md` | Chat Header + Split View | ✅ Done | Chat trigger in Header, floating/split panel. 7 commits (6d2b9e0→2b4fb5f) |
 
 ### Pending / In Progress 🚧
 
 | File | Feature | Status | Priority | Notes |
 |------|---------|--------|----------|-------|
 | `2026-02-21-remaining-stories.md` | STORY-021/008/022 | 🚧 Pending | HIGH | Health check, Feed dedup, Coverage ≥80% |
-| `2026-02-26-brand-identity-plan.md` | Brand Identity Rebrand | 🔄 Session A Done | HIGH | Tasks 1-3 merged to main (tokens+logo+header). Tasks 4-9 pending. |
 
 ---
 
