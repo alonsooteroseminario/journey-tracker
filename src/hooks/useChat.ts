@@ -4,7 +4,8 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Message } from '@/types/agent';
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { toggleChat } from '@/store/slices/chatSlice';
 import { goalsApi } from '@/store/slices/goalsSlice';
 import { streaksApi } from '@/store/slices/streaksSlice';
 import { friendsApi } from '@/store/slices/friendsSlice';
@@ -61,16 +62,16 @@ export function useChat(): UseChatReturn {
   const [status, setStatus] = useState<ChatStatus>('idle');
   const [currentTool, setCurrentTool] = useState<string | null>(null);
   const [processingLog, setProcessingLog] = useState<ProcessingEvent[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
+  const isOpen = useAppSelector((s) => s.chat.isOpen);
+
+  const toggleOpen = useCallback(() => {
+    dispatch(toggleChat());
+  }, [dispatch]);
 
   // Ref to accumulate events inside the async loop without stale closures
   const logRef = useRef<ProcessingEvent[]>([]);
   const abortControllerRef = useRef<AbortController | null>(null);
-
-  const toggleOpen = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
 
   const cancelRequest = useCallback(() => {
     abortControllerRef.current?.abort();
