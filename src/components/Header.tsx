@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { toggleChat } from '@/store/slices/chatSlice';
 
 interface HeaderProps {
   totalProgress?: number;
@@ -36,6 +38,9 @@ export function Header({
   const isAuthenticated = isLoaded && !!user;
   const profileName = user?.fullName || user?.firstName || "";
   const profileImage = user?.imageUrl;
+
+  const dispatch = useAppDispatch();
+  const isChatOpen = useAppSelector((s) => s.chat.isOpen);
 
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
@@ -103,6 +108,36 @@ export function Header({
                   </svg>
                   <span className="hidden sm:inline">Friends</span>
                 </Link>
+
+                {/* Chat toggle */}
+                <button
+                  onClick={() => dispatch(toggleChat())}
+                  aria-label={isChatOpen ? 'Close chat' : 'Open chat'}
+                  title="AI Assistant"
+                  className={`p-1 sm:p-2 rounded-lg transition-colors ${
+                    isChatOpen
+                      ? 'bg-brand-primary text-white'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-brand-primary'
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
+                  >
+                    <circle cx="12" cy="1.2" r="1" fill="currentColor" stroke="none" />
+                    <line x1="12" y1="2.2" x2="12" y2="4.2" />
+                    <rect x="3" y="4.2" width="18" height="11.5" rx="4" />
+                    <circle cx="8.5" cy="9.8" r="1.2" fill="currentColor" stroke="none" />
+                    <circle cx="15.5" cy="9.8" r="1.2" fill="currentColor" stroke="none" />
+                    <path d="M8.5 12.8Q12 14.8 15.5 12.8" />
+                  </svg>
+                </button>
 
                 {/* Profile */}
                 <Link
