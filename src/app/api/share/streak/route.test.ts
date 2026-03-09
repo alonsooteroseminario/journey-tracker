@@ -34,10 +34,12 @@ vi.mock('next/og', () => ({
 
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+import { computeGoalTier } from '@/lib/streaks/computeTier';
 import { GET } from './route';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockAuth = auth as any;
+const mockComputeGoalTier = computeGoalTier as ReturnType<typeof vi.fn>;
 const mockGoalStreakFindFirst = prisma.goalStreak.findFirst as ReturnType<typeof vi.fn>;
 const mockGoalStreakFindMany = prisma.goalStreak.findMany as ReturnType<typeof vi.fn>;
 const mockGoalFindUnique = prisma.goal.findUnique as ReturnType<typeof vi.fn>;
@@ -79,6 +81,23 @@ describe('GET /api/share/streak', () => {
     const req = new NextRequest('http://localhost/api/share/streak?goalId=nonexistent');
     const res = await GET(req);
     // Should still render (fallback 0 streak), not 404
+    expect(res.status).toBe(200);
+  });
+
+  it('renders bronze tier card for global request', async () => {
+    // computeGoalTier returns 'bronze' — hits line 79 (bronze branch) + tierIcon bronze + tierLabel bronze
+    mockComputeGoalTier.mockReturnValue('bronze');
+    mockGoalStreakFindMany.mockResolvedValue([{ currentStreak: 3 }]);
+    const req = new NextRequest('http://localhost/api/share/streak');
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+  });
+
+  it('renders card with no tier when all streaks are 0', async () => {
+    // Empty streaks — tier stays null, hits default tierIcon/tierLabel
+    mockGoalStreakFindMany.mockResolvedValue([]);
+    const req = new NextRequest('http://localhost/api/share/streak');
+    const res = await GET(req);
     expect(res.status).toBe(200);
   });
 });

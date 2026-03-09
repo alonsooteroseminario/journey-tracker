@@ -181,4 +181,145 @@ describe("notify", () => {
     });
     expect(result.success).toBe(true);
   });
+
+  it("sends goalDeleted email", async () => {
+    mockFindUnique.mockResolvedValue({
+      id: "user-123",
+      email: "test@example.com",
+      name: "Test User",
+      emailPreferences: { enabled: true, frequency: "immediate", goalDeleted: true },
+    });
+    mockSendEmail.mockResolvedValue({ success: true });
+
+    const result = await notify("user-123", "goalDeleted", {
+      goalTitle: "My Goal",
+    });
+
+    expect(mockSendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ subject: expect.stringContaining("My Goal") })
+    );
+    expect(result.success).toBe(true);
+  });
+
+  it("sends friendInvitation email", async () => {
+    mockFindUnique.mockResolvedValue({
+      id: "user-123",
+      email: "test@example.com",
+      name: "Test User",
+      emailPreferences: { enabled: true, frequency: "immediate", friendInvitation: true },
+    });
+    mockSendEmail.mockResolvedValue({ success: true });
+
+    const result = await notify("user-123", "friendInvitation", {
+      invitationCode: "ABC123",
+    });
+
+    expect(mockSendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ subject: expect.stringContaining("invitation") })
+    );
+    expect(result.success).toBe(true);
+  });
+
+  it("sends goalPublished email", async () => {
+    mockFindUnique.mockResolvedValue({
+      id: "user-123",
+      email: "test@example.com",
+      name: "Test User",
+      emailPreferences: { enabled: true, frequency: "immediate", goalPublished: true },
+    });
+    mockSendEmail.mockResolvedValue({ success: true });
+
+    const result = await notify("user-123", "goalPublished", {
+      goalTitle: "Fitness Plan",
+    });
+
+    expect(result.success).toBe(true);
+    expect(mockSendEmail).toHaveBeenCalled();
+  });
+
+  it("sends goalShared email", async () => {
+    mockFindUnique.mockResolvedValue({
+      id: "user-123",
+      email: "test@example.com",
+      name: "Test User",
+      emailPreferences: { enabled: true, frequency: "immediate", goalShared: true },
+    });
+    mockSendEmail.mockResolvedValue({ success: true });
+
+    const result = await notify("user-123", "goalShared", {
+      goalTitle: "Fitness Plan",
+    });
+
+    expect(result.success).toBe(true);
+    expect(mockSendEmail).toHaveBeenCalled();
+  });
+
+  it("sends goalForked email", async () => {
+    mockFindUnique.mockResolvedValue({
+      id: "user-123",
+      email: "test@example.com",
+      name: "Test User",
+      emailPreferences: { enabled: true, frequency: "immediate", goalForked: true },
+    });
+    mockSendEmail.mockResolvedValue({ success: true });
+
+    const result = await notify("user-123", "goalForked", {
+      goalTitle: "Fitness Plan",
+      forkerName: "Alice",
+      totalForks: 3,
+    });
+
+    expect(result.success).toBe(true);
+    expect(mockSendEmail).toHaveBeenCalled();
+  });
+
+  it("sends streakReminder email", async () => {
+    mockFindUnique.mockResolvedValue({
+      id: "user-123",
+      email: "test@example.com",
+      name: "Test User",
+      emailPreferences: { enabled: true, frequency: "immediate", streakReminder: true },
+    });
+    mockSendEmail.mockResolvedValue({ success: true });
+
+    const result = await notify("user-123", "streakReminder", {
+      currentStreak: 5,
+    });
+
+    expect(result.success).toBe(true);
+    expect(mockSendEmail).toHaveBeenCalled();
+  });
+
+  it("sends friendActivity email", async () => {
+    mockFindUnique.mockResolvedValue({
+      id: "user-123",
+      email: "test@example.com",
+      name: "Test User",
+      emailPreferences: { enabled: true, frequency: "immediate", friendActivity: true },
+    });
+    mockSendEmail.mockResolvedValue({ success: true });
+
+    const result = await notify("user-123", "friendActivity", {
+      friendName: "Bob",
+      friendStreak: 10,
+    });
+
+    expect(result.success).toBe(true);
+    expect(mockSendEmail).toHaveBeenCalled();
+  });
+
+  it("returns skipped for unknown notification type", async () => {
+    mockFindUnique.mockResolvedValue({
+      id: "user-123",
+      email: "test@example.com",
+      name: "Test User",
+      emailPreferences: { enabled: true },
+    });
+
+    const result = await notify("user-123", "unknownType" as never, {});
+
+    // Unknown type has no preference key, so it is treated as disabled — skips silently
+    expect(result.success).toBe(true);
+    expect(mockSendEmail).not.toHaveBeenCalled();
+  });
 });
