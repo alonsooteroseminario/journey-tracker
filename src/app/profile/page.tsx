@@ -8,6 +8,8 @@ import { Calendar } from "@/components/Calendar";
 import { EmailPreferencesPanel } from "@/components/EmailPreferencesPanel";
 import { FeedPreferencesPanel } from "@/components/FeedPreferencesPanel";
 import { Header } from "@/components/Header";
+import { ShareStreakButton } from "@/components/ShareStreakButton";
+import { useGetGoalStreaksQuery } from "@/store/slices/streaksSlice";
 
 export default function ProfilePage() {
   const { user: clerkUser, isLoaded: clerkLoaded } = useUser();
@@ -71,6 +73,18 @@ export default function ProfilePage() {
   );
   const activeGoals = totalGoals - completedGoals;
   const activeDays = streak.streakHistory.length;
+
+  // Global streak share data
+  const { data: goalStreaks } = useGetGoalStreaksQuery();
+  const activeStreaks = (goalStreaks ?? []).filter((s) => s.currentStreak > 0);
+  const totalStreakDays = activeStreaks.reduce((sum, s) => sum + s.currentStreak, 0);
+  const bestTier = activeStreaks.some((s) => s.tier === 'gold')
+    ? 'gold'
+    : activeStreaks.some((s) => s.tier === 'silver')
+    ? 'silver'
+    : activeStreaks.length > 0
+    ? 'bronze'
+    : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -333,6 +347,20 @@ export default function ProfilePage() {
         </div>
 
         {/* Share Section */}
+        {totalStreakDays > 0 && (
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 mb-3 sm:mb-6 flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">Share your streak card</h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {activeStreaks.length} active goal{activeStreaks.length !== 1 ? 's' : ''} · {totalStreakDays} total days
+              </p>
+            </div>
+            <ShareStreakButton
+              streakCount={totalStreakDays}
+              tier={bestTier}
+            />
+          </div>
+        )}
 
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg p-3 sm:p-8 text-white">
           <div className="text-center mb-3 sm:mb-6">
