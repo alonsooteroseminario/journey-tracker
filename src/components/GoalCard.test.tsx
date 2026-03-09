@@ -17,6 +17,9 @@ vi.mock('./GoalGroupSelector', () => ({
 vi.mock('./StreakBadge', () => ({
   StreakBadge: () => null,
 }));
+vi.mock('./ShareStreakButton', () => ({
+  ShareStreakButton: () => null,
+}));
 
 describe('GoalCard', () => {
   const mockGoal: Goal = {

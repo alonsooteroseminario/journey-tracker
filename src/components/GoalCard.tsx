@@ -15,6 +15,7 @@ import { ShareGoalModal } from "./templates/ShareGoalModal";
 import { GoalGroupSelector } from "./GoalGroupSelector";
 import { useUpdateGoalMutation } from "@/store/slices/goalsSlice";
 import { StreakBadge } from "./StreakBadge";
+import { ShareStreakButton } from "./ShareStreakButton";
 import { useGetGoalStreaksQuery } from "@/store/slices/streaksSlice";
 import { computeGoalTier } from "@/lib/streaks/computeTier";
 import { AnalyticsData, ActivityLogEntry } from "@/types";
@@ -214,6 +215,12 @@ export function GoalCard({
                 <h3 className="text-sm sm:text-xl font-bold text-gray-800 truncate">{goal.title}</h3>
               )}
               <StreakBadge tier={goalTier} streak={goalStreak?.currentStreak} />
+              <ShareStreakButton
+                streakCount={goalStreak?.currentStreak ?? 0}
+                tier={goalTier}
+                goalId={goal.id}
+                goalTitle={goal.title}
+              />
               {progress === 100 && (
                 <span className="text-base sm:text-2xl flex-shrink-0" title="Goal completed!">
                   🎉
