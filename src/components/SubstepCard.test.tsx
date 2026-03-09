@@ -192,6 +192,27 @@ describe('SubstepCard', () => {
     expect(toggleBtn.className).toContain('border-orange-500');
   });
 
+  it('renders a copy button in the actions area', () => {
+    render(
+      <SubstepCard substep={BASE_SUBSTEP} onToggle={vi.fn()} onUpdate={vi.fn()} onDelete={vi.fn()} />
+    );
+    expect(screen.getByTitle('Copy')).toBeInTheDocument();
+  });
+
+  it('copies substep title to clipboard when copy button is clicked', () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      writable: true,
+    });
+
+    render(
+      <SubstepCard substep={BASE_SUBSTEP} onToggle={vi.fn()} onUpdate={vi.fn()} onDelete={vi.fn()} />
+    );
+    fireEvent.click(screen.getByTitle('Copy'));
+    expect(writeText).toHaveBeenCalledWith('Write resume');
+  });
+
   it('includes cost=undefined when cost field is cleared', () => {
     const onUpdate = vi.fn();
     const substep: Substep = { ...BASE_SUBSTEP, cost: 100 };
