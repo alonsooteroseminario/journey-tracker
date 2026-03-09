@@ -136,10 +136,10 @@ export async function GET(req: NextRequest) {
               gap: "8px",
             }}
           >
-            <div style={{ fontSize: "180px", fontWeight: "bold", color: "#fff", lineHeight: 1 }}>
-              {streakCount}
+            <div style={{ display: "flex", fontSize: "180px", fontWeight: "bold", color: "#fff", lineHeight: 1 }}>
+              {`${streakCount}`}
             </div>
-            <div style={{ fontSize: "40px", color: BRAND_LIGHT, fontWeight: 600 }}>
+            <div style={{ display: "flex", fontSize: "40px", color: BRAND_LIGHT, fontWeight: 600 }}>
               {`day${streakCount !== 1 ? "s" : ""} streak`}
             </div>
           </div>
@@ -155,22 +155,22 @@ export async function GET(req: NextRequest) {
                 padding: "20px 48px",
               }}
             >
-              <div style={{ fontSize: "64px" }}>{tierIcon(tier)}</div>
-              <div style={{ fontSize: "40px", color: "#fff", fontWeight: 700 }}>
+              <div style={{ display: "flex", fontSize: "64px" }}>{tierIcon(tier)}</div>
+              <div style={{ display: "flex", fontSize: "40px", color: "#fff", fontWeight: 700 }}>
                 {tierLabel(tier)}
               </div>
             </div>
           )}
 
           {showTitle && goalTitle && (
-            <div style={{ fontSize: "44px", color: BRAND_LIGHT, textAlign: "center", maxWidth: "800px" }}>
+            <div style={{ display: "flex", fontSize: "44px", color: BRAND_LIGHT, textAlign: "center", maxWidth: "800px" }}>
               {goalTitle}
             </div>
           )}
 
           {showTagline && (
-            <div style={{ fontSize: "40px", color: "rgba(255,255,255,0.7)" }}>
-              🔥 Staying consistent on my journey
+            <div style={{ display: "flex", fontSize: "40px", color: "rgba(255,255,255,0.7)" }}>
+              {"🔥 Staying consistent on my journey"}
             </div>
           )}
         </div>
@@ -185,8 +185,8 @@ export async function GET(req: NextRequest) {
               gap: "12px",
             }}
           >
-            <div style={{ fontSize: "32px", color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
-              Journey Tracker
+            <div style={{ display: "flex", fontSize: "32px", color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
+              {"Journey Tracker"}
             </div>
           </div>
         )}

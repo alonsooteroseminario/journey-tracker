@@ -102,8 +102,8 @@ export async function GET(req: NextRequest) {
 
           {/* Icon + Title */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
-            <div style={{ fontSize: "96px", lineHeight: 1 }}>{icon}</div>
-            <div style={{ fontSize: "52px", fontWeight: "bold", color: "#fff", textAlign: "center", maxWidth: "900px", lineHeight: 1.2 }}>
+            <div style={{ display: "flex", fontSize: "96px", lineHeight: 1 }}>{icon}</div>
+            <div style={{ display: "flex", fontSize: "52px", fontWeight: "bold", color: "#fff", textAlign: "center", maxWidth: "900px", lineHeight: 1.2 }}>
               {title}
             </div>
           </div>
@@ -111,7 +111,7 @@ export async function GET(req: NextRequest) {
           {/* Progress */}
           {showProgress && (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", width: "700px" }}>
-              <div style={{ fontSize: "96px", fontWeight: "bold", color: "#fff", lineHeight: 1 }}>
+              <div style={{ display: "flex", fontSize: "96px", fontWeight: "bold", color: "#fff", lineHeight: 1 }}>
                 {`${pct}%`}
               </div>
               {/* Progress bar */}
@@ -123,7 +123,7 @@ export async function GET(req: NextRequest) {
 
           {/* Tasks done */}
           {showTasks && total > 0 && (
-            <div style={{ fontSize: "36px", color: BRAND_LIGHT }}>
+            <div style={{ display: "flex", fontSize: "36px", color: BRAND_LIGHT }}>
               {`${done} of ${total} tasks done`}
             </div>
           )}
@@ -131,8 +131,8 @@ export async function GET(req: NextRequest) {
           {/* Streak */}
           {showStreak && streakCount > 0 && (
             <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "rgba(255,255,255,0.15)", borderRadius: "60px", padding: "16px 40px" }}>
-              <div style={{ fontSize: "48px" }}>{tierIcon(tier)}</div>
-              <div style={{ fontSize: "36px", color: "#fff", fontWeight: 600 }}>
+              <div style={{ display: "flex", fontSize: "48px" }}>{tierIcon(tier)}</div>
+              <div style={{ display: "flex", fontSize: "36px", color: "#fff", fontWeight: 600 }}>
                 {`${streakCount} day streak 🔥`}
               </div>
             </div>
@@ -140,16 +140,16 @@ export async function GET(req: NextRequest) {
 
           {/* Tagline */}
           {showTagline && (
-            <div style={{ fontSize: "36px", color: "rgba(255,255,255,0.65)" }}>
-              🎯 Working towards my goal
+            <div style={{ display: "flex", fontSize: "36px", color: "rgba(255,255,255,0.65)" }}>
+              {"🎯 Working towards my goal"}
             </div>
           )}
         </div>
 
         {/* Branding */}
         {showAppName && (
-          <div style={{ position: "absolute", bottom: 48, fontSize: "28px", color: "rgba(255,255,255,0.45)", fontWeight: 600 }}>
-            Journey Tracker
+          <div style={{ display: "flex", position: "absolute", bottom: 48, fontSize: "28px", color: "rgba(255,255,255,0.45)", fontWeight: 600 }}>
+            {"Journey Tracker"}
           </div>
         )}
       </div>
