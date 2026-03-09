@@ -2,6 +2,7 @@ import React from "react";
 import { ImageResponse } from "next/og";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { computeGoalTier } from "@/lib/streaks/computeTier";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
@@ -62,7 +63,7 @@ export async function GET(req: NextRequest) {
     ]);
     goalTitle = goal?.title ?? null;
     streakCount = streakRow?.currentStreak ?? 0;
-    tier = streakRow?.tier ?? null;
+    tier = streakRow ? computeGoalTier(streakRow.currentStreak) : null;
   } else {
     const streaks = await prisma.goalStreak.findMany({
       where: {
@@ -72,9 +73,10 @@ export async function GET(req: NextRequest) {
       orderBy: { currentStreak: "desc" },
     });
     streakCount = streaks.reduce((sum, s) => sum + s.currentStreak, 0);
-    if (streaks.some((s) => s.tier === "gold")) tier = "gold";
-    else if (streaks.some((s) => s.tier === "silver")) tier = "silver";
-    else if (streaks.length > 0) tier = "bronze";
+    const tiers = streaks.map((s) => computeGoalTier(s.currentStreak));
+    if (tiers.some((t) => t === "gold")) tier = "gold";
+    else if (tiers.some((t) => t === "silver")) tier = "silver";
+    else if (tiers.length > 0) tier = "bronze";
   }
 
   return createImageResponse(

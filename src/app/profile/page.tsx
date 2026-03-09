@@ -10,6 +10,7 @@ import { FeedPreferencesPanel } from "@/components/FeedPreferencesPanel";
 import { Header } from "@/components/Header";
 import { ShareStreakButton } from "@/components/ShareStreakButton";
 import { useGetGoalStreaksQuery } from "@/store/slices/streaksSlice";
+import { computeGoalTier } from "@/lib/streaks/computeTier";
 
 export default function ProfilePage() {
   const { user: clerkUser, isLoaded: clerkLoaded } = useUser();
@@ -78,9 +79,10 @@ export default function ProfilePage() {
   const { data: goalStreaks } = useGetGoalStreaksQuery();
   const activeStreaks = (goalStreaks ?? []).filter((s) => s.currentStreak > 0);
   const totalStreakDays = activeStreaks.reduce((sum, s) => sum + s.currentStreak, 0);
-  const bestTier = activeStreaks.some((s) => s.tier === 'gold')
+  const activeTiers = activeStreaks.map((s) => computeGoalTier(s.currentStreak));
+  const bestTier = activeTiers.some((t) => t === 'gold')
     ? 'gold'
-    : activeStreaks.some((s) => s.tier === 'silver')
+    : activeTiers.some((t) => t === 'silver')
     ? 'silver'
     : activeStreaks.length > 0
     ? 'bronze'
