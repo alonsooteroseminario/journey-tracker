@@ -45,12 +45,37 @@ export function ShareGoalStatusModal({
   const [showTagline, setShowTagline] = useState(true);
   const [showAppName, setShowAppName] = useState(true);
   const [isSharing, setIsSharing] = useState(false);
+  const [xCopied, setXCopied] = useState(false);
 
   const previewUrl = buildPreviewUrl({ goalId, showProgress, showTasks, showStreak, showTagline, showAppName });
 
-  const handleShareX = () => {
+  const handleShareX = async () => {
     const tweetText = buildTweetText(goalTitle, progress);
-    window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, "_blank");
+    const intentUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+
+    try {
+      setIsSharing(true);
+      const response = await fetch(previewUrl);
+      const blob = await response.blob();
+      const file = new File([blob], "goal-status.png", { type: "image/png" });
+
+      // Mobile: use native share sheet with image — user picks X from share sheet
+      if (typeof navigator.canShare === "function" && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: "My Goal Progress", text: decodeURIComponent(tweetText) });
+        return;
+      }
+
+      // Desktop: copy image to clipboard then open X compose
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      setXCopied(true);
+      setTimeout(() => setXCopied(false), 4000);
+      window.open(intentUrl, "_blank");
+    } catch {
+      // Clipboard API unavailable — fall back to just opening X intent
+      window.open(intentUrl, "_blank");
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   const handleShareInstagram = async () => {
@@ -135,14 +160,20 @@ export function ShareGoalStatusModal({
 
         {/* Actions */}
         <div className="p-4 space-y-2 border-t border-gray-100">
+          {xCopied && (
+            <p className="text-xs text-center text-brand-primary font-medium">
+              Image copied to clipboard — paste it into your tweet with Ctrl+V / ⌘V
+            </p>
+          )}
           <button
             onClick={handleShareX}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+            disabled={isSharing}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-60"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.258 5.631L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
             </svg>
-            Share on X
+            {isSharing ? "Preparing…" : "Share on X"}
           </button>
 
           <button

@@ -1,11 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ShareGoalStatusModal } from './ShareGoalStatusModal';
 
 const mockWindowOpen = vi.fn();
+const mockClipboardWrite = vi.fn().mockResolvedValue(undefined);
+
 beforeEach(() => {
   vi.clearAllMocks();
   Object.defineProperty(window, 'open', { value: mockWindowOpen, writable: true });
+  // Mock fetch to return a PNG blob
+  global.fetch = vi.fn().mockResolvedValue({
+    blob: () => Promise.resolve(new Blob(['fake-image'], { type: 'image/png' })),
+  } as unknown as Response);
+  // Mock clipboard API
+  Object.defineProperty(navigator, 'clipboard', {
+    value: { write: mockClipboardWrite },
+    writable: true,
+    configurable: true,
+  });
+  // Simulate desktop: canShare returns false
+  Object.defineProperty(navigator, 'canShare', {
+    value: () => false,
+    writable: true,
+    configurable: true,
+  });
 });
 
 const defaultProps = {
@@ -38,13 +56,14 @@ describe('ShareGoalStatusModal', () => {
     expect(img.getAttribute('src')).toContain('showProgress=false');
   });
 
-  it('Share on X opens twitter intent URL', () => {
+  it('Share on X fetches image, copies to clipboard, and opens twitter intent URL', async () => {
     render(<ShareGoalStatusModal {...defaultProps} />);
     fireEvent.click(screen.getByText('Share on X'));
-    expect(mockWindowOpen).toHaveBeenCalledWith(
+    await waitFor(() => expect(mockWindowOpen).toHaveBeenCalledWith(
       expect.stringContaining('twitter.com/intent/tweet'),
       '_blank'
-    );
+    ));
+    expect(mockClipboardWrite).toHaveBeenCalled();
   });
 
   it('download link has correct href and download attribute', () => {
