@@ -140,7 +140,7 @@ export async function GET(req: NextRequest) {
               {streakCount}
             </div>
             <div style={{ fontSize: "40px", color: BRAND_LIGHT, fontWeight: 600 }}>
-              day{streakCount !== 1 ? "s" : ""} streak
+              {`day${streakCount !== 1 ? "s" : ""} streak`}
             </div>
           </div>
 

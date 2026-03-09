@@ -112,7 +112,7 @@ export async function GET(req: NextRequest) {
           {showProgress && (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", width: "700px" }}>
               <div style={{ fontSize: "96px", fontWeight: "bold", color: "#fff", lineHeight: 1 }}>
-                {pct}%
+                {`${pct}%`}
               </div>
               {/* Progress bar */}
               <div style={{ width: "100%", height: "20px", background: "rgba(255,255,255,0.2)", borderRadius: "10px", display: "flex" }}>
@@ -124,7 +124,7 @@ export async function GET(req: NextRequest) {
           {/* Tasks done */}
           {showTasks && total > 0 && (
             <div style={{ fontSize: "36px", color: BRAND_LIGHT }}>
-              {done} of {total} tasks done
+              {`${done} of ${total} tasks done`}
             </div>
           )}
 
@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
             <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "rgba(255,255,255,0.15)", borderRadius: "60px", padding: "16px 40px" }}>
               <div style={{ fontSize: "48px" }}>{tierIcon(tier)}</div>
               <div style={{ fontSize: "36px", color: "#fff", fontWeight: 600 }}>
-                {streakCount} day streak 🔥
+                {`${streakCount} day streak 🔥`}
               </div>
             </div>
           )}
