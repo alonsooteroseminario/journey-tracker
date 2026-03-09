@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { computeGoalTier } from "@/lib/streaks/computeTier";
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
+// Node.js runtime required — Prisma client is incompatible with edge runtime
 
 const BRAND_DARK = "#2D1B8E";
 const BRAND_PRIMARY = "#5B50E8";

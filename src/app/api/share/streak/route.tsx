@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { computeGoalTier } from "@/lib/streaks/computeTier";
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
+// Node.js runtime required — Prisma client is incompatible with edge runtime
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ImageResponseFactory = (...args: any[]) => Response;
