@@ -56,14 +56,23 @@ describe('ShareGoalStatusModal', () => {
     expect(img.getAttribute('src')).toContain('showProgress=false');
   });
 
-  it('Share on X fetches image, copies to clipboard, and opens twitter intent URL', async () => {
+  it('Share on X copies image to clipboard and shows paste guide', async () => {
     render(<ShareGoalStatusModal {...defaultProps} />);
     fireEvent.click(screen.getByText('Share on X'));
-    await waitFor(() => expect(mockWindowOpen).toHaveBeenCalledWith(
+    await waitFor(() => expect(mockClipboardWrite).toHaveBeenCalled());
+    expect(screen.getByText('Image copied to clipboard!')).toBeTruthy();
+    expect(screen.getByText('Open X and paste image →')).toBeTruthy();
+  });
+
+  it('Open X and paste image button opens twitter intent URL', async () => {
+    render(<ShareGoalStatusModal {...defaultProps} />);
+    fireEvent.click(screen.getByText('Share on X'));
+    await waitFor(() => screen.getByText('Open X and paste image →'));
+    fireEvent.click(screen.getByText('Open X and paste image →'));
+    expect(mockWindowOpen).toHaveBeenCalledWith(
       expect.stringContaining('twitter.com/intent/tweet'),
       '_blank'
-    ));
-    expect(mockClipboardWrite).toHaveBeenCalled();
+    );
   });
 
   it('download link has correct href and download attribute', () => {
