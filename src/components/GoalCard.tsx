@@ -16,6 +16,7 @@ import { GoalGroupSelector } from "./GoalGroupSelector";
 import { useUpdateGoalMutation } from "@/store/slices/goalsSlice";
 import { StreakBadge } from "./StreakBadge";
 import { ShareStreakButton } from "./ShareStreakButton";
+import { ShareGoalStatusButton } from "./ShareGoalStatusButton";
 import { useGetGoalStreaksQuery } from "@/store/slices/streaksSlice";
 import { computeGoalTier } from "@/lib/streaks/computeTier";
 import { AnalyticsData, ActivityLogEntry } from "@/types";
@@ -220,6 +221,12 @@ export function GoalCard({
                 tier={goalTier}
                 goalId={goal.id}
                 goalTitle={goal.title}
+              />
+              <ShareGoalStatusButton
+                goalId={goal.id}
+                goalTitle={goal.title}
+                goalIcon={goal.icon ?? "🎯"}
+                progress={progress}
               />
               {progress === 100 && (
                 <span className="text-base sm:text-2xl flex-shrink-0" title="Goal completed!">

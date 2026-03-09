@@ -20,6 +20,9 @@ vi.mock('./StreakBadge', () => ({
 vi.mock('./ShareStreakButton', () => ({
   ShareStreakButton: () => null,
 }));
+vi.mock('./ShareGoalStatusButton', () => ({
+  ShareGoalStatusButton: () => null,
+}));
 
 describe('GoalCard', () => {
   const mockGoal: Goal = {
