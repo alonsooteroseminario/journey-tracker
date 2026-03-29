@@ -41,7 +41,10 @@ interface BudgetData {
 }
 
 export interface CredentialItem {
+  id: string;
   provider: string;
+  label: string;
+  keyType: string | null;
   maskedKey: string;
   lastSyncedAt: string | null;
 }
@@ -140,11 +143,11 @@ export function useCostTracker() {
     []
   );
 
-  const addCredential = useCallback(async (provider: string, apiKey: string) => {
+  const addCredential = useCallback(async (provider: string, apiKey: string, label: string) => {
     const response = await fetch("/api/cost-tracker/credentials", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ provider, apiKey }),
+      body: JSON.stringify({ provider, apiKey, label }),
     });
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
@@ -153,25 +156,51 @@ export function useCostTracker() {
     return await response.json();
   }, []);
 
-  const deleteCredential = useCallback(async (provider: string) => {
-    const response = await fetch(`/api/cost-tracker/credentials/${provider}`, {
+  const deleteCredential = useCallback(async (id: string) => {
+    const response = await fetch(`/api/cost-tracker/credentials/${id}`, {
       method: "DELETE",
     });
     if (!response.ok) throw new Error("Failed to delete credential");
     return await response.json();
   }, []);
 
-  const syncProvider = useCallback(async (provider: string) => {
+  const syncProvider = useCallback(async (provider: string, credentialId: string) => {
     const response = await fetch(`/api/cost-tracker/sync/${provider}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ credentialId }),
     });
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
       throw new Error((data as { error?: string }).error || "Sync failed");
     }
     return await response.json();
+  }, []);
+
+  const validateCredential = useCallback(async (provider: string, credentialId: string) => {
+    const response = await fetch(`/api/cost-tracker/validate/${provider}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credentialId }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error((data as { error?: string }).error || "Validation failed");
+    }
+    return data as { valid: boolean; keyType: string };
+  }, []);
+
+  const updateCredential = useCallback(async (id: string, data: { label?: string; apiKey?: string }) => {
+    const response = await fetch(`/api/cost-tracker/credentials/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const json = await response.json().catch(() => ({}));
+      throw new Error((json as { error?: string }).error || "Failed to update credential");
+    }
+    return await response.json() as CredentialItem;
   }, []);
 
   return {
@@ -189,6 +218,8 @@ export function useCostTracker() {
     updateBudget,
     addCredential,
     deleteCredential,
+    updateCredential,
     syncProvider,
+    validateCredential,
   };
 }
