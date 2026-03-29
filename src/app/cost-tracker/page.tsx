@@ -206,9 +206,10 @@ export default function CostTrackerPage() {
         {/* Transactions Tab */}
         {activeTab === "transactions" && (
           <div className="space-y-6">
-            <Transactions 
+            <Transactions
               transactions={transactions}
               onDelete={handleDeleteTransaction}
+              onAddTransaction={handleAddTransaction}
               isLoading={isLoading}
             />
           </div>
