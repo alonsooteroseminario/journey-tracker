@@ -9,6 +9,7 @@ interface CredentialsProps {
   onDelete: (id: string) => Promise<void>;
   onSync: (provider: string, credentialId: string) => Promise<unknown>;
   onValidate: (provider: string, credentialId: string) => Promise<{ valid: boolean; keyType: string }>;
+  onEdit: (id: string, data: { label?: string; apiKey?: string }) => Promise<void>;
 }
 
 const PROVIDERS = [
@@ -42,7 +43,7 @@ function timeAgo(isoString: string): string {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
-export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate }: CredentialsProps) {
+export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, onEdit }: CredentialsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState("anthropic");
   const [apiKey, setApiKey] = useState("");
@@ -54,6 +55,11 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate }
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validatingId, setValidatingId] = useState<string | null>(null);
   const [validateMessages, setValidateMessages] = useState<Record<string, { text: string; ok: boolean }>>({});
+  const [editingCred, setEditingCred] = useState<CredentialItem | null>(null);
+  const [editLabel, setEditLabel] = useState("");
+  const [editApiKey, setEditApiKey] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
 
   const openModal = (providerId?: string) => {
     setSelectedProvider(providerId ?? "anthropic");
@@ -121,6 +127,40 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate }
       setValidateMessages((prev) => ({ ...prev, [cred.id]: { text, ok: false } }));
     } finally {
       setValidatingId(null);
+    }
+  };
+
+  const openEditModal = (cred: CredentialItem) => {
+    setEditingCred(cred);
+    setEditLabel(cred.label);
+    setEditApiKey("");
+    setEditError(null);
+  };
+
+  const handleEdit = async () => {
+    if (!editingCred) return;
+    const data: { label?: string; apiKey?: string } = {};
+    if (editLabel.trim() && editLabel.trim() !== editingCred.label) {
+      data.label = editLabel.trim();
+    }
+    if (editApiKey.trim()) {
+      data.apiKey = editApiKey.trim();
+    }
+    if (!data.label && !data.apiKey) {
+      setEditError("Change at least one field.");
+      return;
+    }
+    setIsEditing(true);
+    setEditError(null);
+    try {
+      await onEdit(editingCred.id, data);
+      setEditingCred(null);
+      setEditApiKey("");
+      setEditLabel("");
+    } catch (err: unknown) {
+      setEditError(err instanceof Error ? err.message : "Failed to update");
+    } finally {
+      setIsEditing(false);
     }
   };
 
@@ -274,6 +314,17 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate }
                               ) : "Test"}
                             </button>
                           )}
+                          {/* Edit button */}
+                          <button
+                            onClick={() => openEditModal(cred)}
+                            className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-1.5"
+                            title="Edit label or replace API key"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Edit
+                          </button>
                           <button
                             onClick={() => handleDelete(cred.id)}
                             disabled={deleting}
@@ -390,6 +441,72 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate }
                   className="flex-1 px-4 py-2 text-sm font-medium bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl hover:opacity-90 transition-all disabled:opacity-50"
                 >
                   {isSaving ? "Saving…" : "Save Key"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Credential Modal */}
+      {editingCred && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div>
+                <h3 className="text-lg font-bold text-gray-800">Edit Credential</h3>
+                <p className="text-xs text-gray-500 mt-0.5">{editingCred.provider} · {editingCred.maskedKey}</p>
+              </div>
+              <button
+                onClick={() => setEditingCred(null)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Label</label>
+                <input
+                  type="text"
+                  value={editLabel}
+                  onChange={(e) => setEditLabel(e.target.value)}
+                  maxLength={64}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Replace API Key <span className="text-gray-400 font-normal">(leave blank to keep current)</span>
+                </label>
+                <input
+                  type="password"
+                  value={editApiKey}
+                  onChange={(e) => setEditApiKey(e.target.value)}
+                  placeholder={editingCred.maskedKey}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
+                  onKeyDown={(e) => e.key === "Enter" && handleEdit()}
+                />
+                {editError && <p className="text-xs text-red-500 mt-1.5">{editError}</p>}
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setEditingCred(null)}
+                  className="flex-1 px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleEdit}
+                  disabled={isEditing}
+                  className="flex-1 px-4 py-2 text-sm font-medium bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl hover:opacity-90 transition-all disabled:opacity-50"
+                >
+                  {isEditing ? "Saving…" : "Save Changes"}
                 </button>
               </div>
             </div>

@@ -33,7 +33,9 @@ export default function CostTrackerPage() {
     deleteTransaction,
     addCredential,
     deleteCredential,
+    updateCredential,
     syncProvider,
+    validateCredential,
     refreshData,
   } = useCostTracker();
 
@@ -181,11 +183,11 @@ export default function CostTrackerPage() {
                   .map((c) => {
                     const diff = Date.now() - new Date(c.lastSyncedAt!).getTime();
                     const mins = Math.floor(diff / 60000);
-                    const label =
+                    const timeLabel =
                       mins < 1 ? "just now" : mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`;
                     return (
-                      <span key={c.provider} className="text-xs px-2 py-1 bg-gray-100 text-gray-500 rounded-full">
-                        {c.provider} synced {label}
+                      <span key={c.id} className="text-xs px-2 py-1 bg-gray-100 text-gray-500 rounded-full">
+                        {c.provider} · {c.label} synced {timeLabel}
                       </span>
                     );
                   })}
@@ -224,18 +226,27 @@ export default function CostTrackerPage() {
           <div className="space-y-6">
             <Credentials
               credentials={credentials}
-              onAdd={async (provider, apiKey) => {
-                await addCredential(provider, apiKey);
+              onAdd={async (provider, apiKey, label) => {
+                await addCredential(provider, apiKey, label);
                 await refreshData();
               }}
-              onDelete={async (provider) => {
-                await deleteCredential(provider);
+              onDelete={async (id) => {
+                await deleteCredential(id);
                 await refreshData();
               }}
-              onSync={async (provider) => {
-                const result = await syncProvider(provider);
+              onSync={async (provider, credentialId) => {
+                const result = await syncProvider(provider, credentialId);
                 await refreshData();
                 return result;
+              }}
+              onValidate={async (provider, credentialId) => {
+                const result = await validateCredential(provider, credentialId);
+                await refreshData();
+                return result;
+              }}
+              onEdit={async (id, data) => {
+                await updateCredential(id, data);
+                await refreshData();
               }}
             />
           </div>
