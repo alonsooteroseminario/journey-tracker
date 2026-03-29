@@ -1,41 +1,47 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Header } from "@/components/Header";
+import { useGoals } from "@/hooks/useGoals";
 import { Overview } from "./components/Overview";
 import { Breakdown } from "./components/Breakdown";
 import { Daily } from "./components/Daily";
 import { Transactions } from "./components/Transactions";
 import { BudgetAlerts } from "./components/BudgetAlerts";
+import { Credentials } from "./components/Credentials";
 import { TransactionForm } from "./components/TransactionForm";
 import { useCostTracker } from "./hooks/useCostTracker";
 
-type Tab = "overview" | "breakdown" | "transactions" | "alerts";
+type Tab = "overview" | "breakdown" | "transactions" | "alerts" | "credentials";
 
 export default function CostTrackerPage() {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [isFormOpen, setIsFormOpen] = useState(false);
-  
+  const { streak, getTotalProgress } = useGoals();
+
   const {
     overview,
     breakdown,
     daily,
     transactions,
     budget,
+    credentials,
     isLoading,
     error,
     addTransaction,
     updateBudget,
     deleteTransaction,
+    addCredential,
+    deleteCredential,
+    syncProvider,
     refreshData,
   } = useCostTracker();
 
   useEffect(() => {
     refreshData();
-  }, []);
+  }, [refreshData]);
 
-  const handleAddTransaction = async (data: any) => {
+  const handleAddTransaction = async (data: { amount: number; category: string; description?: string; date?: string }) => {
     try {
       await addTransaction(data);
       setIsFormOpen(false);
@@ -54,12 +60,21 @@ export default function CostTrackerPage() {
     }
   };
 
+  const totalProgress = getTotalProgress();
+
   if (isLoading && !overview) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your costs...</p>
+      <div className="min-h-screen bg-gray-50">
+        <Header
+          totalProgress={totalProgress}
+          currentStreak={streak.currentStreak}
+          onNewGoalClick={() => {}}
+        />
+        <div className="flex items-center justify-center py-32">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading your costs...</p>
+          </div>
         </div>
       </div>
     );
@@ -67,6 +82,11 @@ export default function CostTrackerPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Header
+        totalProgress={totalProgress}
+        currentStreak={streak.currentStreak}
+        onNewGoalClick={() => {}}
+      />
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Page Header */}
@@ -132,6 +152,16 @@ export default function CostTrackerPage() {
           >
             🚨 Alerts
           </button>
+          <button
+            onClick={() => setActiveTab("credentials")}
+            className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === "credentials"
+                ? "border-brand-primary text-brand-primary"
+                : "border-transparent text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            🔑 Credentials
+          </button>
         </div>
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
@@ -144,6 +174,23 @@ export default function CostTrackerPage() {
           <div className="space-y-6">
             <Overview data={overview} budget={budget} />
             <Daily data={daily} />
+            {credentials.some((c) => c.lastSyncedAt) && (
+              <div className="flex flex-wrap gap-2">
+                {credentials
+                  .filter((c) => c.lastSyncedAt)
+                  .map((c) => {
+                    const diff = Date.now() - new Date(c.lastSyncedAt!).getTime();
+                    const mins = Math.floor(diff / 60000);
+                    const label =
+                      mins < 1 ? "just now" : mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`;
+                    return (
+                      <span key={c.provider} className="text-xs px-2 py-1 bg-gray-100 text-gray-500 rounded-full">
+                        {c.provider} synced {label}
+                      </span>
+                    );
+                  })}
+              </div>
+            )}
           </div>
         )}
 
@@ -169,6 +216,28 @@ export default function CostTrackerPage() {
         {activeTab === "alerts" && (
           <div className="space-y-6">
             <BudgetAlerts budget={budget} />
+          </div>
+        )}
+
+        {/* Credentials Tab */}
+        {activeTab === "credentials" && (
+          <div className="space-y-6">
+            <Credentials
+              credentials={credentials}
+              onAdd={async (provider, apiKey) => {
+                await addCredential(provider, apiKey);
+                await refreshData();
+              }}
+              onDelete={async (provider) => {
+                await deleteCredential(provider);
+                await refreshData();
+              }}
+              onSync={async (provider) => {
+                const result = await syncProvider(provider);
+                await refreshData();
+                return result;
+              }}
+            />
           </div>
         )}
       </main>

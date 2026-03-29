@@ -36,12 +36,14 @@ export function Overview({ data, budget }: OverviewProps) {
   }, [data]);
 
   const statusColor = {
+    loading: "bg-white border-gray-200",
     danger: "bg-red-50 border-red-200",
     warning: "bg-yellow-50 border-yellow-200",
     healthy: "bg-brand-light border-brand-primary/10",
   };
 
   const statusBadge = {
+    loading: "bg-gray-100 text-gray-600",
     danger: "bg-red-100 text-red-800",
     warning: "bg-yellow-100 text-yellow-800",
     healthy: "bg-brand-light text-brand-primary",

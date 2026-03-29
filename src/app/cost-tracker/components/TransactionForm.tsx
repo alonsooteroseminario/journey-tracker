@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 interface TransactionFormProps {
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: { amount: number; category: string; description?: string; date?: string }) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -12,6 +12,7 @@ const CATEGORIES = [
   { value: "elevenlabs", label: "ElevenLabs TTS", icon: "🔊" },
   { value: "vercel", label: "Vercel Hosting", icon: "▲" },
   { value: "railway", label: "Railway Hosting", icon: "🚂" },
+  { value: "github", label: "GitHub", icon: "🐙" },
   { value: "mongodb", label: "MongoDB Atlas", icon: "🍃" },
   { value: "cloudflare", label: "Cloudflare", icon: "☁️" },
   { value: "discord", label: "Discord Turbo", icon: "💬" },
@@ -28,6 +29,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isCursor = formData.category === "cursor";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -54,8 +56,8 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
         description: formData.description || undefined,
         date: formData.date,
       });
-    } catch (err: any) {
-      setError(err.message || "Failed to add transaction");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to add transaction");
     } finally {
       setIsSubmitting(false);
     }
@@ -66,6 +68,12 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3">
           <p className="text-sm text-red-800">{error}</p>
+        </div>
+      )}
+
+      {isCursor && (
+        <div className="bg-brand-light border border-brand-primary/20 rounded-lg p-3 text-sm text-brand-primary">
+          💡 Cursor Pro is $20/month — enter a fixed monthly subscription amount.
         </div>
       )}
 

@@ -3,8 +3,6 @@
 import { useState, useCallback } from "react";
 import { useUser } from "@clerk/nextjs";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-
 interface OverviewData {
   total: number;
   month: string;
@@ -42,139 +40,139 @@ interface BudgetData {
   alerts: string[];
 }
 
+export interface CredentialItem {
+  provider: string;
+  maskedKey: string;
+  lastSyncedAt: string | null;
+}
+
 export function useCostTracker() {
-  const { user, isLoaded } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
   const [overview, setOverview] = useState<OverviewData | null>(null);
   const [breakdown, setBreakdown] = useState<BreakdownItem[] | null>(null);
   const [daily, setDaily] = useState<DailyData[] | null>(null);
   const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [budget, setBudget] = useState<BudgetData | null>(null);
+  const [credentials, setCredentials] = useState<CredentialItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const userId = user?.id;
-
   const refreshData = useCallback(async () => {
-    if (!userId || !isLoaded) return;
+    if (!isLoaded || !isSignedIn) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const headers = {
-        "Content-Type": "application/json",
-        "X-User-ID": userId,
-      };
-
-      const [overviewRes, breakdownRes, dailyRes, transactionsRes, budgetRes] = await Promise.all([
-        fetch(`${API_URL}/api/cost-tracker/overview`, { headers }),
-        fetch(`${API_URL}/api/cost-tracker/breakdown`, { headers }),
-        fetch(`${API_URL}/api/cost-tracker/daily`, { headers }),
-        fetch(`${API_URL}/api/cost-tracker/transactions`, { headers }),
-        fetch(`${API_URL}/api/cost-tracker/budget`, { headers }),
-      ]);
+      const [overviewRes, breakdownRes, dailyRes, transactionsRes, budgetRes, credentialsRes] =
+        await Promise.all([
+          fetch("/api/cost-tracker/overview"),
+          fetch("/api/cost-tracker/breakdown"),
+          fetch("/api/cost-tracker/daily"),
+          fetch("/api/cost-tracker/transactions"),
+          fetch("/api/cost-tracker/budget"),
+          fetch("/api/cost-tracker/credentials"),
+        ]);
 
       if (!overviewRes.ok) throw new Error("Failed to fetch overview");
       if (!breakdownRes.ok) throw new Error("Failed to fetch breakdown");
       if (!dailyRes.ok) throw new Error("Failed to fetch daily data");
       if (!transactionsRes.ok) throw new Error("Failed to fetch transactions");
       if (!budgetRes.ok) throw new Error("Failed to fetch budget");
+      if (!credentialsRes.ok) throw new Error("Failed to fetch credentials");
 
-      const [overviewData, breakdownData, dailyData, transactionsData, budgetData] = await Promise.all([
-        overviewRes.json(),
-        breakdownRes.json(),
-        dailyRes.json(),
-        transactionsRes.json(),
-        budgetRes.json(),
-      ]);
+      const [overviewData, breakdownData, dailyData, transactionsData, budgetData, credentialsData] =
+        await Promise.all([
+          overviewRes.json(),
+          breakdownRes.json(),
+          dailyRes.json(),
+          transactionsRes.json(),
+          budgetRes.json(),
+          credentialsRes.json(),
+        ]);
 
       setOverview(overviewData);
       setBreakdown(breakdownData);
       setDaily(dailyData);
-      setTransactions(transactionsData.data || transactionsData);
+      setTransactions(transactionsData);
       setBudget(budgetData);
-    } catch (err: any) {
-      setError(err.message || "Failed to load cost tracker data");
+      setCredentials(credentialsData);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to load cost tracker data";
+      setError(message);
       console.error("Cost Tracker Error:", err);
     } finally {
       setIsLoading(false);
     }
-  }, [userId, isLoaded]);
+  }, [isLoaded, isSignedIn]);
 
   const addTransaction = useCallback(
-    async (data: {
-      amount: number;
-      category: string;
-      description?: string;
-      date?: string;
-    }) => {
-      if (!userId) throw new Error("User not authenticated");
-
-      try {
-        const response = await fetch(`${API_URL}/api/cost-tracker/transactions`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-User-ID": userId,
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (!response.ok) throw new Error("Failed to add transaction");
-        return await response.json();
-      } catch (err: any) {
-        setError(err.message || "Failed to add transaction");
-        throw err;
-      }
+    async (data: { amount: number; category: string; description?: string; date?: string }) => {
+      const response = await fetch("/api/cost-tracker/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to add transaction");
+      return await response.json();
     },
-    [userId]
+    []
   );
 
   const deleteTransaction = useCallback(async (id: string) => {
-    if (!userId) throw new Error("User not authenticated");
-
-    try {
-      const response = await fetch(`${API_URL}/api/cost-tracker/transactions/${id}`, {
-        method: "DELETE",
-        headers: {
-          "X-User-ID": userId,
-        },
-      });
-
-      if (!response.ok) throw new Error("Failed to delete transaction");
-      return await response.json();
-    } catch (err: any) {
-      setError(err.message || "Failed to delete transaction");
-      throw err;
-    }
-  }, [userId]);
+    const response = await fetch(`/api/cost-tracker/transactions/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Failed to delete transaction");
+    return await response.json();
+  }, []);
 
   const updateBudget = useCallback(
-    async (data: {
-      monthlyLimit: number;
-      categoryLimits?: Record<string, number>;
-    }) => {
-      if (!userId) throw new Error("User not authenticated");
-
-      try {
-        const response = await fetch(`${API_URL}/api/cost-tracker/budget`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "X-User-ID": userId,
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (!response.ok) throw new Error("Failed to update budget");
-        return await response.json();
-      } catch (err: any) {
-        setError(err.message || "Failed to update budget");
-        throw err;
-      }
+    async (data: { monthlyLimit: number; categoryLimits?: Record<string, number> }) => {
+      const response = await fetch("/api/cost-tracker/budget", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to update budget");
+      return await response.json();
     },
-    [userId]
+    []
   );
+
+  const addCredential = useCallback(async (provider: string, apiKey: string) => {
+    const response = await fetch("/api/cost-tracker/credentials", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ provider, apiKey }),
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error((data as { error?: string }).error || "Failed to save credential");
+    }
+    return await response.json();
+  }, []);
+
+  const deleteCredential = useCallback(async (provider: string) => {
+    const response = await fetch(`/api/cost-tracker/credentials/${provider}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Failed to delete credential");
+    return await response.json();
+  }, []);
+
+  const syncProvider = useCallback(async (provider: string) => {
+    const response = await fetch(`/api/cost-tracker/sync/${provider}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error((data as { error?: string }).error || "Sync failed");
+    }
+    return await response.json();
+  }, []);
 
   return {
     overview,
@@ -182,11 +180,15 @@ export function useCostTracker() {
     daily,
     transactions,
     budget,
+    credentials,
     isLoading,
     error,
     refreshData,
     addTransaction,
     deleteTransaction,
     updateBudget,
+    addCredential,
+    deleteCredential,
+    syncProvider,
   };
 }
