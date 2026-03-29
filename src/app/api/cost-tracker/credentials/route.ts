@@ -41,7 +41,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "apiKey is required" }, { status: 400 });
   }
 
-  const trimmedKey = apiKey.trim();
+  // Strip zero-width / BOM characters that break pasted keys
+  const trimmedKey = apiKey.replace(/[\u200B-\u200D\uFEFF]/g, "").trim();
   const { encryptedKey, iv } = encryptKey(trimmedKey);
 
   // Mask: show first 8 chars + bullets

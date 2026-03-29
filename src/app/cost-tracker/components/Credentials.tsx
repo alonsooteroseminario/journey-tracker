@@ -11,9 +11,22 @@ interface CredentialsProps {
 }
 
 const PROVIDERS = [
-  { id: "anthropic", name: "Anthropic", icon: "🤖", placeholder: "sk-ant-api03-..." },
-  { id: "elevenlabs", name: "ElevenLabs", icon: "🔊", placeholder: "sk_..." },
-];
+  {
+    id: "anthropic",
+    name: "Anthropic",
+    icon: "🤖",
+    placeholder: "sk-ant-api03-...",
+    /** Manual “Sync” calls the provider API; Anthropic usage is auto-logged from the AI agent instead. */
+    syncSupported: false,
+  },
+  {
+    id: "elevenlabs",
+    name: "ElevenLabs",
+    icon: "🔊",
+    placeholder: "sk_...",
+    syncSupported: true,
+  },
+] as const;
 
 const CURSOR_PROVIDER = { id: "cursor", name: "Cursor", icon: "⌨️" };
 
@@ -127,20 +140,26 @@ export function Credentials({ credentials, onAdd, onDelete, onSync }: Credential
 
                 {cred ? (
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <button
-                      onClick={() => handleSync(p.id)}
-                      disabled={syncing}
-                      className="px-3 py-1.5 text-xs font-medium bg-brand-light text-brand-primary rounded-lg hover:bg-brand-primary hover:text-white transition-colors disabled:opacity-50 flex items-center gap-1.5"
-                    >
-                      {syncing ? (
-                        <span className="w-3 h-3 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                      )}
-                      Sync Now
-                    </button>
+                    {p.syncSupported ? (
+                      <button
+                        onClick={() => handleSync(p.id)}
+                        disabled={syncing}
+                        className="px-3 py-1.5 text-xs font-medium bg-brand-light text-brand-primary rounded-lg hover:bg-brand-primary hover:text-white transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                      >
+                        {syncing ? (
+                          <span className="w-3 h-3 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                        )}
+                        Sync Now
+                      </button>
+                    ) : (
+                      <span className="text-xs text-gray-500 max-w-[14rem] text-right leading-snug">
+                        Usage is logged automatically when you use the in-app AI agent.
+                      </span>
+                    )}
                     <button
                       onClick={() => handleDelete(p.id)}
                       disabled={deleting}
@@ -169,8 +188,12 @@ export function Credentials({ credentials, onAdd, onDelete, onSync }: Credential
                   Last synced: {timeAgo(cred.lastSyncedAt)}
                 </p>
               )}
-              {syncMsg && (
-                <p className={`text-xs mt-2 ml-11 ${syncMsg.includes("failed") || syncMsg.includes("Failed") ? "text-red-500" : "text-brand-primary"}`}>
+              {syncMsg && p.syncSupported && (
+                <p
+                  className={`text-xs mt-2 ml-11 ${
+                    /^Synced/.test(syncMsg) ? "text-brand-primary" : "text-red-500"
+                  }`}
+                >
                   {syncMsg}
                 </p>
               )}
