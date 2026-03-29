@@ -38,13 +38,13 @@ export function Overview({ data, budget }: OverviewProps) {
   const statusColor = {
     danger: "bg-red-50 border-red-200",
     warning: "bg-yellow-50 border-yellow-200",
-    healthy: "bg-green-50 border-green-200",
+    healthy: "bg-brand-light border-brand-primary/10",
   };
 
   const statusBadge = {
     danger: "bg-red-100 text-red-800",
     warning: "bg-yellow-100 text-yellow-800",
-    healthy: "bg-green-100 text-green-800",
+    healthy: "bg-brand-light text-brand-primary",
   };
 
   if (!data || !budget) {
@@ -81,7 +81,7 @@ export function Overview({ data, budget }: OverviewProps) {
 
           <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-white">
             <p className="text-xs text-gray-600 mb-1">Remaining</p>
-            <p className="text-2xl font-bold text-green-600">${remaining.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-brand-primary">${remaining.toFixed(2)}</p>
             <p className="text-xs text-gray-500 mt-1">Left this month</p>
           </div>
 
@@ -104,7 +104,7 @@ export function Overview({ data, budget }: OverviewProps) {
                   ? "bg-red-500"
                   : status === "warning"
                   ? "bg-yellow-500"
-                  : "bg-green-500"
+                  : "bg-brand-primary"
               }`}
               style={{ width: `${Math.min(data.percentUsed, 100)}%` }}
             />

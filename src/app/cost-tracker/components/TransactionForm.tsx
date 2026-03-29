@@ -83,7 +83,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
             placeholder="0.00"
             value={formData.amount}
             onChange={handleChange}
-            className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
             required
           />
         </div>
@@ -97,7 +97,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
           name="category"
           value={formData.category}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
         >
           {CATEGORIES.map((cat) => (
             <option key={cat.value} value={cat.value}>
@@ -117,7 +117,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
           value={formData.description}
           onChange={handleChange}
           rows={3}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary resize-none"
         />
       </div>
 
@@ -130,7 +130,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
           name="date"
           value={formData.date}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
           required
         />
       </div>
@@ -139,7 +139,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex-1 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:opacity-90 disabled:opacity-50 font-medium transition-all"
+          className="flex-1 px-4 py-2 bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-lg hover:opacity-90 disabled:opacity-50 font-medium transition-all"
         >
           {isSubmitting ? "Adding..." : "Add Transaction"}
         </button>

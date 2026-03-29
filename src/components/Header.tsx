@@ -19,6 +19,7 @@ const navItems = [
   { href: "/feed", label: "Feed", icon: "📰" },
   { href: "/templates", label: "Templates", icon: "📋" },
   { href: "/marketplace", label: "Marketplace", icon: "🏪" },
+  { href: "/cost-tracker", label: "Cost Tracker", icon: "💰" },
 ];
 
 export function Header({

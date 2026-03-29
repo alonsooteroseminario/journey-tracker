@@ -24,7 +24,7 @@ export function BudgetAlerts({ budget }: BudgetAlertsProps) {
   const getAlertColor = (percentUsed: number) => {
     if (percentUsed >= 90) return "bg-red-50 border-red-200";
     if (percentUsed >= 75) return "bg-yellow-50 border-yellow-200";
-    return "bg-green-50 border-green-200";
+    return "bg-brand-light border-brand-primary/10";
   };
 
   const getAlertIcon = (percentUsed: number) => {
@@ -76,8 +76,8 @@ export function BudgetAlerts({ budget }: BudgetAlertsProps) {
             <div className="flex gap-3 items-start">
               <span className="text-lg">✅</span>
               <div>
-                <p className="font-semibold text-green-800">On Track</p>
-                <p className="text-sm text-green-700">
+                <p className="font-semibold text-brand-primary">On Track</p>
+                <p className="text-sm text-brand-primary/80">
                   You've used {budget.percentUsed}% of your monthly budget. Great job staying within limits!
                 </p>
               </div>
@@ -97,7 +97,7 @@ export function BudgetAlerts({ budget }: BudgetAlertsProps) {
                   ? "bg-red-500"
                   : budget.percentUsed >= 75
                   ? "bg-yellow-500"
-                  : "bg-green-500"
+                  : "bg-brand-primary"
               }`}
               style={{ width: `${Math.min(budget.percentUsed, 100)}%` }}
             />

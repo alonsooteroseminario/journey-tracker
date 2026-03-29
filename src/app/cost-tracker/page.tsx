@@ -58,7 +58,7 @@ export default function CostTrackerPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your costs...</p>
         </div>
       </div>
@@ -66,89 +66,73 @@ export default function CostTrackerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
-      {/* Header - Same style as Goals page */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => router.push("/")}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                title="Back to Dashboard"
-              >
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div className="flex items-center gap-3">
-                <span className="text-3xl">💰</span>
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-800">Cost Tracker</h1>
-                  <p className="text-sm text-gray-500">Monitor your spending across all tools</p>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setIsFormOpen(true)}
-              className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:opacity-90 transition-all font-medium shadow-lg shadow-green-500/25 flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              <span className="hidden sm:inline">Add Transaction</span>
-            </button>
-          </div>
-
-          {/* Tabs Navigation */}
-          <div className="flex gap-2 border-b border-gray-200 -mx-3 sm:-mx-4 px-3 sm:px-4">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === "overview"
-                  ? "border-green-500 text-green-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              📊 Overview
-            </button>
-            <button
-              onClick={() => setActiveTab("breakdown")}
-              className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === "breakdown"
-                  ? "border-green-500 text-green-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              📈 Breakdown
-            </button>
-            <button
-              onClick={() => setActiveTab("transactions")}
-              className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === "transactions"
-                  ? "border-green-500 text-green-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              📝 Transactions
-            </button>
-            <button
-              onClick={() => setActiveTab("alerts")}
-              className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === "alerts"
-                  ? "border-green-500 text-green-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              🚨 Alerts
-            </button>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-gray-50">
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
+        {/* Page Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <span className="text-4xl">💰</span>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">Cost Tracker</h1>
+              <p className="text-sm text-gray-500">Monitor your spending across all tools</p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className="px-4 py-2 bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl hover:opacity-90 transition-all font-medium shadow-lg flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="hidden sm:inline">Add Transaction</span>
+          </button>
+        </div>
+
+        {/* Tabs Navigation */}
+        <div className="flex gap-2 border-b border-gray-200 mb-8">
+          <button
+            onClick={() => setActiveTab("overview")}
+            className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === "overview"
+                ? "border-brand-primary text-brand-primary"
+                : "border-transparent text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            📊 Overview
+          </button>
+          <button
+            onClick={() => setActiveTab("breakdown")}
+            className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === "breakdown"
+                ? "border-brand-primary text-brand-primary"
+                : "border-transparent text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            📈 Breakdown
+          </button>
+          <button
+            onClick={() => setActiveTab("transactions")}
+            className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === "transactions"
+                ? "border-brand-primary text-brand-primary"
+                : "border-transparent text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            📝 Transactions
+          </button>
+          <button
+            onClick={() => setActiveTab("alerts")}
+            className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
+              activeTab === "alerts"
+                ? "border-brand-primary text-brand-primary"
+                : "border-transparent text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            🚨 Alerts
+          </button>
+        </div>
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-red-800">Error: {error}</p>

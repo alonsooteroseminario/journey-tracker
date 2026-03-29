@@ -43,7 +43,7 @@ export function Daily({ data }: DailyProps) {
 
               <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                 <div
-                  className="h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all"
+                  className="h-2 rounded-full bg-gradient-to-r from-brand-primary to-brand-secondary transition-all"
                   style={{ width: `${(item.total / maxAmount) * 100}%` }}
                 />
               </div>
