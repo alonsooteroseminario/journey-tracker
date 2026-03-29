@@ -2,8 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { CostSyncError } from "./sync-error";
 
 interface SyncParams {
-  userId: string; // Prisma User.id
-  apiKey: string; // Decrypted ElevenLabs API key
+  userId: string;
+  apiKey: string;
+  credentialId: string;
   test?: boolean;
 }
 
@@ -18,26 +19,33 @@ interface ElevenLabsHistoryItem {
   model_id: string;
   text: string;
   date_unix: number;
-  character_count_change_from: number;
+  character_count_change_from: number; // quota level BEFORE generation
+  character_count_change_to: number;   // quota level AFTER generation
 }
 
-// Approximate per-character rate in USD (conservative Creator-tier estimate)
-const COST_PER_CHAR = 0.0003; // $0.30 per 1000 characters
+interface ElevenLabsHistoryPage {
+  history: ElevenLabsHistoryItem[];
+  has_more: boolean;
+  last_history_item_id: string | null;
+}
 
-export async function syncElevenLabsUsage(params: SyncParams): Promise<SyncResult> {
-  const { userId, apiKey, test = false } = params;
+const COST_PER_CHAR = 0.0003; // $0.30 per 1000 characters (Creator tier estimate)
+const MAX_ITEMS = 500;        // cap to avoid serverless timeout
 
-  const response = await fetch("https://api.elevenlabs.io/v1/history", {
+async function fetchHistoryPage(apiKey: string, startAfter?: string): Promise<ElevenLabsHistoryPage> {
+  const params = new URLSearchParams({ page_size: "100" });
+  if (startAfter) params.set("start_after_history_item_id", startAfter);
+
+  const response = await fetch(`https://api.elevenlabs.io/v1/history?${params}`, {
     headers: { "xi-api-key": apiKey },
   });
-
   const text = await response.text();
 
   if (!response.ok) {
     if (response.status === 401) {
       throw new CostSyncError(
         "ElevenLabs rejected this API key (401). Use the key from https://elevenlabs.io/app/settings/api-keys — copy the full value, no spaces.",
-        401
+        422
       );
     }
     let detail = "";
@@ -56,24 +64,36 @@ export async function syncElevenLabsUsage(params: SyncParams): Promise<SyncResul
     );
   }
 
-  let data: { history?: ElevenLabsHistoryItem[] };
   try {
-    data = JSON.parse(text) as { history?: ElevenLabsHistoryItem[] };
+    return JSON.parse(text) as ElevenLabsHistoryPage;
   } catch {
     throw new CostSyncError("Invalid JSON from ElevenLabs history API", 502);
   }
-  const items: ElevenLabsHistoryItem[] = data.history ?? [];
+}
+
+export async function syncElevenLabsUsage(params: SyncParams): Promise<SyncResult> {
+  const { userId, apiKey, credentialId, test = false } = params;
+
+  // Paginate up to MAX_ITEMS
+  const allItems: ElevenLabsHistoryItem[] = [];
+  let lastId: string | undefined;
+
+  do {
+    const page = await fetchHistoryPage(apiKey, lastId);
+    allItems.push(...page.history);
+    lastId = page.last_history_item_id ?? undefined;
+    if (!page.has_more) break;
+  } while (allItems.length < MAX_ITEMS);
+
+  const items = allItems.slice(0, MAX_ITEMS);
 
   if (test || items.length === 0) {
     return { synced: 0, total: items.length };
   }
 
-  // Find existing history IDs to deduplicate
+  // Deduplicate by historyItemId
   const existingTxns = await prisma.costTransaction.findMany({
-    where: {
-      userId,
-      source: "sync-elevenlabs",
-    },
+    where: { userId, source: "sync-elevenlabs" },
     select: { metadata: true },
   });
 
@@ -89,10 +109,10 @@ export async function syncElevenLabsUsage(params: SyncParams): Promise<SyncResul
     return { synced: 0, total: items.length };
   }
 
-  // Batch create new transactions
   await prisma.costTransaction.createMany({
     data: newItems.map((item) => {
-      const chars = Math.abs(item.character_count_change_from ?? 0);
+      // Characters used = quota before - quota after
+      const chars = Math.max(0, item.character_count_change_from - item.character_count_change_to);
       return {
         userId,
         amount: Math.round(chars * COST_PER_CHAR * 100000) / 100000,
@@ -105,6 +125,7 @@ export async function syncElevenLabsUsage(params: SyncParams): Promise<SyncResul
           voiceId: item.voice_id,
           modelId: item.model_id,
           characters: chars,
+          credentialId,
         },
       };
     }),
