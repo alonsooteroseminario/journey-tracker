@@ -5,9 +5,10 @@ import type { CredentialItem } from "../hooks/useCostTracker";
 
 interface CredentialsProps {
   credentials: CredentialItem[];
-  onAdd: (provider: string, apiKey: string) => Promise<void>;
-  onDelete: (provider: string) => Promise<void>;
-  onSync: (provider: string) => Promise<void>;
+  onAdd: (provider: string, apiKey: string, label: string) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
+  onSync: (provider: string, credentialId: string) => Promise<unknown>;
+  onValidate: (provider: string, credentialId: string) => Promise<{ valid: boolean; keyType: string }>;
 }
 
 const PROVIDERS = [
@@ -15,9 +16,9 @@ const PROVIDERS = [
     id: "anthropic",
     name: "Anthropic",
     icon: "🤖",
-    placeholder: "sk-ant-api03-...",
-    /** Manual “Sync” calls the provider API; Anthropic usage is auto-logged from the AI agent instead. */
-    syncSupported: false,
+    placeholder: "sk-ant-api03-... or sk-ant-admin-...",
+    syncSupported: false,   // standard keys; admin keys show Sync separately
+    validateSupported: true,
   },
   {
     id: "elevenlabs",
@@ -25,6 +26,7 @@ const PROVIDERS = [
     icon: "🔊",
     placeholder: "sk_...",
     syncSupported: true,
+    validateSupported: true,
   },
 ] as const;
 
@@ -40,26 +42,36 @@ function timeAgo(isoString: string): string {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
-export function Credentials({ credentials, onAdd, onDelete, onSync }: CredentialsProps) {
+export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate }: CredentialsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState("anthropic");
   const [apiKey, setApiKey] = useState("");
+  const [label, setLabel] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [syncingProvider, setSyncingProvider] = useState<string | null>(null);
+  const [syncingId, setSyncingId] = useState<string | null>(null);
   const [syncMessages, setSyncMessages] = useState<Record<string, string>>({});
-  const [deletingProvider, setDeletingProvider] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [validatingId, setValidatingId] = useState<string | null>(null);
+  const [validateMessages, setValidateMessages] = useState<Record<string, { text: string; ok: boolean }>>({});
 
-  const connectedMap = Object.fromEntries(credentials.map((c) => [c.provider, c]));
+  const openModal = (providerId?: string) => {
+    setSelectedProvider(providerId ?? "anthropic");
+    setApiKey("");
+    setLabel("");
+    setSaveError(null);
+    setIsModalOpen(true);
+  };
 
   const handleSave = async () => {
-    if (!apiKey.trim()) return;
+    if (!apiKey.trim() || !label.trim()) return;
     setIsSaving(true);
     setSaveError(null);
     try {
-      await onAdd(selectedProvider, apiKey.trim());
+      await onAdd(selectedProvider, apiKey.trim(), label.trim());
       setIsModalOpen(false);
       setApiKey("");
+      setLabel("");
     } catch (err: unknown) {
       setSaveError(err instanceof Error ? err.message : "Failed to save");
     } finally {
@@ -67,34 +79,58 @@ export function Credentials({ credentials, onAdd, onDelete, onSync }: Credential
     }
   };
 
-  const handleSync = async (provider: string) => {
-    setSyncingProvider(provider);
-    setSyncMessages((prev) => ({ ...prev, [provider]: "" }));
+  const handleSync = async (cred: CredentialItem) => {
+    setSyncingId(cred.id);
+    setSyncMessages((prev) => ({ ...prev, [cred.id]: "" }));
     try {
-      const result = await onSync(provider) as Record<string, unknown> | undefined;
+      const result = (await onSync(cred.provider, cred.id)) as Record<string, unknown> | undefined;
       const synced = typeof result?.synced === "number" ? result.synced : undefined;
-      const msg = synced !== undefined
-        ? `Synced ${synced} new record${synced !== 1 ? "s" : ""}`
-        : "Synced";
-      setSyncMessages((prev) => ({ ...prev, [provider]: msg }));
+      const msg =
+        synced !== undefined
+          ? `Synced ${synced} new record${synced !== 1 ? "s" : ""}`
+          : "Synced";
+      setSyncMessages((prev) => ({ ...prev, [cred.id]: msg }));
     } catch (err: unknown) {
       setSyncMessages((prev) => ({
         ...prev,
-        [provider]: err instanceof Error ? err.message : "Sync failed",
+        [cred.id]: err instanceof Error ? err.message : "Sync failed",
       }));
     } finally {
-      setSyncingProvider(null);
+      setSyncingId(null);
     }
   };
 
-  const handleDelete = async (provider: string) => {
-    setDeletingProvider(provider);
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
     try {
-      await onDelete(provider);
+      await onDelete(id);
     } finally {
-      setDeletingProvider(null);
+      setDeletingId(null);
     }
   };
+
+  const handleValidate = async (cred: CredentialItem) => {
+    setValidatingId(cred.id);
+    setValidateMessages((prev) => ({ ...prev, [cred.id]: { text: "", ok: false } }));
+    try {
+      const result = await onValidate(cred.provider, cred.id);
+      const label = result.keyType === "admin" ? "Valid admin key" : "Valid API key";
+      setValidateMessages((prev) => ({ ...prev, [cred.id]: { text: label, ok: true } }));
+    } catch (err: unknown) {
+      const text = err instanceof Error ? err.message : "Validation failed";
+      setValidateMessages((prev) => ({ ...prev, [cred.id]: { text, ok: false } }));
+    } finally {
+      setValidatingId(null);
+    }
+  };
+
+  // Group credentials by provider
+  const credsByProvider = PROVIDERS.map((p) => ({
+    provider: p,
+    items: credentials.filter((c) => c.provider === p.id),
+  }));
+
+  const hasAnyCredential = credentials.length > 0;
 
   return (
     <div className="space-y-4">
@@ -106,7 +142,7 @@ export function Credentials({ credentials, onAdd, onDelete, onSync }: Credential
           </p>
         </div>
         <button
-          onClick={() => { setIsModalOpen(true); setSaveError(null); setApiKey(""); }}
+          onClick={() => openModal()}
           className="px-4 py-2 bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl text-sm font-medium hover:opacity-90 transition-all flex items-center gap-2"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,101 +152,170 @@ export function Credentials({ credentials, onAdd, onDelete, onSync }: Credential
         </button>
       </div>
 
-      <div className="grid gap-4">
-        {PROVIDERS.map((p) => {
-          const cred = connectedMap[p.id];
-          const syncing = syncingProvider === p.id;
-          const deleting = deletingProvider === p.id;
-          const syncMsg = syncMessages[p.id];
+      {!hasAnyCredential && (
+        <div className="bg-white rounded-xl border border-dashed border-gray-300 p-8 text-center">
+          <p className="text-gray-400 text-sm">No credentials yet</p>
+          <button
+            onClick={() => openModal()}
+            className="mt-3 px-4 py-2 text-sm font-medium text-brand-primary border border-brand-primary/30 rounded-lg hover:bg-brand-light transition-colors"
+          >
+            Add your first key
+          </button>
+        </div>
+      )}
 
-          return (
-            <div key={p.id} className="bg-white rounded-xl border border-gray-200 p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{p.icon}</span>
-                  <div>
-                    <p className="font-semibold text-gray-800">{p.name}</p>
-                    {cred ? (
-                      <p className="text-xs font-mono text-gray-500 mt-0.5">{cred.maskedKey}</p>
-                    ) : (
-                      <p className="text-xs text-gray-400 mt-0.5">Not connected</p>
-                    )}
-                  </div>
-                </div>
-
-                {cred ? (
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    {p.syncSupported ? (
-                      <button
-                        onClick={() => handleSync(p.id)}
-                        disabled={syncing}
-                        className="px-3 py-1.5 text-xs font-medium bg-brand-light text-brand-primary rounded-lg hover:bg-brand-primary hover:text-white transition-colors disabled:opacity-50 flex items-center gap-1.5"
-                      >
-                        {syncing ? (
-                          <span className="w-3 h-3 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                          </svg>
-                        )}
-                        Sync Now
-                      </button>
-                    ) : (
-                      <span className="text-xs text-gray-500 max-w-[14rem] text-right leading-snug">
-                        Usage is logged automatically when you use the in-app AI agent.
-                      </span>
-                    )}
-                    <button
-                      onClick={() => handleDelete(p.id)}
-                      disabled={deleting}
-                      className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
-                    >
-                      {deleting ? "Removing…" : "Remove"}
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setSelectedProvider(p.id);
-                      setApiKey("");
-                      setSaveError(null);
-                      setIsModalOpen(true);
-                    }}
-                    className="px-3 py-1.5 text-xs font-medium border border-gray-300 text-gray-600 rounded-lg hover:border-brand-primary hover:text-brand-primary transition-colors"
-                  >
-                    Connect
-                  </button>
+      <div className="grid gap-6">
+        {credsByProvider.map(({ provider: p, items }) => (
+          <div key={p.id}>
+            {/* Provider section header */}
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{p.icon}</span>
+                <span className="text-sm font-semibold text-gray-700">{p.name}</span>
+                {!p.syncSupported && !("validateSupported" in p && p.validateSupported) && (
+                  <span className="text-xs text-gray-400 font-normal">
+                    · Usage logged automatically from AI agent
+                  </span>
                 )}
               </div>
-
-              {cred?.lastSyncedAt && (
-                <p className="text-xs text-gray-400 mt-3 ml-11">
-                  Last synced: {timeAgo(cred.lastSyncedAt)}
-                </p>
-              )}
-              {syncMsg && p.syncSupported && (
-                <p
-                  className={`text-xs mt-2 ml-11 ${
-                    /^Synced/.test(syncMsg) ? "text-brand-primary" : "text-red-500"
-                  }`}
-                >
-                  {syncMsg}
-                </p>
-              )}
+              <button
+                onClick={() => openModal(p.id)}
+                className="text-xs text-brand-primary hover:underline"
+              >
+                + Add key
+              </button>
             </div>
-          );
-        })}
 
-        {/* Cursor — manual only */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">{CURSOR_PROVIDER.icon}</span>
-            <div>
-              <p className="font-semibold text-gray-800">{CURSOR_PROVIDER.name}</p>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Subscription service — no public API. Enter costs manually via Add Transaction.
-              </p>
-            </div>
+            {items.length === 0 ? (
+              <div className="bg-white rounded-xl border border-dashed border-gray-200 px-4 py-3">
+                <p className="text-xs text-gray-400">Not connected</p>
+              </div>
+            ) : (
+              <div className="grid gap-2">
+                {items.map((cred) => {
+                  const syncing = syncingId === cred.id;
+                  const deleting = deletingId === cred.id;
+                  const validating = validatingId === cred.id;
+                  const syncMsg = syncMessages[cred.id];
+                  const validateMsg = validateMessages[cred.id];
+                  const isAdminKey = cred.keyType === "admin";
+
+                  return (
+                    <div
+                      key={cred.id}
+                      className="bg-white rounded-xl border border-gray-200 px-4 py-3"
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-sm font-medium text-gray-800 truncate">{cred.label}</p>
+                            {cred.keyType && (
+                              <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                                isAdminKey
+                                  ? "bg-amber-100 text-amber-700"
+                                  : "bg-gray-100 text-gray-500"
+                              }`}>
+                                {isAdminKey ? "admin" : "standard"}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs font-mono text-gray-400 mt-0.5">{cred.maskedKey}</p>
+                          {cred.lastSyncedAt && (
+                            <p className="text-xs text-gray-400 mt-0.5">
+                              Last synced: {timeAgo(cred.lastSyncedAt)}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {/* ElevenLabs sync */}
+                          {p.syncSupported && (
+                            <button
+                              onClick={() => handleSync(cred)}
+                              disabled={syncing}
+                              className="px-3 py-1.5 text-xs font-medium bg-brand-light text-brand-primary rounded-lg hover:bg-brand-primary hover:text-white transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                            >
+                              {syncing ? (
+                                <span className="w-3 h-3 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
+                              ) : (
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                              )}
+                              Sync
+                            </button>
+                          )}
+                          {/* Anthropic admin key sync (Phase 3B) */}
+                          {p.id === "anthropic" && isAdminKey && (
+                            <button
+                              onClick={() => handleSync(cred)}
+                              disabled={syncing}
+                              className="px-3 py-1.5 text-xs font-medium bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                            >
+                              {syncing ? (
+                                <span className="w-3 h-3 border-2 border-amber-700 border-t-transparent rounded-full animate-spin" />
+                              ) : (
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                              )}
+                              Sync
+                            </button>
+                          )}
+                          {/* Anthropic validate button (Phase 3A) */}
+                          {"validateSupported" in p && p.validateSupported && (
+                            <button
+                              onClick={() => handleValidate(cred)}
+                              disabled={validating}
+                              className="px-3 py-1.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                            >
+                              {validating ? (
+                                <span className="w-3 h-3 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
+                              ) : "Test"}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDelete(cred.id)}
+                            disabled={deleting}
+                            className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                          >
+                            {deleting ? "Removing…" : "Remove"}
+                          </button>
+                        </div>
+                      </div>
+
+                      {syncMsg && (
+                        <p
+                          className={`text-xs mt-2 ${
+                            /^Synced/.test(syncMsg) ? "text-brand-primary" : "text-red-500"
+                          }`}
+                        >
+                          {syncMsg}
+                        </p>
+                      )}
+                      {validateMsg?.text && (
+                        <p className={`text-xs mt-2 ${validateMsg.ok ? "text-green-600" : "text-red-500"}`}>
+                          {validateMsg.ok ? "✓ " : "✗ "}{validateMsg.text}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Cursor — manual-only, no credentials */}
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-lg">{CURSOR_PROVIDER.icon}</span>
+            <span className="text-sm font-semibold text-gray-700">{CURSOR_PROVIDER.name}</span>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 px-4 py-3">
+            <p className="text-xs text-gray-500">
+              Subscription service — no public API. Enter costs manually via Add Transaction.
+            </p>
           </div>
         </div>
       </div>
@@ -248,6 +353,18 @@ export function Credentials({ credentials, onAdd, onDelete, onSync }: Credential
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Label</label>
+                <input
+                  type="text"
+                  value={label}
+                  onChange={(e) => setLabel(e.target.value)}
+                  placeholder="e.g. Work, Personal, Client A"
+                  maxLength={64}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
+                />
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">API Key</label>
                 <input
                   type="password"
@@ -269,7 +386,7 @@ export function Credentials({ credentials, onAdd, onDelete, onSync }: Credential
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={isSaving || !apiKey.trim()}
+                  disabled={isSaving || !apiKey.trim() || !label.trim()}
                   className="flex-1 px-4 py-2 text-sm font-medium bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-xl hover:opacity-90 transition-all disabled:opacity-50"
                 >
                   {isSaving ? "Saving…" : "Save Key"}
