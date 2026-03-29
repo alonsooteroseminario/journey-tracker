@@ -218,7 +218,13 @@ export default function CostTrackerPage() {
         {/* Alerts Tab */}
         {activeTab === "alerts" && (
           <div className="space-y-6">
-            <BudgetAlerts budget={budget} />
+            <BudgetAlerts
+              budget={budget}
+              onUpdateBudget={async (data) => {
+                await updateBudget(data);
+                await refreshData();
+              }}
+            />
           </div>
         )}
 
