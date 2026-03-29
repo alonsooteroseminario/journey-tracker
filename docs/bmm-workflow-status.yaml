@@ -7,7 +7,7 @@ project_type: "web-app"
 project_level: 4
 communication_language: "English"
 output_language: "English"
-last_updated: "2026-02-21T12:00:00Z"
+last_updated: "2026-03-29T01:00:00Z"
 
 # Workflow Status Tracking
 # Status values:
@@ -24,6 +24,11 @@ workflow_status:
     phase: 1
     status: "_bmad-output/planning-artifacts/product-brief-journey-tracker-2026-02-20.md"
     description: "Create comprehensive product brief"
+
+  - name: product-brief-cost-tracker-integration
+    phase: 1
+    status: "docs/product-brief-cost-tracker-integration-2026-03-29.md"
+    description: "Product brief for Cost Tracker Integration feature (feat/cost-tracker branch)"
 
   - name: brainstorm-project
     phase: 1
@@ -43,8 +48,8 @@ workflow_status:
 
   - name: tech-spec
     phase: 2
-    status: "optional"
-    description: "Technical Specification"
+    status: "docs/tech-spec-cost-tracker-integration-2026-03-29.md"
+    description: "Technical Specification for Cost Tracker Integration (feat/cost-tracker branch)"
 
   - name: create-ux-design
     phase: 2
