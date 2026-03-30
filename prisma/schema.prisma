@@ -612,6 +612,8 @@ model LLMCredential {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   userId       String    @db.ObjectId
   provider     String    // "anthropic" | "elevenlabs"
+  label        String    @default("Default") // user-visible, e.g. "Work", "Personal"
+  keyType      String?   // "standard" | "admin" — anthropic only; null for other providers
   encryptedKey String
   iv           String
   maskedKey    String
@@ -619,6 +621,7 @@ model LLMCredential {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  @@unique([userId, provider])
+  @@unique([userId, provider, label])
+  @@index([userId])
   @@map("llm_credentials")
 }
