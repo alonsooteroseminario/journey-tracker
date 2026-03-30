@@ -68,6 +68,6 @@
         "vitest": "^4.0.18"
     },
     "optionalDependencies": {
-        "@next/swc-linux-x64-gnu": "15.5.11"
+        "@next/swc-linux-x64-gnu": "16.1.6"
     }
 }

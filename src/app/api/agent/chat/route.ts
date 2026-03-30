@@ -13,6 +13,7 @@ import { errorHandler } from '@/lib/agent/errorHandler';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
 import { Message, ChatRequest } from '@/types/agent';
+import { logAnthropicUsage } from '@/lib/cost-tracking/anthropic';
 
 // Lazy Anthropic client — avoids module-level instantiation so tests can mock the constructor
 function getAnthropicClient(): Anthropic {
@@ -334,6 +335,15 @@ async function runAgentLoop(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tools: tools as any[],
     });
+
+    // Fire-and-forget cost logging — never blocks the agent loop
+    logAnthropicUsage({
+      clerkId: userId,
+      model: AGENT_MODEL,
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+      date: new Date(),
+    }).catch((err) => console.error('Cost logging error:', err));
 
     // Check stop reason
     if (response.stop_reason === 'end_turn') {

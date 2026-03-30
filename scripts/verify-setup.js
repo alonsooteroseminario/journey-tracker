@@ -148,7 +148,7 @@ info('\nChecking Clerk authentication pages...');
 const clerkPages = [
   'src/app/sign-in/[[...sign-in]]/page.tsx',
   'src/app/sign-up/[[...sign-up]]/page.tsx',
-  'middleware.ts',
+  'src/proxy.ts',
 ];
 
 clerkPages.forEach(file => {

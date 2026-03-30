@@ -581,3 +581,47 @@ model Recording {
   @@index([flowType])
   @@map("recordings")
 }
+
+// ============== Cost Tracker Models ==============
+model CostTransaction {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  amount      Float
+  category    String   // "anthropic" | "elevenlabs" | "cursor" | "other"
+  description String?
+  date        DateTime
+  source      String   // "manual" | "auto-anthropic" | "sync-elevenlabs"
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([userId, date])
+  @@map("cost_transactions")
+}
+
+model Budget {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @unique @db.ObjectId
+  monthlyLimit   Float    @default(100)
+  categoryLimits Json?
+  updatedAt      DateTime @updatedAt
+
+  @@map("budgets")
+}
+
+model LLMCredential {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String    @db.ObjectId
+  provider     String    // "anthropic" | "elevenlabs"
+  label        String    @default("Default") // user-visible, e.g. "Work", "Personal"
+  keyType      String?   // "standard" | "admin" — anthropic only; null for other providers
+  encryptedKey String
+  iv           String
+  maskedKey    String
+  lastSyncedAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([userId, provider, label])
+  @@index([userId])
+  @@map("llm_credentials")
+}
