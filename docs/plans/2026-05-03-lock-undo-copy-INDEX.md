@@ -14,8 +14,8 @@ A fresh Claude session can pick up at the next `pending` step by reading:
 |---|---|---|---|
 | 1 | Foundations — types + pure helpers | ✅ done | [step1-foundations.md](./2026-05-03-lock-undo-copy-step1-foundations.md) · Done: 2026-05-03 · commit `675eba2` |
 | 2 | UndoToastProvider — UI infra | ✅ done | [step2-undo-provider.md](./2026-05-03-lock-undo-copy-step2-undo-provider.md) · Done: 2026-05-03 · commit `e38b35f` |
-| 3 | SubstepCard wiring | ⬜ pending | [step3-substep-wiring.md](./2026-05-03-lock-undo-copy-step3-substep-wiring.md) |
-| 4 | TaskMiniCard wiring + copy button | ⬜ pending | [step4-taskcard-wiring.md](./2026-05-03-lock-undo-copy-step4-taskcard-wiring.md) |
+| 3 | SubstepCard wiring | ✅ done | [step3-substep-wiring.md](./2026-05-03-lock-undo-copy-step3-substep-wiring.md) · Done: 2026-05-03 |
+| 4 | TaskMiniCard wiring + copy button | ✅ done | [step4-taskcard-wiring.md](./2026-05-03-lock-undo-copy-step4-taskcard-wiring.md) · Done: 2026-05-03 |
 | 5 | restoreTask/restoreSubstep + GoalCard integration | ⬜ pending | [step5-restore-integration.md](./2026-05-03-lock-undo-copy-step5-restore-integration.md) |
 | 6 | MCP agent tool guards | ⬜ pending | [step6-agent-guards.md](./2026-05-03-lock-undo-copy-step6-agent-guards.md) |
 | 7 | End-to-end verification | ⬜ pending | [step7-verification.md](./2026-05-03-lock-undo-copy-step7-verification.md) |

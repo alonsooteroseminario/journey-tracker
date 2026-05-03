@@ -21,6 +21,9 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { canDelete, canEdit, canAddChild, canReorder, getLockLevel, cycleLock, LockLevel } from "@/lib/locks/lockGuards";
+import { taskToMarkdown } from "@/lib/clipboard/taskToMarkdown";
+import { useUndoToast } from "@/components/undo/UndoToastProvider";
 
 interface TaskMiniCardProps {
   task: Task;
@@ -32,6 +35,8 @@ interface TaskMiniCardProps {
   onToggleSubstep: (substepId: string) => void;
   onDeleteSubstep: (substepId: string) => void;
   isDragging?: boolean;
+  onUpdateLock?: (lockLevel: LockLevel) => void;
+  onRestore?: () => void;
 }
 
 export function TaskMiniCard({
@@ -44,11 +49,31 @@ export function TaskMiniCard({
   onToggleSubstep,
   onDeleteSubstep,
   isDragging,
+  onUpdateLock,
+  onRestore,
 }: TaskMiniCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingSubstep, setIsAddingSubstep] = useState(false);
   const [newSubstepTitle, setNewSubstepTitle] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const { showUndoToast } = useUndoToast();
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(taskToMarkdown(task));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  const handleDelete = () => {
+    if (!canDelete(task)) return;
+    onDelete();
+    showUndoToast({
+      message: `Task "${task.title}" deleted`,
+      onUndo: onRestore ?? (() => {}),
+    });
+  };
 
   const {
     attributes,
@@ -156,7 +181,7 @@ export function TaskMiniCard({
             {/* Drag Handle */}
             <button
               {...attributes}
-              {...listeners}
+              {...(canReorder(task) ? listeners : {})}
               className="cursor-grab active:cursor-grabbing flex-shrink-0 p-0.5 sm:p-1 text-gray-400 hover:text-gray-600 mt-0.5"
               title="Drag to reorder task"
             >
@@ -196,6 +221,16 @@ export function TaskMiniCard({
                   <span className="px-1.5 py-0.5 bg-brand-light text-brand-primary text-[10px] sm:text-xs font-mono font-bold rounded">
                     {task.stepNumber}
                   </span>
+                )}
+                {getLockLevel(task) === 'soft' && (
+                  <svg className="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Soft locked">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0v4m-4 8v-4m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                  </svg>
+                )}
+                {getLockLevel(task) === 'hard' && (
+                  <svg className="w-3 h-3 text-brand-primary flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-label="Hard locked">
+                    <path fillRule="evenodd" d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm3 8V6a3 3 0 10-6 0v3h6zm-3 4a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1z" clipRule="evenodd" />
+                  </svg>
                 )}
                 <h4
                   className={`text-xs sm:text-base font-medium ${
@@ -276,18 +311,54 @@ export function TaskMiniCard({
                 </svg>
               </button>
               <button
-                onClick={() => setIsEditing(true)}
+                onClick={handleCopy}
+                className={`p-1 sm:p-1.5 rounded-lg transition-colors ${
+                  copied ? "text-green-500 bg-green-50" : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"
+                }`}
+                title={copied ? "Copied!" : "Copy as Markdown"}
+              >
+                {copied ? (
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                )}
+              </button>
+              <button
+                onClick={() => onUpdateLock?.(cycleLock(getLockLevel(task)))}
                 className="p-1 sm:p-1.5 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded-lg transition-colors"
-                title="Edit"
+                title={`Lock: ${getLockLevel(task)}`}
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0v4m-4 8v-4m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setIsEditing(true)}
+                disabled={!canEdit(task)}
+                className={`p-1 sm:p-1.5 rounded-lg transition-colors ${
+                  canEdit(task)
+                    ? "text-gray-400 hover:text-brand-primary hover:bg-brand-light"
+                    : "text-gray-400 opacity-40 cursor-not-allowed"
+                }`}
+                title={canEdit(task) ? "Edit" : "Locked"}
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </button>
               <button
-                onClick={onDelete}
-                className="p-1 sm:p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                title="Delete"
+                onClick={handleDelete}
+                disabled={!canDelete(task)}
+                className={`p-1 sm:p-1.5 rounded-lg transition-colors ${
+                  canDelete(task)
+                    ? "text-gray-400 hover:text-red-500 hover:bg-red-50"
+                    : "text-gray-400 opacity-40 cursor-not-allowed"
+                }`}
+                title={canDelete(task) ? "Delete" : "Locked"}
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -360,15 +431,17 @@ export function TaskMiniCard({
             <div>
               <div className="flex items-center justify-between mb-1.5 sm:mb-2">
                 <h5 className="text-xs sm:text-sm font-semibold text-gray-700">Substeps</h5>
-                <button
-                  onClick={() => setIsAddingSubstep(true)}
-                  className="text-[10px] sm:text-xs text-brand-primary hover:text-brand-secondary font-medium flex items-center gap-0.5 sm:gap-1"
-                >
-                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Add Substep
-                </button>
+                {canAddChild(task) && (
+                  <button
+                    onClick={() => setIsAddingSubstep(true)}
+                    className="text-[10px] sm:text-xs text-brand-primary hover:text-brand-secondary font-medium flex items-center gap-0.5 sm:gap-1"
+                  >
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add Substep
+                  </button>
+                )}
               </div>
 
               {/* Substeps List with Drag and Drop */}

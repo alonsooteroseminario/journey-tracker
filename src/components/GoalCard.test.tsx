@@ -23,6 +23,10 @@ vi.mock('./ShareStreakButton', () => ({
 vi.mock('./ShareGoalStatusButton', () => ({
   ShareGoalStatusButton: () => null,
 }));
+vi.mock('@/components/undo/UndoToastProvider', () => ({
+  useUndoToast: () => ({ showUndoToast: vi.fn() }),
+  UndoToastProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
 
 describe('GoalCard', () => {
   const mockGoal: Goal = {
