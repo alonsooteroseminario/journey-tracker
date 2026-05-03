@@ -83,4 +83,36 @@ describe('executeUpdateTask', () => {
     await executeUpdateTask({ goalId: 'goal_goal-1', taskId: 'task-1', title: 'X' }, 'clerk-1');
     expect(mockGoalFindUnique).toHaveBeenCalledWith({ where: { id: 'goal-1' } });
   });
+
+  it('refuses to edit a hard-locked task', async () => {
+    mockGoalFindUnique.mockResolvedValue({
+      ...GOAL,
+      tasks: [{ ...TASK, lockLevel: 'hard' }],
+    });
+    const result = await executeUpdateTask({ goalId: 'goal-1', taskId: 'task-1', title: 'New' }, 'clerk-1');
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Locked');
+    expect(result.message).toContain('hard-locked');
+    expect(mockGoalUpdate).not.toHaveBeenCalled();
+  });
+
+  it('allows editing a soft-locked task', async () => {
+    mockGoalFindUnique.mockResolvedValue({
+      ...GOAL,
+      tasks: [{ ...TASK, lockLevel: 'soft' }],
+    });
+    const result = await executeUpdateTask({ goalId: 'goal-1', taskId: 'task-1', title: 'New' }, 'clerk-1');
+    expect(result.success).toBe(true);
+    expect(mockGoalUpdate).toHaveBeenCalledOnce();
+  });
+
+  it('allows status-only update on a hard-locked task (status toggle always permitted)', async () => {
+    mockGoalFindUnique.mockResolvedValue({
+      ...GOAL,
+      tasks: [{ ...TASK, lockLevel: 'hard' }],
+    });
+    const result = await executeUpdateTask({ goalId: 'goal-1', taskId: 'task-1', status: 'completed' }, 'clerk-1');
+    expect(result.success).toBe(true);
+    expect(mockGoalUpdate).toHaveBeenCalledOnce();
+  });
 });

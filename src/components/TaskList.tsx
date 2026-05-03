@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Task, Substep } from "@/types";
 import { TaskMiniCard } from "./TaskMiniCard";
+import { LockLevel } from "@/lib/locks/lockGuards";
 import {
   DndContext,
   closestCenter,
@@ -29,6 +30,10 @@ interface TaskListProps {
   onToggleSubstep: (taskId: string, substepId: string) => void;
   onDeleteSubstep: (taskId: string, substepId: string) => void;
   onReorderTasks?: (tasks: Task[]) => void;
+  onUpdateTaskLock?: (taskId: string, lockLevel: LockLevel) => void;
+  onRestoreTask?: (snapshot: { task: Task; originalIndex: number }) => void;
+  onUpdateSubstepLock?: (taskId: string, substepId: string, lockLevel: LockLevel) => void;
+  onRestoreSubstep?: (snapshot: { substep: Substep; parentTaskId: string; originalIndex: number }) => void;
 }
 
 export function TaskList({
@@ -42,6 +47,10 @@ export function TaskList({
   onToggleSubstep,
   onDeleteSubstep,
   onReorderTasks,
+  onUpdateTaskLock,
+  onRestoreTask,
+  onUpdateSubstepLock,
+  onRestoreSubstep,
 }: TaskListProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -161,6 +170,10 @@ export function TaskList({
                     onUpdateSubstep={(substepId, updates) => onUpdateSubstep(task.id, substepId, updates)}
                     onToggleSubstep={(substepId) => onToggleSubstep(task.id, substepId)}
                     onDeleteSubstep={(substepId) => onDeleteSubstep(task.id, substepId)}
+                    onUpdateLock={(lvl) => onUpdateTaskLock?.(task.id, lvl)}
+                    onRestore={() => onRestoreTask?.({ task, originalIndex: tasks.findIndex(t => t.id === task.id) })}
+                    onUpdateSubstepLock={(substepId, lvl) => onUpdateSubstepLock?.(task.id, substepId, lvl)}
+                    onRestoreSubstep={(snap) => onRestoreSubstep?.(snap)}
                   />
                 ))}
               </div>
@@ -279,6 +292,10 @@ export function TaskList({
                   onUpdateSubstep={(substepId, updates) => onUpdateSubstep(task.id, substepId, updates)}
                   onToggleSubstep={(substepId) => onToggleSubstep(task.id, substepId)}
                   onDeleteSubstep={(substepId) => onDeleteSubstep(task.id, substepId)}
+                  onUpdateLock={(lvl) => onUpdateTaskLock?.(task.id, lvl)}
+                  onRestore={() => onRestoreTask?.({ task, originalIndex: tasks.findIndex(t => t.id === task.id) })}
+                  onUpdateSubstepLock={(substepId, lvl) => onUpdateSubstepLock?.(task.id, substepId, lvl)}
+                  onRestoreSubstep={(snap) => onRestoreSubstep?.(snap)}
                 />
               ))}
             </div>

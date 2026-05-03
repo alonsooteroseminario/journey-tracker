@@ -5,22 +5,27 @@ import { Substep, TaskStatus, TASK_STATUS_CONFIG } from "@/types";
 import { formatCurrency } from "@/lib/storage";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { canDelete, canEdit, getLockLevel, cycleLock, LockLevel } from "@/lib/locks/lockGuards";
+import { useUndoToast } from "@/components/undo/UndoToastProvider";
 
 interface SubstepCardProps {
   substep: Substep;
   onToggle: () => void;
   onUpdate: (updates: Partial<Substep>) => void;
   onDelete: () => void;
-  isDragging?: boolean;
+  onUpdateLock?: (lockLevel: LockLevel) => void;
+  onRestore?: () => void;
 }
 
-export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging }: SubstepCardProps) {
+export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLock, onRestore }: SubstepCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(substep.title);
   const [editCost, setEditCost] = useState(substep.cost?.toString() || "");
   const [editNotes, setEditNotes] = useState(substep.notes || "");
   const [editStatus, setEditStatus] = useState<TaskStatus>(substep.status || "not_started");
   const [copied, setCopied] = useState(false);
+
+  const { showUndoToast } = useUndoToast();
 
   const {
     attributes,
@@ -60,6 +65,20 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
+
+  const handleDelete = () => {
+    if (!canDelete(substep)) return;
+    onDelete();
+    showUndoToast({
+      message: `Substep "${substep.title}" deleted`,
+      onUndo: onRestore ?? (() => {}),
+    });
+  };
+
+  const lockLevel = getLockLevel(substep);
+  const editDisabled = !canEdit(substep);
+  const deleteDisabled = !canDelete(substep);
+  const reorderAllowed = !( lockLevel === 'hard' );
 
   if (isEditing) {
     return (
@@ -154,7 +173,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
       {/* Drag Handle */}
       <button
         {...attributes}
-        {...listeners}
+        {...(reorderAllowed ? listeners : {})}
         className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
         title="Drag to reorder"
       >
@@ -188,13 +207,37 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p
-          className={`text-xs sm:text-sm ${
-            substep.status === 'completed' ? "text-gray-500 line-through" : "text-gray-700"
-          }`}
-        >
-          {substep.title}
-        </p>
+        <div className="flex items-center gap-1">
+          {/* Lock badge */}
+          {lockLevel === 'soft' && (
+            <svg
+              className="w-3 h-3 text-gray-400 flex-shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-label="Soft locked"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+            </svg>
+          )}
+          {lockLevel === 'hard' && (
+            <svg
+              className="w-3 h-3 text-brand-primary flex-shrink-0"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-label="Hard locked"
+            >
+              <path d="M12 1a5 5 0 00-5 5v3H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V11a2 2 0 00-2-2h-2V6a5 5 0 00-5-5zm-3 5a3 3 0 116 0v3H9V6zm3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
+            </svg>
+          )}
+          <p
+            className={`text-xs sm:text-sm ${
+              substep.status === 'completed' ? "text-gray-500 line-through" : "text-gray-700"
+            }`}
+          >
+            {substep.title}
+          </p>
+        </div>
         <div className="flex items-center gap-1 sm:gap-2 mt-0.5">
           {substep.cost !== undefined && substep.cost > 0 && (
             <span className="text-[10px] sm:text-xs px-1 sm:px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">
@@ -231,18 +274,46 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging 
           )}
         </button>
         <button
-          onClick={() => setIsEditing(true)}
-          className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
-          title="Edit"
+          onClick={() => { if (!editDisabled) setIsEditing(true); }}
+          disabled={editDisabled}
+          className={`p-1 rounded transition-colors ${
+            editDisabled
+              ? "text-gray-300 opacity-40 cursor-not-allowed"
+              : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"
+          }`}
+          title={editDisabled ? "Locked" : "Edit"}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
         </button>
+        {/* Lock button */}
         <button
-          onClick={onDelete}
-          className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
-          title="Delete"
+          onClick={() => onUpdateLock?.(cycleLock(lockLevel))}
+          className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+          title={`Lock: ${lockLevel}`}
+        >
+          {lockLevel === 'hard' ? (
+            /* Closed padlock */
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          ) : (
+            /* Open padlock */
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+            </svg>
+          )}
+        </button>
+        <button
+          onClick={handleDelete}
+          disabled={deleteDisabled}
+          className={`p-1 rounded transition-colors ${
+            deleteDisabled
+              ? "text-gray-300 opacity-40 cursor-not-allowed"
+              : "text-gray-400 hover:text-red-500 hover:bg-red-50"
+          }`}
+          title={deleteDisabled ? "Locked" : "Delete"}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

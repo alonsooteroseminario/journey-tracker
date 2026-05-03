@@ -93,4 +93,43 @@ describe('executeDeleteTask', () => {
     await executeDeleteTask({ goalId: 'goal_goal-1', taskId: 'task_task-1' }, 'clerk-1');
     expect(mockGoalFindUnique).toHaveBeenCalledWith({ where: { id: 'goal-1' } });
   });
+
+  it('refuses to delete a soft-locked task', async () => {
+    mockGoalFindUnique.mockResolvedValue({
+      ...makeGoal(),
+      tasks: [{ id: 'task-1', title: 'Locked Task', status: 'todo', order: 0, substeps: [], lockLevel: 'soft' }],
+    });
+    const result = await executeDeleteTask({ goalId: 'goal-1', taskId: 'task-1' }, 'clerk-1');
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Locked');
+    expect(result.message).toContain('Locked Task');
+    expect(mockGoalUpdate).not.toHaveBeenCalled();
+  });
+
+  it('refuses to delete a hard-locked task', async () => {
+    mockGoalFindUnique.mockResolvedValue({
+      ...makeGoal(),
+      tasks: [{ id: 'task-1', title: 'Hard Task', status: 'todo', order: 0, substeps: [], lockLevel: 'hard' }],
+    });
+    const result = await executeDeleteTask({ goalId: 'goal-1', taskId: 'task-1' }, 'clerk-1');
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Locked');
+    expect(mockGoalUpdate).not.toHaveBeenCalled();
+  });
+
+  it('allows deleting an unlocked task (lockLevel: none)', async () => {
+    mockGoalFindUnique.mockResolvedValue({
+      ...makeGoal(),
+      tasks: [{ id: 'task-1', title: 'Free Task', status: 'todo', order: 0, substeps: [], lockLevel: 'none' }],
+    });
+    const result = await executeDeleteTask({ goalId: 'goal-1', taskId: 'task-1' }, 'clerk-1');
+    expect(result.success).toBe(true);
+    expect(mockGoalUpdate).toHaveBeenCalledOnce();
+  });
+
+  it('allows deleting a task with no lockLevel set', async () => {
+    const result = await executeDeleteTask({ goalId: 'goal-1', taskId: 'task-1' }, 'clerk-1');
+    expect(result.success).toBe(true);
+    expect(mockGoalUpdate).toHaveBeenCalledOnce();
+  });
 });

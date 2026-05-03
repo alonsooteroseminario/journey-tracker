@@ -14,6 +14,7 @@ import { AnalyticsDashboard } from "./AnalyticsDashboard";
 import { ShareGoalModal } from "./templates/ShareGoalModal";
 import { GoalGroupSelector } from "./GoalGroupSelector";
 import { useUpdateGoalMutation } from "@/store/slices/goalsSlice";
+import { LockLevel } from "@/lib/locks/lockGuards";
 import { StreakBadge } from "./StreakBadge";
 import { ShareStreakButton } from "./ShareStreakButton";
 import { ShareGoalStatusButton } from "./ShareGoalStatusButton";
@@ -82,6 +83,48 @@ export function GoalCard({
   const [editDescription, setEditDescription] = useState(goal.description || "");
   const [editIcon, setEditIcon] = useState(goal.icon || "🎯");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleUpdateTaskLock = (taskId: string, lockLevel: LockLevel) => {
+    const tasks = (goal.tasks ?? []).map(t =>
+      t.id === taskId
+        ? { ...t, lockLevel, lockedAt: lockLevel !== 'none' ? new Date().toISOString() : undefined }
+        : t
+    );
+    updateGoalMutation({ id: goal.id, updates: { tasks } });
+  };
+
+  const handleUpdateSubstepLock = (taskId: string, substepId: string, lockLevel: LockLevel) => {
+    const tasks = (goal.tasks ?? []).map(t => {
+      if (t.id !== taskId) return t;
+      return {
+        ...t,
+        substeps: (t.substeps ?? []).map(s =>
+          s.id === substepId
+            ? { ...s, lockLevel, lockedAt: lockLevel !== 'none' ? new Date().toISOString() : undefined }
+            : s
+        ),
+      };
+    });
+    updateGoalMutation({ id: goal.id, updates: { tasks } });
+  };
+
+  const handleRestoreTask = ({ task, originalIndex }: { task: Task; originalIndex: number }) => {
+    const tasks = [...(goal.tasks ?? [])];
+    const idx = Math.min(originalIndex, tasks.length);
+    tasks.splice(idx, 0, task);
+    updateGoalMutation({ id: goal.id, updates: { tasks } });
+  };
+
+  const handleRestoreSubstep = ({ substep, parentTaskId, originalIndex }: { substep: Substep; parentTaskId: string; originalIndex: number }) => {
+    const tasks = (goal.tasks ?? []).map(t => {
+      if (t.id !== parentTaskId) return t;
+      const subs = [...(t.substeps ?? [])];
+      const idx = Math.min(originalIndex, subs.length);
+      subs.splice(idx, 0, substep);
+      return { ...t, substeps: subs };
+    });
+    updateGoalMutation({ id: goal.id, updates: { tasks } });
+  };
 
   const handleSaveEdit = async () => {
     const updates: Record<string, string> = {};
@@ -521,6 +564,10 @@ export function GoalCard({
                       onToggleSubstep={(taskId, substepId) => onToggleSubstep(goal.id, taskId, substepId)}
                       onDeleteSubstep={(taskId, substepId) => onDeleteSubstep(goal.id, taskId, substepId)}
                       onReorderTasks={(tasks) => onReorderTasks?.(goal.id, tasks)}
+                      onUpdateTaskLock={(taskId, lvl) => handleUpdateTaskLock(taskId, lvl)}
+                      onRestoreTask={(snap) => handleRestoreTask(snap)}
+                      onUpdateSubstepLock={(taskId, substepId, lvl) => handleUpdateSubstepLock(taskId, substepId, lvl)}
+                      onRestoreSubstep={(snap) => handleRestoreSubstep(snap)}
                     />
                   </div>
                 )}
@@ -624,6 +671,10 @@ export function GoalCard({
                 onToggleSubstep={(taskId, substepId) => onToggleSubstep(goal.id, taskId, substepId)}
                 onDeleteSubstep={(taskId, substepId) => onDeleteSubstep(goal.id, taskId, substepId)}
                 onReorderTasks={(tasks) => onReorderTasks?.(goal.id, tasks)}
+                onUpdateTaskLock={(taskId, lvl) => handleUpdateTaskLock(taskId, lvl)}
+                onRestoreTask={(snap) => handleRestoreTask(snap)}
+                onUpdateSubstepLock={(taskId, substepId, lvl) => handleUpdateSubstepLock(taskId, substepId, lvl)}
+                onRestoreSubstep={(snap) => handleRestoreSubstep(snap)}
               />
               {hiddenTaskCount > 0 && (
                 <p className="text-xs text-gray-400 mt-1">

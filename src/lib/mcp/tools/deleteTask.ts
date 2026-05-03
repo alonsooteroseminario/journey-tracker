@@ -10,10 +10,11 @@ import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { trackActivity } from '@/lib/activity';
 import { Task } from '@/types';
+import { canDelete } from '@/lib/locks/lockGuards';
 
 export const toolDefinition: ToolDefinition = {
   name: 'delete-task',
-  description: 'Permanently removes a task (and all its substeps) from a goal. Use when the user wants to delete or remove a task entirely.',
+  description: 'Permanently removes a task (and all its substeps) from a goal. Use when the user wants to delete or remove a task entirely. Refuses to delete tasks that are soft- or hard-locked.',
   input_schema: {
     type: 'object',
     properties: {
@@ -67,6 +68,10 @@ export async function executeDeleteTask(
 
     if (taskIndex === -1) {
       return { success: false, error: 'Not found', message: 'Task not found' };
+    }
+
+    if (!canDelete(tasks[taskIndex])) {
+      return { success: false, error: 'Locked', message: `Cannot delete task "${tasks[taskIndex].title}": it is locked. Ask the user to unlock it first.` };
     }
 
     const deletedTitle = tasks[taskIndex].title;

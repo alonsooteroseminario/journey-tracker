@@ -12,10 +12,11 @@ import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
 import { trackActivity, diffFields, formatDiffAction } from '@/lib/activity';
 import { Task } from '@/types';
+import { canEdit } from '@/lib/locks/lockGuards';
 
 export const toolDefinition: ToolDefinition = {
   name: 'update-task',
-  description: 'Updates a task\'s properties like title, description, priority, due date, or notes.',
+  description: 'Updates a task\'s properties like title, description, priority, due date, or notes. Refuses to edit hard-locked tasks (soft-locked tasks can still be edited).',
   input_schema: {
     type: 'object',
     properties: {
@@ -130,6 +131,12 @@ export async function executeUpdateTask(
         error: 'Validation error',
         message: validation.error,
       };
+    }
+
+    // Lock guard: status-only updates are allowed even on hard-locked tasks (§3.2)
+    const isStatusOnly = Object.keys(validation.data).length === 1 && Object.keys(validation.data)[0] === 'status';
+    if (!isStatusOnly && !canEdit(tasks[taskIndex])) {
+      return { success: false, error: 'Locked', message: `Cannot edit task "${tasks[taskIndex].title}": it is hard-locked. Ask the user to unlock it first.` };
     }
 
     // Capture old values for diff

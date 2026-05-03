@@ -2,6 +2,12 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SubstepCard } from './SubstepCard';
 import type { Substep } from '@/types';
+import { useUndoToast } from '@/components/undo/UndoToastProvider';
+
+vi.mock('@/components/undo/UndoToastProvider', () => ({
+  useUndoToast: () => ({ showUndoToast: vi.fn() }),
+  UndoToastProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
 
 vi.mock('@dnd-kit/sortable', () => ({
   useSortable: () => ({
@@ -228,5 +234,76 @@ describe('SubstepCard', () => {
     expect(onUpdate).toHaveBeenCalledWith(
       expect.objectContaining({ cost: undefined })
     );
+  });
+
+  // --- Lock / Undo tests ---
+
+  it('shows soft lock badge when lockLevel is soft', () => {
+    const substep: Substep = { ...BASE_SUBSTEP, lockLevel: 'soft' };
+    render(
+      <SubstepCard substep={substep} onToggle={vi.fn()} onUpdate={vi.fn()} onDelete={vi.fn()} />
+    );
+    expect(screen.getByLabelText('Soft locked')).toBeInTheDocument();
+  });
+
+  it('shows hard lock badge when lockLevel is hard', () => {
+    const substep: Substep = { ...BASE_SUBSTEP, lockLevel: 'hard' };
+    render(
+      <SubstepCard substep={substep} onToggle={vi.fn()} onUpdate={vi.fn()} onDelete={vi.fn()} />
+    );
+    expect(screen.getByLabelText('Hard locked')).toBeInTheDocument();
+  });
+
+  it('shows no lock badge when lockLevel is undefined', () => {
+    render(
+      <SubstepCard substep={BASE_SUBSTEP} onToggle={vi.fn()} onUpdate={vi.fn()} onDelete={vi.fn()} />
+    );
+    expect(screen.queryByLabelText('Soft locked')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Hard locked')).not.toBeInTheDocument();
+  });
+
+  it('calls onUpdateLock with soft when lock button is clicked on unlocked substep', () => {
+    const onUpdateLock = vi.fn();
+    render(
+      <SubstepCard
+        substep={BASE_SUBSTEP}
+        onToggle={vi.fn()}
+        onUpdate={vi.fn()}
+        onDelete={vi.fn()}
+        onUpdateLock={onUpdateLock}
+      />
+    );
+    fireEvent.click(screen.getByTitle('Lock: none'));
+    expect(onUpdateLock).toHaveBeenCalledWith('soft');
+  });
+
+  it('soft-locked: edit button is enabled, delete button is disabled with title Locked', () => {
+    const substep: Substep = { ...BASE_SUBSTEP, lockLevel: 'soft' };
+    render(
+      <SubstepCard substep={substep} onToggle={vi.fn()} onUpdate={vi.fn()} onDelete={vi.fn()} />
+    );
+    const editBtn = screen.getByTitle('Edit');
+    expect(editBtn).not.toBeDisabled();
+    const deleteBtn = screen.getByTitle('Locked');
+    expect(deleteBtn).toBeDisabled();
+  });
+
+  it('hard-locked: both edit and delete buttons are disabled with title Locked', () => {
+    const substep: Substep = { ...BASE_SUBSTEP, lockLevel: 'hard' };
+    render(
+      <SubstepCard substep={substep} onToggle={vi.fn()} onUpdate={vi.fn()} onDelete={vi.fn()} />
+    );
+    const lockedBtns = screen.getAllByTitle('Locked');
+    expect(lockedBtns.length).toBeGreaterThanOrEqual(2);
+    lockedBtns.forEach((btn) => expect(btn).toBeDisabled());
+  });
+
+  it('delete on unlocked substep calls onDelete', () => {
+    const onDelete = vi.fn();
+    render(
+      <SubstepCard substep={BASE_SUBSTEP} onToggle={vi.fn()} onUpdate={vi.fn()} onDelete={onDelete} />
+    );
+    fireEvent.click(screen.getByTitle('Delete'));
+    expect(onDelete).toHaveBeenCalledOnce();
   });
 });

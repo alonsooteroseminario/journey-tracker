@@ -28,6 +28,8 @@ export interface Substep {
   order: number;
   isArchived?: boolean;
   archivedAt?: string;
+  lockLevel?: 'none' | 'soft' | 'hard';
+  lockedAt?: string; // ISO date — set when lockLevel is changed from 'none'
 }
 
 export interface Task {
@@ -52,6 +54,8 @@ export interface Task {
   tags?: string[];
   isArchived?: boolean;
   archivedAt?: string;
+  lockLevel?: 'none' | 'soft' | 'hard';
+  lockedAt?: string; // ISO date — set when lockLevel is changed from 'none'
 }
 
 export interface Goal {
