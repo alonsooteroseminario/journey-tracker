@@ -10,10 +10,11 @@ import { securityGuard } from '@/lib/agent/security';
 import { auditLogger } from '@/lib/agent/auditLog';
 import { trackActivity } from '@/lib/activity';
 import { Task } from '@/types';
+import { canDelete } from '@/lib/locks/lockGuards';
 
 export const toolDefinition: ToolDefinition = {
   name: 'delete-substep',
-  description: 'Permanently removes a substep from a task within a goal. Use when the user wants to delete or remove a substep.',
+  description: 'Permanently removes a substep from a task within a goal. Use when the user wants to delete or remove a substep. Refuses to delete substeps that are soft- or hard-locked.',
   input_schema: {
     type: 'object',
     properties: {
@@ -79,6 +80,10 @@ export async function executeDeleteSubstep(
 
     if (substepIndex === -1) {
       return { success: false, error: 'Not found', message: 'Substep not found' };
+    }
+
+    if (!canDelete(substeps[substepIndex])) {
+      return { success: false, error: 'Locked', message: `Cannot delete substep "${substeps[substepIndex].title}": it is locked. Ask the user to unlock it first.` };
     }
 
     const deletedTitle = substeps[substepIndex].title;

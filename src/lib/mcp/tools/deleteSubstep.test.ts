@@ -112,4 +112,39 @@ describe('executeDeleteSubstep', () => {
     expect(result.data.taskId).toBe('task-1');
     expect(result.data.substepId).toBe('sub-1');
   });
+
+  it('refuses to delete a soft-locked substep', async () => {
+    mockGoalFindUnique.mockResolvedValue({
+      ...makeGoal(),
+      tasks: [{
+        id: 'task-1', title: 'Task One', status: 'todo', order: 0,
+        substeps: [{ id: 'sub-1', title: 'Locked Sub', status: 'not_started', order: 0, lockLevel: 'soft' }],
+      }],
+    });
+    const result = await executeDeleteSubstep({ goalId: 'goal-1', taskId: 'task-1', substepId: 'sub-1' }, 'clerk-1');
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Locked');
+    expect(result.message).toContain('Locked Sub');
+    expect(mockGoalUpdate).not.toHaveBeenCalled();
+  });
+
+  it('refuses to delete a hard-locked substep', async () => {
+    mockGoalFindUnique.mockResolvedValue({
+      ...makeGoal(),
+      tasks: [{
+        id: 'task-1', title: 'Task One', status: 'todo', order: 0,
+        substeps: [{ id: 'sub-1', title: 'Hard Sub', status: 'not_started', order: 0, lockLevel: 'hard' }],
+      }],
+    });
+    const result = await executeDeleteSubstep({ goalId: 'goal-1', taskId: 'task-1', substepId: 'sub-1' }, 'clerk-1');
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Locked');
+    expect(mockGoalUpdate).not.toHaveBeenCalled();
+  });
+
+  it('allows deleting an unlocked substep', async () => {
+    const result = await executeDeleteSubstep({ goalId: 'goal-1', taskId: 'task-1', substepId: 'sub-1' }, 'clerk-1');
+    expect(result.success).toBe(true);
+    expect(mockGoalUpdate).toHaveBeenCalledOnce();
+  });
 });
