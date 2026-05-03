@@ -18,7 +18,7 @@ A fresh Claude session can pick up at the next `pending` step by reading:
 | 4 | TaskMiniCard wiring + copy button | ✅ done | [step4-taskcard-wiring.md](./2026-05-03-lock-undo-copy-step4-taskcard-wiring.md) · Done: 2026-05-03 · commit `0d90fb1` |
 | 5 | restoreTask/restoreSubstep + GoalCard integration | ✅ done | [step5-restore-integration.md](./2026-05-03-lock-undo-copy-step5-restore-integration.md) · Done: 2026-05-03 · commit `5c6b917` |
 | 6 | MCP agent tool guards | ✅ done | [step6-agent-guards.md](./2026-05-03-lock-undo-copy-step6-agent-guards.md) · Done: 2026-05-03 · commit `005b03b` |
-| 7 | End-to-end verification | ⬜ pending | [step7-verification.md](./2026-05-03-lock-undo-copy-step7-verification.md) |
+| 7 | End-to-end verification | ✅ done | [step7-verification.md](./2026-05-03-lock-undo-copy-step7-verification.md) · Done: 2026-05-03 |
 
 **Status legend:** ⬜ pending · 🟡 in-progress · ✅ done · ❌ blocked
 

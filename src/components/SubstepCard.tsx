@@ -13,12 +13,11 @@ interface SubstepCardProps {
   onToggle: () => void;
   onUpdate: (updates: Partial<Substep>) => void;
   onDelete: () => void;
-  isDragging?: boolean;
   onUpdateLock?: (lockLevel: LockLevel) => void;
   onRestore?: () => void;
 }
 
-export function SubstepCard({ substep, onToggle, onUpdate, onDelete, isDragging, onUpdateLock, onRestore }: SubstepCardProps) {
+export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLock, onRestore }: SubstepCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(substep.title);
   const [editCost, setEditCost] = useState(substep.cost?.toString() || "");
