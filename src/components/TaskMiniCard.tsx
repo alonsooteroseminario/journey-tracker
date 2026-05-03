@@ -34,9 +34,10 @@ interface TaskMiniCardProps {
   onUpdateSubstep: (substepId: string, updates: Partial<Substep>) => void;
   onToggleSubstep: (substepId: string) => void;
   onDeleteSubstep: (substepId: string) => void;
-  isDragging?: boolean;
   onUpdateLock?: (lockLevel: LockLevel) => void;
   onRestore?: () => void;
+  onUpdateSubstepLock?: (substepId: string, lockLevel: LockLevel) => void;
+  onRestoreSubstep?: (snapshot: { substep: Substep; parentTaskId: string; originalIndex: number }) => void;
 }
 
 export function TaskMiniCard({
@@ -48,9 +49,10 @@ export function TaskMiniCard({
   onUpdateSubstep,
   onToggleSubstep,
   onDeleteSubstep,
-  isDragging,
   onUpdateLock,
   onRestore,
+  onUpdateSubstepLock,
+  onRestoreSubstep,
 }: TaskMiniCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -455,13 +457,15 @@ export function TaskMiniCard({
                   strategy={verticalListSortingStrategy}
                 >
                   <div className="space-y-2">
-                    {substeps.map((substep) => (
+                    {substeps.map((substep, substepIdx) => (
                       <SubstepCard
                         key={substep.id}
                         substep={substep}
                         onToggle={() => onToggleSubstep(substep.id)}
                         onUpdate={(updates) => onUpdateSubstep(substep.id, updates)}
                         onDelete={() => onDeleteSubstep(substep.id)}
+                        onUpdateLock={onUpdateSubstepLock ? (lvl) => onUpdateSubstepLock(substep.id, lvl) : undefined}
+                        onRestore={onRestoreSubstep ? () => onRestoreSubstep({ substep, parentTaskId: task.id, originalIndex: substepIdx }) : undefined}
                       />
                     ))}
                   </div>
