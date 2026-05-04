@@ -9,6 +9,8 @@ import { groupsApi } from "./slices/groupsSlice";
 import adminUIReducer, { adminApi } from "./slices/adminSlice";
 import chatReducer from "./slices/chatSlice";
 import uiReducer from "./slices/uiSlice";
+import composeReducer from "./slices/composeSlice";
+import { promptsApi } from "./slices/promptsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +23,7 @@ export const store = configureStore({
     chat: chatReducer,
     ui: uiReducer,
     adminUI: adminUIReducer,
+    compose: composeReducer,
     // RTK Query API slices (cache + auto-fetching)
     [goalsApi.reducerPath]: goalsApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
@@ -30,6 +33,7 @@ export const store = configureStore({
     [templatesApi.reducerPath]: templatesApi.reducer,
     [adminApi.reducerPath]: adminApi.reducer,
     [groupsApi.reducerPath]: groupsApi.reducer,
+    [promptsApi.reducerPath]: promptsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -40,7 +44,8 @@ export const store = configureStore({
       feedApi.middleware,
       templatesApi.middleware,
       adminApi.middleware,
-      groupsApi.middleware
+      groupsApi.middleware,
+      promptsApi.middleware
     ),
 });
 
