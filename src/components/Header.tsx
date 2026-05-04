@@ -20,6 +20,7 @@ const navItems = [
   { href: "/templates", label: "Templates", icon: "📋" },
   { href: "/marketplace", label: "Marketplace", icon: "🏪" },
   { href: "/cost-tracker", label: "Cost Tracker", icon: "💰" },
+  { href: "/wallet", label: "Wallet", icon: "💼" },
 ];
 
 export function Header({
