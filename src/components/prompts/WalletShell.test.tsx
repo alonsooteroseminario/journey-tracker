@@ -4,11 +4,15 @@ import { WalletShell } from './WalletShell';
 import type { PromptWallet } from '@/types';
 
 const mockCreateWallet = vi.fn();
+const mockCreateGroup = vi.fn();
+const mockCreateChunk = vi.fn();
 const mockUseListWalletsQuery = vi.fn(() => ({ data: [] as PromptWallet[], isLoading: false }));
 
 vi.mock('@/store/slices/promptsSlice', () => ({
   useListWalletsQuery: (...args: unknown[]) => mockUseListWalletsQuery(...args),
   useCreateWalletMutation: () => [mockCreateWallet, { isLoading: false }],
+  useCreateGroupMutation: () => [mockCreateGroup, { isLoading: false }],
+  useCreateChunkMutation: () => [mockCreateChunk, { isLoading: false }],
 }));
 
 vi.mock('./WalletSidebar', () => ({
@@ -71,7 +75,7 @@ describe('WalletShell', () => {
     expect(screen.getByText('Marketing Copy')).toBeInTheDocument();
   });
 
-  it('clicking a seed button calls createWallet', () => {
+  it('clicking a seed button calls createWallet with title + icon + description', () => {
     render(<WalletShell />);
     fireEvent.click(screen.getByText('Coding Prompts'));
     expect(mockCreateWallet).toHaveBeenCalledWith(

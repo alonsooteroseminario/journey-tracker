@@ -1,8 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useListWalletsQuery, useCreateWalletMutation } from "@/store/slices/promptsSlice";
-import { SEED_TEMPLATES } from "@/lib/prompts/seedTemplates";
+import {
+  useListWalletsQuery,
+  useCreateWalletMutation,
+  useCreateGroupMutation,
+  useCreateChunkMutation,
+} from "@/store/slices/promptsSlice";
+import { SEED_TEMPLATES, type SeedWallet } from "@/lib/prompts/seedTemplates";
 import { WalletSidebar } from "./WalletSidebar";
 import { WalletDetail } from "./WalletDetail";
 import { ComposeDrawer } from "./ComposeDrawer";
@@ -12,6 +17,8 @@ type ActivePane = "wallets" | "detail" | "compose";
 export function WalletShell() {
   const { data: wallets = [], isLoading } = useListWalletsQuery();
   const [createWallet] = useCreateWalletMutation();
+  const [createGroup] = useCreateGroupMutation();
+  const [createChunk] = useCreateChunkMutation();
   const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
   const [activePane, setActivePane] = useState<ActivePane>("wallets");
 
@@ -29,12 +36,31 @@ export function WalletShell() {
     setActivePane("detail");
   };
 
-  const handleSeedWallet = async (title: string, icon: string) => {
-    const result = await createWallet({ title, icon });
-    if ("data" in result && result.data) {
-      setSelectedWalletId(result.data.id);
-      setActivePane("detail");
+  const handleSeedWallet = async (template: SeedWallet) => {
+    const walletResult = await createWallet({
+      title: template.title,
+      icon: template.icon,
+      description: template.description,
+    });
+    if (!("data" in walletResult) || !walletResult.data) return;
+    const walletId = walletResult.data.id;
+
+    for (const group of template.groups) {
+      const groupResult = await createGroup({
+        walletId,
+        title: group.title,
+        description: group.description,
+      });
+      if (!("data" in groupResult) || !groupResult.data) continue;
+      const groupId = groupResult.data.id;
+
+      for (const chunk of group.chunks) {
+        await createChunk({ groupId, title: chunk.title, content: chunk.content });
+      }
     }
+
+    setSelectedWalletId(walletId);
+    setActivePane("detail");
   };
 
   if (isLoading) {
@@ -61,7 +87,7 @@ export function WalletShell() {
             {SEED_TEMPLATES.map((t) => (
               <button
                 key={t.title}
-                onClick={() => handleSeedWallet(t.title, t.icon)}
+                onClick={() => handleSeedWallet(t)}
                 className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-xl hover:border-brand-primary hover:bg-brand-light/50 transition-all text-left shadow-sm"
               >
                 <span className="text-2xl">{t.icon}</span>

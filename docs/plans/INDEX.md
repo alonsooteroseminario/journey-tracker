@@ -34,6 +34,7 @@ Each session: read this file first to orient yourself. Check **Status** and **No
 | `2026-02-25-auto-hide-completed-plan.md` | Auto-Hide Completed | ✅ Done | hideCompletedAfterDays pref + GoalCard filter |
 | `2026-02-26-brand-identity-plan.md` | Brand Identity Rebrand | ✅ Done | All 3 sessions merged to main (commit 1958c0d) |
 | `2026-02-26-chat-header-splitview-plan.md` | Chat Header + Split View | ✅ Done | Chat trigger in Header, floating/split panel. 7 commits (6d2b9e0→2b4fb5f) |
+| `2026-05-03-prompts-wallet-INDEX.md` | Prompts Wallet | ✅ Done | 3-tier snippet manager (Wallet→Group→Chunk). 8 steps, branch feat/prompts-wallet. 1290 tests passing. |
 
 ### Pending / In Progress 🚧
 
