@@ -22,8 +22,8 @@
 
 | # | Step | Plan File | Status | Notes |
 |---|------|-----------|--------|-------|
-| 1 | Schema + types + ownership helper | `2026-05-03-prompts-wallet-step1-schema.md` | 🚧 Pending | Prisma migrate; no UI yet |
-| 2 | REST: prompt-wallets endpoints | `2026-05-03-prompts-wallet-step2-wallet-api.md` | 🚧 Pending | Depends on Step 1 |
+| 1 | Schema + types + ownership helper | `2026-05-03-prompts-wallet-step1-schema.md` | ✅ Done | Prisma models + `src/lib/prompts/ownership.ts` + tests. Run `npx prisma generate` from a WSL/Linux cwd (not `\\wsl$` UNC) so the client picks up new models; then `npm run test` + `npm run lint`. Commit on `feat/prompts-wallet-step1-schema` when git is available. |
+| 2 | REST: prompt-wallets endpoints | `2026-05-03-prompts-wallet-step2-wallet-api.md` | ✅ Done | `GET/POST` `route.ts`, `PATCH/DELETE` `[id]/route.ts`, `[id]/duplicate`, `reorder`, `restore` + co-located tests |
 | 3 | REST: prompt-groups + prompt-chunks | `2026-05-03-prompts-wallet-step3-group-chunk-api.md` | 🚧 Pending | Depends on Step 1 |
 | 4 | RTK Query + composeSlice + mergeChunks | `2026-05-03-prompts-wallet-step4-store-and-merge.md` | 🚧 Pending | Depends on Steps 2 + 3 |
 | 5 | Leaf components: ChunkRow, ComposeChunkRow, MergedPreview | `2026-05-03-prompts-wallet-step5-leaf-components.md` | 🚧 Pending | Depends on Step 4 |

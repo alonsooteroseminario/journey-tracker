@@ -43,6 +43,7 @@ model User {
   recordings       Recording[]
   goalGroups       GoalGroup[]
   goalStreaks       GoalStreak[]  @relation("UserGoalStreaks")
+  promptWallets    PromptWallet[]
 
   hideCompletedAfterDays Int?
 
@@ -109,6 +110,63 @@ model GoalGroup {
   updatedAt DateTime @updatedAt
 
   @@map("goal_groups")
+}
+
+// ============== Prompt Wallet (reusable prompt snippets) ==============
+model PromptWallet {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String        @db.ObjectId
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  icon        String?
+  description String?
+  order       Int           @default(0)
+  lockLevel   String?
+
+  groups      PromptGroup[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([userId])
+  @@map("prompt_wallets")
+}
+
+model PromptGroup {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  walletId    String        @db.ObjectId
+  wallet      PromptWallet  @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  order       Int           @default(0)
+  lockLevel   String?
+
+  chunks      PromptChunk[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([walletId])
+  @@map("prompt_groups")
+}
+
+model PromptChunk {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  groupId   String       @db.ObjectId
+  group     PromptGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  title     String
+  content   String
+  order     Int          @default(0)
+  lockLevel String?
+
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([groupId])
+  @@map("prompt_chunks")
 }
 
 // ============== Streak Data Model ==============

@@ -49,8 +49,8 @@ vi.mock('@clerk/nextjs', () => ({
 }));
 
 // Mock Prisma Client
-vi.mock('@/lib/prisma', () => ({
-  prisma: {
+vi.mock('@/lib/prisma', () => {
+  const prismaMock = {
     user: {
       findUnique: vi.fn(),
       findFirst: vi.fn(),
@@ -131,8 +131,45 @@ vi.mock('@/lib/prisma', () => ({
       update: vi.fn(),
       upsert: vi.fn(),
     },
-  },
-}));
+    promptWallet: {
+      findFirst: vi.fn(),
+      findUnique: vi.fn(),
+      findMany: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
+    promptGroup: {
+      findFirst: vi.fn(),
+      findUnique: vi.fn(),
+      findMany: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
+    promptChunk: {
+      findFirst: vi.fn(),
+      findUnique: vi.fn(),
+      findMany: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
+    $transaction: vi.fn(),
+  };
+  prismaMock.$transaction.mockImplementation(
+    async (arg: unknown) => {
+      if (Array.isArray(arg)) {
+        return Promise.all(arg);
+      }
+      if (typeof arg === 'function') {
+        return (arg as (tx: typeof prismaMock) => Promise<unknown>)(prismaMock);
+      }
+      return undefined;
+    }
+  );
+  return { prisma: prismaMock };
+});
 
 // Extend expect with custom matchers
 expect.extend({});

@@ -1,3 +1,7 @@
+import type { LockLevel } from '@/lib/locks/lockGuards';
+
+export type { LockLevel };
+
 // Task status enum
 export type TaskStatus = 'not_started' | 'in_progress' | 'completed';
 
@@ -489,4 +493,41 @@ export interface CalendarEvent {
   date: string;
   taskId?: string;
   color?: string;
+}
+
+// Prompts Wallet (Wallet → Group → Chunk)
+export interface PromptChunk {
+  id: string;
+  groupId: string;
+  title: string;
+  content: string;
+  order: number;
+  lockLevel?: LockLevel;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PromptGroup {
+  id: string;
+  walletId: string;
+  title: string;
+  description?: string;
+  order: number;
+  lockLevel?: LockLevel;
+  chunks: PromptChunk[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PromptWallet {
+  id: string;
+  userId: string;
+  title: string;
+  icon?: string;
+  description?: string;
+  order: number;
+  lockLevel?: LockLevel;
+  groups: PromptGroup[];
+  createdAt: string;
+  updatedAt: string;
 }
