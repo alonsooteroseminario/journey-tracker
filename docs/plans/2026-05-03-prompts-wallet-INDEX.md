@@ -28,7 +28,7 @@
 | 4 | RTK Query + composeSlice + mergeChunks | `2026-05-03-prompts-wallet-step4-store-and-merge.md` | ✅ Done | `src/store/slices/promptsSlice.ts` (19 endpoints), `composeSlice.ts` (7 actions + selectComposeRefs), `src/lib/prompts/mergeChunks.ts`; both registered in store/index.ts. 48 new tests. Commit 411d27d. |
 | 5 | Leaf components: ChunkRow, ComposeChunkRow, MergedPreview | `2026-05-03-prompts-wallet-step5-leaf-components.md` | ✅ Done | `src/components/prompts/{ChunkRow,ComposeChunkRow,MergedPreview}.tsx` + tests. 28 new tests. Commit 4afb306. |
 | 6 | Container components: GroupCard, ComposeDrawer, WalletDetail, WalletHeader | `2026-05-03-prompts-wallet-step6-container-components.md` | ✅ Done | All 4 containers in `src/components/prompts/`. 37 new tests. Commit 86fdeeb. |
-| 7 | Top-level: WalletShell, WalletSidebar, WalletRow, /wallet page, nav entry | `2026-05-03-prompts-wallet-step7-page-and-nav.md` | 🚧 Pending | Depends on Step 6 |
+| 7 | Top-level: WalletShell, WalletSidebar, WalletRow, /wallet page, nav entry | `2026-05-03-prompts-wallet-step7-page-and-nav.md` | ✅ Done | `src/app/wallet/page.tsx`, all 3 top-level components, Navigation.tsx edited, seedTemplates.ts. Build passes. 24 new tests. Commit e29baee. |
 | 8 | E2E suite + empty-state seed templates + INDEX update | `2026-05-03-prompts-wallet-step8-e2e-and-seeds.md` | 🚧 Pending | Depends on Step 7 |
 
 Legend: 🚧 Pending · 🔄 In Progress · ✅ Done · ⛔ Blocked
