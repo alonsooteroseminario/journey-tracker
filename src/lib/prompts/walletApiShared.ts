@@ -1,6 +1,5 @@
 import type { LockLevel } from '@/lib/locks/lockGuards';
 
-const TITLE_MAX = 200;
 const DESCRIPTION_MAX = 2000;
 const ICON_MAX = 64;
 
@@ -14,9 +13,6 @@ export function validateWalletTitle(value: unknown): string | null {
   const t = value.trim();
   if (t.length === 0) {
     return 'Title is required';
-  }
-  if (t.length > TITLE_MAX) {
-    return `Title must be at most ${TITLE_MAX} characters`;
   }
   return null;
 }

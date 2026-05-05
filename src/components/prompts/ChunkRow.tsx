@@ -167,10 +167,10 @@ export function ChunkRow({
               <path d="M12 1a5 5 0 00-5 5v3H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V11a2 2 0 00-2-2h-2V6a5 5 0 00-5-5zm-3 5a3 3 0 116 0v3H9V6zm3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
             </svg>
           )}
-          <p className="text-sm text-gray-700 truncate">{chunk.title}</p>
+          <p className="text-sm text-gray-700 break-words">{chunk.title}</p>
         </div>
         {chunk.content && (
-          <p className="text-xs text-gray-400 truncate mt-0.5">{chunk.content}</p>
+          <p className="text-xs text-gray-500 mt-1 whitespace-pre-wrap break-words">{chunk.content}</p>
         )}
       </div>
 
