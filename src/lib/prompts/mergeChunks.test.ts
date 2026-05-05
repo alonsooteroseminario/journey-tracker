@@ -19,8 +19,8 @@ describe('mergeChunks', () => {
     expect(mergeChunks([])).toBe('');
   });
 
-  it('formats single chunk as "# title\\ncontent"', () => {
-    expect(mergeChunks([chunk('c1', 'hello', 0, 'My Chunk')])).toBe('# My Chunk\nhello');
+  it('formats single chunk as "title\\ncontent" with no # prefix', () => {
+    expect(mergeChunks([chunk('c1', 'hello', 0, 'My Chunk')])).toBe('My Chunk\nhello');
   });
 
   it('joins two chunks with double newline separator', () => {
@@ -28,7 +28,7 @@ describe('mergeChunks', () => {
       chunk('c1', 'first content', 0, 'Chunk A'),
       chunk('c2', 'second content', 1, 'Chunk B'),
     ]);
-    expect(result).toBe('# Chunk A\nfirst content\n\n# Chunk B\nsecond content');
+    expect(result).toBe('Chunk A\nfirst content\n\nChunk B\nsecond content');
   });
 
   it('preserves the order of the input array', () => {
@@ -37,11 +37,11 @@ describe('mergeChunks', () => {
       chunk('c2', 'two', 1, 'Second'),
       chunk('c3', 'three', 2, 'Third'),
     ]);
-    expect(result).toBe('# First\none\n\n# Second\ntwo\n\n# Third\nthree');
+    expect(result).toBe('First\none\n\nSecond\ntwo\n\nThird\nthree');
   });
 
   it('renders title-only chunk when content is empty', () => {
-    expect(mergeChunks([chunk('c1', '', 0, 'Empty')])).toBe('# Empty');
+    expect(mergeChunks([chunk('c1', '', 0, 'Empty')])).toBe('Empty');
   });
 
   it('handles chunks with multi-line content', () => {
@@ -49,11 +49,11 @@ describe('mergeChunks', () => {
       chunk('c1', 'line1\nline2', 0, 'Block'),
       chunk('c2', 'line3', 1, 'Next'),
     ]);
-    expect(result).toBe('# Block\nline1\nline2\n\n# Next\nline3');
+    expect(result).toBe('Block\nline1\nline2\n\nNext\nline3');
   });
 
-  it('uses lockLevel and other extra fields without affecting output', () => {
+  it('ignores extra fields and only uses title + content', () => {
     const c = { ...chunk('c1', 'body', 0, 'Title'), lockLevel: 'hard' as const };
-    expect(mergeChunks([c])).toBe('# Title\nbody');
+    expect(mergeChunks([c])).toBe('Title\nbody');
   });
 });
