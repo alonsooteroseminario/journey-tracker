@@ -2,11 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { mergeChunks } from './mergeChunks';
 import type { PromptChunk } from '@/types';
 
-function chunk(id: string, content: string, order = 0): PromptChunk {
+function chunk(id: string, content: string, order = 0, title?: string): PromptChunk {
   return {
     id,
     groupId: 'g1',
-    title: id,
+    title: title ?? id,
     content,
     order,
     createdAt: '2024-01-01T00:00:00.000Z',
@@ -19,26 +19,41 @@ describe('mergeChunks', () => {
     expect(mergeChunks([])).toBe('');
   });
 
-  it('returns chunk content for single chunk', () => {
-    expect(mergeChunks([chunk('c1', 'hello')])).toBe('hello');
+  it('formats single chunk as "# title\\ncontent"', () => {
+    expect(mergeChunks([chunk('c1', 'hello', 0, 'My Chunk')])).toBe('# My Chunk\nhello');
   });
 
-  it('joins two chunks with double newline', () => {
-    expect(mergeChunks([chunk('c1', 'hello'), chunk('c2', 'world')])).toBe('hello\n\nworld');
+  it('joins two chunks with double newline separator', () => {
+    const result = mergeChunks([
+      chunk('c1', 'first content', 0, 'Chunk A'),
+      chunk('c2', 'second content', 1, 'Chunk B'),
+    ]);
+    expect(result).toBe('# Chunk A\nfirst content\n\n# Chunk B\nsecond content');
   });
 
   it('preserves the order of the input array', () => {
-    const result = mergeChunks([chunk('c1', 'first'), chunk('c2', 'second'), chunk('c3', 'third')]);
-    expect(result).toBe('first\n\nsecond\n\nthird');
+    const result = mergeChunks([
+      chunk('c1', 'one', 0, 'First'),
+      chunk('c2', 'two', 1, 'Second'),
+      chunk('c3', 'three', 2, 'Third'),
+    ]);
+    expect(result).toBe('# First\none\n\n# Second\ntwo\n\n# Third\nthree');
   });
 
-  it('ignores extra fields and only uses content', () => {
-    const c = { ...chunk('c1', 'content only'), lockLevel: 'hard' as const };
-    expect(mergeChunks([c])).toBe('content only');
+  it('renders title-only chunk when content is empty', () => {
+    expect(mergeChunks([chunk('c1', '', 0, 'Empty')])).toBe('# Empty');
   });
 
   it('handles chunks with multi-line content', () => {
-    const result = mergeChunks([chunk('c1', 'line1\nline2'), chunk('c2', 'line3')]);
-    expect(result).toBe('line1\nline2\n\nline3');
+    const result = mergeChunks([
+      chunk('c1', 'line1\nline2', 0, 'Block'),
+      chunk('c2', 'line3', 1, 'Next'),
+    ]);
+    expect(result).toBe('# Block\nline1\nline2\n\n# Next\nline3');
+  });
+
+  it('uses lockLevel and other extra fields without affecting output', () => {
+    const c = { ...chunk('c1', 'body', 0, 'Title'), lockLevel: 'hard' as const };
+    expect(mergeChunks([c])).toBe('# Title\nbody');
   });
 });
