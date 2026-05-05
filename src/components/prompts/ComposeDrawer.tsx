@@ -18,7 +18,6 @@ import {
 } from "@dnd-kit/sortable";
 import {
   selectComposeRefs,
-  toggleChunk,
   removeChunk,
   clearCompose,
   reorderChunks as reorderComposeOrder,
@@ -42,16 +41,16 @@ export function ComposeDrawer() {
     return map;
   }, [wallets]);
 
-  const includedChunks = useMemo(
+  // All composed chunks contribute to the merged result
+  const composedChunks = useMemo(
     () =>
       refs
-        .filter((r) => r.included)
         .map((r) => chunkMap.get(r.chunkId))
         .filter((c): c is PromptChunk => c !== undefined),
     [refs, chunkMap]
   );
 
-  const mergedText = mergeChunks(includedChunks);
+  const mergedText = mergeChunks(composedChunks);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -105,8 +104,6 @@ export function ComposeDrawer() {
                   <ComposeChunkRow
                     key={ref.chunkId}
                     chunk={chunk}
-                    included={ref.included}
-                    onToggleInclude={() => dispatch(toggleChunk(ref.chunkId))}
                     onRemove={() => dispatch(removeChunk(ref.chunkId))}
                   />
                 );

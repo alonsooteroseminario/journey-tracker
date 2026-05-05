@@ -30,8 +30,6 @@ const CHUNK: PromptChunk = {
 
 const defaultProps = {
   chunk: CHUNK,
-  included: true,
-  onToggleInclude: vi.fn(),
   onRemove: vi.fn(),
 };
 
@@ -45,24 +43,6 @@ describe('ComposeChunkRow', () => {
     expect(screen.getByText('My System Prompt')).toBeInTheDocument();
   });
 
-  it('checkbox is checked when included=true', () => {
-    render(<ComposeChunkRow {...defaultProps} included={true} />);
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).toBeChecked();
-  });
-
-  it('checkbox is unchecked when included=false', () => {
-    render(<ComposeChunkRow {...defaultProps} included={false} />);
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).not.toBeChecked();
-  });
-
-  it('toggling checkbox calls onToggleInclude', () => {
-    render(<ComposeChunkRow {...defaultProps} />);
-    fireEvent.click(screen.getByRole('checkbox'));
-    expect(defaultProps.onToggleInclude).toHaveBeenCalledOnce();
-  });
-
   it('remove button calls onRemove', () => {
     render(<ComposeChunkRow {...defaultProps} />);
     fireEvent.click(screen.getByTitle('Remove from Compose'));
@@ -72,5 +52,10 @@ describe('ComposeChunkRow', () => {
   it('renders drag handle', () => {
     render(<ComposeChunkRow {...defaultProps} />);
     expect(screen.getByTitle('Drag to reorder')).toBeInTheDocument();
+  });
+
+  it('has no checkbox', () => {
+    render(<ComposeChunkRow {...defaultProps} />);
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
   });
 });

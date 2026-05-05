@@ -6,12 +6,10 @@ import type { PromptChunk } from "@/types";
 
 interface ComposeChunkRowProps {
   chunk: PromptChunk;
-  included: boolean;
-  onToggleInclude: () => void;
   onRemove: () => void;
 }
 
-export function ComposeChunkRow({ chunk, included, onToggleInclude, onRemove }: ComposeChunkRowProps) {
+export function ComposeChunkRow({ chunk, onRemove }: ComposeChunkRowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: chunk.id });
 
   const style = {
@@ -24,9 +22,7 @@ export function ComposeChunkRow({ chunk, included, onToggleInclude, onRemove }: 
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-2 p-2 rounded-lg border transition-all ${
-        included ? "bg-white border-gray-200" : "bg-gray-50 border-gray-100 opacity-60"
-      }`}
+      className="flex items-center gap-2 p-2 rounded-lg border border-gray-200 bg-white transition-all"
     >
       {/* Drag Handle */}
       <button
@@ -41,19 +37,8 @@ export function ComposeChunkRow({ chunk, included, onToggleInclude, onRemove }: 
         </svg>
       </button>
 
-      {/* Include Checkbox */}
-      <input
-        type="checkbox"
-        checked={included}
-        onChange={onToggleInclude}
-        className="w-4 h-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary cursor-pointer flex-shrink-0"
-        aria-label={`Include "${chunk.title}" in merged output`}
-      />
-
       {/* Title */}
-      <span className={`flex-1 text-sm truncate ${included ? "text-gray-700" : "text-gray-400"}`}>
-        {chunk.title}
-      </span>
+      <span className="flex-1 text-sm text-gray-700 truncate">{chunk.title}</span>
 
       {/* Remove from Compose */}
       <button

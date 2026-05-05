@@ -61,15 +61,9 @@ vi.mock('@dnd-kit/core', () => ({
 }));
 
 vi.mock('./ComposeChunkRow', () => ({
-  ComposeChunkRow: ({ chunk, included, onToggleInclude, onRemove }: {
-    chunk: { title: string };
-    included: boolean;
-    onToggleInclude: () => void;
-    onRemove: () => void;
-  }) => (
-    <div data-testid="compose-row" data-included={included}>
+  ComposeChunkRow: ({ chunk, onRemove }: { chunk: { title: string }; onRemove: () => void }) => (
+    <div data-testid="compose-row">
       {chunk.title}
-      <button onClick={onToggleInclude}>Toggle</button>
       <button onClick={onRemove}>Remove</button>
     </div>
   ),
@@ -83,7 +77,7 @@ vi.mock('./MergedPreview', () => ({
 
 const TWO_REFS: ComposeChunkRef[] = [
   { chunkId: 'c1', sessionOrder: 0, included: true },
-  { chunkId: 'c2', sessionOrder: 1, included: false },
+  { chunkId: 'c2', sessionOrder: 1, included: true },
 ];
 
 beforeEach(() => {
@@ -118,13 +112,6 @@ describe('ComposeDrawer', () => {
     expect(mockDispatch).toHaveBeenCalled();
   });
 
-  it('toggle dispatches toggleChunk', () => {
-    mockUseSelector.mockReturnValue(TWO_REFS);
-    render(<ComposeDrawer />);
-    fireEvent.click(screen.getAllByText('Toggle')[0]);
-    expect(mockDispatch).toHaveBeenCalled();
-  });
-
   it('remove dispatches removeChunk', () => {
     mockUseSelector.mockReturnValue(TWO_REFS);
     render(<ComposeDrawer />);
@@ -132,11 +119,12 @@ describe('ComposeDrawer', () => {
     expect(mockDispatch).toHaveBeenCalled();
   });
 
-  it('passes merged text of included chunks to MergedPreview', () => {
+  it('passes merged text of all composed chunks to MergedPreview', () => {
     mockUseSelector.mockReturnValue(TWO_REFS);
     render(<ComposeDrawer />);
-    // Only c1 is included (c2 has included:false); c1.content = 'alpha content'
+    // All chunks contribute — both alpha and beta content appear
     expect(screen.getByTestId('merged-preview')).toHaveTextContent('alpha content');
+    expect(screen.getByTestId('merged-preview')).toHaveTextContent('beta content');
   });
 
   it('does not show Clear button when compose is empty', () => {
