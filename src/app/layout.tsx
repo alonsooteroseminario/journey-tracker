@@ -27,7 +27,7 @@ export default function RootLayout({
           <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         </head>
         <body
-          className="antialiased min-h-screen bg-gradient-to-br from-white via-brand-light/30 to-indigo-50/60"
+          className="antialiased min-h-screen bg-gradient-to-br from-white via-brand-light/30 to-indigo-50/60 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 dark:text-gray-100"
           suppressHydrationWarning
         >
           <AppShell>
