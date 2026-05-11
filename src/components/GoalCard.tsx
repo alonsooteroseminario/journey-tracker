@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Goal, Task, Substep } from "@/types";
 import { ProgressBar } from "./ProgressBar";
 import { TaskList } from "./TaskList";
@@ -199,6 +199,25 @@ export function GoalCard({
   // Filter activity log for this goal
   const goalActivityLog = activityLog.filter((a) => a.goalId === goal.id);
 
+  // Tab visibility predicates
+  const hasPhasesTab = (goal.phases?.length ?? 0) > 0;
+  const hasCalendarTab = (streakHistory?.length ?? 0) > 0 || goalActivityLog.length > 0;
+  const hasAnalyticsTab =
+    (analytics?.totalTasks ?? 0) > 0 ||
+    (analytics?.weeklyProgress?.length ?? 0) > 0 ||
+    (analytics?.velocityTrend?.length ?? 0) > 0;
+  const hasResourcesTab = Boolean(
+    goal.budget || goal.timeline || (goal.documents && goal.documents.length > 0) || goal.resources
+  );
+
+  // Auto-reset viewMode to "tasks" when the active tab becomes hidden
+  useEffect(() => {
+    if (viewMode === "phases" && !hasPhasesTab) setViewMode("tasks");
+    else if (viewMode === "calendar" && !hasCalendarTab) setViewMode("tasks");
+    else if (viewMode === "analytics" && !hasAnalyticsTab) setViewMode("tasks");
+    else if (viewMode === "info" && !hasResourcesTab) setViewMode("tasks");
+  }, [viewMode, hasPhasesTab, hasCalendarTab, hasAnalyticsTab, hasResourcesTab]);
+
   return (
     <div
       className={`bg-white rounded-2xl shadow-lg border overflow-hidden transition-all duration-300 ${
@@ -396,18 +415,20 @@ export function GoalCard({
 
         {/* View Mode Tabs — only visible when expanded */}
         {isExpanded && (
-          <div role="tablist" className="mt-2 sm:mt-4 grid grid-cols-5 md:flex gap-0.5 sm:gap-2">
-            <button
-              role="tab"
-              aria-selected={viewMode === "phases"}
-              onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
-              className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "phases" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
-              }`}
-            >
-              <span className="block sm:hidden">📊</span>
-              <span className="hidden sm:inline">📊 Phases</span>
-            </button>
+          <div role="tablist" className="mt-2 sm:mt-4 grid grid-flow-col auto-cols-fr md:flex gap-0.5 sm:gap-2">
+            {hasPhasesTab && (
+              <button
+                role="tab"
+                aria-selected={viewMode === "phases"}
+                onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
+                className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
+                  viewMode === "phases" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
+                }`}
+              >
+                <span className="block sm:hidden">📊</span>
+                <span className="hidden sm:inline">📊 Phases</span>
+              </button>
+            )}
             <button
               role="tab"
               aria-selected={viewMode === "tasks"}
@@ -419,39 +440,45 @@ export function GoalCard({
               <span className="block sm:hidden">✅</span>
               <span className="hidden sm:inline">✅ Tasks</span>
             </button>
-            <button
-              role="tab"
-              aria-selected={viewMode === "calendar"}
-              onClick={() => setViewMode("calendar")}
-              className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "calendar" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
-              }`}
-            >
-              <span className="block sm:hidden">📅</span>
-              <span className="hidden sm:inline">📅 Calendar</span>
-            </button>
-            <button
-              role="tab"
-              aria-selected={viewMode === "analytics"}
-              onClick={() => setViewMode("analytics")}
-              className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "analytics" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
-              }`}
-            >
-              <span className="block sm:hidden">📈</span>
-              <span className="hidden sm:inline">📈 Analytics</span>
-            </button>
-            <button
-              role="tab"
-              aria-selected={viewMode === "info"}
-              onClick={() => setViewMode("info")}
-              className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "info" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
-              }`}
-            >
-              <span className="block sm:hidden">ℹ️</span>
-              <span className="hidden sm:inline">ℹ️ Resources</span>
-            </button>
+            {hasCalendarTab && (
+              <button
+                role="tab"
+                aria-selected={viewMode === "calendar"}
+                onClick={() => setViewMode("calendar")}
+                className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
+                  viewMode === "calendar" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
+                }`}
+              >
+                <span className="block sm:hidden">📅</span>
+                <span className="hidden sm:inline">📅 Calendar</span>
+              </button>
+            )}
+            {hasAnalyticsTab && (
+              <button
+                role="tab"
+                aria-selected={viewMode === "analytics"}
+                onClick={() => setViewMode("analytics")}
+                className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
+                  viewMode === "analytics" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
+                }`}
+              >
+                <span className="block sm:hidden">📈</span>
+                <span className="hidden sm:inline">📈 Analytics</span>
+              </button>
+            )}
+            {hasResourcesTab && (
+              <button
+                role="tab"
+                aria-selected={viewMode === "info"}
+                onClick={() => setViewMode("info")}
+                className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
+                  viewMode === "info" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
+                }`}
+              >
+                <span className="block sm:hidden">ℹ️</span>
+                <span className="hidden sm:inline">ℹ️ Resources</span>
+              </button>
+            )}
           </div>
         )}
       </div>

@@ -211,24 +211,20 @@ describe('GoalCard', () => {
         />
       );
 
-      // Card starts collapsed — Phases content is not visible
-      expect(screen.queryByText('No phases yet')).not.toBeInTheDocument();
+      // Card starts collapsed — Tasks content is not visible
+      expect(screen.queryByText('Add a task')).not.toBeInTheDocument();
 
-      // Click Expand (same flush pattern as the passing "phases empty state" test)
+      // Click Expand
       fireEvent.click(screen.getByTitle('Expand'));
 
-      // Intermediate query triggers React 18 flush; then switch to Phases view
-      const phasesTab = screen.getByText('📊 Phases');
-      fireEvent.click(phasesTab);
-
-      // Expanded + Phases view: content is visible
-      expect(screen.getByText('No phases yet')).toBeInTheDocument();
+      // Tasks tab is visible (always shown)
+      expect(screen.getByText('✅ Tasks')).toBeInTheDocument();
 
       // Click Collapse to hide the content section
       fireEvent.click(screen.getByTitle('Collapse'));
 
-      // Collapsed: content is hidden again
-      expect(screen.queryByText('No phases yet')).not.toBeInTheDocument();
+      // Collapsed: tabs are hidden again
+      expect(screen.queryByText('✅ Tasks')).not.toBeInTheDocument();
     });
 
     it('should show delete confirmation modal when clicking delete button', () => {
@@ -419,10 +415,22 @@ describe('GoalCard', () => {
       expect(screen.getByText('ℹ️ Resources')).toBeInTheDocument();
     });
 
-    it('should show phases tab and empty state for goals without phases', () => {
+    it('should show phases tab and phases content for goals with phases', () => {
+      const goalWithPhases: Goal = {
+        ...mockGoal,
+        phases: [
+          {
+            id: 'phase-1',
+            name: 'Phase 1',
+            description: 'First phase',
+            taskIds: ['task-1'],
+          },
+        ],
+      };
+
       render(
         <GoalCard
-          goal={mockGoal}
+          goal={goalWithPhases}
           progress={50}
           analytics={mockAnalytics}
           activityLog={mockActivityLog}
@@ -435,13 +443,14 @@ describe('GoalCard', () => {
       const expandBtn = screen.getByTitle('Expand');
       fireEvent.click(expandBtn);
 
-      // Phases tab visible when expanded
+      // Phases tab visible when expanded (goal has phases)
       expect(screen.getByText('📊 Phases')).toBeInTheDocument();
 
       const phasesTab = screen.getByText('📊 Phases');
       fireEvent.click(phasesTab);
 
-      expect(screen.getByText('No phases yet')).toBeInTheDocument();
+      // Phase name should be visible
+      expect(screen.getByText('Phase 1')).toBeInTheDocument();
     });
   });
 
@@ -610,6 +619,128 @@ describe('GoalCard', () => {
       fireEvent.click(screen.getByTitle('Edit goal'));
       fireEvent.click(screen.getByText('Save'));
       expect(mockUpdateGoalMutation).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GoalCard tab visibility', () => {
+    const emptyAnalytics: AnalyticsData = {
+      totalTasks: 0,
+      completedTasks: 0,
+      totalSubsteps: 0,
+      completedSubsteps: 0,
+      totalEstimatedCost: 0,
+      totalActualCost: 0,
+      averageTasksPerDay: 0,
+      projectedCompletionDate: null,
+      daysRemaining: null,
+      completionRate: 0,
+      weeklyProgress: [],
+      monthlyProgress: [],
+      costByPhase: [],
+      velocityTrend: [],
+    };
+
+    const baseGoal: Goal = {
+      id: 'tab-goal-1',
+      title: 'Tab Test Goal',
+      tasks: [],
+      createdAt: '2026-01-01T00:00:00Z',
+      updatedAt: '2026-01-01T00:00:00Z',
+    };
+
+    function makeTabTestProps(overrides: {
+      goalOverrides?: Partial<Goal>;
+      streakHistory?: string[];
+      activityLog?: ActivityLogEntry[];
+      analytics?: AnalyticsData;
+    } = {}) {
+      return {
+        goal: { ...baseGoal, ...(overrides.goalOverrides ?? {}) },
+        progress: 0,
+        analytics: overrides.analytics ?? emptyAnalytics,
+        activityLog: overrides.activityLog ?? [],
+        streakHistory: overrides.streakHistory ?? [],
+        ...mockHandlers,
+      };
+    }
+
+    function renderExpandedCard(props: ReturnType<typeof makeTabTestProps>) {
+      render(<GoalCard {...(props as any)} />);
+      const expandBtn = screen.queryByTitle('Expand');
+      if (expandBtn) fireEvent.click(expandBtn);
+    }
+
+    it('always shows the Tasks tab', () => {
+      renderExpandedCard(makeTabTestProps());
+      expect(screen.getByRole('tab', { name: /Tasks/ })).toBeInTheDocument();
+    });
+
+    it('hides Phases tab when goal.phases is empty', () => {
+      renderExpandedCard(makeTabTestProps({ goalOverrides: { phases: [] } }));
+      expect(screen.queryByRole('tab', { name: /Phases/ })).not.toBeInTheDocument();
+    });
+
+    it('shows Phases tab when goal.phases has at least one entry', () => {
+      renderExpandedCard(makeTabTestProps({
+        goalOverrides: { phases: [{ id: 'p1', name: 'Phase 1', description: '', taskIds: [] }] }
+      }));
+      expect(screen.getByRole('tab', { name: /Phases/ })).toBeInTheDocument();
+    });
+
+    it('hides Calendar tab when streakHistory and activityLog are both empty', () => {
+      renderExpandedCard(makeTabTestProps({ streakHistory: [], activityLog: [] }));
+      expect(screen.queryByRole('tab', { name: /Calendar/ })).not.toBeInTheDocument();
+    });
+
+    it('shows Calendar tab when streakHistory has entries', () => {
+      renderExpandedCard(makeTabTestProps({
+        streakHistory: ['2026-05-01'],
+        activityLog: []
+      }));
+      expect(screen.getByRole('tab', { name: /Calendar/ })).toBeInTheDocument();
+    });
+
+    it('hides Analytics tab when totalTasks is 0 and arrays are empty', () => {
+      renderExpandedCard(makeTabTestProps({
+        analytics: emptyAnalytics
+      }));
+      expect(screen.queryByRole('tab', { name: /Analytics/ })).not.toBeInTheDocument();
+    });
+
+    it('shows Analytics tab when totalTasks > 0', () => {
+      renderExpandedCard(makeTabTestProps({
+        analytics: {
+          totalTasks: 5,
+          completedTasks: 2,
+          totalSubsteps: 0,
+          completedSubsteps: 0,
+          totalEstimatedCost: 0,
+          totalActualCost: 0,
+          averageTasksPerDay: 0,
+          projectedCompletionDate: null,
+          daysRemaining: null,
+          completionRate: 40,
+          weeklyProgress: [],
+          monthlyProgress: [],
+          costByPhase: [],
+          velocityTrend: [],
+        }
+      }));
+      expect(screen.getByRole('tab', { name: /Analytics/ })).toBeInTheDocument();
+    });
+
+    it('hides Resources tab when goal has no budget/timeline/documents/resources', () => {
+      renderExpandedCard(makeTabTestProps({
+        goalOverrides: { budget: undefined, timeline: undefined, documents: undefined, resources: undefined }
+      }));
+      expect(screen.queryByRole('tab', { name: /Resources/ })).not.toBeInTheDocument();
+    });
+
+    it('shows Resources tab when goal.resources is set', () => {
+      renderExpandedCard(makeTabTestProps({
+        goalOverrides: { resources: [] }
+      }));
+      expect(screen.getByRole('tab', { name: /Resources/ })).toBeInTheDocument();
     });
   });
 });
