@@ -18,8 +18,6 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
     { href: "/goals", label: "My Goals", icon: "🎯" },
     { href: "/feed", label: "Feed", icon: "📰" },
     { href: "/wallet", label: "Wallet", icon: "💼" },
-    { href: "/templates", label: "Templates", icon: "📋" },
-    { href: "/marketplace", label: "Marketplace", icon: "🏪" },
     { href: "/friends", label: "Friends", icon: "👥" },
     { href: "/profile", label: "Profile", icon: "👤" },
   ];
