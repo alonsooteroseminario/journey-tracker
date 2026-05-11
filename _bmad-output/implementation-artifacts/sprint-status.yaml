@@ -149,3 +149,39 @@ development_status:
   12-11-anthropic-admin-api-sync-phase3: in-progress
 
   epic-12-retrospective: optional
+
+# ──────────────────────────────────────────────────────────────────────────────
+# MAY 10, 2026 — MAINTENANCE SPRINT
+# Plans: docs/plans/2026-05-10-*.md
+# ──────────────────────────────────────────────────────────────────────────────
+completed:
+  - date: 2026-05-10
+    feature: wallet-copy-title-fix
+    commit: 4fea25b
+    summary: ChunkRow copy button now copies chunk.title (was content). Matches SubstepCard pattern.
+
+  - date: 2026-05-10
+    feature: ci-reenable
+    commit: c9bc5f9
+    summary: GitHub Actions CI re-enabled on push to main/feat/fix branches and PRs. Added prisma generate + build step.
+
+  - date: 2026-05-10
+    feature: hide-templates-marketplace-nav
+    commit: 29c12bd
+    summary: Removed Templates and Marketplace from desktop/mobile nav. Routes preserved.
+
+  - date: 2026-05-10
+    feature: goalcard-tabs-audit
+    commit: 82f9409
+    summary: GoalCard tabs (Phases/Calendar/Analytics/Resources) now conditional on data presence. Tasks always shown. Auto-resets on empty. 9 new tests.
+
+  - date: 2026-05-10
+    feature: dark-mode-phase-a
+    commit: 5b1d4c4
+    summary: "Phase A: Tailwind class dark mode, ThemeProvider (localStorage+system), ThemeToggle (light/dark/system cycle), pre-hydration script, AppShell wiring, Navigation dark variants, globals.css dark base. 7 tests."
+
+  - date: 2026-05-10
+    feature: dark-mode-phase-b
+    commit: ec4597c
+    summary: "Phase B: dark: variants on GoalCard, ChunkRow, WalletShell, WalletSidebar, WalletDetail."
+    deferred: Phase C (chat widget, feed, kanban, friends, remaining surfaces) — future plan.
