@@ -74,10 +74,10 @@ export function ChunkRow({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(chunk.content);
+      await navigator.clipboard.writeText(chunk.title);
     } catch {
       const el = document.createElement("textarea");
-      el.value = chunk.content;
+      el.value = chunk.title;
       document.body.appendChild(el);
       el.select();
       document.execCommand("copy");
@@ -176,12 +176,12 @@ export function ChunkRow({
 
       {/* Hover Actions */}
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        {/* Copy content */}
+        {/* Copy title */}
         <button
           onClick={handleCopy}
           className={`p-1 rounded transition-colors ${copied ? "text-green-500 bg-green-50" : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"}`}
-          title={copied ? "Copied!" : "Copy content"}
-          aria-label={copied ? "Copied!" : "Copy content"}
+          title={copied ? "Copied!" : "Copy title"}
+          aria-label={copied ? "Copied!" : "Copy title"}
         >
           {copied ? (
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

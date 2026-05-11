@@ -66,11 +66,11 @@ describe('ChunkRow', () => {
     expect(screen.getByTitle('Drag to reorder')).toBeInTheDocument();
   });
 
-  it('copy button calls clipboard.writeText with chunk.content (not title)', async () => {
+  it('copy button calls clipboard.writeText with chunk.title', async () => {
     render(<ChunkRow {...defaultProps} />);
-    fireEvent.click(screen.getByTitle('Copy content'));
+    fireEvent.click(screen.getByTitle('Copy title'));
     await waitFor(() =>
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('You are a helpful assistant.')
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('System Role')
     );
   });
 
