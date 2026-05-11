@@ -61,9 +61,9 @@ export function WalletSidebar({ wallets, selectedWalletId, onSelect }: WalletSid
   };
 
   return (
-    <div className="flex flex-col h-full border-r border-gray-200 bg-gray-50">
-      <div className="p-3 border-b border-gray-200">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Wallets</h2>
+    <div className="flex flex-col h-full border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+      <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+        <h2 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Wallets</h2>
       </div>
 
       <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
@@ -81,11 +81,11 @@ export function WalletSidebar({ wallets, selectedWalletId, onSelect }: WalletSid
         </DndContext>
 
         {wallets.length === 0 && (
-          <p className="text-xs text-gray-400 text-center py-4">No wallets yet</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center py-4">No wallets yet</p>
         )}
       </div>
 
-      <div className="p-2 border-t border-gray-200">
+      <div className="p-2 border-t border-gray-200 dark:border-gray-700">
         {isAddingWallet ? (
           <div className="space-y-1.5">
             <input
@@ -93,7 +93,7 @@ export function WalletSidebar({ wallets, selectedWalletId, onSelect }: WalletSid
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder="Wallet name…"
-              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+              className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
               autoFocus
               aria-label="New wallet name"
               onKeyDown={(e) => {
@@ -111,7 +111,7 @@ export function WalletSidebar({ wallets, selectedWalletId, onSelect }: WalletSid
               </button>
               <button
                 onClick={() => { setIsAddingWallet(false); setNewTitle(""); }}
-                className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-200 rounded-md"
+                className="px-2 py-1 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
               >
                 Cancel
               </button>

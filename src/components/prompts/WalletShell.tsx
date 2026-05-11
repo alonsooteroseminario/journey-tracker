@@ -67,7 +67,7 @@ export function WalletShell() {
   const backButton = (
     <Link
       href="/"
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-brand-primary hover:bg-brand-light rounded-lg transition-colors"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-brand-primary hover:bg-brand-light dark:hover:bg-brand-dark/30 rounded-lg transition-colors"
     >
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -79,11 +79,11 @@ export function WalletShell() {
   if (isLoading) {
     return (
       <div className="flex flex-col h-full min-h-[400px]">
-        <div className="p-3 border-b border-gray-100">{backButton}</div>
+        <div className="p-3 border-b border-gray-100 dark:border-gray-800">{backButton}</div>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-sm text-gray-500">Loading wallets…</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Loading wallets…</p>
           </div>
         </div>
       </div>
@@ -97,8 +97,8 @@ export function WalletShell() {
         <div className="flex-1 flex items-center justify-center">
         <div className="text-center max-w-md px-4">
           <p className="text-4xl mb-4">💼</p>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Create your first wallet</h2>
-          <p className="text-gray-500 mb-6 text-sm">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Create your first wallet</h2>
+          <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">
             Wallets organize your reusable prompt snippets into groups and chunks.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -106,12 +106,12 @@ export function WalletShell() {
               <button
                 key={t.title}
                 onClick={() => handleSeedWallet(t)}
-                className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-xl hover:border-brand-primary hover:bg-brand-light/50 transition-all text-left shadow-sm"
+                className="flex items-center gap-2 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-brand-primary hover:bg-brand-light/50 dark:hover:bg-brand-dark/20 transition-all text-left shadow-sm"
               >
                 <span className="text-2xl">{t.icon}</span>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">{t.title}</p>
-                  <p className="text-xs text-gray-400">{t.description}</p>
+                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t.title}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">{t.description}</p>
                 </div>
               </button>
             ))}
@@ -125,7 +125,7 @@ export function WalletShell() {
   return (
     <div className="h-full flex flex-col">
       {/* Back button bar */}
-      <div className="flex-shrink-0 px-3 py-2 border-b border-gray-100 bg-white">{backButton}</div>
+      <div className="flex-shrink-0 px-3 py-2 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">{backButton}</div>
 
       {/* Desktop 3-pane layout */}
       <div className="hidden md:grid md:grid-cols-[220px_1fr_300px] flex-1 overflow-hidden">
@@ -138,7 +138,7 @@ export function WalletShell() {
           {selectedWallet ? (
             <WalletDetail wallet={selectedWallet} />
           ) : (
-            <div className="flex items-center justify-center h-full text-sm text-gray-400">
+            <div className="flex items-center justify-center h-full text-sm text-gray-400 dark:text-gray-500">
               Select a wallet
             </div>
           )}
@@ -163,13 +163,13 @@ export function WalletShell() {
         </div>
 
         {/* Mobile tab bar */}
-        <div className="border-t border-gray-200 bg-white flex items-center justify-around py-2">
+        <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex items-center justify-around py-2">
           {(["wallets", "detail", "compose"] as ActivePane[]).map((pane) => (
             <button
               key={pane}
               onClick={() => setActivePane(pane)}
               className={`flex flex-col items-center gap-0.5 px-4 py-1 rounded-lg text-xs font-medium transition-colors ${
-                activePane === pane ? "text-brand-primary" : "text-gray-500"
+                activePane === pane ? "text-brand-primary" : "text-gray-500 dark:text-gray-400"
               }`}
             >
               <span>{pane === "wallets" ? "💼" : pane === "detail" ? "📝" : "✏️"}</span>

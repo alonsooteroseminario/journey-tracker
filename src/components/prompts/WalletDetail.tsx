@@ -62,7 +62,7 @@ export function WalletDetail({ wallet }: WalletDetailProps) {
 
       <div className="flex-1 p-4 space-y-3">
         {wallet.groups.length === 0 && !isAddingGroup && (
-          <p className="text-sm text-gray-400 text-center py-4">
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-4">
             Create a group to start adding prompts.
           </p>
         )}
@@ -86,7 +86,7 @@ export function WalletDetail({ wallet }: WalletDetailProps) {
               value={newGroupTitle}
               onChange={(e) => setNewGroupTitle(e.target.value)}
               placeholder="Group name…"
-              className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+              className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
               autoFocus
               aria-label="New group name"
               onKeyDown={(e) => {
@@ -103,7 +103,7 @@ export function WalletDetail({ wallet }: WalletDetailProps) {
             </button>
             <button
               onClick={() => { setIsAddingGroup(false); setNewGroupTitle(""); }}
-              className="px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
+              className="px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
             >
               Cancel
             </button>

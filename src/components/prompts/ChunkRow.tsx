@@ -98,13 +98,13 @@ export function ChunkRow({
 
   if (isEditing) {
     return (
-      <div className="bg-brand-light border border-brand-light rounded-lg p-3 space-y-2">
+      <div className="bg-brand-light dark:bg-brand-dark/30 border border-brand-light dark:border-brand-dark/50 rounded-lg p-3 space-y-2">
         <input
           type="text"
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
           onBlur={handleBlur}
-          className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+          className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
           placeholder="Chunk title"
           autoFocus
         />
@@ -139,7 +139,7 @@ export function ChunkRow({
     <div
       ref={setNodeRef}
       style={style}
-      className="group flex items-center gap-2 p-2 rounded-lg bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-all"
+      className="group flex items-center gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
     >
       {/* Drag Handle */}
       <button
@@ -167,10 +167,10 @@ export function ChunkRow({
               <path d="M12 1a5 5 0 00-5 5v3H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V11a2 2 0 00-2-2h-2V6a5 5 0 00-5-5zm-3 5a3 3 0 116 0v3H9V6zm3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
             </svg>
           )}
-          <p className="text-sm text-gray-700 break-words">{chunk.title}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-200 break-words">{chunk.title}</p>
         </div>
         {chunk.content && (
-          <p className="text-xs text-gray-500 mt-1 whitespace-pre-wrap break-words">{chunk.content}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 whitespace-pre-wrap break-words">{chunk.content}</p>
         )}
       </div>
 
