@@ -41,6 +41,11 @@ Each session: read this file first to orient yourself. Check **Status** and **No
 | File | Feature | Status | Priority | Notes |
 |------|---------|--------|----------|-------|
 | `2026-02-21-remaining-stories.md` | STORY-021/008/022 | 🚧 Pending | HIGH | Health check, Feed dedup, Coverage ≥80% |
+| `2026-05-10-wallet-copy-title-plan.md` | Wallet copy-title fix | 🚧 Pending | HIGH | ChunkRow copy button → copies title (was content). Tiny fix, ships first. |
+| `2026-05-10-enable-github-actions-plan.md` | Re-enable GitHub Actions CI | 🚧 Pending | HIGH | Uncomment triggers + add build step. Must precede subsequent PRs. |
+| `2026-05-10-hide-templates-marketplace-plan.md` | Hide Templates+Marketplace nav | 🚧 Pending | MED | Nav-only hide; routes preserved. |
+| `2026-05-10-goalcard-tabs-audit-plan.md` | GoalCard tabs audit | 🚧 Pending | MED | Tabs hide when empty; Tasks always shown; auto-reset on empty. |
+| `2026-05-10-dark-mode-toggle-plan.md` | Light/Dark mode toggle (Phase A+B) | 🚧 Pending | MED | Infra + high-traffic surfaces. Phase C deferred. |
 
 ---
 
