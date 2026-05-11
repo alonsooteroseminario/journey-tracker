@@ -151,3 +151,33 @@ p, h1, h2, h3, h4, h5, h6, span, li, td, th, label {
   }
 }
 
+
+/* Dark mode base */
+html.dark {
+  --background: #0e1116;
+  --foreground: #e6e6e6;
+}
+
+html.dark body {
+  background-color: #0e1116;
+  color: #e6e6e6;
+}
+
+html.dark ::selection {
+  background-color: rgba(91, 80, 232, 0.4);
+}
+
+html.dark ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+html.dark ::-webkit-scrollbar-track {
+  background: #0e1116;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #2a2f3a;
+  border-radius: 5px;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3b424f;
+}

@@ -6,6 +6,7 @@ import { AutoMigration } from "@/components/AutoMigration";
 import { TimezoneSync } from "@/components/TimezoneSync";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { UndoToastProvider } from "@/components/undo/UndoToastProvider";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
 /**
  * AppShell - Client-side wrapper that provides Redux + auto-migration.
@@ -18,12 +19,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <ReduxProvider>
-      <AutoMigration />
-      <TimezoneSync />
-      <UndoToastProvider>
-        {children}
-        <ChatWidget />
-      </UndoToastProvider>
+      <ThemeProvider>
+        <AutoMigration />
+        <TimezoneSync />
+        <UndoToastProvider>
+          {children}
+          <ChatWidget />
+        </UndoToastProvider>
+      </ThemeProvider>
     </ReduxProvider>
   );
 }

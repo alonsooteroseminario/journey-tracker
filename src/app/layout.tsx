@@ -1,5 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { AppShell } from "@/components/AppShell";
+import { themeScript } from "@/components/theme/themeScript";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -22,7 +23,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body 
+        <head>
+          <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        </head>
+        <body
           className="antialiased min-h-screen bg-gradient-to-br from-white via-brand-light/30 to-indigo-50/60"
           suppressHydrationWarning
         >
