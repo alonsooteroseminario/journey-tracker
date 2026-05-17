@@ -82,14 +82,14 @@ export function AutoMigration() {
   // Show overlay only while actively migrating
   if (migrationStatus === "migrating" && isLoading) {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
-        <div className="bg-white rounded-2xl p-4 sm:p-8 max-w-md mx-4 shadow-2xl">
+      <div className="fixed inset-0 bg-overlay/50 flex items-center justify-center z-[9999]">
+        <div className="bg-surface-elevated rounded-2xl p-4 sm:p-8 max-w-md mx-4 shadow-2xl">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <h2 className="text-2xl font-bold text-text-primary mb-2">
               Migrating Your Data
             </h2>
-            <p className="text-gray-600">
+            <p className="text-text-secondary">
               Transferring your goals and progress to the cloud. This only
               happens once.
             </p>

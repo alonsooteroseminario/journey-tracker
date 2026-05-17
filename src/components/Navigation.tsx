@@ -31,7 +31,7 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
   return (
     <>
       {/* Desktop Navigation - Top Bar */}
-      <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
+      <nav className="bg-surface border-b border-border sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo/Brand */}
@@ -57,7 +57,7 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
                   className={`px-4 py-2 min-h-[48px] rounded-lg font-medium transition-all flex items-center gap-2 ${
                     isActive(item.href)
                       ? "bg-brand-light text-brand-primary"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      : "text-text-secondary hover:bg-surface-hover"
                   }`}
                 >
                   <span>{item.icon}</span>
@@ -81,20 +81,20 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
               {/* Profile Avatar */}
               <Link
                 href="/profile"
-                className="flex items-center gap-2 p-1.5 sm:p-2 min-w-[40px] sm:min-w-[48px] min-h-[40px] sm:min-h-[48px] rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="flex items-center gap-2 p-1.5 sm:p-2 min-w-[40px] sm:min-w-[48px] min-h-[40px] sm:min-h-[48px] rounded-full hover:bg-surface-hover transition-colors"
               >
                 {profile.profileImage ? (
                   <img
                     src={profile.profileImage}
                     alt={profile.name}
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-border"
                   />
                 ) : (
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white font-bold">
                     {profile.name.charAt(0).toUpperCase()}
                   </div>
                 )}
-                <span className="hidden lg:block text-sm font-medium text-gray-700 dark:text-gray-200">
+                <span className="hidden lg:block text-sm font-medium text-text-primary">
                   {profile.name}
                 </span>
               </Link>
@@ -104,7 +104,7 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
       </nav>
 
       {/* Mobile Navigation - Fixed Bottom (Thumb Zone) */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 z-50 shadow-lg safe-area-inset-bottom">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-surface border-t border-border z-50 shadow-lg safe-area-inset-bottom">
         <div className="flex items-center justify-around py-1.5 px-1">
           {navItems.map((item) => (
             <Link
@@ -113,7 +113,7 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
               className={`flex flex-col items-center gap-0.5 px-2 py-1.5 min-w-[56px] min-h-[52px] rounded-lg transition-all ${
                 isActive(item.href)
                   ? "bg-brand-light text-brand-primary"
-                  : "text-gray-600 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800"
+                  : "text-text-secondary active:bg-surface-hover"
               }`}
             >
               <span className="text-xl">{item.icon}</span>

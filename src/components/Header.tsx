@@ -44,7 +44,7 @@ export function Header({
   const isChatOpen = useAppSelector((s) => s.chat.isOpen);
 
   return (
-    <header className="bg-white/80 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
+    <header className="bg-surface/80 backdrop-blur-md border-b border-border sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-3">
         {/* Top Row: Logo, Stats, Actions */}
         <div className="flex items-center justify-between">
@@ -75,14 +75,14 @@ export function Header({
                   <div className="text-sm sm:text-base font-bold text-brand-primary">
                     {totalProgress}%
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Progress</div>
+                  <div className="text-xs text-text-muted">Progress</div>
                 </div>
                 <div className="text-center">
                   <div className="text-sm sm:text-base font-bold text-orange-500 flex items-center gap-1 justify-center">
                     {currentStreak > 0 && <span>🔥</span>}
                     {currentStreak}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Streak</div>
+                  <div className="text-xs text-text-muted">Streak</div>
                 </div>
               </div>
             )}
@@ -121,7 +121,7 @@ export function Header({
                   className={`p-1 sm:p-2 rounded-lg transition-colors ${
                     isChatOpen
                       ? 'bg-brand-primary text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-brand-primary'
+                      : 'text-text-secondary hover:bg-surface-hover hover:text-brand-primary'
                   }`}
                 >
                   <svg
@@ -146,21 +146,21 @@ export function Header({
                 {/* Profile */}
                 <Link
                   href="/profile"
-                  className="group relative flex items-center gap-1 p-0.5 sm:p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+                  className="group relative flex items-center gap-1 p-0.5 sm:p-1 rounded-full hover:bg-surface-hover transition-all"
                   title="Go to Profile"
                 >
                   {profileImage ? (
                     <img
                       src={profileImage}
                       alt={profileName}
-                      className="w-6 h-6 sm:w-9 sm:h-9 rounded-full object-cover border border-gray-200 dark:border-gray-600 group-hover:border-brand-primary transition-all"
+                      className="w-6 h-6 sm:w-9 sm:h-9 rounded-full object-cover border border-border group-hover:border-brand-primary transition-all"
                     />
                   ) : (
                     <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white font-bold text-[10px] sm:text-sm border border-transparent group-hover:border-brand-primary transition-all">
                       {profileName ? profileName.charAt(0).toUpperCase() : "?"}
                     </div>
                   )}
-                  <span className="hidden lg:block text-xs font-medium text-gray-700 dark:text-gray-200 group-hover:text-brand-primary transition-colors">
+                  <span className="hidden lg:block text-xs font-medium text-text-primary group-hover:text-brand-primary transition-colors">
                     {profileName}
                   </span>
                 </Link>
@@ -193,7 +193,7 @@ export function Header({
               <div className="flex items-center gap-2">
                 <Link
                   href="/sign-in"
-                  className="px-3 py-1.5 text-xs sm:text-sm text-gray-700 hover:text-gray-900 font-medium transition-colors"
+                  className="px-3 py-1.5 text-xs sm:text-sm text-text-secondary hover:text-text-primary font-medium transition-colors"
                 >
                   Sign In
                 </Link>
@@ -209,7 +209,7 @@ export function Header({
         </div>
 
         {/* Always-Visible Tab Bar — icons only on mobile, labels on sm+ */}
-        <div className="mt-2 sm:mt-3 border-t border-gray-200 dark:border-gray-700 pt-2 sm:pt-3">
+        <div className="mt-2 sm:mt-3 border-t border-border pt-2 sm:pt-3">
           <div className="flex gap-1 sm:gap-2">
             {navItems.map((item) => (
               <Link
@@ -219,7 +219,7 @@ export function Header({
                 className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                   isActive(item.href)
                     ? "bg-brand-light text-brand-primary shadow-sm"
-                    : "bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    : "bg-surface-muted text-text-secondary hover:bg-surface-hover"
                 }`}
               >
                 <span className="text-lg sm:text-lg">{item.icon}</span>

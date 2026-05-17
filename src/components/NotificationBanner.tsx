@@ -17,10 +17,10 @@ export function NotificationBanner({
 }: NotificationBannerProps) {
   if (!isSupported) {
     return (
-      <div className="bg-gray-100 border border-gray-200 rounded-lg sm:rounded-xl p-2.5 sm:p-4 flex items-center gap-2 sm:gap-3">
+      <div className="bg-surface-muted border border-border rounded-lg sm:rounded-xl p-2.5 sm:p-4 flex items-center gap-2 sm:gap-3">
         <span className="text-base sm:text-2xl flex-shrink-0">🔕</span>
         <div className="flex-1">
-          <p className="text-[10px] sm:text-sm text-gray-600">
+          <p className="text-[10px] sm:text-sm text-text-secondary">
             Notifications are not supported in this browser.
           </p>
         </div>
