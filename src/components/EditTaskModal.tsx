@@ -61,7 +61,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
   };
 
   const priorityColors = {
-    low: "bg-gray-100 text-gray-700 border-gray-300",
+    low: "bg-surface-hover text-text-secondary border-border-strong",
     medium: "bg-brand-light text-brand-primary border-brand-light",
     high: "bg-orange-100 text-orange-700 border-orange-300",
     critical: "bg-red-100 text-red-700 border-red-300",
@@ -69,12 +69,12 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-overlay/50 flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="edit-task-title"
     >
-      <div ref={focusTrapRef} className="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+      <div ref={focusTrapRef} className="bg-surface-elevated rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-brand-primary to-brand-secondary p-4 sm:p-6">
           <div className="flex items-center justify-between">
@@ -100,62 +100,62 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
         <div className="p-6 space-y-4">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-text-secondary mb-1">
               Task Title *
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+              className="w-full px-4 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-surface text-text-primary"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-text-secondary mb-1">
               Description
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none"
+              className="w-full px-4 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none bg-surface text-text-primary"
             />
           </div>
 
           {/* Cost Section */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-text-secondary mb-1">
                 Estimated Cost (CAD)
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-2 text-gray-500">$</span>
+                <span className="absolute left-3 top-2 text-text-muted">$</span>
                 <input
                   type="number"
                   value={estimatedCost}
                   onChange={(e) => setEstimatedCost(e.target.value)}
                   placeholder="0.00"
-                  className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                  className="w-full pl-7 pr-4 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-surface text-text-primary"
                 />
               </div>
               {task.cost && (
-                <p className="text-xs text-gray-500 mt-1">Original: {task.cost}</p>
+                <p className="text-xs text-text-muted mt-1">Original: {task.cost}</p>
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-text-secondary mb-1">
                 Actual Cost (CAD)
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-2 text-gray-500">$</span>
+                <span className="absolute left-3 top-2 text-text-muted">$</span>
                 <input
                   type="number"
                   value={actualCost}
                   onChange={(e) => setActualCost(e.target.value)}
                   placeholder="0.00"
-                  className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full pl-7 pr-4 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-surface text-text-primary"
                 />
               </div>
             </div>
@@ -163,20 +163,20 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
 
           {/* Due Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-text-secondary mb-1">
               Due Date
             </label>
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+              className="w-full px-4 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-surface text-text-primary"
             />
           </div>
 
           {/* Priority */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Priority
             </label>
             <div className="flex gap-2">
@@ -188,7 +188,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
                   className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-all ${
                     priority === p
                       ? priorityColors[p]
-                      : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"
+                      : "bg-surface-muted text-text-muted border-border hover:bg-surface-hover"
                   }`}
                 >
                   {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -199,8 +199,8 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Status <span className="text-gray-400 text-xs">(Optional)</span>
+            <label className="block text-sm font-medium text-text-secondary mb-2">
+              Status <span className="text-text-muted text-xs">(Optional)</span>
             </label>
             <div className="flex gap-2">
               {(["not_started", "in_progress", "completed"] as const).map((s) => {
@@ -216,8 +216,8 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
                           ? "bg-green-100 text-green-700 border-green-300"
                           : s === "in_progress"
                           ? "bg-orange-100 text-orange-700 border-orange-300"
-                          : "bg-gray-100 text-gray-700 border-gray-300"
-                        : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"
+                          : "bg-surface-hover text-text-secondary border-border-strong"
+                        : "bg-surface-muted text-text-muted border-border hover:bg-surface-hover"
                     }`}
                   >
                     <span>{config.icon}</span>
@@ -230,7 +230,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-text-secondary mb-1">
               Notes
             </label>
             <textarea
@@ -238,7 +238,7 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
               placeholder="Add personal notes, reminders, or links..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none"
+              className="w-full px-4 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-none bg-surface text-text-primary"
             />
           </div>
 
@@ -252,10 +252,10 @@ export function EditTaskModal({ task, isOpen, onClose, onSave }: EditTaskModalPr
         </div>
 
         {/* Footer */}
-        <div className="p-6 bg-gray-50 border-t border-gray-200 flex gap-3">
+        <div className="p-6 bg-surface-muted border-t border-border flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors font-medium"
+            className="flex-1 py-2 border border-border-strong rounded-lg text-text-secondary hover:bg-surface-hover transition-colors font-medium"
           >
             Cancel
           </button>
