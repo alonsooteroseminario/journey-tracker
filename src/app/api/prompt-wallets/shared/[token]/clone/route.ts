@@ -11,7 +11,7 @@ export async function POST(
 
   const { token } = await params;
 
-  const source = await prisma.promptWallet.findUnique({
+  const source = await prisma.promptWallet.findFirst({
     where: { shareToken: token },
     include: {
       groups: {

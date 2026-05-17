@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
-    promptWallet: { findUnique: vi.fn() },
+    promptWallet: { findFirst: vi.fn() },
     user: { findUnique: vi.fn() },
   },
 }));
@@ -11,7 +11,7 @@ vi.mock("@/lib/prisma", () => ({
 import { prisma } from "@/lib/prisma";
 import { GET } from "./route";
 
-const mockFindWallet = vi.mocked(prisma.promptWallet.findUnique);
+const mockFindWallet = vi.mocked(prisma.promptWallet.findFirst);
 const mockFindUser = vi.mocked(prisma.user.findUnique);
 
 function makeReq(token: string) {

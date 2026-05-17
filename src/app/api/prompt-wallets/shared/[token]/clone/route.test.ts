@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 vi.mock("@/lib/auth", () => ({ getCurrentUser: vi.fn() }));
 vi.mock("@/lib/prisma", () => ({
   prisma: {
-    promptWallet: { findUnique: vi.fn(), create: vi.fn() },
+    promptWallet: { findFirst: vi.fn(), create: vi.fn() },
     promptGroup: { create: vi.fn() },
     promptChunk: { create: vi.fn() },
   },
@@ -15,7 +15,7 @@ import { prisma } from "@/lib/prisma";
 import { POST } from "./route";
 
 const mockGetUser = vi.mocked(getCurrentUser);
-const mockFindWallet = vi.mocked(prisma.promptWallet.findUnique);
+const mockFindWallet = vi.mocked(prisma.promptWallet.findFirst);
 const mockCreateWallet = vi.mocked(prisma.promptWallet.create);
 const mockCreateGroup = vi.mocked(prisma.promptGroup.create);
 const mockCreateChunk = vi.mocked(prisma.promptChunk.create);
