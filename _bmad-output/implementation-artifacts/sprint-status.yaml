@@ -202,7 +202,26 @@ five_feature_plan_2026_05_16:
       steps: "docs/plans/2026-05-16-f1-dark-mode-steps.md"
       branch: "feat/f1-dark-mode"
       estimate_days: 1.5
-      status: planned
+      actual_days: 1
+      status: ready_for_review
+      completed_date: "2026-05-17"
+      commits:
+        - "9f787f9 step 1 — semantic token foundations"
+        - "3618dca step 2a — Header/Navigation/NotificationBanner/AutoMigration"
+        - "1485fac step 2b — modals (GoalGroupManager, EditTaskModal)"
+        - "6c4c657 step 3a — prompts/ subtree + codemod script"
+        - "e341568 step 3b — 48 files across chat/kanban/feed/templates/admin/marketplace/views/theme"
+        - "f50fb34 step 3c — top-level src/components + src/app pages"
+        - "3d16ef9 step 4 — LandingPage light-only exemption"
+        - "4cb115d step 5 — Playwright dark-mode regression suite"
+      verification:
+        build: "✓ Compiled successfully"
+        unit_tests: "1305/1310 pass (5 pre-existing failures unchanged)"
+        e2e_dark_mode: "5/5 pass"
+        lint_errors_introduced: 0
+      diff_summary: "121 source files; ~1880 insertions / ~1330 deletions"
+      followups:
+        - "F1 only ships acceptable status-color exceptions (X/Twitter share buttons, AdminSidebar dark chrome, Cost Tracker leftovers — Cost Tracker hidden in F2 anyway)."
 
     - id: F2
       title: "Cost Tracker → Agent API key (BYOK)"
