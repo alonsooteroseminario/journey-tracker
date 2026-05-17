@@ -3,8 +3,16 @@
 import Link from "next/link";
 
 export function LandingPage() {
+  // Landing page is marketing surface — pinned to light theme for brand
+  // consistency regardless of the user's dark-mode preference. The
+  // [data-theme="light"] attribute opts this subtree out of dark CSS-var
+  // overrides; see src/app/globals.css for the matching rule.
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-brand-light/30 to-indigo-50/60">
+    <div
+      data-theme="light"
+      style={{ colorScheme: "light" }}
+      className="min-h-screen bg-gradient-to-br from-white via-brand-light/30 to-indigo-50/60"
+    >
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">

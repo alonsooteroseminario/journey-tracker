@@ -106,6 +106,18 @@ describe("F1 semantic theme tokens", () => {
       }
     });
 
+    it('[data-theme="light"] island block exists for LandingPage exemption', () => {
+      const css = readGlobals();
+      const lightIsland = css.match(/\[data-theme="light"\]\s*\{([\s\S]*?)\n\}/);
+      expect(lightIsland, '[data-theme="light"] block must exist in globals.css').toBeTruthy();
+      const body = lightIsland?.[1] ?? "";
+      // The light island must redeclare the surface tokens so they survive
+      // even when html.dark is set on the root.
+      expect(body).toMatch(/--bg-app\s*:\s*\d{1,3}\s+\d{1,3}\s+\d{1,3}/);
+      expect(body).toMatch(/--surface-default\s*:\s*\d{1,3}\s+\d{1,3}\s+\d{1,3}/);
+      expect(body).toMatch(/--text-primary\s*:\s*\d{1,3}\s+\d{1,3}\s+\d{1,3}/);
+    });
+
     it("html.dark overrides each semantic variable with a dark RGB triplet", () => {
       const css = readGlobals();
       const required = [

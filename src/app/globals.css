@@ -166,6 +166,24 @@ p, h1, h2, h3, h4, h5, h6, span, li, td, th, label {
 }
 
 
+/* Light-theme island override — any subtree marked [data-theme="light"]
+   resets the F1 semantic variables to their light values. Used by the
+   public marketing landing page (LandingPage.tsx) so the marketing surface
+   stays light even when the rest of the app is in dark mode. */
+[data-theme="light"] {
+  --bg-app: 248 250 252;
+  --surface-default: 255 255 255;
+  --surface-elevated: 255 255 255;
+  --surface-hover: 241 245 249;
+  --surface-muted: 248 250 252;
+  --text-primary: 15 23 42;
+  --text-secondary: 71 85 105;
+  --text-muted: 100 116 139;
+  --border-default: 226 232 240;
+  --border-strong: 203 213 225;
+  --overlay: 15 23 42;
+}
+
 /* Dark mode base */
 html.dark {
   /* ── Legacy hex tokens (kept for backwards-compat during F1 migration) ── */
