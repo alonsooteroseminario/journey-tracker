@@ -71,7 +71,7 @@ export function WalletRow({ wallet, isSelected, onSelect }: WalletRowProps) {
       className={`group flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all ${
         isSelected
           ? "bg-brand-light border border-brand-primary/30"
-          : "hover:bg-gray-100 border border-transparent"
+          : "hover:bg-surface-hover border border-transparent"
       }`}
       onClick={onSelect}
     >
@@ -79,7 +79,7 @@ export function WalletRow({ wallet, isSelected, onSelect }: WalletRowProps) {
       <button
         {...attributes}
         {...(lockLevel !== "hard" ? listeners : {})}
-        className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+        className="cursor-grab active:cursor-grabbing p-1 text-text-muted hover:text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
         title="Drag to reorder"
         aria-label="Drag to reorder"
         onClick={(e) => e.stopPropagation()}
@@ -94,11 +94,11 @@ export function WalletRow({ wallet, isSelected, onSelect }: WalletRowProps) {
 
       {/* Title + count */}
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-medium truncate ${isSelected ? "text-brand-primary" : "text-gray-700"}`}>
+        <p className={`text-sm font-medium truncate ${isSelected ? "text-brand-primary" : "text-text-secondary"}`}>
           {wallet.title}
         </p>
         {totalChunks > 0 && (
-          <p className="text-xs text-gray-400">{totalChunks} chunks</p>
+          <p className="text-xs text-text-muted">{totalChunks} chunks</p>
         )}
       </div>
 
@@ -112,7 +112,7 @@ export function WalletRow({ wallet, isSelected, onSelect }: WalletRowProps) {
           onClick={() =>
             updateWallet({ id: wallet.id, patch: { lockLevel: cycleLock(lockLevel) as LockLevel } })
           }
-          className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+          className="p-1 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
           title={`Lock: ${lockLevel}`}
           aria-label={`Lock: ${lockLevel}`}
         >
@@ -124,7 +124,7 @@ export function WalletRow({ wallet, isSelected, onSelect }: WalletRowProps) {
         {/* Duplicate */}
         <button
           onClick={() => duplicateWallet(wallet.id)}
-          className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+          className="p-1 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
           title="Duplicate wallet"
           aria-label="Duplicate wallet"
         >
@@ -139,8 +139,8 @@ export function WalletRow({ wallet, isSelected, onSelect }: WalletRowProps) {
           disabled={deleteDisabled}
           className={`p-1 rounded transition-colors ${
             deleteDisabled
-              ? "text-gray-300 opacity-40 cursor-not-allowed"
-              : "text-gray-400 hover:text-red-500 hover:bg-red-50"
+              ? "text-text-muted opacity-40 cursor-not-allowed"
+              : "text-text-muted hover:text-red-500 hover:bg-red-50"
           }`}
           title={deleteDisabled ? "Locked" : "Delete wallet"}
           aria-label={deleteDisabled ? "Locked" : "Delete wallet"}

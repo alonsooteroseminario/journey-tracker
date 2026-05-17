@@ -104,7 +104,7 @@ export function ChunkRow({
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
           onBlur={handleBlur}
-          className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+          className="w-full px-3 py-1.5 text-sm border border-border-strong rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
           placeholder="Chunk title"
           autoFocus
         />
@@ -113,7 +113,7 @@ export function ChunkRow({
           onChange={(e) => setEditContent(e.target.value)}
           onBlur={handleBlur}
           rows={6}
-          className="w-full px-3 py-1.5 text-sm font-mono border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-y"
+          className="w-full px-3 py-1.5 text-sm font-mono border border-border-strong rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent resize-y"
           placeholder="Prompt content…"
         />
         <div className="flex gap-2">
@@ -126,7 +126,7 @@ export function ChunkRow({
           </button>
           <button
             onClick={handleCancel}
-            className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-200 rounded-md"
+            className="px-3 py-1 text-sm text-text-secondary hover:bg-surface-hover rounded-md"
           >
             Cancel
           </button>
@@ -139,13 +139,13 @@ export function ChunkRow({
     <div
       ref={setNodeRef}
       style={style}
-      className="group flex items-center gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+      className="group flex items-center gap-2 p-2 rounded-lg bg-surface-muted border border-border hover:bg-surface-hover transition-all"
     >
       {/* Drag Handle */}
       <button
         {...attributes}
         {...(reorderAllowed ? listeners : {})}
-        className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="cursor-grab active:cursor-grabbing p-1 text-text-muted hover:text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity"
         title="Drag to reorder"
         aria-label="Drag to reorder"
       >
@@ -158,7 +158,7 @@ export function ChunkRow({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1">
           {lockLevel === "soft" && (
-            <svg className="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Soft locked">
+            <svg className="w-3 h-3 text-text-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Soft locked">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
             </svg>
           )}
@@ -167,10 +167,10 @@ export function ChunkRow({
               <path d="M12 1a5 5 0 00-5 5v3H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V11a2 2 0 00-2-2h-2V6a5 5 0 00-5-5zm-3 5a3 3 0 116 0v3H9V6zm3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
             </svg>
           )}
-          <p className="text-sm text-gray-700 dark:text-gray-200 break-words">{chunk.title}</p>
+          <p className="text-sm text-text-secondary break-words">{chunk.title}</p>
         </div>
         {chunk.content && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 whitespace-pre-wrap break-words">{chunk.content}</p>
+          <p className="text-xs text-text-muted mt-1 whitespace-pre-wrap break-words">{chunk.content}</p>
         )}
       </div>
 
@@ -179,7 +179,7 @@ export function ChunkRow({
         {/* Copy title */}
         <button
           onClick={handleCopy}
-          className={`p-1 rounded transition-colors ${copied ? "text-green-500 bg-green-50" : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"}`}
+          className={`p-1 rounded transition-colors ${copied ? "text-green-500 bg-green-50" : "text-text-muted hover:text-brand-primary hover:bg-brand-light"}`}
           title={copied ? "Copied!" : "Copy title"}
           aria-label={copied ? "Copied!" : "Copy title"}
         >
@@ -197,7 +197,7 @@ export function ChunkRow({
         {/* Add to / Remove from Compose */}
         <button
           onClick={isInCompose ? onRemoveFromCompose : onAddToCompose}
-          className={`p-1 rounded transition-colors ${isInCompose ? "text-brand-primary bg-brand-light" : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"}`}
+          className={`p-1 rounded transition-colors ${isInCompose ? "text-brand-primary bg-brand-light" : "text-text-muted hover:text-brand-primary hover:bg-brand-light"}`}
           title={isInCompose ? "Remove from Compose" : "Add to Compose"}
           aria-label={isInCompose ? "Remove from Compose" : "Add to Compose"}
         >
@@ -216,7 +216,7 @@ export function ChunkRow({
         <button
           onClick={() => { if (!editDisabled) setIsEditing(true); }}
           disabled={editDisabled}
-          className={`p-1 rounded transition-colors ${editDisabled ? "text-gray-300 opacity-40 cursor-not-allowed" : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"}`}
+          className={`p-1 rounded transition-colors ${editDisabled ? "text-text-muted opacity-40 cursor-not-allowed" : "text-text-muted hover:text-brand-primary hover:bg-brand-light"}`}
           title={editDisabled ? "Locked" : "Edit"}
           aria-label={editDisabled ? "Locked" : "Edit"}
         >
@@ -228,7 +228,7 @@ export function ChunkRow({
         {/* Lock cycle */}
         <button
           onClick={() => onUpdateLock(cycleLock(lockLevel))}
-          className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+          className="p-1 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
           title={`Lock: ${lockLevel}`}
           aria-label={`Lock: ${lockLevel}`}
         >
@@ -246,7 +246,7 @@ export function ChunkRow({
         {/* Duplicate */}
         <button
           onClick={onDuplicate}
-          className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+          className="p-1 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
           title="Duplicate"
           aria-label="Duplicate"
         >
@@ -259,7 +259,7 @@ export function ChunkRow({
         <button
           onClick={handleDelete}
           disabled={deleteDisabled}
-          className={`p-1 rounded transition-colors ${deleteDisabled ? "text-gray-300 opacity-40 cursor-not-allowed" : "text-gray-400 hover:text-red-500 hover:bg-red-50"}`}
+          className={`p-1 rounded transition-colors ${deleteDisabled ? "text-text-muted opacity-40 cursor-not-allowed" : "text-text-muted hover:text-red-500 hover:bg-red-50"}`}
           title={deleteDisabled ? "Locked" : "Delete"}
           aria-label={deleteDisabled ? "Locked" : "Delete"}
         >

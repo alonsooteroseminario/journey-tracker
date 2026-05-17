@@ -36,11 +36,11 @@ export function MergedPreview({ text, onCopy }: MergedPreviewProps) {
         value={text}
         rows={12}
         placeholder="Compose chunks above to preview the merged prompt…"
-        className="w-full px-3 py-2 text-sm font-mono border border-gray-200 rounded-md bg-gray-50 resize-y focus:outline-none"
+        className="w-full px-3 py-2 text-sm font-mono border border-border rounded-md bg-surface-muted resize-y focus:outline-none"
         aria-label="Merged prompt preview"
       />
       {!isEmpty && (
-        <p className="text-xs text-gray-400" aria-label="Token count">
+        <p className="text-xs text-text-muted" aria-label="Token count">
           ≈ {tokenCount} tokens
         </p>
       )}
@@ -49,7 +49,7 @@ export function MergedPreview({ text, onCopy }: MergedPreviewProps) {
         disabled={isEmpty}
         className={`flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
           isEmpty
-            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+            ? "bg-surface-hover text-text-muted cursor-not-allowed"
             : copied
             ? "bg-green-500 text-white"
             : "bg-brand-primary text-white hover:bg-brand-secondary"

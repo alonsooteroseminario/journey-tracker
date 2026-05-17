@@ -41,14 +41,14 @@ export function WalletHeader({ wallet }: WalletHeaderProps) {
   };
 
   return (
-    <div className="p-4 border-b border-gray-100 space-y-2">
+    <div className="p-4 border-b border-border space-y-2">
       <div className="flex items-center gap-2">
         <input
           type="text"
           value={editIcon}
           onChange={(e) => setEditIcon(e.target.value)}
           onBlur={handleIconBlur}
-          className="w-10 text-center text-2xl bg-transparent border border-transparent hover:border-gray-200 focus:border-brand-primary rounded focus:outline-none"
+          className="w-10 text-center text-2xl bg-transparent border border-transparent hover:border-border focus:border-brand-primary rounded focus:outline-none"
           placeholder="💼"
           aria-label="Wallet icon"
           maxLength={4}
@@ -63,13 +63,13 @@ export function WalletHeader({ wallet }: WalletHeaderProps) {
               if (e.key === "Enter") (e.target as HTMLInputElement).blur();
               if (e.key === "Escape") { setEditTitle(wallet.title); setIsEditingTitle(false); }
             }}
-            className="flex-1 text-xl font-semibold text-gray-800 bg-transparent border border-brand-primary rounded px-2 py-0.5 focus:outline-none"
+            className="flex-1 text-xl font-semibold text-text-primary bg-transparent border border-brand-primary rounded px-2 py-0.5 focus:outline-none"
             aria-label="Wallet title"
             autoFocus
           />
         ) : (
           <h2
-            className="flex-1 text-xl font-semibold text-gray-800 cursor-pointer hover:text-brand-primary transition-colors px-2 py-0.5"
+            className="flex-1 text-xl font-semibold text-text-primary cursor-pointer hover:text-brand-primary transition-colors px-2 py-0.5"
             onClick={() => setIsEditingTitle(true)}
             title="Click to edit title"
           >
@@ -83,7 +83,7 @@ export function WalletHeader({ wallet }: WalletHeaderProps) {
         onBlur={handleDescriptionBlur}
         placeholder="Add a description…"
         rows={2}
-        className="w-full text-sm text-gray-500 bg-transparent border border-transparent hover:border-gray-200 focus:border-brand-primary rounded px-2 py-1 resize-none focus:outline-none"
+        className="w-full text-sm text-text-muted bg-transparent border border-transparent hover:border-border focus:border-brand-primary rounded px-2 py-1 resize-none focus:outline-none"
         aria-label="Wallet description"
       />
     </div>

@@ -22,13 +22,13 @@ export function ComposeChunkRow({ chunk, onRemove }: ComposeChunkRowProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-2 p-2 rounded-lg border border-gray-200 bg-white transition-all"
+      className="flex items-center gap-2 p-2 rounded-lg border border-border bg-surface transition-all"
     >
       {/* Drag Handle */}
       <button
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 flex-shrink-0"
+        className="cursor-grab active:cursor-grabbing p-1 text-text-muted hover:text-text-secondary flex-shrink-0"
         title="Drag to reorder"
         aria-label="Drag to reorder"
       >
@@ -38,12 +38,12 @@ export function ComposeChunkRow({ chunk, onRemove }: ComposeChunkRowProps) {
       </button>
 
       {/* Title */}
-      <span className="flex-1 text-sm text-gray-700 truncate">{chunk.title}</span>
+      <span className="flex-1 text-sm text-text-secondary truncate">{chunk.title}</span>
 
       {/* Remove from Compose */}
       <button
         onClick={onRemove}
-        className="p-1 text-gray-400 hover:text-red-500 rounded transition-colors flex-shrink-0"
+        className="p-1 text-text-muted hover:text-red-500 rounded transition-colors flex-shrink-0"
         title="Remove from Compose"
         aria-label="Remove from Compose"
       >

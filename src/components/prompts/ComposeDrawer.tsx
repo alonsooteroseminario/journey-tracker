@@ -71,16 +71,16 @@ export function ComposeDrawer() {
   };
 
   return (
-    <div className="flex flex-col h-full border-l border-gray-200">
+    <div className="flex flex-col h-full border-l border-border">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-100">
-        <h3 className="text-sm font-semibold text-gray-700">
+      <div className="flex items-center justify-between p-4 border-b border-border">
+        <h3 className="text-sm font-semibold text-text-secondary">
           Compose{refs.length > 0 ? ` (${refs.length})` : ""}
         </h3>
         {refs.length > 0 && (
           <button
             onClick={() => dispatch(clearCompose())}
-            className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+            className="text-xs text-text-muted hover:text-red-500 transition-colors"
             aria-label="Clear compose"
           >
             Clear
@@ -91,7 +91,7 @@ export function ComposeDrawer() {
       {/* Compose chunk list */}
       <div className="flex-1 overflow-y-auto p-3 space-y-1">
         {refs.length === 0 ? (
-          <p className="text-xs text-gray-400 text-center py-4">
+          <p className="text-xs text-text-muted text-center py-4">
             Add chunks here to build your final prompt.
           </p>
         ) : (
@@ -114,7 +114,7 @@ export function ComposeDrawer() {
       </div>
 
       {/* Merged preview */}
-      <div className="p-3 border-t border-gray-100">
+      <div className="p-3 border-t border-border">
         <MergedPreview text={mergedText} onCopy={() => {}} />
       </div>
     </div>

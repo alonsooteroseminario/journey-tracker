@@ -185,14 +185,14 @@ export function GroupCard({ group }: GroupCardProps) {
   });
 
   return (
-    <div ref={setNodeRef} style={style} className="bg-white rounded-xl border border-gray-200 shadow-sm">
+    <div ref={setNodeRef} style={style} className="bg-surface rounded-xl border border-border shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-2 p-3">
         {/* Group drag handle */}
         <button
           {...attributes}
           {...(lockLevel !== "hard" ? listeners : {})}
-          className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600"
+          className="cursor-grab active:cursor-grabbing p-1 text-text-muted hover:text-text-secondary"
           title="Drag to reorder group"
           aria-label="Drag to reorder group"
         >
@@ -204,7 +204,7 @@ export function GroupCard({ group }: GroupCardProps) {
         {/* Expand / Collapse */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+          className="p-1 text-text-muted hover:text-text-secondary transition-colors"
           title={isExpanded ? "Collapse" : "Expand"}
           aria-label={isExpanded ? "Collapse" : "Expand"}
         >
@@ -220,7 +220,7 @@ export function GroupCard({ group }: GroupCardProps) {
 
         {/* Lock badge */}
         {lockLevel === "soft" && (
-          <svg className="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Soft locked">
+          <svg className="w-3 h-3 text-text-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Soft locked">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
           </svg>
         )}
@@ -231,15 +231,15 @@ export function GroupCard({ group }: GroupCardProps) {
         )}
 
         {/* Title */}
-        <span className="flex-1 font-medium text-gray-800 text-sm truncate">{group.title}</span>
-        <span className="text-xs text-gray-400">{group.chunks.length} chunks</span>
+        <span className="flex-1 font-medium text-text-primary text-sm truncate">{group.title}</span>
+        <span className="text-xs text-text-muted">{group.chunks.length} chunks</span>
 
         {/* Action buttons */}
         <div className="flex items-center gap-1">
           {/* Compose group */}
           <button
             onClick={handleComposeClick}
-            className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+            className="p-1 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
             title="Compose group"
             aria-label="Compose group"
           >
@@ -251,7 +251,7 @@ export function GroupCard({ group }: GroupCardProps) {
           {/* Copy merged */}
           <button
             onClick={handleCopyMerged}
-            className={`p-1 rounded transition-colors ${copiedMerge ? "text-green-500 bg-green-50" : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"}`}
+            className={`p-1 rounded transition-colors ${copiedMerge ? "text-green-500 bg-green-50" : "text-text-muted hover:text-brand-primary hover:bg-brand-light"}`}
             title={copiedMerge ? "Copied!" : "Copy merged"}
             aria-label={copiedMerge ? "Copied!" : "Copy merged"}
           >
@@ -263,7 +263,7 @@ export function GroupCard({ group }: GroupCardProps) {
           {/* Lock cycle */}
           <button
             onClick={() => updateGroup({ id: group.id, patch: { lockLevel: cycleLock(lockLevel) } })}
-            className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+            className="p-1 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
             title={`Lock: ${lockLevel}`}
             aria-label={`Lock: ${lockLevel}`}
           >
@@ -275,7 +275,7 @@ export function GroupCard({ group }: GroupCardProps) {
           {/* Duplicate */}
           <button
             onClick={() => duplicateGroup(group.id)}
-            className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+            className="p-1 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
             title="Duplicate group"
             aria-label="Duplicate group"
           >
@@ -288,7 +288,7 @@ export function GroupCard({ group }: GroupCardProps) {
           <button
             onClick={handleDeleteGroup}
             disabled={deleteDisabled}
-            className={`p-1 rounded transition-colors ${deleteDisabled ? "text-gray-300 opacity-40 cursor-not-allowed" : "text-gray-400 hover:text-red-500 hover:bg-red-50"}`}
+            className={`p-1 rounded transition-colors ${deleteDisabled ? "text-text-muted opacity-40 cursor-not-allowed" : "text-text-muted hover:text-red-500 hover:bg-red-50"}`}
             title={deleteDisabled ? "Locked" : "Delete group"}
             aria-label={deleteDisabled ? "Locked" : "Delete group"}
           >
@@ -302,7 +302,7 @@ export function GroupCard({ group }: GroupCardProps) {
       {/* Compose dialog */}
       {showComposeDialog && (
         <div className="mx-3 mb-3 p-3 bg-brand-light border border-brand-primary/20 rounded-lg text-sm">
-          <p className="text-gray-700 mb-2">Compose already has items. What would you like to do?</p>
+          <p className="text-text-secondary mb-2">Compose already has items. What would you like to do?</p>
           <div className="flex gap-2">
             <button
               className="px-3 py-1 bg-brand-primary text-white rounded-md text-xs hover:bg-brand-secondary"
@@ -317,7 +317,7 @@ export function GroupCard({ group }: GroupCardProps) {
               Append
             </button>
             <button
-              className="px-3 py-1 text-gray-600 hover:bg-gray-200 rounded-md text-xs"
+              className="px-3 py-1 text-text-secondary hover:bg-surface-hover rounded-md text-xs"
               onClick={() => setShowComposeDialog(false)}
             >
               Cancel
@@ -328,7 +328,7 @@ export function GroupCard({ group }: GroupCardProps) {
 
       {/* Expanded: chunk list + add form */}
       {isExpanded && (
-        <div className="px-3 pb-3 border-t border-gray-100 pt-3 space-y-2">
+        <div className="px-3 pb-3 border-t border-border pt-3 space-y-2">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={group.chunks.map((c) => c.id)} strategy={verticalListSortingStrategy}>
               {group.chunks.map((chunk) => {
@@ -346,7 +346,7 @@ export function GroupCard({ group }: GroupCardProps) {
           </DndContext>
 
           {group.chunks.length === 0 && !isAddingChunk && (
-            <p className="text-xs text-gray-400 text-center py-2">No chunks yet. Add one below.</p>
+            <p className="text-xs text-text-muted text-center py-2">No chunks yet. Add one below.</p>
           )}
 
           {/* Add chunk form */}
@@ -357,7 +357,7 @@ export function GroupCard({ group }: GroupCardProps) {
                 value={newChunkTitle}
                 onChange={(e) => setNewChunkTitle(e.target.value)}
                 placeholder="Chunk title…"
-                className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                className="flex-1 px-3 py-1.5 text-sm border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleAddChunk();
@@ -373,7 +373,7 @@ export function GroupCard({ group }: GroupCardProps) {
               </button>
               <button
                 onClick={() => { setIsAddingChunk(false); setNewChunkTitle(""); }}
-                className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="px-3 py-1.5 text-sm text-text-secondary hover:bg-surface-hover rounded-lg"
               >
                 Cancel
               </button>
