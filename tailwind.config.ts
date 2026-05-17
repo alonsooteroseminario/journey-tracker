@@ -7,6 +7,9 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  // F1 semantic tokens that are valid even if no source file uses them yet —
+  // body/page wrappers may opt in later. Tests probe these classes too.
+  safelist: ["bg-app", "text-app", "bg-overlay"],
   theme: {
     extend: {
       screens: {
