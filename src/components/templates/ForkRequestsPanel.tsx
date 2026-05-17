@@ -28,8 +28,8 @@ export function ForkRequestsPanel() {
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-brand-light">
-      <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+    <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-brand-light">
+      <h2 className="text-base sm:text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
         <span className="w-6 h-6 bg-brand-light/40 text-brand-primary rounded-full flex items-center justify-center text-xs font-bold">
           {pendingRequests.length}
         </span>
@@ -39,7 +39,7 @@ export function ForkRequestsPanel() {
         {pendingRequests.map((request) => (
           <div
             key={request.id}
-            className="border border-gray-200 rounded-lg p-3 sm:p-4"
+            className="border border-border rounded-lg p-3 sm:p-4"
           >
             <div className="flex items-start gap-3 mb-3">
               {request.requester?.profileImage ? (
@@ -54,18 +54,18 @@ export function ForkRequestsPanel() {
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm text-gray-900">
+                <p className="font-medium text-sm text-text-primary">
                   {request.requester?.name || "Unknown"} wants to fork{" "}
                   <span className="font-semibold">
                     {request.template?.icon} {request.template?.title}
                   </span>
                 </p>
                 {request.message && (
-                  <p className="text-xs text-gray-500 mt-1 italic">
+                  <p className="text-xs text-text-muted mt-1 italic">
                     &ldquo;{request.message}&rdquo;
                   </p>
                 )}
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-text-muted mt-1">
                   {new Date(request.createdAt).toLocaleDateString()}
                 </p>
               </div>

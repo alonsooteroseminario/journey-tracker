@@ -18,7 +18,7 @@ export function MarketplaceGrid({
     return (
       <div className="text-center py-12">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-indigo-600 border-r-transparent"></div>
-        <p className="mt-4 text-sm sm:text-base text-gray-700 font-medium">
+        <p className="mt-4 text-sm sm:text-base text-text-secondary font-medium">
           Loading templates...
         </p>
       </div>
@@ -29,10 +29,10 @@ export function MarketplaceGrid({
     return (
       <div className="text-center py-12">
         <div className="text-5xl sm:text-6xl mb-4">🔍</div>
-        <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg sm:text-xl font-semibold text-text-primary mb-2">
           No templates found
         </h3>
-        <p className="text-sm sm:text-base text-gray-600">
+        <p className="text-sm sm:text-base text-text-secondary">
           Try adjusting your search or filters
         </p>
       </div>

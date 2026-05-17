@@ -14,7 +14,7 @@ export function ChatStatusIndicator({ status, toolName, processingLog = [] }: Ch
   if (status === 'idle') return null;
 
   return (
-    <div className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
+    <div className="px-4 py-2 text-sm text-text-secondary">
       {/* Live tool-call log */}
       {processingLog.length > 0 && (
         <div className="mb-2 space-y-0.5">
@@ -23,12 +23,12 @@ export function ChatStatusIndicator({ status, toolName, processingLog = [] }: Ch
               <span className={event.success === null ? 'text-brand-primary' : event.success ? 'text-green-600' : 'text-red-500'}>
                 {event.success === null ? '⟳' : event.success ? '✓' : '✗'}
               </span>
-              <code className="text-gray-700 dark:text-gray-300">{event.toolName}</code>
+              <code className="text-text-secondary">{event.toolName}</code>
               {event.inputSummary && (
-                <span className="text-gray-400 dark:text-gray-500">{`{${event.inputSummary}}`}</span>
+                <span className="text-text-muted">{`{${event.inputSummary}}`}</span>
               )}
               {event.resultSummary && (
-                <span className="text-gray-500 dark:text-gray-400">→ {event.resultSummary}</span>
+                <span className="text-text-muted">→ {event.resultSummary}</span>
               )}
             </div>
           ))}

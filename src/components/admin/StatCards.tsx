@@ -67,7 +67,7 @@ export function StatCards({ stats }: StatCardsProps) {
         return (
           <div
             key={config.key}
-            className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-surface rounded-lg border border-border p-6 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-4">
               <span className="text-3xl">{config.icon}</span>
@@ -78,12 +78,12 @@ export function StatCards({ stats }: StatCardsProps) {
                 </div>
               )}
             </div>
-            <p className="text-gray-600 text-sm mb-1">{config.label}</p>
-            <p className="text-3xl font-bold text-gray-900">
+            <p className="text-text-secondary text-sm mb-1">{config.label}</p>
+            <p className="text-3xl font-bold text-text-primary">
               {value.toLocaleString()}
             </p>
             {config.trend && (
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-text-muted mt-2">
                 {trendValue} {config.trendLabel}
               </p>
             )}

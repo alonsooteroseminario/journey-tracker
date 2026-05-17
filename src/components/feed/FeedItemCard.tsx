@@ -58,7 +58,7 @@ const FEED_TYPE_COLORS: Record<string, string> = {
   // Goals
   goal_created: "bg-brand-light border-brand-light",
   goal_updated: "bg-brand-light border-brand-light",
-  goal_deleted: "bg-gray-50 border-gray-300",
+  goal_deleted: "bg-surface-muted border-border-strong",
   goal_shared: "bg-brand-light/40 border-brand-light",
   goal_published: "bg-yellow-50 border-yellow-200",
   goal_forked: "bg-indigo-50 border-indigo-200",
@@ -66,14 +66,14 @@ const FEED_TYPE_COLORS: Record<string, string> = {
   // Tasks
   task_created: "bg-emerald-50 border-emerald-200",
   task_updated: "bg-teal-50 border-teal-200",
-  task_deleted: "bg-gray-50 border-gray-300",
+  task_deleted: "bg-surface-muted border-border-strong",
   task_completed: "bg-green-50 border-green-200",
   task_status_changed: "bg-cyan-50 border-cyan-200",
 
   // Substeps
   substep_created: "bg-violet-50 border-violet-200",
   substep_updated: "bg-fuchsia-50 border-fuchsia-200",
-  substep_deleted: "bg-gray-50 border-gray-300",
+  substep_deleted: "bg-surface-muted border-border-strong",
 
   // Costs & Notes
   cost_added: "bg-amber-50 border-amber-200",
@@ -126,7 +126,7 @@ export function FeedItemCard({
   };
 
   const typeIcon = FEED_TYPE_ICONS[item.type] || "📌";
-  const typeColor = FEED_TYPE_COLORS[item.type] || "bg-gray-50 border-gray-200";
+  const typeColor = FEED_TYPE_COLORS[item.type] || "bg-surface-muted border-border";
   const commentCount = item.comments?.length || 0;
   const isStreakAtRisk = item.type === "streak_at_risk";
   const hasDiffs = item.metadata?.diffs && Array.isArray(item.metadata.diffs) && item.metadata.diffs.length > 0;
@@ -136,10 +136,10 @@ export function FeedItemCard({
 
     const diffs = item.metadata.diffs as any[];
     return (
-      <div className="mt-2 p-2 bg-white/50 rounded-lg border border-gray-200 text-xs sm:text-sm space-y-1">
+      <div className="mt-2 p-2 bg-surface/50 rounded-lg border border-border text-xs sm:text-sm space-y-1">
         {diffs.slice(0, 3).map((diff: any, index: number) => (
           <div key={index} className="flex items-start gap-2">
-            <span className="text-gray-500 font-medium min-w-[60px]">{diff.field}:</span>
+            <span className="text-text-muted font-medium min-w-[60px]">{diff.field}:</span>
             <div className="flex-1">
               {diff.oldValue !== undefined && (
                 <span className="text-red-600 line-through">
@@ -148,7 +148,7 @@ export function FeedItemCard({
                 </span>
               )}
               {diff.oldValue !== undefined && diff.newValue !== undefined && (
-                <span className="mx-1 text-gray-400">→</span>
+                <span className="mx-1 text-text-muted">→</span>
               )}
               {diff.newValue !== undefined && (
                 <span className="text-green-600 font-medium">
@@ -160,7 +160,7 @@ export function FeedItemCard({
           </div>
         ))}
         {diffs.length > 3 && (
-          <div className="text-gray-400 italic">
+          <div className="text-text-muted italic">
             +{diffs.length - 3} more changes
           </div>
         )}
@@ -186,18 +186,18 @@ export function FeedItemCard({
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-semibold text-sm sm:text-base text-gray-900">
+            <span className="font-semibold text-sm sm:text-base text-text-primary">
               {item.userName || "Unknown"}
             </span>
             <span className="text-lg sm:text-xl">{typeIcon}</span>
           </div>
-          <p className="text-sm sm:text-base text-gray-700 mb-2 break-words">
+          <p className="text-sm sm:text-base text-text-secondary mb-2 break-words">
             {item.content}
           </p>
 
           {renderDiffs()}
 
-          <div className="text-xs sm:text-sm text-gray-500">
+          <div className="text-xs sm:text-sm text-text-muted">
             {formatDistanceToNow(new Date(item.createdAt), {
               addSuffix: true,
             })}
@@ -206,7 +206,7 @@ export function FeedItemCard({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2 sm:gap-3 mt-4 pt-3 border-t border-gray-200/50 flex-wrap">
+      <div className="flex items-center gap-2 sm:gap-3 mt-4 pt-3 border-t border-border/50 flex-wrap">
         <CheerButton
           cheerCount={item.cheerCount || 0}
           hasCheered={item.hasCheered || false}
@@ -214,7 +214,7 @@ export function FeedItemCard({
         />
         <button
           onClick={() => onToggleExpanded(item.id)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-surface-hover text-text-secondary hover:bg-surface-hover transition-colors"
         >
           <span>💬</span>
           <span>{commentCount}</span>

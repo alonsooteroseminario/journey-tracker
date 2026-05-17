@@ -51,7 +51,7 @@ export function FeedFilters({
             ${
               activeFilter === filter.value
                 ? "bg-brand-primary text-white shadow-md scale-105"
-                : "bg-white text-gray-700 border border-gray-300 hover:border-brand-primary hover:text-brand-primary"
+                : "bg-surface text-text-secondary border border-border-strong hover:border-brand-primary hover:text-brand-primary"
             }
           `}
         >

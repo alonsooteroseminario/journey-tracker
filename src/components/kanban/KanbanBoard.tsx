@@ -291,7 +291,7 @@ export function KanbanBoard() {
   if (goalsLoading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="text-gray-500">Loading...</div>
+        <div className="text-text-muted">Loading...</div>
       </div>
     );
   }
@@ -371,7 +371,7 @@ export function KanbanBoard() {
 
         <DragOverlay>
           {activeId ? (
-            <div className="bg-white p-4 rounded-lg shadow-lg border-2 border-brand-primary opacity-90">
+            <div className="bg-surface p-4 rounded-lg shadow-lg border-2 border-brand-primary opacity-90">
               {filteredData.find((d: any) => d.id === activeId)?.title}
             </div>
           ) : null}
@@ -380,10 +380,10 @@ export function KanbanBoard() {
 
       {/* Empty State */}
       {filteredData.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-gray-300">
+        <div className="text-center py-12 bg-surface rounded-xl border-2 border-dashed border-border-strong">
           <div className="text-4xl mb-2">📋</div>
-          <p className="text-gray-600">No items found</p>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-text-secondary">No items found</p>
+          <p className="text-sm text-text-muted mt-1">
             {searchTerm || dateFilter !== "all" || priorityFilter !== "all" || doneToday
               ? "Try adjusting your filters"
               : effectiveLevel === "goals"

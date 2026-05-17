@@ -23,7 +23,7 @@ export function MarketingDashboard() {
             className={`px-4 py-2 font-medium border-b-2 transition-colors ${
               activePanel === "campaigns"
                 ? "border-brand-primary text-brand-primary"
-                : "border-transparent text-gray-600 hover:text-gray-900"
+                : "border-transparent text-text-secondary hover:text-text-primary"
             }`}
           >
             Campaigns ({campaigns.length})
@@ -33,7 +33,7 @@ export function MarketingDashboard() {
             className={`px-4 py-2 font-medium border-b-2 transition-colors ${
               activePanel === "posts"
                 ? "border-brand-primary text-brand-primary"
-                : "border-transparent text-gray-600 hover:text-gray-900"
+                : "border-transparent text-text-secondary hover:text-text-primary"
             }`}
           >
             Recent Posts ({posts.slice(0, 10).length})
@@ -44,14 +44,14 @@ export function MarketingDashboard() {
         {activePanel === "campaigns" && (
           <div className="space-y-4">
             {campaigns.length === 0 ? (
-              <div className="bg-gray-50 border rounded-lg p-8 text-center">
-                <p className="text-gray-600">
+              <div className="bg-surface-muted border rounded-lg p-8 text-center">
+                <p className="text-text-secondary">
                   No campaigns yet. Use the chat assistant to create your first campaign.
                 </p>
               </div>
             ) : (
               campaigns.map((campaign) => (
-                <div key={campaign.id} className="bg-white border rounded-lg p-4">
+                <div key={campaign.id} className="bg-surface border rounded-lg p-4">
                   <div className="flex items-start justify-between mb-2">
                     <h4 className="font-semibold">{campaign.name}</h4>
                     <span
@@ -61,7 +61,7 @@ export function MarketingDashboard() {
                           : campaign.status === "paused"
                           ? "bg-yellow-100 text-yellow-800"
                           : campaign.status === "completed"
-                          ? "bg-gray-100 text-gray-800"
+                          ? "bg-surface-hover text-text-primary"
                           : "bg-brand-light text-brand-primary"
                       }`}
                     >
@@ -69,9 +69,9 @@ export function MarketingDashboard() {
                     </span>
                   </div>
                   {campaign.description && (
-                    <p className="text-sm text-gray-600 mb-3">{campaign.description}</p>
+                    <p className="text-sm text-text-secondary mb-3">{campaign.description}</p>
                   )}
-                  <div className="flex gap-3 text-xs text-gray-600">
+                  <div className="flex gap-3 text-xs text-text-secondary">
                     <span>📱 {campaign.platforms.join(", ")}</span>
                     {campaign.targetGoals && campaign.targetGoals.length > 0 && (
                       <span>🎯 {campaign.targetGoals.length} goals</span>
@@ -87,14 +87,14 @@ export function MarketingDashboard() {
         {activePanel === "posts" && (
           <div className="space-y-4">
             {posts.length === 0 ? (
-              <div className="bg-gray-50 border rounded-lg p-8 text-center">
-                <p className="text-gray-600">
+              <div className="bg-surface-muted border rounded-lg p-8 text-center">
+                <p className="text-text-secondary">
                   No posts yet. Use the chat assistant to generate social media content.
                 </p>
               </div>
             ) : (
               posts.slice(0, 10).map((post) => (
-                <div key={post.id} className="bg-white border rounded-lg p-4">
+                <div key={post.id} className="bg-surface border rounded-lg p-4">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="text-lg">
@@ -112,13 +112,13 @@ export function MarketingDashboard() {
                           ? "bg-brand-light text-brand-dark"
                           : post.status === "failed"
                           ? "bg-red-100 text-red-800"
-                          : "bg-gray-100 text-gray-800"
+                          : "bg-surface-hover text-text-primary"
                       }`}
                     >
                       {post.status}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-800 mb-2 line-clamp-3">
+                  <p className="text-sm text-text-primary mb-2 line-clamp-3">
                     {post.content}
                   </p>
                   {post.hashtags && post.hashtags.length > 0 && (

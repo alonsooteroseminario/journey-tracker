@@ -45,6 +45,8 @@ const REPLACEMENTS = [
 
   // ── PHASE 2: Modal scrim ─────────────────────────────────────────────
   [/\bbg-black\/(\d{1,3})\b/g, "bg-overlay/$1"],
+  // Older Tailwind pattern: bg-black bg-opacity-50 → bg-overlay/50
+  [/\bbg-black bg-opacity-(\d{1,3})\b/g, "bg-overlay/$1"],
 
   // ── PHASE 3: Surfaces ───────────────────────────────────────────────
   [/\bbg-white(?=\b|\/)/g, "bg-surface"],
@@ -55,6 +57,8 @@ const REPLACEMENTS = [
   [/\bhover:bg-gray-50\b/g, "hover:bg-surface-muted"],
   [/\bhover:bg-gray-100\b/g, "hover:bg-surface-hover"],
   [/\bhover:bg-gray-200\b/g, "hover:bg-surface-hover"],
+  [/\bhover:bg-gray-300\b/g, "hover:bg-surface-hover"],
+  [/ ?dark:hover:bg-gray-(?:300|400|500|600)\b/g, ""],
 
   // ── PHASE 4: Text ───────────────────────────────────────────────────
   [/\btext-gray-300\b/g, "text-text-muted"], // disabled state — pair with opacity utility
@@ -76,9 +80,11 @@ const REPLACEMENTS = [
   [/\bborder-gray-100\b/g, "border-border"],
   [/\bborder-gray-200\b/g, "border-border"],
   [/\bborder-gray-300\b/g, "border-border-strong"],
+  [/\bborder-gray-400\b/g, "border-border-strong"],
 
   [/\bhover:border-gray-200\b/g, "hover:border-border"],
   [/\bhover:border-gray-300\b/g, "hover:border-border-strong"],
+  [/\bhover:border-gray-400\b/g, "hover:border-border-strong"],
 
   // ── PHASE 6: Cosmetic cleanup inside className="..." strings only ───
   // Collapse double-spaces and trim leading/trailing whitespace WITHIN
@@ -117,7 +123,7 @@ if (!targetDir) {
 let files = [];
 try {
   const raw = execSync(
-    `grep -lrE 'bg-(white|gray-[0-9])|text-gray-[0-9]+|border-gray-[0-9]+' ${targetDir} --include='*.tsx' --include='*.ts' || true`,
+    `grep -lrE 'bg-(white|gray-[0-9]|black)|text-gray-[0-9]+|border-gray-[0-9]+|bg-opacity-' ${targetDir} --include='*.tsx' --include='*.ts' || true`,
     { encoding: "utf8" },
   ).trim();
   if (raw) files = raw.split("\n");

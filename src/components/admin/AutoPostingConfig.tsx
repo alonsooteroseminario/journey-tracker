@@ -71,10 +71,10 @@ export function AutoPostingConfig({
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className="bg-white border rounded-lg p-6 space-y-6">
+    <div className="bg-surface border rounded-lg p-6 space-y-6">
       <div>
         <h3 className="text-lg font-semibold mb-2">Automated Posting Schedule</h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-text-secondary">
           Configure when posts should be automatically published for this campaign
         </p>
       </div>
@@ -106,7 +106,7 @@ export function AutoPostingConfig({
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 schedule.daysOfWeek.includes(index)
                   ? "bg-brand-primary text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
               }`}
             >
               {name}

@@ -109,14 +109,14 @@ export function ExplorerView() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Database Explorer</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-3xl font-bold text-text-primary">Database Explorer</h1>
+        <p className="text-text-secondary mt-2">
           Browse, search, and manage database records
         </p>
       </div>
 
       {/* Model Selector */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-surface rounded-lg border border-border p-4">
         <div className="flex flex-wrap gap-2">
           {modelNames.map((modelName) => {
             const meta = getModelMetadata(modelName)!;
@@ -129,7 +129,7 @@ export function ExplorerView() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-brand-primary text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
                 }`}
               >
                 {meta.label}
@@ -148,17 +148,17 @@ export function ExplorerView() {
             placeholder={`Search ${metadata.label.toLowerCase()}...`}
           />
         </div>
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-text-secondary">
           {pagination.total} {metadata.label.toLowerCase()} found
         </div>
       </div>
 
       {/* Data Table */}
       {isLoading ? (
-        <div className="flex items-center justify-center h-64 bg-white rounded-lg border border-gray-200">
+        <div className="flex items-center justify-center h-64 bg-surface rounded-lg border border-border">
           <div className="text-center">
-            <div className="w-12 h-12 border-4 border-gray-300 border-t-brand-primary rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-gray-500">Loading {metadata.label.toLowerCase()}...</p>
+            <div className="w-12 h-12 border-4 border-border-strong border-t-brand-primary rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-text-muted">Loading {metadata.label.toLowerCase()}...</p>
           </div>
         </div>
       ) : (

@@ -27,7 +27,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
   };
 
   return (
-    <div className="border-t border-gray-300 dark:border-gray-600 p-4">
+    <div className="border-t border-border-strong p-4">
       <div className="flex gap-2">
         <textarea
           value={input}
@@ -35,7 +35,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
           onKeyDown={handleKeyDown}
           placeholder="Ask me anything about your goals..."
           disabled={disabled}
-          className="flex-1 resize-none rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-primary disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-gray-500 dark:placeholder:text-gray-400"
+          className="flex-1 resize-none rounded-lg border border-border-strong bg-surface px-3 py-2 text-sm text-text-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-primary disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-text-muted dark:placeholder:text-text-muted"
           rows={2}
         />
         <button
@@ -46,7 +46,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
           Send
         </button>
       </div>
-      <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+      <div className="mt-2 text-xs text-text-muted">
         Press Enter to send, Shift+Enter for new line
       </div>
     </div>

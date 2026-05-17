@@ -30,10 +30,10 @@ export function MarketplaceSearch({
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search templates..."
-            className="w-full px-4 py-2 sm:py-2.5 text-sm sm:text-base pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full px-4 py-2 sm:py-2.5 text-sm sm:text-base pl-10 border border-border-strong rounded-lg bg-surface text-text-primary dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-text-muted"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -52,7 +52,7 @@ export function MarketplaceSearch({
       <select
         value={difficulty}
         onChange={(e) => onDifficultyChange(e.target.value)}
-        className="px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+        className="px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-border-strong rounded-lg bg-surface text-text-primary dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
       >
         <option value="all">All Difficulties</option>
         <option value="beginner">Beginner</option>

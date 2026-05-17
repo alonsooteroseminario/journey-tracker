@@ -17,16 +17,16 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4 hover:shadow-lg hover:border-brand-light transition-all cursor-pointer"
+      className="bg-surface rounded-lg border border-border p-3 sm:p-4 hover:shadow-lg hover:border-brand-light transition-all cursor-pointer"
     >
       {/* Header */}
       <div className="flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3">
         <span className="text-2xl sm:text-3xl">{template.icon}</span>
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-sm sm:text-base text-gray-900 truncate">
+          <h3 className="font-semibold text-sm sm:text-base text-text-primary truncate">
             {template.title}
           </h3>
-          <p className="text-xs sm:text-sm text-gray-600">
+          <p className="text-xs sm:text-sm text-text-secondary">
             by {template.author?.name || "Unknown"}
           </p>
         </div>
@@ -34,7 +34,7 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
 
       {/* Description */}
       {template.description && (
-        <p className="text-xs sm:text-sm text-gray-700 mb-2 sm:mb-3 line-clamp-2">
+        <p className="text-xs sm:text-sm text-text-secondary mb-2 sm:mb-3 line-clamp-2">
           {template.description}
         </p>
       )}
@@ -59,7 +59,7 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
 
         {/* Duration */}
         {template.estimatedDuration && (
-          <span className="text-gray-600">
+          <span className="text-text-secondary">
             ⏱ {template.estimatedDuration}
           </span>
         )}
@@ -77,7 +77,7 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
             </span>
           ))}
           {template.tags.length > 3 && (
-            <span className="text-xs text-gray-600">
+            <span className="text-xs text-text-secondary">
               +{template.tags.length - 3} more
             </span>
           )}
@@ -85,9 +85,9 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
       )}
 
       {/* Footer Stats */}
-      <div className="flex items-center justify-between pt-2 sm:pt-3 border-t border-gray-200 text-xs sm:text-sm text-gray-600">
+      <div className="flex items-center justify-between pt-2 sm:pt-3 border-t border-border text-xs sm:text-sm text-text-secondary">
         <span>🍴 {template.forkCount} forks</span>
-        <span className="px-2 py-1 bg-gray-100 rounded">
+        <span className="px-2 py-1 bg-surface-hover rounded">
           {template.visibility === "public" ? "🌍 Public" : "👥 Friends"}
         </span>
       </div>

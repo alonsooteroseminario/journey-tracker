@@ -60,29 +60,29 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-overlay/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-surface rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-4 sm:p-6">
           <div className="flex justify-between items-center mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold text-text-primary dark:text-white">
               Share as Template
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl sm:text-3xl"
+              className="text-text-muted hover:text-text-secondary text-2xl sm:text-3xl"
             >
               ×
             </button>
           </div>
 
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-4 sm:mb-6">
+          <p className="text-sm sm:text-base text-text-secondary mb-4 sm:mb-6">
             Sharing: <strong>{goalTitle}</strong>
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Lessons Learned */}
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1 sm:mb-2">
                 Lessons Learned
               </label>
               <textarea
@@ -90,7 +90,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
                 onChange={(e) =>
                   setFormData({ ...formData, lessonsLearned: e.target.value })
                 }
-                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-border-strong rounded-md bg-surface text-text-primary dark:text-white"
                 rows={3}
                 placeholder="What did you learn while working on this goal?"
               />
@@ -98,13 +98,13 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
 
             {/* Tips */}
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1 sm:mb-2">
                 Tips & Advice
               </label>
               <textarea
                 value={formData.tips}
                 onChange={(e) => setFormData({ ...formData, tips: e.target.value })}
-                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-border-strong rounded-md bg-surface text-text-primary dark:text-white"
                 rows={3}
                 placeholder="Tips for others using this template"
               />
@@ -112,7 +112,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
 
             {/* Estimated Duration */}
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1 sm:mb-2">
                 Estimated Duration
               </label>
               <input
@@ -121,7 +121,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
                 onChange={(e) =>
                   setFormData({ ...formData, estimatedDuration: e.target.value })
                 }
-                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-border-strong rounded-md bg-surface text-text-primary dark:text-white"
                 placeholder="e.g., 3 months, 6 weeks"
               />
             </div>
@@ -130,7 +130,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Difficulty */}
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1 sm:mb-2">
                   Difficulty
                 </label>
                 <select
@@ -141,7 +141,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
                       difficulty: e.target.value as "beginner" | "intermediate" | "advanced",
                     })
                   }
-                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-border-strong rounded-md bg-surface text-text-primary dark:text-white"
                 >
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
@@ -151,7 +151,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
 
               {/* Category */}
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1 sm:mb-2">
                   Category
                 </label>
                 <input
@@ -160,7 +160,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
                   onChange={(e) =>
                     setFormData({ ...formData, category: e.target.value })
                   }
-                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-border-strong rounded-md bg-surface text-text-primary dark:text-white"
                   placeholder="e.g., Career, Health"
                 />
               </div>
@@ -168,7 +168,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
 
             {/* Tags */}
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1 sm:mb-2">
                 Tags
               </label>
               <div className="flex gap-2 mb-2">
@@ -182,7 +182,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
                       addTag();
                     }
                   }}
-                  className="flex-1 px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="flex-1 px-3 py-2 text-sm sm:text-base border border-border-strong rounded-md bg-surface text-text-primary dark:text-white"
                   placeholder="Add a tag"
                 />
                 <button
@@ -214,7 +214,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
 
             {/* Visibility */}
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1 sm:mb-2">
                 Visibility
               </label>
               <div className="space-y-2">
@@ -231,7 +231,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
                     }
                     className="mr-2"
                   />
-                  <span className="text-sm sm:text-base text-gray-900 dark:text-white">
+                  <span className="text-sm sm:text-base text-text-primary dark:text-white">
                     Friends only
                   </span>
                 </label>
@@ -248,7 +248,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
                     }
                     className="mr-2"
                   />
-                  <span className="text-sm sm:text-base text-gray-900 dark:text-white">
+                  <span className="text-sm sm:text-base text-text-primary dark:text-white">
                     Public (anyone can see)
                   </span>
                 </label>
@@ -266,10 +266,10 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
                     className="mt-0.5"
                   />
                   <div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    <span className="text-sm font-medium text-text-primary dark:text-white">
                       Publish to Marketplace
                     </span>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="text-xs text-text-muted mt-0.5">
                       Make this template discoverable by anyone in the marketplace
                     </p>
                   </div>
@@ -282,7 +282,7 @@ export function ShareGoalModal({ goalId, goalTitle, onClose }: ShareGoalModalPro
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full sm:w-auto px-4 py-2 text-sm sm:text-base text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
+                className="w-full sm:w-auto px-4 py-2 text-sm sm:text-base text-text-secondary bg-surface-hover rounded-md hover:bg-surface-hover"
               >
                 Cancel
               </button>

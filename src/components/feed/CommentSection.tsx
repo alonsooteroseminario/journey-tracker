@@ -38,7 +38,7 @@ export function CommentSection({
   if (!isExpanded) return null;
 
   return (
-    <div className="mt-4 pt-4 border-t border-gray-200">
+    <div className="mt-4 pt-4 border-t border-border">
       {/* Comments List */}
       {comments.length > 0 && (
         <div className="space-y-3 mb-4">
@@ -49,16 +49,16 @@ export function CommentSection({
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2">
-                  <span className="font-semibold text-sm text-gray-900">
+                  <span className="font-semibold text-sm text-text-primary">
                     {comment.userName || "Unknown"}
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-text-muted">
                     {formatDistanceToNow(new Date(comment.createdAt), {
                       addSuffix: true,
                     })}
                   </span>
                 </div>
-                <p className="text-sm text-gray-700 mt-0.5 break-words">
+                <p className="text-sm text-text-secondary mt-0.5 break-words">
                   {comment.content}
                 </p>
               </div>
@@ -76,7 +76,7 @@ export function CommentSection({
           placeholder="Add a comment..."
           maxLength={500}
           disabled={isSubmitting}
-          className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent disabled:opacity-50"
+          className="flex-1 px-3 py-2 text-sm border border-border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent disabled:opacity-50"
         />
         <button
           type="submit"

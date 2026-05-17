@@ -17,19 +17,19 @@ export function AdminChatWidget() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-full bg-white border rounded-lg">
+    <div className="flex flex-col h-full bg-surface border rounded-lg">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
         <div>
           <h3 className="font-semibold text-lg">Marketing Assistant</h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-text-secondary">
             AI-powered campaign and content management
           </p>
         </div>
         {messages.length > 0 && (
           <button
             onClick={clearMessages}
-            className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1 rounded border hover:bg-gray-50"
+            className="text-sm text-text-secondary hover:text-text-primary px-3 py-1 rounded border hover:bg-surface-muted"
           >
             Clear
           </button>
@@ -39,7 +39,7 @@ export function AdminChatWidget() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
-          <div className="text-center text-gray-500 py-12">
+          <div className="text-center text-text-muted py-12">
             <div className="text-4xl mb-4">💼</div>
             <h4 className="font-medium text-lg mb-2">Welcome to Marketing Assistant</h4>
             <p className="text-sm">
@@ -49,12 +49,12 @@ export function AdminChatWidget() {
             <div className="mt-6 space-y-2 text-sm">
               <p className="font-medium">Try asking:</p>
               <ul className="space-y-1 text-left max-w-md mx-auto">
-                <li className="text-gray-600">&bull; "Create a Twitter campaign for Q1"</li>
-                <li className="text-gray-600">
+                <li className="text-text-secondary">&bull; "Create a Twitter campaign for Q1"</li>
+                <li className="text-text-secondary">
                   &bull; "Generate a post celebrating 100 users"
                 </li>
-                <li className="text-gray-600">&bull; "Show me my active campaigns"</li>
-                <li className="text-gray-600">
+                <li className="text-text-secondary">&bull; "Show me my active campaigns"</li>
+                <li className="text-text-secondary">
                   &bull; "Create motivational content for Instagram"
                 </li>
               </ul>
@@ -67,7 +67,7 @@ export function AdminChatWidget() {
         )}
 
         {status !== "idle" && (
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-text-secondary">
             <ChatStatusIndicator status={status} />
           </div>
         )}

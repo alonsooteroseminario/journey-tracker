@@ -40,8 +40,8 @@ describe("CheerButton", () => {
     );
 
     const button = screen.getByRole("button");
-    expect(button).toHaveClass("bg-gray-100");
-    expect(button).toHaveClass("text-gray-600");
+    expect(button).toHaveClass("bg-surface-hover");
+    expect(button).toHaveClass("text-text-secondary");
   });
 
   it("calls onToggle when clicked", () => {

@@ -21,10 +21,10 @@ export function KanbanColumn({ title, status, items, level, onDrillDown, onArchi
 
   const columnColors = {
     not_started: {
-      bg: "bg-gray-50",
-      border: "border-gray-200",
-      header: "bg-gray-100 text-gray-700",
-      hoverBorder: "border-gray-400",
+      bg: "bg-surface-muted",
+      border: "border-border",
+      header: "bg-surface-hover text-text-secondary",
+      hoverBorder: "border-border-strong",
     },
     in_progress: {
       bg: "bg-orange-50",
@@ -87,7 +87,7 @@ export function KanbanColumn({ title, status, items, level, onDrillDown, onArchi
           </SortableContext>
 
           {items.length === 0 && (
-            <div className="text-center py-8 text-gray-400 text-sm">
+            <div className="text-center py-8 text-text-muted text-sm">
               Drag items here
             </div>
           )}

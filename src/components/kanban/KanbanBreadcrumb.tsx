@@ -15,7 +15,7 @@ export function KanbanBreadcrumb({ level, goalName, taskName, onNavigate }: Kanb
         className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors ${
           level === "goals"
             ? "bg-brand-light text-brand-primary font-semibold"
-            : "text-gray-600 hover:bg-gray-100"
+            : "text-text-secondary hover:bg-surface-hover"
         }`}
       >
         🎯 All Goals
@@ -23,7 +23,7 @@ export function KanbanBreadcrumb({ level, goalName, taskName, onNavigate }: Kanb
 
       {(level === "tasks" || level === "substeps") && goalName && (
         <>
-          <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3 h-3 sm:w-4 sm:h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
           <button
@@ -31,7 +31,7 @@ export function KanbanBreadcrumb({ level, goalName, taskName, onNavigate }: Kanb
             className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors ${
               level === "tasks"
                 ? "bg-brand-light text-brand-primary font-semibold"
-                : "text-gray-600 hover:bg-gray-100"
+                : "text-text-secondary hover:bg-surface-hover"
             }`}
           >
             📋 {goalName}
@@ -41,7 +41,7 @@ export function KanbanBreadcrumb({ level, goalName, taskName, onNavigate }: Kanb
 
       {level === "substeps" && taskName && (
         <>
-          <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3 h-3 sm:w-4 sm:h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
           <span className="px-2 sm:px-3 py-1 sm:py-1.5 bg-brand-light text-brand-primary font-semibold rounded-lg">

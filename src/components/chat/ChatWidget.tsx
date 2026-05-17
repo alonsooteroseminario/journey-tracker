@@ -71,7 +71,7 @@ export function ChatWidget() {
   return (
     <div
       style={panelStyle}
-      className="flex flex-col bg-white dark:bg-gray-800 shadow-2xl border border-gray-200 rounded-t-lg"
+      className="flex flex-col bg-surface shadow-2xl border border-border rounded-t-lg"
     >
       {/* panel header */}
       <div className="flex items-center justify-between px-4 py-3 bg-brand-primary text-white rounded-t-lg flex-shrink-0">
@@ -126,7 +126,7 @@ export function ChatWidget() {
       {/* messages */}
       <div className="flex-1 overflow-y-auto p-4">
         {messages.length === 0 && (
-          <div className="text-center text-gray-500 dark:text-gray-400 mt-8">
+          <div className="text-center text-text-muted mt-8">
             <p className="mb-4">Hi! I&apos;m your Journey Tracker assistant.</p>
             <p className="text-sm">Ask me about your goals, tasks, or streaks!</p>
           </div>

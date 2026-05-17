@@ -36,10 +36,10 @@ export function KanbanFilters({
   onShowArchivedChange,
 }: KanbanFiltersProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-2 sm:p-4">
+    <div className="bg-surface rounded-xl border border-border p-2 sm:p-4">
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         {/* View Level Toggle */}
-        <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+        <div className="flex items-center bg-surface-hover rounded-lg p-0.5">
           {([
             { value: "goals" as ViewLevel, label: "Goals", icon: "🎯" },
             { value: "tasks" as ViewLevel, label: "Tasks", icon: "📋" },
@@ -50,8 +50,8 @@ export function KanbanFilters({
               onClick={() => onViewLevelChange(value)}
               className={`px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 viewLevel === value
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "bg-surface text-text-primary shadow-sm"
+                  : "text-text-muted hover:text-text-secondary"
               }`}
             >
               <span className="sm:hidden">{icon}</span>
@@ -64,7 +64,7 @@ export function KanbanFilters({
         <div className="flex-1 min-w-0 sm:min-w-[200px]">
           <div className="relative">
             <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-muted"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -81,7 +81,7 @@ export function KanbanFilters({
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search..."
-              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm"
+              className="w-full pl-9 pr-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm"
             />
           </div>
         </div>
@@ -92,7 +92,7 @@ export function KanbanFilters({
           className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors whitespace-nowrap ${
             doneToday
               ? "bg-green-100 text-green-700 border-green-300"
-              : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+              : "bg-surface text-text-secondary border-border hover:border-border-strong"
           }`}
         >
           <span className="sm:hidden">Today</span>
@@ -102,11 +102,11 @@ export function KanbanFilters({
         {/* Date Filter */}
         {showDateFilter && (
           <div className="flex items-center gap-2">
-            <label className="hidden sm:inline text-sm font-medium text-gray-700">Due:</label>
+            <label className="hidden sm:inline text-sm font-medium text-text-secondary">Due:</label>
             <select
               value={dateFilter}
               onChange={(e) => onDateFilterChange(e.target.value as any)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm"
+              className="px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm"
             >
               <option value="all">All dates</option>
               <option value="overdue">Overdue</option>
@@ -119,11 +119,11 @@ export function KanbanFilters({
         {/* Priority Filter */}
         {showPriorityFilter && (
           <div className="flex items-center gap-2">
-            <label className="hidden sm:inline text-sm font-medium text-gray-700">Priority:</label>
+            <label className="hidden sm:inline text-sm font-medium text-text-secondary">Priority:</label>
             <select
               value={priorityFilter}
               onChange={(e) => onPriorityFilterChange(e.target.value as any)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm"
+              className="px-3 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm"
             >
               <option value="all">All</option>
               <option value="low">Low</option>
@@ -143,7 +143,7 @@ export function KanbanFilters({
               onPriorityFilterChange("all");
               onDoneTodayChange(false);
             }}
-            className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors"
           >
             Clear filters
           </button>
@@ -155,7 +155,7 @@ export function KanbanFilters({
           className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors whitespace-nowrap ${
             showArchived
               ? "bg-amber-100 text-amber-700 border-amber-300"
-              : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+              : "bg-surface text-text-secondary border-border hover:border-border-strong"
           }`}
           title={showArchived ? "Showing archived only" : "Show archived items"}
         >

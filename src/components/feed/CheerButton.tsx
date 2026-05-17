@@ -23,7 +23,7 @@ export function CheerButton({
         ${
           hasCheered
             ? "bg-orange-100 text-orange-700 border-2 border-orange-300"
-            : "bg-gray-100 text-gray-600 border-2 border-transparent hover:border-orange-200"
+            : "bg-surface-hover text-text-secondary border-2 border-transparent hover:border-orange-200"
         }
         ${disabled ? "opacity-50 cursor-not-allowed" : "hover:scale-105 active:scale-95"}
       `}

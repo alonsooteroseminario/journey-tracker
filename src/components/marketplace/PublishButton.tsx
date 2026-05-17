@@ -30,7 +30,7 @@ export function PublishButton({ templateId, isPublished }: PublishButtonProps) {
         </span>
         <button
           onClick={() => setShowConfirm(true)}
-          className="px-3 py-1.5 text-xs text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          className="px-3 py-1.5 text-xs text-text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
         >
           Unpublish
         </button>
@@ -41,7 +41,7 @@ export function PublishButton({ templateId, isPublished }: PublishButtonProps) {
   if (showConfirm) {
     return (
       <div className="space-y-2">
-        <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+        <p className="text-xs sm:text-sm text-text-secondary">
           {isPublished
             ? "Remove this template from the marketplace?"
             : "Publishing makes this template visible to everyone. Continue?"}
@@ -49,7 +49,7 @@ export function PublishButton({ templateId, isPublished }: PublishButtonProps) {
         <div className="flex gap-2">
           <button
             onClick={() => setShowConfirm(false)}
-            className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+            className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-text-secondary bg-surface-hover rounded-lg hover:bg-surface-hover"
           >
             Cancel
           </button>

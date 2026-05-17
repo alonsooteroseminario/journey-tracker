@@ -25,7 +25,7 @@ export function CategoryFilter({ selected, onChange }: CategoryFilterProps) {
           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full font-medium transition-all ${
             selected === category.value
               ? "bg-indigo-600 text-white shadow-md"
-              : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
           }`}
         >
           <span className="mr-1">{category.emoji}</span>

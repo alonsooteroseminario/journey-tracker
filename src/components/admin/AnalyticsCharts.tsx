@@ -37,8 +37,8 @@ export function AnalyticsCharts({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* User Growth Chart */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-surface rounded-lg border border-border p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">
           User Growth (Last 30 Days)
         </h3>
         <ResponsiveContainer width="100%" height={300}>
@@ -73,8 +73,8 @@ export function AnalyticsCharts({
       </div>
 
       {/* Goal Activity Chart */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-surface rounded-lg border border-border p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">
           Goals Created (Last 30 Days)
         </h3>
         <ResponsiveContainer width="100%" height={300}>
@@ -101,8 +101,8 @@ export function AnalyticsCharts({
       </div>
 
       {/* Task Activity Chart */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-surface rounded-lg border border-border p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">
           Tasks Completed (Last 30 Days)
         </h3>
         <ResponsiveContainer width="100%" height={300}>
@@ -129,8 +129,8 @@ export function AnalyticsCharts({
       </div>
 
       {/* Template Categories Pie Chart */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-surface rounded-lg border border-border p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-text-primary mb-4">
           Top Template Categories
         </h3>
         {topCategories.length > 0 ? (
@@ -170,7 +170,7 @@ export function AnalyticsCharts({
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-[300px] text-gray-500">
+          <div className="flex items-center justify-center h-[300px] text-text-muted">
             No template data available
           </div>
         )}

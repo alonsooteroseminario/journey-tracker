@@ -83,11 +83,11 @@ export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkB
     return (
       <div className="w-full sm:flex-1 space-y-2 sm:space-y-3">
         <div className="bg-brand-light dark:bg-brand-primary/20 p-3 sm:p-4 rounded-md">
-          <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+          <p className="text-xs sm:text-sm text-text-secondary mb-2 sm:mb-3">
             This will create a new goal based on this template. All tasks will start uncompleted.
           </p>
           <div>
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1 sm:mb-2">
               Custom Title (optional)
             </label>
             <input
@@ -95,14 +95,14 @@ export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkB
               value={customTitle}
               onChange={(e) => setCustomTitle(e.target.value)}
               placeholder={templateTitle}
-              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-border-strong rounded-md bg-surface text-text-primary dark:text-white"
             />
           </div>
         </div>
         <div className="flex flex-col-reverse sm:flex-row gap-2">
           <button
             onClick={() => setShowConfirm(false)}
-            className="w-full sm:w-auto px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
+            className="w-full sm:w-auto px-3 sm:px-4 py-2 text-xs sm:text-sm text-text-secondary bg-surface-hover rounded-md hover:bg-surface-hover"
           >
             Cancel
           </button>
@@ -122,11 +122,11 @@ export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkB
   return (
     <div className="w-full sm:flex-1 space-y-2 sm:space-y-3">
       <div className="bg-brand-light/40 dark:bg-brand-primary/20 p-3 sm:p-4 rounded-md">
-        <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+        <p className="text-xs sm:text-sm text-text-secondary mb-2 sm:mb-3">
           This template requires the creator&apos;s permission to fork. Send a request and they&apos;ll be notified.
         </p>
         <div>
-          <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+          <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1 sm:mb-2">
             Message to creator (optional)
           </label>
           <textarea
@@ -135,14 +135,14 @@ export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkB
             placeholder="Why you'd like to fork this template..."
             rows={2}
             maxLength={500}
-            className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
+            className="w-full px-3 py-2 text-sm sm:text-base border border-border-strong rounded-md bg-surface text-text-primary dark:text-white resize-none"
           />
         </div>
       </div>
       <div className="flex flex-col-reverse sm:flex-row gap-2">
         <button
           onClick={() => setShowConfirm(false)}
-          className="w-full sm:w-auto px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
+          className="w-full sm:w-auto px-3 sm:px-4 py-2 text-xs sm:text-sm text-text-secondary bg-surface-hover rounded-md hover:bg-surface-hover"
         >
           Cancel
         </button>

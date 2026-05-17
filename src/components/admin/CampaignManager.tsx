@@ -93,7 +93,7 @@ export function CampaignManager() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-gray-600">Loading campaigns...</div>
+        <div className="text-text-secondary">Loading campaigns...</div>
       </div>
     );
   }
@@ -122,7 +122,7 @@ export function CampaignManager() {
 
       {/* Create Campaign Form */}
       {isCreating && (
-        <div className="bg-white border rounded-lg p-6">
+        <div className="bg-surface border rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Create New Campaign</h3>
           <form onSubmit={handleCreate} className="space-y-4">
             <div>
@@ -182,7 +182,7 @@ export function CampaignManager() {
               <button
                 type="button"
                 onClick={() => setIsCreating(false)}
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
+                className="bg-surface-hover text-text-secondary px-4 py-2 rounded-lg hover:bg-surface-hover"
               >
                 Cancel
               </button>
@@ -194,17 +194,17 @@ export function CampaignManager() {
       {/* Campaigns List */}
       <div className="grid gap-4">
         {campaigns.length === 0 ? (
-          <div className="bg-gray-50 border rounded-lg p-8 text-center">
-            <p className="text-gray-600">No campaigns yet. Create your first campaign to get started.</p>
+          <div className="bg-surface-muted border rounded-lg p-8 text-center">
+            <p className="text-text-secondary">No campaigns yet. Create your first campaign to get started.</p>
           </div>
         ) : (
           campaigns.map((campaign) => (
-            <div key={campaign.id} className="bg-white border rounded-lg p-6">
+            <div key={campaign.id} className="bg-surface border rounded-lg p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-semibold">{campaign.name}</h3>
                   {campaign.description && (
-                    <p className="text-gray-600 text-sm mt-1">{campaign.description}</p>
+                    <p className="text-text-secondary text-sm mt-1">{campaign.description}</p>
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -215,7 +215,7 @@ export function CampaignManager() {
                         : campaign.status === "paused"
                         ? "bg-yellow-100 text-yellow-800"
                         : campaign.status === "completed"
-                        ? "bg-gray-100 text-gray-800"
+                        ? "bg-surface-hover text-text-primary"
                         : "bg-brand-light text-brand-primary"
                     }`}
                   >
@@ -224,7 +224,7 @@ export function CampaignManager() {
                 </div>
               </div>
 
-              <div className="flex gap-4 text-sm text-gray-600 mb-4">
+              <div className="flex gap-4 text-sm text-text-secondary mb-4">
                 <div>
                   <span className="font-medium">Platforms:</span>{" "}
                   {campaign.platforms.join(", ")}

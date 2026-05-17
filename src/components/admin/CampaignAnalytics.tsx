@@ -34,7 +34,7 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-gray-600">Loading analytics...</div>
+        <div className="text-text-secondary">Loading analytics...</div>
       </div>
     );
   }
@@ -84,7 +84,7 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
       <div>
         <h2 className="text-2xl font-bold mb-2">{campaign.name}</h2>
         {campaign.description && (
-          <p className="text-gray-600">{campaign.description}</p>
+          <p className="text-text-secondary">{campaign.description}</p>
         )}
       </div>
 
@@ -113,42 +113,42 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
       </div>
 
       {/* Engagement Breakdown */}
-      <div className="bg-white border rounded-lg p-6">
+      <div className="bg-surface border rounded-lg p-6">
         <h3 className="text-lg font-semibold mb-4">Engagement Breakdown</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <div className="text-2xl font-bold text-brand-primary">
               {totalLikes.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-600">Likes</div>
+            <div className="text-sm text-text-secondary">Likes</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-green-600">
               {totalRetweets.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-600">Shares</div>
+            <div className="text-sm text-text-secondary">Shares</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-brand-primary">
               {totalComments.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-600">Comments</div>
+            <div className="text-sm text-text-secondary">Comments</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-orange-600">
               {totalClicks.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-600">Clicks</div>
+            <div className="text-sm text-text-secondary">Clicks</div>
           </div>
         </div>
       </div>
 
       {/* A/B Test Results */}
       {campaign.abTestEnabled && (
-        <div className="bg-white border rounded-lg p-6">
+        <div className="bg-surface border rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">A/B Test Results</h3>
           {loadingABTest ? (
-            <div className="text-gray-600">Loading A/B test results...</div>
+            <div className="text-text-secondary">Loading A/B test results...</div>
           ) : abTestResults ? (
             <div className="space-y-4">
               {/* Winner Badge */}
@@ -171,15 +171,15 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
 
               {/* Comparison Table */}
               <div className="grid grid-cols-3 gap-4">
-                <div className="font-medium text-gray-700">Metric</div>
-                <div className="font-medium text-gray-700 text-center">
+                <div className="font-medium text-text-secondary">Metric</div>
+                <div className="font-medium text-text-secondary text-center">
                   Variant A ({abTestResults.variantA.posts} posts)
                 </div>
-                <div className="font-medium text-gray-700 text-center">
+                <div className="font-medium text-text-secondary text-center">
                   Variant B ({abTestResults.variantB.posts} posts)
                 </div>
 
-                <div className="text-sm text-gray-600">Avg Impressions</div>
+                <div className="text-sm text-text-secondary">Avg Impressions</div>
                 <div className="text-center">
                   {abTestResults.variantA.avgImpressions.toLocaleString()}
                 </div>
@@ -187,7 +187,7 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
                   {abTestResults.variantB.avgImpressions.toLocaleString()}
                 </div>
 
-                <div className="text-sm text-gray-600">Avg Likes</div>
+                <div className="text-sm text-text-secondary">Avg Likes</div>
                 <div className="text-center">
                   {abTestResults.variantA.avgLikes.toLocaleString()}
                 </div>
@@ -195,7 +195,7 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
                   {abTestResults.variantB.avgLikes.toLocaleString()}
                 </div>
 
-                <div className="text-sm text-gray-600">Avg Shares</div>
+                <div className="text-sm text-text-secondary">Avg Shares</div>
                 <div className="text-center">
                   {abTestResults.variantA.avgRetweets.toLocaleString()}
                 </div>
@@ -203,7 +203,7 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
                   {abTestResults.variantB.avgRetweets.toLocaleString()}
                 </div>
 
-                <div className="text-sm text-gray-600">Avg Comments</div>
+                <div className="text-sm text-text-secondary">Avg Comments</div>
                 <div className="text-center">
                   {abTestResults.variantA.avgComments.toLocaleString()}
                 </div>
@@ -211,7 +211,7 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
                   {abTestResults.variantB.avgComments.toLocaleString()}
                 </div>
 
-                <div className="text-sm text-gray-600 font-medium">
+                <div className="text-sm text-text-secondary font-medium">
                   Total Engagement
                 </div>
                 <div className="text-center font-medium">
@@ -223,14 +223,14 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
               </div>
             </div>
           ) : (
-            <div className="text-gray-600">No A/B test data available</div>
+            <div className="text-text-secondary">No A/B test data available</div>
           )}
         </div>
       )}
 
       {/* Top Performing Posts */}
       {postedPosts.length > 0 && (
-        <div className="bg-white border rounded-lg p-6">
+        <div className="bg-surface border rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Top Performing Posts</h3>
           <div className="space-y-3">
             {postedPosts
@@ -245,12 +245,12 @@ export function CampaignAnalytics({ campaignId }: CampaignAnalyticsProps) {
               .map((post: any) => (
                 <div
                   key={post.id}
-                  className="flex items-start justify-between p-3 bg-gray-50 rounded"
+                  className="flex items-start justify-between p-3 bg-surface-muted rounded"
                 >
                   <div className="flex-1">
                     <p className="text-sm line-clamp-2">{post.content}</p>
                     {post.abTestGroup && (
-                      <span className="text-xs text-gray-500 mt-1">
+                      <span className="text-xs text-text-muted mt-1">
                         Variant {post.abTestGroup}
                       </span>
                     )}
@@ -279,10 +279,10 @@ function MetricCard({
   icon: string;
 }) {
   return (
-    <div className="bg-white border rounded-lg p-4">
+    <div className="bg-surface border rounded-lg p-4">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-2xl">{icon}</span>
-        <div className="text-sm text-gray-600">{label}</div>
+        <div className="text-sm text-text-secondary">{label}</div>
       </div>
       <div className="text-2xl font-bold">{value}</div>
     </div>

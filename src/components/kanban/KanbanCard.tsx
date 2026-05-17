@@ -53,22 +53,22 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
       style={style}
       {...attributes}
       {...listeners}
-      className={`bg-white rounded-lg border border-gray-200 p-2 sm:p-3 pl-5 sm:pl-6 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing group relative ${
-        (item as Task).isArchived ? "opacity-60 !bg-gray-50" : ""
+      className={`bg-surface rounded-lg border border-border p-2 sm:p-3 pl-5 sm:pl-6 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing group relative ${
+        (item as Task).isArchived ? "opacity-60 !bg-surface-muted" : ""
       }`}
     >
       {/* Parent breadcrumb for flat views */}
       {level === "tasks" && (item as any)._goalTitle && (
-        <div className="text-[9px] sm:text-[10px] text-gray-400 truncate mb-0.5 flex items-center gap-1">
+        <div className="text-[9px] sm:text-[10px] text-text-muted truncate mb-0.5 flex items-center gap-1">
           <span>{(item as any)._goalIcon || "🎯"}</span>
           <span className="truncate">{(item as any)._goalTitle}</span>
         </div>
       )}
       {level === "substeps" && (item as any)._goalTitle && (
-        <div className="text-[9px] sm:text-[10px] text-gray-400 truncate mb-0.5 flex items-center gap-1">
+        <div className="text-[9px] sm:text-[10px] text-text-muted truncate mb-0.5 flex items-center gap-1">
           <span>{(item as any)._goalIcon || "🎯"}</span>
           <span className="truncate">{(item as any)._goalTitle}</span>
-          <span className="text-gray-300">&rsaquo;</span>
+          <span className="text-text-muted">&rsaquo;</span>
           <span className="truncate">{(item as any)._taskTitle}</span>
         </div>
       )}
@@ -76,7 +76,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
       {/* Title */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-1 flex-1 min-w-0">
-          <h4 className="font-medium text-gray-900 text-xs sm:text-sm truncate">
+          <h4 className="font-medium text-text-primary text-xs sm:text-sm truncate">
             {item.title}
           </h4>
           {(item as Task).isArchived && (
@@ -92,7 +92,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
               e.stopPropagation();
               onDrillDown();
             }}
-            className="flex-shrink-0 p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+            className="flex-shrink-0 p-1 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
             title="Drill down"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +104,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
 
       {/* Description (if available) */}
       {(task.description || substep.description) && (
-        <p className="text-[10px] sm:text-xs text-gray-600 mb-2 line-clamp-2">
+        <p className="text-[10px] sm:text-xs text-text-secondary mb-2 line-clamp-2">
           {task.description || substep.description}
         </p>
       )}
@@ -119,18 +119,18 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
           <ul className="mb-2 space-y-0.5">
             {visibleTasks.slice(0, 5).map((t) => {
               const statusIcon = t.status === "completed" ? "✓" : t.status === "in_progress" ? "◐" : "○";
-              const statusColor = t.status === "completed" ? "text-green-600" : t.status === "in_progress" ? "text-orange-500" : "text-gray-400";
+              const statusColor = t.status === "completed" ? "text-green-600" : t.status === "in_progress" ? "text-orange-500" : "text-text-muted";
               return (
                 <li key={t.id} className="flex items-center gap-1.5 text-[10px] sm:text-xs">
                   <span className={`flex-shrink-0 ${statusColor}`}>{statusIcon}</span>
-                  <span className={`truncate ${t.status === "completed" ? "text-gray-400 line-through" : "text-gray-700"}`}>
+                  <span className={`truncate ${t.status === "completed" ? "text-text-muted line-through" : "text-text-secondary"}`}>
                     {t.title}
                   </span>
                 </li>
               );
             })}
             {visibleTasks.length > 5 && (
-              <li className="text-[10px] sm:text-xs text-gray-400 pl-4">
+              <li className="text-[10px] sm:text-xs text-text-muted pl-4">
                 +{visibleTasks.length - 5} more
               </li>
             )}
@@ -145,11 +145,11 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
         const pct = Math.round((done / total) * 100);
         return (
           <div className="mb-2">
-            <div className="flex items-center justify-between text-[10px] sm:text-xs text-gray-500 mb-0.5">
+            <div className="flex items-center justify-between text-[10px] sm:text-xs text-text-muted mb-0.5">
               <span>{done}/{total} substeps</span>
               <span>{pct}%</span>
             </div>
-            <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-surface-hover rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all ${pct === 100 ? "bg-green-500" : "bg-brand-primary"}`}
                 style={{ width: `${pct}%` }}
@@ -169,18 +169,18 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
           <ul className="mb-2 space-y-0.5">
             {visibleSubsteps.slice(0, 4).map((s) => {
               const statusIcon = s.status === "completed" ? "✓" : s.status === "in_progress" ? "◐" : "○";
-              const statusColor = s.status === "completed" ? "text-green-600" : s.status === "in_progress" ? "text-orange-500" : "text-gray-400";
+              const statusColor = s.status === "completed" ? "text-green-600" : s.status === "in_progress" ? "text-orange-500" : "text-text-muted";
               return (
                 <li key={s.id} className="flex items-center gap-1.5 text-[10px] sm:text-xs">
                   <span className={`flex-shrink-0 ${statusColor}`}>{statusIcon}</span>
-                  <span className={`truncate ${s.status === "completed" ? "text-gray-400 line-through" : "text-gray-700"}`}>
+                  <span className={`truncate ${s.status === "completed" ? "text-text-muted line-through" : "text-text-secondary"}`}>
                     {s.title}
                   </span>
                 </li>
               );
             })}
             {visibleSubsteps.length > 4 && (
-              <li className="text-[10px] sm:text-xs text-gray-400 pl-4">
+              <li className="text-[10px] sm:text-xs text-text-muted pl-4">
                 +{visibleSubsteps.length - 4} more
               </li>
             )}
@@ -207,7 +207,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
                 ? "bg-orange-100 text-orange-700"
                 : task.priority === "medium"
                 ? "bg-yellow-100 text-yellow-700"
-                : "bg-gray-100 text-gray-600"
+                : "bg-surface-hover text-text-secondary"
             }`}
           >
             {task.priority}
@@ -286,7 +286,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
 
       {/* Task: Documents needed */}
       {level === "tasks" && task.documentsNeeded && (
-        <div className="mt-1.5 text-[10px] sm:text-xs text-gray-500 flex items-start gap-1">
+        <div className="mt-1.5 text-[10px] sm:text-xs text-text-muted flex items-start gap-1">
           <svg className="w-3 h-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
@@ -296,14 +296,14 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
 
       {/* Notes preview */}
       {(task.notes || substep.notes) && (
-        <div className="mt-1.5 text-[10px] sm:text-xs text-gray-400 italic line-clamp-1">
+        <div className="mt-1.5 text-[10px] sm:text-xs text-text-muted italic line-clamp-1">
           {task.notes || substep.notes}
         </div>
       )}
 
       {/* Timestamps */}
       {(level === "tasks" || level === "substeps") && (item as Task).startedAt && (
-        <div className="mt-1.5 text-[10px] text-gray-400 flex items-center gap-1">
+        <div className="mt-1.5 text-[10px] text-text-muted flex items-center gap-1">
           <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -321,7 +321,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
             e.stopPropagation();
             onArchive?.();
           }}
-          className="mt-1.5 flex items-center gap-1 text-[10px] text-gray-400 hover:text-amber-600 transition-colors"
+          className="mt-1.5 flex items-center gap-1 text-[10px] text-text-muted hover:text-amber-600 transition-colors"
           title={(item as Task).isArchived ? "Unarchive" : "Archive"}
         >
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,7 +332,7 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
       )}
 
       {/* Drag indicator — top-left corner */}
-      <div className="absolute top-1.5 left-1 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400">
+      <div className="absolute top-1.5 left-1 opacity-0 group-hover:opacity-100 transition-opacity text-text-muted">
         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
           <circle cx="9" cy="5" r="1.5" />
           <circle cx="15" cy="5" r="1.5" />

@@ -22,7 +22,7 @@ export function AdminSidebar() {
       {/* Header */}
       <div className="p-6 border-b border-gray-800">
         <h1 className="text-xl font-bold">Admin Dashboard</h1>
-        <p className="text-sm text-gray-400 mt-1">Journey Tracker</p>
+        <p className="text-sm text-text-muted mt-1">Journey Tracker</p>
       </div>
 
       {/* Navigation */}
@@ -36,7 +36,7 @@ export function AdminSidebar() {
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 isActive
                   ? "bg-brand-primary text-white"
-                  : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                  : "text-text-muted hover:bg-gray-800 hover:text-white"
               }`}
             >
               <span className="text-xl">{item.icon}</span>
@@ -50,7 +50,7 @@ export function AdminSidebar() {
       <div className="p-4 border-t border-gray-800">
         <Link
           href="/"
-          className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-text-muted hover:text-white transition-colors"
         >
           <span>←</span>
           <span className="text-sm">Back to App</span>

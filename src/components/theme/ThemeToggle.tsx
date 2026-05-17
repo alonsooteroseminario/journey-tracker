@@ -12,7 +12,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
   return (
     <button
       onClick={cycleTheme}
-      className={`p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center ${className}`}
+      className={`p-2 rounded-lg text-text-secondary hover:bg-surface-hover transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center ${className}`}
       title={label}
       aria-label={label}
       type="button"

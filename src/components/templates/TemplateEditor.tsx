@@ -100,7 +100,7 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
       {/* Tasks Section */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm sm:text-base font-semibold text-gray-900">
+          <h3 className="text-sm sm:text-base font-semibold text-text-primary">
             Tasks ({tasks.length})
           </h3>
           <button
@@ -113,21 +113,21 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
 
         <div className="space-y-2">
           {tasks.map((task) => (
-            <div key={task.id} className="border border-gray-200 rounded-lg p-3">
+            <div key={task.id} className="border border-border rounded-lg p-3">
               {editingTaskId === task.id ? (
                 <div className="space-y-2">
                   <input
                     type="text"
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-2 py-1 text-sm border border-border-strong rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Task title"
                     autoFocus
                   />
                   <textarea
                     value={editDescValue}
                     onChange={(e) => setEditDescValue(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-2 py-1 text-sm border border-border-strong rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Description (optional)"
                     rows={2}
                   />
@@ -140,7 +140,7 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
                     </button>
                     <button
                       onClick={() => setEditingTaskId(null)}
-                      className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                      className="px-3 py-1 text-xs bg-surface-hover text-text-secondary rounded hover:bg-surface-hover"
                     >
                       Cancel
                     </button>
@@ -156,9 +156,9 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
                       setEditDescValue(task.description || "");
                     }}
                   >
-                    <p className="text-sm font-medium text-gray-900">{task.title}</p>
+                    <p className="text-sm font-medium text-text-primary">{task.title}</p>
                     {task.description && (
-                      <p className="text-xs text-gray-500 mt-1">{task.description}</p>
+                      <p className="text-xs text-text-muted mt-1">{task.description}</p>
                     )}
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
@@ -179,7 +179,7 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
                         </button>
                         <button
                           onClick={() => setConfirmDeleteTaskId(null)}
-                          className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200"
+                          className="px-2 py-1 text-xs bg-surface-hover text-text-secondary rounded hover:bg-surface-hover"
                         >
                           No
                         </button>
@@ -202,14 +202,14 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
                 <div className="mt-2 ml-4 space-y-1">
                   {task.substeps.map((substep) => (
                     <div key={substep.id} className="flex items-center gap-2 group">
-                      <span className="text-xs text-gray-400">-</span>
+                      <span className="text-xs text-text-muted">-</span>
                       {editingSubstepId === substep.id ? (
                         <div className="flex-1 flex gap-1">
                           <input
                             type="text"
                             value={editValue}
                             onChange={(e) => setEditValue(e.target.value)}
-                            className="flex-1 px-2 py-0.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="flex-1 px-2 py-0.5 text-xs border border-border-strong rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             autoFocus
                           />
                           <button
@@ -220,7 +220,7 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
                           </button>
                           <button
                             onClick={() => setEditingSubstepId(null)}
-                            className="px-2 py-0.5 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                            className="px-2 py-0.5 text-xs bg-surface-hover text-text-secondary rounded hover:bg-surface-hover"
                           >
                             Cancel
                           </button>
@@ -228,7 +228,7 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
                       ) : (
                         <>
                           <span
-                            className="flex-1 text-xs text-gray-600 cursor-pointer hover:text-gray-900"
+                            className="flex-1 text-xs text-text-secondary cursor-pointer hover:text-text-primary"
                             onClick={() => {
                               setEditingSubstepId(substep.id);
                               setEditValue(substep.title);
@@ -253,7 +253,7 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
           ))}
 
           {tasks.length === 0 && (
-            <p className="text-sm text-gray-500 text-center py-4">
+            <p className="text-sm text-text-muted text-center py-4">
               No tasks yet. Click &quot;+ Add Task&quot; to get started.
             </p>
           )}
@@ -263,7 +263,7 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
       {/* Phases Section */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm sm:text-base font-semibold text-gray-900">
+          <h3 className="text-sm sm:text-base font-semibold text-text-primary">
             Phases ({phases.length})
           </h3>
           <button
@@ -276,21 +276,21 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
 
         <div className="space-y-2">
           {phases.map((phase) => (
-            <div key={phase.id} className="border border-gray-200 rounded-lg p-3">
+            <div key={phase.id} className="border border-border rounded-lg p-3">
               {editingPhaseId === phase.id ? (
                 <div className="space-y-2">
                   <input
                     type="text"
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-2 py-1 text-sm border border-border-strong rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Phase name"
                     autoFocus
                   />
                   <textarea
                     value={editDescValue}
                     onChange={(e) => setEditDescValue(e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-2 py-1 text-sm border border-border-strong rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Description (optional)"
                     rows={2}
                   />
@@ -303,7 +303,7 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
                     </button>
                     <button
                       onClick={() => setEditingPhaseId(null)}
-                      className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                      className="px-3 py-1 text-xs bg-surface-hover text-text-secondary rounded hover:bg-surface-hover"
                     >
                       Cancel
                     </button>
@@ -319,9 +319,9 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
                       setEditDescValue(phase.description || "");
                     }}
                   >
-                    <p className="text-sm font-medium text-gray-900">{phase.name}</p>
+                    <p className="text-sm font-medium text-text-primary">{phase.name}</p>
                     {phase.description && (
-                      <p className="text-xs text-gray-500 mt-1">{phase.description}</p>
+                      <p className="text-xs text-text-muted mt-1">{phase.description}</p>
                     )}
                   </div>
                   <button
@@ -336,7 +336,7 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
           ))}
 
           {phases.length === 0 && (
-            <p className="text-sm text-gray-500 text-center py-4">
+            <p className="text-sm text-text-muted text-center py-4">
               No phases defined.
             </p>
           )}
@@ -345,19 +345,19 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
 
       {/* Resources Section */}
       <div>
-        <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-3">
+        <h3 className="text-sm sm:text-base font-semibold text-text-primary mb-3">
           Resources ({resources.length})
         </h3>
 
         <div className="space-y-2 mb-3">
           {resources.map((resource, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg p-3 flex items-start justify-between gap-2">
+            <div key={index} className="border border-border rounded-lg p-3 flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="text-sm font-medium text-gray-900">{resource.category}</p>
+                <p className="text-sm font-medium text-text-primary">{resource.category}</p>
                 {resource.resources && resource.resources.length > 0 && (
                   <ul className="mt-1 space-y-0.5">
                     {resource.resources.map((item, itemIdx) => (
-                      <li key={itemIdx} className="text-xs text-gray-600">
+                      <li key={itemIdx} className="text-xs text-text-secondary">
                         {item.url ? (
                           <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">
                             {item.name || item.url}
@@ -381,28 +381,28 @@ export function TemplateEditor({ template }: TemplateEditorProps) {
         </div>
 
         {/* Add Resource Form */}
-        <div className="border border-dashed border-gray-300 rounded-lg p-3 space-y-2">
-          <p className="text-xs font-medium text-gray-700">Add Resource</p>
+        <div className="border border-dashed border-border-strong rounded-lg p-3 space-y-2">
+          <p className="text-xs font-medium text-text-secondary">Add Resource</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <input
               type="text"
               value={newResourceCategory}
               onChange={(e) => setNewResourceCategory(e.target.value)}
-              className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-2 py-1 text-xs border border-border-strong rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Category"
             />
             <input
               type="text"
               value={newResourceName}
               onChange={(e) => setNewResourceName(e.target.value)}
-              className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-2 py-1 text-xs border border-border-strong rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Name"
             />
             <input
               type="text"
               value={newResourceUrl}
               onChange={(e) => setNewResourceUrl(e.target.value)}
-              className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-2 py-1 text-xs border border-border-strong rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="URL (optional)"
             />
           </div>

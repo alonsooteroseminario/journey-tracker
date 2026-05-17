@@ -77,7 +77,7 @@ export function DataTable({
     <div className="space-y-4">
       {/* Column Visibility Toggle */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-sm text-gray-600">Columns:</span>
+        <span className="text-sm text-text-secondary">Columns:</span>
         {metadata.displayColumns.map((column) => (
           <button
             key={column}
@@ -85,7 +85,7 @@ export function DataTable({
             className={`px-3 py-1 text-xs rounded-full transition-colors ${
               visibleColumns.has(column)
                 ? "bg-brand-light text-brand-primary hover:bg-brand-light"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                : "bg-surface-hover text-text-muted hover:bg-surface-hover"
             }`}
           >
             {column}
@@ -94,10 +94,10 @@ export function DataTable({
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-surface rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-surface-muted border-b border-border">
               <tr>
                 {Array.from(visibleColumns).map((column) => {
                   const isSortable = metadata.sortableFields.includes(column);
@@ -106,8 +106,8 @@ export function DataTable({
                   return (
                     <th
                       key={column}
-                      className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
-                        isSortable ? "cursor-pointer hover:bg-gray-100" : ""
+                      className={`px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider ${
+                        isSortable ? "cursor-pointer hover:bg-surface-hover" : ""
                       }`}
                       onClick={() => isSortable && onSort(column)}
                     >
@@ -124,12 +124,12 @@ export function DataTable({
                 })}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-surface divide-y divide-gray-200">
               {data.length === 0 ? (
                 <tr>
                   <td
                     colSpan={visibleColumns.size}
-                    className="px-6 py-8 text-center text-gray-500"
+                    className="px-6 py-8 text-center text-text-muted"
                   >
                     No records found
                   </td>
@@ -139,12 +139,12 @@ export function DataTable({
                   <tr
                     key={record.id}
                     onClick={() => onRowClick(record)}
-                    className="hover:bg-gray-50 cursor-pointer transition-colors"
+                    className="hover:bg-surface-muted cursor-pointer transition-colors"
                   >
                     {Array.from(visibleColumns).map((column) => (
                       <td
                         key={column}
-                        className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                        className="px-6 py-4 whitespace-nowrap text-sm text-text-primary"
                       >
                         {formatValue(record[column], column)}
                       </td>
@@ -158,8 +158,8 @@ export function DataTable({
 
         {/* Pagination */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <div className="text-sm text-gray-600">
+          <div className="px-6 py-4 border-t border-border flex items-center justify-between">
+            <div className="text-sm text-text-secondary">
               Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
               {Math.min(pagination.page * pagination.limit, pagination.total)} of{" "}
               {pagination.total} results
@@ -168,17 +168,17 @@ export function DataTable({
               <button
                 onClick={() => onPageChange(pagination.page - 1)}
                 disabled={pagination.page === 1}
-                className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1 text-sm border border-border-strong rounded hover:bg-surface-muted disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-text-secondary">
                 Page {pagination.page} of {pagination.totalPages}
               </span>
               <button
                 onClick={() => onPageChange(pagination.page + 1)}
                 disabled={pagination.page === pagination.totalPages}
-                className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1 text-sm border border-border-strong rounded hover:bg-surface-muted disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>

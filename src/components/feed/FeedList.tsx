@@ -59,7 +59,7 @@ export function FeedList() {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading feed...</p>
+          <p className="text-text-secondary">Loading feed...</p>
         </div>
       </div>
     );
@@ -81,10 +81,10 @@ export function FeedList() {
     return (
       <div className="bg-brand-light border-2 border-brand-light rounded-xl p-8 sm:p-12 text-center">
         <div className="text-5xl sm:text-6xl mb-4">📭</div>
-        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
+        <h3 className="text-lg sm:text-xl font-bold text-text-primary mb-2">
           No activity yet
         </h3>
-        <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto">
+        <p className="text-sm sm:text-base text-text-secondary max-w-md mx-auto">
           When you and your friends create goals, complete tasks, or hit streak
           milestones, they'll appear here!
         </p>
@@ -103,8 +103,8 @@ export function FeedList() {
       {/* Feed Items */}
       <div className="space-y-3 sm:space-y-4">
         {filteredItems.length === 0 ? (
-          <div className="bg-gray-50 border-2 border-gray-200 rounded-xl p-8 text-center">
-            <p className="text-gray-600">
+          <div className="bg-surface-muted border-2 border-border rounded-xl p-8 text-center">
+            <p className="text-text-secondary">
               No {filters.type === "all" ? "" : filters.type.replace("_", " ")}{" "}
               activity to show
             </p>

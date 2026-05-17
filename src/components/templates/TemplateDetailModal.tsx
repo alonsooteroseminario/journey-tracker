@@ -34,18 +34,18 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
   const isOwnTemplate = user?.id === template.authorId;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-overlay/50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-surface rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-4 sm:p-6">
           {/* Header */}
           <div className="flex justify-between items-start mb-4 sm:mb-6">
             <div className="flex items-start gap-2 sm:gap-3 flex-1">
               <span className="text-3xl sm:text-4xl">{template.icon}</span>
               <div className="flex-1 min-w-0">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-1 sm:mb-2">
                   {template.title}
                 </h2>
-                <p className="text-xs sm:text-sm text-gray-600">
+                <p className="text-xs sm:text-sm text-text-secondary">
                   by {template.author?.name || "Unknown"}
                 </p>
               </div>
@@ -65,7 +65,7 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
               )}
               <button
                 onClick={onClose}
-                className="text-gray-500 hover:text-gray-700 text-2xl sm:text-3xl"
+                className="text-text-muted hover:text-text-secondary text-2xl sm:text-3xl"
               >
                 ×
               </button>
@@ -82,7 +82,7 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
               {template.difficulty}
             </span>
             {template.category && (
-              <span className="px-2 sm:px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs sm:text-sm">
+              <span className="px-2 sm:px-3 py-1 bg-surface-hover text-text-secondary rounded-full text-xs sm:text-sm">
                 {template.category}
               </span>
             )}
@@ -91,7 +91,7 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
                 ⏱ {template.estimatedDuration}
               </span>
             )}
-            <span className="px-2 sm:px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-xs sm:text-sm">
+            <span className="px-2 sm:px-3 py-1 bg-surface-muted text-text-secondary rounded-full text-xs sm:text-sm">
               🍴 {template.forkCount} forks
             </span>
           </div>
@@ -99,10 +99,10 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
           {/* Description */}
           {template.description && (
             <div className="mb-4 sm:mb-6">
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
+              <h3 className="text-sm sm:text-base font-semibold text-text-primary mb-2">
                 Description
               </h3>
-              <p className="text-sm sm:text-base text-gray-700">
+              <p className="text-sm sm:text-base text-text-secondary">
                 {template.description}
               </p>
             </div>
@@ -111,10 +111,10 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
           {/* Lessons Learned */}
           {template.lessonsLearned && (
             <div className="mb-4 sm:mb-6">
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
+              <h3 className="text-sm sm:text-base font-semibold text-text-primary mb-2">
                 📚 Lessons Learned
               </h3>
-              <p className="text-sm sm:text-base text-gray-700 whitespace-pre-wrap">
+              <p className="text-sm sm:text-base text-text-secondary whitespace-pre-wrap">
                 {template.lessonsLearned}
               </p>
             </div>
@@ -123,10 +123,10 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
           {/* Tips */}
           {template.tips && (
             <div className="mb-4 sm:mb-6">
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
+              <h3 className="text-sm sm:text-base font-semibold text-text-primary mb-2">
                 💡 Tips & Advice
               </h3>
-              <p className="text-sm sm:text-base text-gray-700 whitespace-pre-wrap">
+              <p className="text-sm sm:text-base text-text-secondary whitespace-pre-wrap">
                 {template.tips}
               </p>
             </div>
@@ -135,7 +135,7 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
           {/* Tags */}
           {template.tags && template.tags.length > 0 && (
             <div className="mb-4 sm:mb-6">
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
+              <h3 className="text-sm sm:text-base font-semibold text-text-primary mb-2">
                 🏷 Tags
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -159,23 +159,23 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
           ) : (
             tasks.length > 0 && (
               <div className="mb-4 sm:mb-6">
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">
+                <h3 className="text-sm sm:text-base font-semibold text-text-primary mb-2 sm:mb-3">
                   Tasks ({tasks.length})
                 </h3>
                 <div className="space-y-2">
                   {tasks.map((task) => (
                     <div
                       key={task.id}
-                      className="border border-gray-200 rounded-lg p-2 sm:p-3"
+                      className="border border-border rounded-lg p-2 sm:p-3"
                     >
                       <div className="flex items-start gap-2">
                         <span className="text-xs sm:text-sm">&#9744;</span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs sm:text-sm font-medium text-gray-900">
+                          <p className="text-xs sm:text-sm font-medium text-text-primary">
                             {task.title}
                           </p>
                           {task.description && (
-                            <p className="text-xs text-gray-600 mt-1">
+                            <p className="text-xs text-text-secondary mt-1">
                               {task.description}
                             </p>
                           )}
@@ -184,7 +184,7 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
                               {task.substeps.map((substep) => (
                                 <div key={substep.id} className="flex items-start gap-2">
                                   <span className="text-xs">&#9643;</span>
-                                  <p className="text-xs text-gray-600">
+                                  <p className="text-xs text-text-secondary">
                                     {substep.title}
                                   </p>
                                 </div>
@@ -201,7 +201,7 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
           )}
 
           {/* Action Buttons */}
-          <div className="space-y-3 pt-4 border-t border-gray-200">
+          <div className="space-y-3 pt-4 border-t border-border">
             {/* Publish Button (for own templates) */}
             {isOwnTemplate && showPublishButton !== false && template.visibility === "public" && (
               <div>
@@ -213,7 +213,7 @@ export function TemplateDetailModal({ template: initialTemplate, onClose, showPu
             <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
               <button
                 onClick={onClose}
-                className="w-full sm:w-auto px-4 py-2 text-sm sm:text-base text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                className="w-full sm:w-auto px-4 py-2 text-sm sm:text-base text-text-secondary bg-surface-hover rounded-md hover:bg-surface-hover"
               >
                 Close
               </button>

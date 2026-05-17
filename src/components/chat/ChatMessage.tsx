@@ -13,11 +13,11 @@ export function ChatMessage({ message }: ChatMessageProps) {
   if (message.role === 'system') {
     return (
       <div className="mb-3 px-3">
-        <div className="bg-gray-100 dark:bg-gray-800 rounded-md px-3 py-2 border border-gray-200 dark:border-gray-700">
+        <div className="bg-surface-hover rounded-md px-3 py-2 border border-border">
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-xs text-gray-500 dark:text-gray-400">🔧 Tools executed</span>
+            <span className="text-xs text-text-muted">🔧 Tools executed</span>
           </div>
-          <div className="whitespace-pre-wrap text-xs text-gray-600 dark:text-gray-400 font-mono">
+          <div className="whitespace-pre-wrap text-xs text-text-secondary font-mono">
             {message.content}
           </div>
         </div>
@@ -33,7 +33,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         className={`max-w-[80%] rounded-lg px-4 py-2 ${
           isUser
             ? 'bg-brand-primary text-white'
-            : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+            : 'bg-surface-hover text-text-primary'
         }`}
       >
         <div className="whitespace-pre-wrap break-words text-sm">{message.content}</div>

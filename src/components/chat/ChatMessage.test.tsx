@@ -30,7 +30,7 @@ describe('ChatMessage', () => {
       expect(screen.getByText('How can I help?')).toBeInTheDocument();
       const wrapper = container.firstElementChild;
       expect(wrapper).toHaveClass('justify-start');
-      expect(wrapper?.firstElementChild).toHaveClass('bg-gray-200');
+      expect(wrapper?.firstElementChild).toHaveClass('bg-surface-hover');
     });
 
     it('should show toolUsed badge when present', () => {
@@ -57,7 +57,7 @@ describe('ChatMessage', () => {
       const { container } = render(<ChatMessage message={message} />);
 
       // Timestamp div is the last child of the bubble; just verify it exists
-      const bubble = container.querySelector('.bg-gray-200');
+      const bubble = container.querySelector('.bg-surface-hover');
       const timestampDiv = bubble?.lastElementChild;
       expect(timestampDiv).toBeTruthy();
       expect(timestampDiv?.textContent?.length).toBeGreaterThan(0);

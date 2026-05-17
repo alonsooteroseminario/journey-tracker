@@ -30,10 +30,10 @@ export function MarketplaceView() {
     <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
       {/* Page Title */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text-primary mb-2">
           🏪 Template Marketplace
         </h1>
-        <p className="text-sm sm:text-base text-gray-600">
+        <p className="text-sm sm:text-base text-text-secondary">
           Discover and fork goal templates shared by the community
         </p>
       </div>
@@ -50,7 +50,7 @@ export function MarketplaceView() {
 
       {/* Results Count */}
       {pagination && !isLoading && (
-        <div className="mb-4 text-xs sm:text-sm text-gray-600">
+        <div className="mb-4 text-xs sm:text-sm text-text-secondary">
           Showing {templates.length} of {pagination.total} templates
         </div>
       )}
@@ -68,17 +68,17 @@ export function MarketplaceView() {
           <button
             onClick={() => setPage(page - 1)}
             disabled={page === 1}
-            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-white border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-gray-700"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-surface border border-border-strong rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-muted text-text-secondary"
           >
             Previous
           </button>
-          <span className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-700">
+          <span className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-text-secondary">
             Page {page} of {pagination.pages}
           </span>
           <button
             onClick={() => setPage(page + 1)}
             disabled={page === pagination.pages}
-            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-white border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-gray-700"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-surface border border-border-strong rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-muted text-text-secondary"
           >
             Next
           </button>
