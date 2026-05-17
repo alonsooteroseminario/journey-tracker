@@ -210,7 +210,20 @@ five_feature_plan_2026_05_16:
       steps: "docs/plans/2026-05-16-f2-agent-api-key-steps.md"
       branch: "feat/f2-agent-api-key"
       estimate_days: 1.5
-      status: planned
+      actual_days: 1
+      status: ready_for_review
+      completed_date: "2026-05-17"
+      verification:
+        build: "✓ Compiled successfully"
+        unit_tests: "1326/1331 pass (5 pre-existing)"
+        e2e: "3/3 byok.spec.ts pass"
+      new_files:
+        - src/lib/agent/getUserAgentKey.ts
+        - src/lib/anthropic/validateKey.ts
+        - src/app/api/settings/ai-key/route.ts
+        - src/app/settings/ai-key/page.tsx
+        - src/components/settings/AgentKeyForm.tsx
+        - e2e/byok.spec.ts
 
     - id: F3
       title: "Header in AppShell (Wallet inherits app chrome)"
