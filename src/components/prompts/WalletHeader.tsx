@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useUpdateWalletMutation } from "@/store/slices/promptsSlice";
+import { ShareWalletModal } from "./ShareWalletModal";
 import type { PromptWallet } from "@/types";
 
 interface WalletHeaderProps {
@@ -10,6 +11,7 @@ interface WalletHeaderProps {
 
 export function WalletHeader({ wallet }: WalletHeaderProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [editTitle, setEditTitle] = useState(wallet.title);
   const [editDescription, setEditDescription] = useState(wallet.description ?? "");
   const [editIcon, setEditIcon] = useState(wallet.icon ?? "");
@@ -86,6 +88,33 @@ export function WalletHeader({ wallet }: WalletHeaderProps) {
         className="w-full text-sm text-gray-500 bg-transparent border border-transparent hover:border-gray-200 focus:border-brand-primary rounded px-2 py-1 resize-none focus:outline-none"
         aria-label="Wallet description"
       />
+
+      {/* Share button */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setShowShareModal(true)}
+          className={`flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg transition-colors ${
+            (wallet as { shareToken?: string | null }).shareToken
+              ? "bg-green-100 text-green-700 hover:bg-green-200"
+              : "border border-border-strong text-text-secondary hover:bg-surface-hover"
+          }`}
+          aria-label="Share wallet"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+            />
+          </svg>
+          {(wallet as { shareToken?: string | null }).shareToken ? "Shared" : "Share"}
+        </button>
+      </div>
+
+      {showShareModal && (
+        <ShareWalletModal
+          wallet={wallet as { id: string; title: string; shareToken: string | null }}
+          onClose={() => setShowShareModal(false)}
+        />
+      )}
     </div>
   );
 }
