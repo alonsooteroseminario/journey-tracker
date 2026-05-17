@@ -25,7 +25,7 @@ const HEADER_HEIGHT = 88; // px — estimated sticky header height (two-row layo
 const SPLIT_HEIGHT_VH = 45;
 
 export function ChatWidget() {
-  const { messages, status, currentTool, processingLog, sendMessage, clearMessages, toggleOpen } =
+  const { messages, status, currentTool, processingLog, needsKey, sendMessage, clearMessages, toggleOpen } =
     useChat();
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector((s) => s.chat.isOpen);
@@ -138,8 +138,21 @@ export function ChatWidget() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Gate banner when no API key is set */}
+      {needsKey && (
+        <div className="mx-3 mb-2 px-4 py-3 bg-yellow-50 border border-yellow-200 rounded-xl text-sm text-yellow-800 flex items-center justify-between gap-2">
+          <span>🔑 Add your Anthropic API key to chat</span>
+          <a
+            href="/settings/ai-key"
+            className="flex-shrink-0 px-3 py-1 text-xs font-medium bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors"
+          >
+            Go to Settings
+          </a>
+        </div>
+      )}
+
       {/* input */}
-      <ChatInput onSend={sendMessage} disabled={status !== 'idle'} />
+      <ChatInput onSend={sendMessage} disabled={status !== 'idle' || needsKey} />
     </div>
   );
 }

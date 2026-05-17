@@ -6,6 +6,9 @@ vi.mock('@clerk/nextjs/server');
 vi.mock('@/lib/mcp/server');
 vi.mock('@/lib/agent/security');
 vi.mock('@anthropic-ai/sdk');
+vi.mock('@/lib/agent/getUserAgentKey', () => ({
+  getUserAgentKey: vi.fn().mockResolvedValue('sk-ant-test-key'),
+}));
 
 describe('Agent Chat API Route', () => {
   beforeEach(() => {

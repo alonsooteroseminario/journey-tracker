@@ -2,9 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
-    lLMCredential: {
-      findFirst: vi.fn(),
-    },
+    user: { findUnique: vi.fn() },
+    lLMCredential: { findFirst: vi.fn() },
   },
 }));
 
@@ -16,25 +15,36 @@ import { prisma } from "@/lib/prisma";
 import { decryptKey } from "@/lib/credentials/encrypt";
 import { getUserAgentKey } from "./getUserAgentKey";
 
+const mockUserFindUnique = vi.mocked(prisma.user.findUnique);
 const mockFindFirst = vi.mocked(prisma.lLMCredential.findFirst);
 const mockDecrypt = vi.mocked(decryptKey);
+const MOCK_USER = { id: "prisma-user-1" } as never;
 
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
 describe("getUserAgentKey", () => {
-  it("returns null when the user has no anthropic credential", async () => {
+  it("returns null when the clerk user has no anthropic credential", async () => {
+    mockUserFindUnique.mockResolvedValue(MOCK_USER);
     mockFindFirst.mockResolvedValue(null);
-    const result = await getUserAgentKey("user-1");
+    const result = await getUserAgentKey("clerk-1");
     expect(result).toBeNull();
     expect(mockFindFirst).toHaveBeenCalledWith({
-      where: { userId: "user-1", provider: "anthropic" },
+      where: { userId: "prisma-user-1", provider: "anthropic" },
       orderBy: { updatedAt: "desc" },
     });
   });
 
+  it("returns null when the clerk user is not found in Prisma", async () => {
+    mockUserFindUnique.mockResolvedValue(null);
+    const result = await getUserAgentKey("unknown-clerk-id");
+    expect(result).toBeNull();
+    expect(mockFindFirst).not.toHaveBeenCalled();
+  });
+
   it("returns the decrypted API key when a credential exists", async () => {
+    mockUserFindUnique.mockResolvedValue(MOCK_USER);
     mockFindFirst.mockResolvedValue({
       id: "cred-1",
       userId: "user-1",
@@ -57,6 +67,7 @@ describe("getUserAgentKey", () => {
   });
 
   it("returns null and warns when decryption throws", async () => {
+    mockUserFindUnique.mockResolvedValue(MOCK_USER);
     mockFindFirst.mockResolvedValue({
       id: "cred-1",
       userId: "user-1",
@@ -75,11 +86,11 @@ describe("getUserAgentKey", () => {
     });
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    const result = await getUserAgentKey("user-1");
+    const result = await getUserAgentKey("clerk-1");
 
     expect(result).toBeNull();
     expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("user-1"),
+      expect.stringContaining("clerk-1"),
       expect.any(Error),
     );
     warnSpy.mockRestore();

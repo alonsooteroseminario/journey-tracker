@@ -14,12 +14,11 @@ import { auditLogger } from '@/lib/agent/auditLog';
 import { conversationStore } from '@/lib/agent/conversationStore';
 import { Message, ChatRequest } from '@/types/agent';
 import { logAnthropicUsage } from '@/lib/cost-tracking/anthropic';
+import { getUserAgentKey } from '@/lib/agent/getUserAgentKey';
 
-// Lazy Anthropic client — avoids module-level instantiation so tests can mock the constructor
-function getAnthropicClient(): Anthropic {
-  return new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY || '',
-  });
+// Lazy Anthropic client — accepts a user-supplied key; falls back to env for admin routes.
+function getAnthropicClient(apiKey: string): Anthropic {
+  return new Anthropic({ apiKey });
 }
 
 const AGENT_MODEL = process.env.AGENT_MODEL || 'claude-sonnet-4-20250514';
@@ -90,6 +89,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Require user-supplied API key (BYOK gate)
+    const agentApiKey = await getUserAgentKey(userId);
+    if (!agentApiKey) {
+      return NextResponse.json(
+        {
+          error: 'NO_AGENT_KEY',
+          message: 'Set your Anthropic API key in Settings to chat with the agent.',
+          settingsUrl: '/settings/ai-key',
+        },
+        { status: 403 },
+      );
+    }
+
     // Rate limit check
     if (!securityGuard.checkRateLimit(userId)) {
       auditLogger.logRateLimitExceeded(userId);
@@ -128,11 +140,11 @@ export async function POST(req: NextRequest) {
 
     // If streaming, return SSE response
     if (stream) {
-      return createSSEResponse(anthropicMessages, tools, userId, req.signal);
+      return createSSEResponse(anthropicMessages, tools, userId, req.signal, agentApiKey);
     }
 
     // Non-streaming response
-    const response = await runAgentLoop(anthropicMessages, tools, userId);
+    const response = await runAgentLoop(anthropicMessages, tools, userId, undefined, undefined, undefined, agentApiKey);
 
     return NextResponse.json({
       role: 'assistant',
@@ -158,7 +170,8 @@ function createSSEResponse(
   messages: Anthropic.Messages.MessageParam[],
   tools: unknown[],
   userId: string,
-  signal: AbortSignal
+  signal: AbortSignal,
+  apiKey: string
 ): Response {
   const encoder = new TextEncoder();
 
@@ -184,7 +197,8 @@ function createSSEResponse(
           },
           (event, toolName, data) => {
             sendSSE(controller, encoder, { type: 'tool_event', event, toolName, data });
-          }
+          },
+          apiKey
         );
 
         // Send final response
@@ -298,7 +312,8 @@ async function runAgentLoop(
   userId: string,
   signal?: AbortSignal,
   onStatus?: (status: string, toolName?: string) => void,
-  onToolEvent?: (event: 'input' | 'result', toolName: string, data: Record<string, unknown>) => void
+  onToolEvent?: (event: 'input' | 'result', toolName: string, data: Record<string, unknown>) => void,
+  apiKey?: string
 ): Promise<{ content: string; toolUsed?: string; toolResult?: unknown }> {
   const server = getMCPServer();
   // eslint-disable-next-line prefer-const
@@ -325,8 +340,9 @@ async function runAgentLoop(
       ];
     }
 
-    // Call Claude
-    const response = await getAnthropicClient().messages.create({
+    // Call Claude — use user-supplied key or env fallback (admin routes only)
+    const resolvedKey = apiKey || process.env.ANTHROPIC_API_KEY || '';
+    const response = await getAnthropicClient(resolvedKey).messages.create({
       model: AGENT_MODEL,
       max_tokens: AGENT_MAX_TOKENS,
       temperature: AGENT_TEMPERATURE,

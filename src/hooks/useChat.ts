@@ -24,6 +24,7 @@ export interface UseChatReturn {
   status: ChatStatus;
   currentTool: string | null;
   processingLog: ProcessingEvent[];
+  needsKey: boolean;
   sendMessage: (content: string) => Promise<void>;
   cancelRequest: () => void;
   clearMessages: () => void;
@@ -61,6 +62,7 @@ export function useChat(): UseChatReturn {
   const [status, setStatus] = useState<ChatStatus>('idle');
   const [currentTool, setCurrentTool] = useState<string | null>(null);
   const [processingLog, setProcessingLog] = useState<ProcessingEvent[]>([]);
+  const [needsKey, setNeedsKey] = useState(false);
   const dispatch = useAppDispatch();
 
   const toggleOpen = useCallback(() => {
@@ -125,6 +127,14 @@ export function useChat(): UseChatReturn {
       });
 
       if (!response.ok) {
+        if (response.status === 403) {
+          const body = await response.json().catch(() => ({}));
+          if ((body as { error?: string }).error === 'NO_AGENT_KEY') {
+            setNeedsKey(true);
+            setStatus('idle');
+            return;
+          }
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -278,6 +288,7 @@ export function useChat(): UseChatReturn {
     status,
     currentTool,
     processingLog,
+    needsKey,
     sendMessage,
     cancelRequest,
     clearMessages,

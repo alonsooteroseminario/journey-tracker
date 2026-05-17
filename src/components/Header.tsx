@@ -18,7 +18,7 @@ const navItems = [
   { href: "/", label: "Home", icon: "🏠" },
   { href: "/board", label: "Board", icon: "📊" },
   { href: "/feed", label: "Feed", icon: "📰" },
-  { href: "/cost-tracker", label: "Cost Tracker", icon: "💰" },
+  { href: "/settings/ai-key", label: "Settings", icon: "⚙️" },
   { href: "/wallet", label: "Wallet", icon: "💼" },
 ];
 
