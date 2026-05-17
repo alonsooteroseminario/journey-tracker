@@ -45,8 +45,8 @@ export function BudgetAlerts({ budget, onUpdateBudget }: BudgetAlertsProps) {
 
   if (!budget) {
     return (
-      <div className="bg-white rounded-xl p-6 border border-gray-200">
-        <p className="text-gray-500">Loading budget data...</p>
+      <div className="bg-surface rounded-xl p-6 border border-border">
+        <p className="text-text-muted">Loading budget data...</p>
       </div>
     );
   }
@@ -66,26 +66,26 @@ export function BudgetAlerts({ budget, onUpdateBudget }: BudgetAlertsProps) {
   return (
     <div className="space-y-4">
       {/* Budget Settings Card */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5">
+      <div className="bg-surface rounded-xl border border-border p-5">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-gray-800">Monthly Budget</h3>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <h3 className="text-sm font-semibold text-text-primary">Monthly Budget</h3>
+            <p className="text-xs text-text-muted mt-0.5">
               Current limit:{" "}
-              <span className="font-medium text-gray-700">${budget.monthlyLimit.toFixed(2)}</span>
+              <span className="font-medium text-text-secondary">${budget.monthlyLimit.toFixed(2)}</span>
               {savedMsg && <span className="ml-2 text-green-600 font-medium">Saved!</span>}
             </p>
           </div>
           {!isEditing ? (
             <button
               onClick={() => { setLimitInput(String(budget.monthlyLimit)); setIsEditing(true); setSaveError(null); }}
-              className="px-3 py-1.5 text-xs font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-3 py-1.5 text-xs font-medium bg-surface-hover text-text-secondary rounded-lg hover:bg-surface-hover transition-colors"
             >
               Edit Limit
             </button>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">$</span>
+              <span className="text-sm text-text-muted">$</span>
               <input
                 type="number"
                 min="0"
@@ -93,7 +93,7 @@ export function BudgetAlerts({ budget, onUpdateBudget }: BudgetAlertsProps) {
                 value={limitInput}
                 onChange={(e) => setLimitInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                className="w-24 px-2 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
+                className="w-24 px-2 py-1.5 border border-border-strong rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
                 autoFocus
               />
               <button
@@ -105,7 +105,7 @@ export function BudgetAlerts({ budget, onUpdateBudget }: BudgetAlertsProps) {
               </button>
               <button
                 onClick={() => { setIsEditing(false); setSaveError(null); }}
-                className="px-3 py-1.5 text-xs font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                className="px-3 py-1.5 text-xs font-medium bg-surface-hover text-text-secondary rounded-lg hover:bg-surface-hover transition-colors"
               >
                 Cancel
               </button>
@@ -121,15 +121,15 @@ export function BudgetAlerts({ budget, onUpdateBudget }: BudgetAlertsProps) {
           <div className="flex items-start gap-4">
             <span className="text-4xl">{getAlertIcon(budget.percentUsed)}</span>
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-800">Budget Status</h2>
-              <p className="text-gray-600 mt-1">
+              <h2 className="text-2xl font-bold text-text-primary">Budget Status</h2>
+              <p className="text-text-secondary mt-1">
                 You've spent <span className="font-semibold">${budget.spentSoFar.toFixed(2)} CAD</span> of your{" "}
                 <span className="font-semibold">${budget.monthlyLimit.toFixed(2)} CAD</span> monthly budget
               </p>
             </div>
           </div>
 
-          <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-white space-y-3">
+          <div className="bg-surface/70 backdrop-blur-sm rounded-lg p-4 border border-white space-y-3">
             {budget.percentUsed >= 90 && (
               <div className="flex gap-3 items-start">
                 <span className="text-lg">⚠️</span>
@@ -168,11 +168,11 @@ export function BudgetAlerts({ budget, onUpdateBudget }: BudgetAlertsProps) {
           </div>
 
           <div className="space-y-2">
-            <div className="flex justify-between text-xs text-gray-600">
+            <div className="flex justify-between text-xs text-text-secondary">
               <span>Overall Budget Usage</span>
               <span>{budget.percentUsed}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
+            <div className="w-full bg-surface-hover rounded-full h-3">
               <div
                 className={`h-3 rounded-full transition-all ${
                   budget.percentUsed >= 90
@@ -187,11 +187,11 @@ export function BudgetAlerts({ budget, onUpdateBudget }: BudgetAlertsProps) {
           </div>
 
           {budget.alerts.length > 0 && (
-            <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-white space-y-2">
-              <p className="font-semibold text-gray-800">Active Notifications</p>
+            <div className="bg-surface/70 backdrop-blur-sm rounded-lg p-4 border border-white space-y-2">
+              <p className="font-semibold text-text-primary">Active Notifications</p>
               <ul className="space-y-2">
                 {budget.alerts.map((alert, idx) => (
-                  <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                  <li key={idx} className="text-sm text-text-secondary flex items-start gap-2">
                     <span>📌</span>
                     <span>{alert}</span>
                   </li>

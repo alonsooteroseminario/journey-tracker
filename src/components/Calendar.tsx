@@ -144,7 +144,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
   }, [calendarDays]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-brand-primary to-brand-secondary p-2 sm:p-3">
         <div className="flex items-center justify-between">
@@ -153,7 +153,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
           </h3>
           <button
             onClick={goToToday}
-            className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-white/20 text-white text-xs rounded hover:bg-white/30 transition-colors"
+            className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-surface/20 text-white text-xs rounded hover:bg-surface/30 transition-colors"
           >
             Now
           </button>
@@ -163,7 +163,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
         <div className="flex items-center justify-between mt-1.5 sm:mt-3">
           <button
             onClick={goToPrevMonth}
-            className="p-1 text-white/80 hover:text-white hover:bg-white/10 rounded transition-colors"
+            className="p-1 text-white/80 hover:text-white hover:bg-surface/10 rounded transition-colors"
           >
             <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -172,7 +172,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
           <h4 className="text-sm sm:text-lg font-semibold text-white">{monthName}</h4>
           <button
             onClick={goToNextMonth}
-            className="p-1 text-white/80 hover:text-white hover:bg-white/10 rounded transition-colors"
+            className="p-1 text-white/80 hover:text-white hover:bg-surface/10 rounded transition-colors"
           >
             <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -182,19 +182,19 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
 
         {/* Month Stats - Ultra Compact Grid */}
         <div className="grid grid-cols-4 gap-1 sm:gap-2 mt-2 sm:mt-4">
-          <div className="bg-white/10 rounded p-1 sm:p-2 text-center">
+          <div className="bg-surface/10 rounded p-1 sm:p-2 text-center">
             <div className="text-sm sm:text-lg font-bold text-white">{monthStats.totalActiveDays}</div>
             <div className="text-[10px] sm:text-xs text-white/70">Days</div>
           </div>
-          <div className="bg-white/10 rounded p-1 sm:p-2 text-center">
+          <div className="bg-surface/10 rounded p-1 sm:p-2 text-center">
             <div className="text-sm sm:text-lg font-bold text-white">{monthStats.totalTasks}</div>
             <div className="text-[10px] sm:text-xs text-white/70">Tasks</div>
           </div>
-          <div className="bg-white/10 rounded p-1 sm:p-2 text-center">
+          <div className="bg-surface/10 rounded p-1 sm:p-2 text-center">
             <div className="text-sm sm:text-lg font-bold text-white">{monthStats.totalSubsteps}</div>
             <div className="text-[10px] sm:text-xs text-white/70">Steps</div>
           </div>
-          <div className="bg-white/10 rounded p-1 sm:p-2 text-center">
+          <div className="bg-surface/10 rounded p-1 sm:p-2 text-center">
             <div className="text-sm sm:text-lg font-bold text-white">${monthStats.totalCost}</div>
             <div className="text-[10px] sm:text-xs text-white/70">$</div>
           </div>
@@ -206,7 +206,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
         {/* Day Headers */}
         <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-1 sm:mb-2">
           {["S", "M", "T", "W", "T", "F", "S"].map((day, idx) => (
-            <div key={`${day}-${idx}`} className="text-center text-[10px] sm:text-xs font-semibold text-gray-500 py-1">
+            <div key={`${day}-${idx}`} className="text-center text-[10px] sm:text-xs font-semibold text-text-muted py-1">
               {day}
             </div>
           ))}
@@ -225,9 +225,9 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
                 }}
                 className={`
                   relative aspect-square p-0.5 sm:p-1 rounded transition-all text-xs sm:text-sm
-                  ${day.isCurrentMonth ? "text-gray-800" : "text-gray-400"}
+                  ${day.isCurrentMonth ? "text-text-primary" : "text-text-muted"}
                   ${day.isToday ? "ring-1 ring-indigo-500 font-bold" : ""}
-                  ${selectedDate === day.date ? "bg-brand-light" : "hover:bg-gray-100"}
+                  ${selectedDate === day.date ? "bg-brand-light" : "hover:bg-surface-hover"}
                   ${day.hasActivity && day.isCurrentMonth ? "bg-green-50" : ""}
                 `}
               >
@@ -248,8 +248,8 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
 
       {/* Selected Day Details */}
       {selectedDate && selectedDayData && (
-        <div className="border-t border-gray-200 p-2 sm:p-4 bg-gray-50">
-          <h5 className="font-semibold text-xs sm:text-base text-gray-800 mb-1.5 sm:mb-2">
+        <div className="border-t border-border p-2 sm:p-4 bg-surface-muted">
+          <h5 className="font-semibold text-xs sm:text-base text-text-primary mb-1.5 sm:mb-2">
             {parseLocalDate(selectedDate).toLocaleDateString("en-US", {
               weekday: "long",
               month: "long",
@@ -284,7 +284,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
                   {selectedDayActivities.map((activity) => (
                     <div
                       key={activity.id}
-                      className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-600 p-1.5 sm:p-2 bg-white rounded-lg"
+                      className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-text-secondary p-1.5 sm:p-2 bg-surface rounded-lg"
                     >
                       <span>
                         {activity.type === "task_completed" && "✅"}
@@ -293,7 +293,7 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
                         {activity.type === "goal_created" && "🎯"}
                       </span>
                       <span className="truncate">{activity.description}</span>
-                      <span className="text-[10px] sm:text-xs text-gray-400 ml-auto">
+                      <span className="text-[10px] sm:text-xs text-text-muted ml-auto">
                         {new Date(activity.date).toLocaleTimeString("en-US", {
                           hour: "numeric",
                           minute: "2-digit",
@@ -305,13 +305,13 @@ export function Calendar({ streakHistory, activityLog, onDateClick }: CalendarPr
               )}
             </div>
           ) : (
-            <p className="text-xs sm:text-sm text-gray-500">No activity on this day</p>
+            <p className="text-xs sm:text-sm text-text-muted">No activity on this day</p>
           )}
         </div>
       )}
 
       {/* Legend */}
-      <div className="px-2 sm:px-4 pb-2 sm:pb-4 flex items-center gap-2 sm:gap-4 text-xs text-gray-500">
+      <div className="px-2 sm:px-4 pb-2 sm:pb-4 flex items-center gap-2 sm:gap-4 text-xs text-text-muted">
         <div className="flex items-center gap-0.5 sm:gap-1">
           <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full"></span>
           <span className="text-[10px] sm:text-xs">Active</span>

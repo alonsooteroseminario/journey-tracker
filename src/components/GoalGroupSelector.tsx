@@ -39,7 +39,7 @@ export function GoalGroupSelector({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium transition-colors hover:bg-gray-100 border border-gray-200"
+        className="flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium transition-colors hover:bg-surface-hover border border-border"
         title="Assign to group"
       >
         {currentGroup ? (
@@ -52,27 +52,27 @@ export function GoalGroupSelector({
           </>
         ) : (
           <>
-            <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3 h-3 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
             </svg>
-            <span className="text-gray-400">Group</span>
+            <span className="text-text-muted">Group</span>
           </>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 z-20 min-w-[140px] py-1">
+        <div className="absolute top-full left-0 mt-1 bg-surface rounded-lg shadow-lg border border-border z-20 min-w-[140px] py-1">
           {/* No group option */}
           <button
             onClick={() => {
               onGroupChange(goalId, null);
               setIsOpen(false);
             }}
-            className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-50 flex items-center gap-2 ${
-              !currentGroupId ? "font-medium text-gray-800" : "text-gray-600"
+            className={`w-full text-left px-3 py-1.5 text-xs hover:bg-surface-muted flex items-center gap-2 ${
+              !currentGroupId ? "font-medium text-text-primary" : "text-text-secondary"
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-gray-300" />
+            <span className="w-2 h-2 rounded-full bg-border-strong" />
             None
           </button>
           {groups.map((group) => (
@@ -82,8 +82,8 @@ export function GoalGroupSelector({
                 onGroupChange(goalId, group.id);
                 setIsOpen(false);
               }}
-              className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-50 flex items-center gap-2 ${
-                currentGroupId === group.id ? "font-medium text-gray-800" : "text-gray-600"
+              className={`w-full text-left px-3 py-1.5 text-xs hover:bg-surface-muted flex items-center gap-2 ${
+                currentGroupId === group.id ? "font-medium text-text-primary" : "text-text-secondary"
               }`}
             >
               <span

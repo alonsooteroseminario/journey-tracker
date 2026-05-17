@@ -19,7 +19,7 @@ export function GoalGroupFilter({ selectedGroupId, onGroupSelect }: GoalGroupFil
       <div className="flex items-center gap-2">
         <button
           onClick={() => setManagerOpen(true)}
-          className="text-xs sm:text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors"
+          className="text-xs sm:text-sm text-text-muted hover:text-text-secondary flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-surface-hover transition-colors"
           title="Create goal groups"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,8 +39,8 @@ export function GoalGroupFilter({ selectedGroupId, onGroupSelect }: GoalGroupFil
         onClick={() => onGroupSelect(null)}
         className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${
           selectedGroupId === null
-            ? "bg-gray-800 text-white"
-            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            ? "bg-text-primary text-app"
+            : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
         }`}
       >
         All
@@ -54,7 +54,7 @@ export function GoalGroupFilter({ selectedGroupId, onGroupSelect }: GoalGroupFil
           className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 ${
             selectedGroupId === group.id
               ? "text-white"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
           }`}
           style={
             selectedGroupId === group.id
@@ -73,7 +73,7 @@ export function GoalGroupFilter({ selectedGroupId, onGroupSelect }: GoalGroupFil
       {/* Manage Groups button */}
       <button
         onClick={() => setManagerOpen(true)}
-        className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+        className="p-1.5 text-text-muted hover:text-text-secondary rounded-lg hover:bg-surface-hover transition-colors"
         title="Manage groups"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

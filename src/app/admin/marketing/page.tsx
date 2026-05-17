@@ -8,7 +8,7 @@ export default async function MarketingPage() {
     <div className="p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Marketing Command Center</h1>
-        <p className="text-gray-600">
+        <p className="text-text-secondary">
           AI-powered campaign management and content generation
         </p>
       </div>

@@ -220,10 +220,10 @@ export function GoalCard({
 
   return (
     <div
-      className={`bg-white dark:bg-gray-900 rounded-2xl shadow-lg border overflow-hidden transition-all duration-300 ${
+      className={`bg-surface rounded-2xl shadow-lg border overflow-hidden transition-all duration-300 ${
         progress === 100
           ? "border-green-300 shadow-green-100"
-          : "border-gray-200 dark:border-gray-700"
+          : "border-border"
       }`}
     >
       {/* Header */}
@@ -241,18 +241,18 @@ export function GoalCard({
                 <div className="relative flex-shrink-0">
                   <button
                     onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    className="text-lg sm:text-3xl hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-1 transition-colors"
+                    className="text-lg sm:text-3xl hover:bg-surface-hover rounded-lg p-1 transition-colors"
                     title="Change icon"
                   >
                     {editIcon}
                   </button>
                   {showEmojiPicker && (
-                    <div className="absolute top-full left-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 z-50 grid grid-cols-6 gap-1">
+                    <div className="absolute top-full left-0 mt-1 bg-surface border border-border rounded-lg shadow-lg p-2 z-50 grid grid-cols-6 gap-1">
                       {["🎯", "📚", "💪", "🏃", "💻", "🎨", "🎵", "✈️", "💰", "🏠", "❤️", "⭐", "🔥", "🌱", "📈", "🎓", "🧘", "🍎"].map((emoji) => (
                         <button
                           key={emoji}
                           onClick={() => { setEditIcon(emoji); setShowEmojiPicker(false); }}
-                          className="text-xl p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                          className="text-xl p-1.5 hover:bg-surface-hover rounded transition-colors"
                         >
                           {emoji}
                         </button>
@@ -271,11 +271,11 @@ export function GoalCard({
                     if (e.key === "Enter") handleSaveEdit();
                     if (e.key === "Escape") setIsEditing(false);
                   }}
-                  className="text-sm sm:text-xl font-bold bg-transparent border-b-2 border-brand-primary focus:border-brand-primary outline-none w-full text-gray-800 dark:text-gray-100 dark:bg-transparent"
+                  className="text-sm sm:text-xl font-bold bg-transparent border-b-2 border-brand-primary focus:border-brand-primary outline-none w-full text-text-primary dark:bg-transparent"
                   autoFocus
                 />
               ) : (
-                <h3 className="text-sm sm:text-xl font-bold text-gray-800 dark:text-gray-100 truncate">{goal.title}</h3>
+                <h3 className="text-sm sm:text-xl font-bold text-text-primary truncate">{goal.title}</h3>
               )}
               <StreakBadge tier={goalTier} streak={goalStreak?.currentStreak} />
               <ShareStreakButton
@@ -304,12 +304,12 @@ export function GoalCard({
                   if (e.key === "Escape") setIsEditing(false);
                 }}
                 rows={2}
-                className="text-xs sm:text-sm bg-transparent dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 focus:border-brand-primary outline-none w-full text-gray-600 dark:text-gray-300 resize-none mt-1"
+                className="text-xs sm:text-sm bg-transparent border border-border-strong rounded px-2 py-1 focus:border-brand-primary outline-none w-full text-text-secondary resize-none mt-1"
                 placeholder="Add a description..."
               />
             ) : (
               goal.description && (
-                <p className="text-xs sm:text-base text-gray-600 dark:text-gray-300 mt-0.5 sm:mt-1 line-clamp-2">{goal.description}</p>
+                <p className="text-xs sm:text-base text-text-secondary mt-0.5 sm:mt-1 line-clamp-2">{goal.description}</p>
               )
             )}
             {isEditing && (
@@ -322,7 +322,7 @@ export function GoalCard({
                 </button>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  className="px-3 py-1 text-xs font-medium bg-surface-hover text-text-secondary rounded-lg hover:bg-surface-hover transition-colors"
                 >
                   Cancel
                 </button>
@@ -351,7 +351,7 @@ export function GoalCard({
                 setEditIcon(goal.icon || "🎯");
                 setShowEmojiPicker(false);
               }}
-              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-brand-primary hover:bg-brand-light dark:hover:bg-brand-dark/30 rounded-lg transition-colors"
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-text-muted hover:text-brand-primary hover:bg-brand-light dark:hover:bg-brand-dark/30 rounded-lg transition-colors"
               title={isEditing ? "Cancel editing" : "Edit goal"}
               aria-label={isEditing ? "Cancel editing" : "Edit goal"}
             >
@@ -365,7 +365,7 @@ export function GoalCard({
             </button>
             <button
               onClick={() => setShowShareModal(true)}
-              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-brand-primary hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-text-muted hover:text-brand-primary hover:bg-surface/50 rounded-lg transition-colors"
               title="Share as template"
               aria-label="Share goal as template"
             >
@@ -375,7 +375,7 @@ export function GoalCard({
             </button>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-text-muted hover:text-text-secondary hover:bg-surface/50 rounded-lg transition-colors"
               title={isExpanded ? "Collapse" : "Expand"}
               aria-label={isExpanded ? "Collapse goal" : "Expand goal"}
               aria-expanded={isExpanded}
@@ -391,7 +391,7 @@ export function GoalCard({
             </button>
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-red-500 hover:bg-white/50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+              className="p-1.5 sm:p-3 min-w-[32px] sm:min-w-[48px] min-h-[32px] sm:min-h-[48px] flex items-center justify-center text-text-muted hover:text-red-500 hover:bg-surface/50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
               title="Delete goal"
               aria-label="Delete goal"
             >
@@ -404,7 +404,7 @@ export function GoalCard({
 
         {/* Progress Section */}
         <div className="mt-2 sm:mt-4">
-          <div className="flex items-center justify-between text-[10px] sm:text-sm text-gray-600 dark:text-gray-300 mb-1 sm:mb-2">
+          <div className="flex items-center justify-between text-[10px] sm:text-sm text-text-secondary mb-1 sm:mb-2">
             <span className="truncate">{completedCount} of {totalCount} steps</span>
             {progress === 100 && (
               <span className="text-green-600 font-semibold text-[10px] sm:text-sm flex-shrink-0 ml-2">Complete!</span>
@@ -422,7 +422,7 @@ export function GoalCard({
                 aria-selected={viewMode === "phases"}
                 onClick={() => { setViewMode("phases"); setSelectedPhase(null); }}
                 className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                  viewMode === "phases" ? "bg-white dark:bg-gray-800 text-brand-primary shadow-sm" : "text-gray-600 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50"
+                  viewMode === "phases" ? "bg-surface text-brand-primary shadow-sm" : "text-text-secondary hover:bg-surface/50"
                 }`}
               >
                 <span className="block sm:hidden">📊</span>
@@ -434,7 +434,7 @@ export function GoalCard({
               aria-selected={viewMode === "tasks"}
               onClick={() => { setViewMode("tasks"); setSelectedPhase(null); }}
               className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                viewMode === "tasks" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
+                viewMode === "tasks" ? "bg-surface text-brand-primary shadow-sm" : "text-text-secondary hover:bg-surface/50"
               }`}
             >
               <span className="block sm:hidden">✅</span>
@@ -446,7 +446,7 @@ export function GoalCard({
                 aria-selected={viewMode === "calendar"}
                 onClick={() => setViewMode("calendar")}
                 className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                  viewMode === "calendar" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
+                  viewMode === "calendar" ? "bg-surface text-brand-primary shadow-sm" : "text-text-secondary hover:bg-surface/50"
                 }`}
               >
                 <span className="block sm:hidden">📅</span>
@@ -459,7 +459,7 @@ export function GoalCard({
                 aria-selected={viewMode === "analytics"}
                 onClick={() => setViewMode("analytics")}
                 className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                  viewMode === "analytics" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
+                  viewMode === "analytics" ? "bg-surface text-brand-primary shadow-sm" : "text-text-secondary hover:bg-surface/50"
                 }`}
               >
                 <span className="block sm:hidden">📈</span>
@@ -472,7 +472,7 @@ export function GoalCard({
                 aria-selected={viewMode === "info"}
                 onClick={() => setViewMode("info")}
                 className={`px-1 sm:px-3 py-1 sm:py-2 min-h-[32px] sm:min-h-[40px] rounded-lg text-[10px] sm:text-xs font-medium transition-colors ${
-                  viewMode === "info" ? "bg-white text-brand-primary shadow-sm" : "text-gray-600 hover:bg-white/50"
+                  viewMode === "info" ? "bg-surface text-brand-primary shadow-sm" : "text-text-secondary hover:bg-surface/50"
                 }`}
               >
                 <span className="block sm:hidden">ℹ️</span>
@@ -485,7 +485,7 @@ export function GoalCard({
 
       {/* Content Section */}
       {isExpanded && (
-        <div className="p-2 sm:p-6 border-t border-gray-100 dark:border-gray-800">
+        <div className="p-2 sm:p-6 border-t border-border">
           {/* Phase View */}
           {viewMode === "phases" && (
             goal.phases && goal.phases.length > 0 ? (
@@ -497,7 +497,7 @@ export function GoalCard({
                       placeholder="Phase name (e.g., Phase 2: Implementation)"
                       value={newPhaseName}
                       onChange={(e) => setNewPhaseName(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-gray-800 dark:text-gray-100"
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === "Escape") {
@@ -512,7 +512,7 @@ export function GoalCard({
                       placeholder="Description (e.g., Weeks 5-8 - Core implementation)"
                       value={newPhaseDescription}
                       onChange={(e) => setNewPhaseDescription(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && newPhaseName.trim()) {
                           onAddPhase?.(goal.id, newPhaseName.trim(), newPhaseDescription.trim());
@@ -548,7 +548,7 @@ export function GoalCard({
                           setNewPhaseName("");
                           setNewPhaseDescription("");
                         }}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base text-text-secondary hover:bg-surface-hover rounded-lg transition-colors"
                       >
                         Cancel
                       </button>
@@ -608,7 +608,7 @@ export function GoalCard({
                       placeholder="Phase name (e.g., Phase 1: Planning)"
                       value={newPhaseName}
                       onChange={(e) => setNewPhaseName(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === "Escape") {
@@ -623,7 +623,7 @@ export function GoalCard({
                       placeholder="Description (e.g., Weeks 1-4 - Planning and preparation)"
                       value={newPhaseDescription}
                       onChange={(e) => setNewPhaseDescription(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                      className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-base border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && newPhaseName.trim()) {
                           onAddPhase?.(goal.id, newPhaseName.trim(), newPhaseDescription.trim());
@@ -659,7 +659,7 @@ export function GoalCard({
                           setNewPhaseName("");
                           setNewPhaseDescription("");
                         }}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-base text-text-secondary hover:bg-surface-hover rounded-lg transition-colors"
                       >
                         Cancel
                       </button>
@@ -668,8 +668,8 @@ export function GoalCard({
                 ) : (
                   <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-brand-light/30 dark:bg-brand-dark/15 rounded-xl border border-brand-light dark:border-brand-dark/40 border-dashed">
                     <span className="text-3xl mb-2">📊</span>
-                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">No phases yet</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 mb-3 max-w-[260px]">
+                    <p className="text-sm font-semibold text-text-secondary">No phases yet</p>
+                    <p className="text-xs text-text-muted mt-1 mb-3 max-w-[260px]">
                       Phases help you break your goal into milestones.
                     </p>
                     <button
@@ -704,7 +704,7 @@ export function GoalCard({
                 onRestoreSubstep={(snap) => handleRestoreSubstep(snap)}
               />
               {hiddenTaskCount > 0 && (
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                <p className="text-xs text-text-muted mt-1">
                   ({hiddenTaskCount} completed task{hiddenTaskCount !== 1 ? "s" : ""} hidden)
                 </p>
               )}
@@ -757,8 +757,8 @@ export function GoalCard({
             ) : (
               <div className="flex flex-col items-center justify-center text-center py-8 px-4 bg-brand-light/30 rounded-xl border border-brand-light border-dashed">
                 <span className="text-3xl mb-2">📦</span>
-                <p className="text-sm font-semibold text-gray-700">No resources yet</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-[260px]">
+                <p className="text-sm font-semibold text-text-secondary">No resources yet</p>
+                <p className="text-xs text-text-muted mt-1 max-w-[260px]">
                   Resources include budget tracking, timelines, document checklists, and reference links. Ask the chatbot to help you add them.
                 </p>
               </div>
@@ -770,21 +770,21 @@ export function GoalCard({
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-overlay/50 flex items-center justify-center z-50 p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-goal-title"
         >
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 sm:p-6 max-w-sm w-full shadow-2xl">
-            <h4 id="delete-goal-title" className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">Delete Goal?</h4>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-4">
+          <div className="bg-surface rounded-2xl p-4 sm:p-6 max-w-sm w-full shadow-2xl">
+            <h4 id="delete-goal-title" className="text-base sm:text-lg font-bold text-text-primary mb-2">Delete Goal?</h4>
+            <p className="text-sm sm:text-base text-text-secondary mb-4">
               Are you sure you want to delete &quot;{goal.title}&quot;? This will also
               delete all {totalCount} tasks. This action cannot be undone.
             </p>
             <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 py-2 px-3 sm:px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-sm sm:text-base text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-900 transition-colors min-h-[44px]"
+                className="flex-1 py-2 px-3 sm:px-4 border border-border-strong rounded-lg text-sm sm:text-base text-text-secondary hover:bg-surface-muted transition-colors min-h-[44px]"
               >
                 Cancel
               </button>

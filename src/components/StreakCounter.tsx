@@ -74,12 +74,12 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
             className={`text-base sm:text-3xl font-black ${
               isActive
                 ? "text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-yellow-500"
-                : "text-gray-400"
+                : "text-text-muted"
             }`}
           >
             {streak.currentStreak}
           </div>
-          <div className="text-[10px] sm:text-xs font-semibold text-gray-600 uppercase tracking-wide">
+          <div className="text-[10px] sm:text-xs font-semibold text-text-secondary uppercase tracking-wide">
             Streak
           </div>
         </div>
@@ -118,11 +118,11 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
                 ? "bg-orange-100 ring-1 ring-orange-400"
                 : day.hasActivity
                 ? "bg-green-100"
-                : "bg-gray-100"
+                : "bg-surface-hover"
             }`}
           >
             {/* Day Letter */}
-            <span className="text-[10px] sm:text-sm text-gray-500 font-medium leading-none">
+            <span className="text-[10px] sm:text-sm text-text-muted font-medium leading-none">
               {day.dayName}
             </span>
             
@@ -131,13 +131,13 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
               className={`w-4 h-4 sm:w-8 sm:h-8 rounded-full flex items-center justify-center mt-0.5 sm:mt-1 ${
                 day.hasActivity
                   ? "bg-gradient-to-br from-orange-400 to-yellow-400"
-                  : "bg-gray-200"
+                  : "bg-surface-hover"
               }`}
             >
               {day.hasActivity ? (
                 <span className="text-[10px] sm:text-base">🔥</span>
               ) : (
-                <span className={`text-[8px] sm:text-xs font-medium ${day.isCurrentDay ? "text-orange-600" : "text-gray-400"}`}>
+                <span className={`text-[8px] sm:text-xs font-medium ${day.isCurrentDay ? "text-orange-600" : "text-text-muted"}`}>
                   {day.dateNum}
                 </span>
               )}
@@ -148,7 +148,7 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
 
       {/* Longest Streak */}
       <div className="flex justify-between items-center text-xs border-t border-orange-100 pt-1.5 sm:pt-3">
-        <span className="text-gray-600">Longest</span>
+        <span className="text-text-secondary">Longest</span>
         <span className="font-bold text-orange-600 flex items-center gap-0.5">
           <span className="text-xs sm:text-sm">🏆</span>
           <span>{streak.longestStreak}d</span>
@@ -157,7 +157,7 @@ export function StreakCounter({ streak, hasCompletedToday }: StreakCounterProps)
 
       {/* Motivational Message */}
       {streak.currentStreak > 0 && (
-        <div className="mt-1.5 sm:mt-3 text-center text-xs text-gray-600 italic">
+        <div className="mt-1.5 sm:mt-3 text-center text-xs text-text-secondary italic">
           {streak.currentStreak >= 30
             ? "🎉 Unstoppable!"
             : streak.currentStreak >= 14

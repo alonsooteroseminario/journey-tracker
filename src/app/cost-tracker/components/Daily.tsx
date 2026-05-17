@@ -13,9 +13,9 @@ interface DailyProps {
 export function Daily({ data }: DailyProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white rounded-xl p-6 border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Daily Spending</h2>
-        <p className="text-gray-500">No spending data yet.</p>
+      <div className="bg-surface rounded-xl p-6 border border-border">
+        <h2 className="text-lg font-semibold text-text-primary mb-4">Daily Spending</h2>
+        <p className="text-text-muted">No spending data yet.</p>
       </div>
     );
   }
@@ -23,8 +23,8 @@ export function Daily({ data }: DailyProps) {
   const maxAmount = Math.max(...data.map((d) => d.total), 1);
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-gray-200">
-      <h2 className="text-lg font-semibold text-gray-800 mb-6">Daily Spending Trend</h2>
+    <div className="bg-surface rounded-xl p-6 border border-border">
+      <h2 className="text-lg font-semibold text-text-primary mb-6">Daily Spending Trend</h2>
 
       <div className="space-y-4">
         {data.map((item) => {
@@ -37,11 +37,11 @@ export function Daily({ data }: DailyProps) {
           return (
             <div key={item.date} className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">{dayLabel}</span>
-                <span className="text-sm font-semibold text-gray-800">${item.total.toFixed(2)}</span>
+                <span className="text-sm font-medium text-text-secondary">{dayLabel}</span>
+                <span className="text-sm font-semibold text-text-primary">${item.total.toFixed(2)}</span>
               </div>
 
-              <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-surface-hover rounded-full h-2 overflow-hidden">
                 <div
                   className="h-2 rounded-full bg-gradient-to-r from-brand-primary to-brand-secondary transition-all"
                   style={{ width: `${(item.total / maxAmount) * 100}%` }}
@@ -52,23 +52,23 @@ export function Daily({ data }: DailyProps) {
         })}
       </div>
 
-      <div className="border-t border-gray-200 mt-6 pt-4">
+      <div className="border-t border-border mt-6 pt-4">
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <p className="text-xs text-gray-600">Total (7d)</p>
-            <p className="text-lg font-bold text-gray-800">
+            <p className="text-xs text-text-secondary">Total (7d)</p>
+            <p className="text-lg font-bold text-text-primary">
               ${data.reduce((sum, d) => sum + d.total, 0).toFixed(2)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-600">Average</p>
-            <p className="text-lg font-bold text-gray-800">
+            <p className="text-xs text-text-secondary">Average</p>
+            <p className="text-lg font-bold text-text-primary">
               ${(data.reduce((sum, d) => sum + d.total, 0) / data.length).toFixed(2)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-600">Highest Day</p>
-            <p className="text-lg font-bold text-gray-800">
+            <p className="text-xs text-text-secondary">Highest Day</p>
+            <p className="text-lg font-bold text-text-primary">
               ${Math.max(...data.map((d) => d.total)).toFixed(2)}
             </p>
           </div>

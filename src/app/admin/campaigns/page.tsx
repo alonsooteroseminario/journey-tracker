@@ -8,7 +8,7 @@ export default async function CampaignsPage() {
     <div className="p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Marketing Campaigns</h1>
-        <p className="text-gray-600">
+        <p className="text-text-secondary">
           Create and manage marketing campaigns with automated posting schedules
         </p>
       </div>

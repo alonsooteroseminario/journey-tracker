@@ -38,9 +38,9 @@ export function EmailPreferencesPanel() {
 
   if (isLoading || !preferences) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-surface rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-4">Email Notifications</h2>
-        <p className="text-gray-500">Loading preferences...</p>
+        <p className="text-text-muted">Loading preferences...</p>
       </div>
     );
   }
@@ -86,23 +86,23 @@ export function EmailPreferencesPanel() {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-surface rounded-lg shadow p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold">Email Notifications</h2>
         {saveStatus === "saved" && (
           <span className="text-sm text-green-600">✓ Saved</span>
         )}
         {saveStatus === "saving" && (
-          <span className="text-sm text-gray-500">Saving...</span>
+          <span className="text-sm text-text-muted">Saving...</span>
         )}
       </div>
 
       {/* Master toggle */}
-      <div className="mb-6 pb-6 border-b border-gray-200">
+      <div className="mb-6 pb-6 border-b border-border">
         <label className="flex items-center justify-between cursor-pointer">
           <div>
-            <span className="font-medium text-gray-900">Enable email notifications</span>
-            <p className="text-sm text-gray-500">
+            <span className="font-medium text-text-primary">Enable email notifications</span>
+            <p className="text-sm text-text-muted">
               Receive email updates about your goals and activity
             </p>
           </div>
@@ -117,8 +117,8 @@ export function EmailPreferencesPanel() {
 
       {/* Frequency selector */}
       {preferences.enabled && (
-        <div className="mb-6 pb-6 border-b border-gray-200">
-          <label className="block font-medium text-gray-900 mb-3">
+        <div className="mb-6 pb-6 border-b border-border">
+          <label className="block font-medium text-text-primary mb-3">
             Email frequency
           </label>
           <div className="space-y-2">
@@ -132,10 +132,10 @@ export function EmailPreferencesPanel() {
                 className="w-4 h-4 text-brand-primary focus:ring-2 focus:ring-brand-primary"
               />
               <span className="ml-3">
-                <span className="block text-sm font-medium text-gray-900">
+                <span className="block text-sm font-medium text-text-primary">
                   Immediate
                 </span>
-                <span className="block text-xs text-gray-500">
+                <span className="block text-xs text-text-muted">
                   Send emails as events happen
                 </span>
               </span>
@@ -150,10 +150,10 @@ export function EmailPreferencesPanel() {
                 className="w-4 h-4 text-brand-primary focus:ring-2 focus:ring-brand-primary"
               />
               <span className="ml-3">
-                <span className="block text-sm font-medium text-gray-900">
+                <span className="block text-sm font-medium text-text-primary">
                   Daily digest
                 </span>
-                <span className="block text-xs text-gray-500">
+                <span className="block text-xs text-text-muted">
                   One email per day with all updates
                 </span>
               </span>
@@ -168,10 +168,10 @@ export function EmailPreferencesPanel() {
                 className="w-4 h-4 text-brand-primary focus:ring-2 focus:ring-brand-primary"
               />
               <span className="ml-3">
-                <span className="block text-sm font-medium text-gray-900">
+                <span className="block text-sm font-medium text-text-primary">
                   Weekly summary
                 </span>
-                <span className="block text-xs text-gray-500">
+                <span className="block text-xs text-text-muted">
                   One email per week with highlights
                 </span>
               </span>
@@ -185,7 +185,7 @@ export function EmailPreferencesPanel() {
         <div className="space-y-6">
           {notificationGroups.map((group) => (
             <div key={group.title}>
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">
+              <h3 className="text-sm font-semibold text-text-secondary mb-3">
                 {group.title}
               </h3>
               <div className="space-y-3">
@@ -194,7 +194,7 @@ export function EmailPreferencesPanel() {
                     key={item.key}
                     className="flex items-center justify-between cursor-pointer"
                   >
-                    <span className="text-sm text-gray-900">{item.label}</span>
+                    <span className="text-sm text-text-primary">{item.label}</span>
                     <input
                       type="checkbox"
                       checked={preferences[item.key]}
@@ -210,7 +210,7 @@ export function EmailPreferencesPanel() {
       )}
 
       {!preferences.enabled && (
-        <p className="text-sm text-gray-500 text-center py-8">
+        <p className="text-sm text-text-muted text-center py-8">
           Email notifications are disabled. Enable them to customize your preferences.
         </p>
       )}

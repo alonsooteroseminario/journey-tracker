@@ -81,19 +81,19 @@ export function CreateGoalModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4"
+      className="fixed inset-0 bg-overlay/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-goal-title"
     >
-      <div ref={focusTrapRef} className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full mx-2 sm:mx-0 shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[85vh] overflow-y-auto animate-slide-up sm:animate-none">
+      <div ref={focusTrapRef} className="bg-surface rounded-t-2xl sm:rounded-2xl max-w-lg w-full mx-2 sm:mx-0 shadow-2xl overflow-hidden max-h-[92vh] sm:max-h-[85vh] overflow-y-auto animate-slide-up sm:animate-none">
         {/* Header - Sticky on scroll */}
         <div className="bg-gradient-to-r from-red-500 via-white to-red-500 p-3 sm:p-6 sticky top-0 z-10">
           <div className="flex items-center justify-between">
-            <h2 id="create-goal-title" className="text-lg sm:text-2xl font-bold text-gray-800">Create New Goal</h2>
+            <h2 id="create-goal-title" className="text-lg sm:text-2xl font-bold text-text-primary">Create New Goal</h2>
             <button
               onClick={onClose}
-              className="text-gray-600 hover:text-gray-800 p-3 min-w-[48px] min-h-[48px] flex items-center justify-center transition-colors"
+              className="text-text-secondary hover:text-text-primary p-3 min-w-[48px] min-h-[48px] flex items-center justify-center transition-colors"
               aria-label="Close modal"
             >
               <svg
@@ -111,7 +111,7 @@ export function CreateGoalModal({
               </svg>
             </button>
           </div>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">
+          <p className="text-sm sm:text-base text-text-secondary mt-1">
             Set a goal and break it down into manageable tasks
           </p>
         </div>
@@ -121,7 +121,7 @@ export function CreateGoalModal({
           {/* Template Option */}
           {showTemplates && (
             <div className="mb-6">
-              <h3 className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              <h3 className="text-xs sm:text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">
                 Featured Template
               </h3>
               <button
@@ -131,10 +131,10 @@ export function CreateGoalModal({
                 <div className="flex items-start gap-2 sm:gap-4">
                   <span className="text-2xl sm:text-4xl flex-shrink-0">🍁</span>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-gray-800 group-hover:text-red-600 transition-colors text-base sm:text-lg">
+                    <h4 className="font-bold text-text-primary group-hover:text-red-600 transition-colors text-base sm:text-lg">
                       BC PNP to Permanent Residence
                     </h4>
-                    <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                    <p className="text-xs sm:text-sm text-text-secondary mt-1">
                       Complete end-to-end checklist from Day 1 to PR Card Receipt
                     </p>
                     <div className="flex flex-wrap gap-2 mt-2 sm:mt-3">
@@ -151,7 +151,7 @@ export function CreateGoalModal({
                         Docs
                       </span>
                     </div>
-                    <div className="mt-2 text-xs text-gray-500 hidden sm:block">
+                    <div className="mt-2 text-xs text-text-muted hidden sm:block">
                       Includes: Timeline comparison, official resources, cost breakdown
                     </div>
                   </div>
@@ -159,9 +159,9 @@ export function CreateGoalModal({
               </button>
 
               <div className="flex items-center gap-3 my-4 sm:my-6">
-                <div className="flex-1 h-px bg-gray-200" />
-                <span className="text-xs sm:text-sm text-gray-400">or create custom goal</span>
-                <div className="flex-1 h-px bg-gray-200" />
+                <div className="flex-1 h-px bg-surface-hover" />
+                <span className="text-xs sm:text-sm text-text-muted">or create custom goal</span>
+                <div className="flex-1 h-px bg-surface-hover" />
               </div>
             </div>
           )}
@@ -171,7 +171,7 @@ export function CreateGoalModal({
             <div>
               <label
                 htmlFor="title"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-text-secondary mb-1"
               >
                 Goal Title *
               </label>
@@ -181,7 +181,7 @@ export function CreateGoalModal({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Learn Spanish, Complete Course..."
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-border-strong rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all"
                 autoFocus={!showTemplates}
               />
             </div>
@@ -189,7 +189,7 @@ export function CreateGoalModal({
             <div>
               <label
                 htmlFor="description"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-text-secondary mb-1"
               >
                 Description (optional)
               </label>
@@ -199,7 +199,7 @@ export function CreateGoalModal({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Why is this goal important to you?"
                 rows={3}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all resize-none"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-border-strong rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all resize-none"
               />
             </div>
 
@@ -210,9 +210,9 @@ export function CreateGoalModal({
                 id="usePhases"
                 checked={usePhases}
                 onChange={(e) => setUsePhases(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary cursor-pointer"
+                className="w-4 h-4 rounded border-border-strong text-brand-primary focus:ring-brand-primary cursor-pointer"
               />
-              <label htmlFor="usePhases" className="text-sm text-gray-700 cursor-pointer select-none">
+              <label htmlFor="usePhases" className="text-sm text-text-secondary cursor-pointer select-none">
                 Organize tasks with Phases
               </label>
             </div>
@@ -232,14 +232,14 @@ export function CreateGoalModal({
                     onChange={(e) => setNewPhaseName(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addPhase(); } }}
                     placeholder="Phase name (e.g. Preparation)"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                    className="w-full px-3 py-2 border border-border-strong rounded-lg text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                   />
                   <input
                     type="text"
                     value={newPhaseDesc}
                     onChange={(e) => setNewPhaseDesc(e.target.value)}
                     placeholder="Description (optional, e.g. Weeks 1–4)"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                    className="w-full px-3 py-2 border border-border-strong rounded-lg text-sm focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                   />
                   <button
                     type="button"
@@ -257,20 +257,20 @@ export function CreateGoalModal({
                     {phases.map((phase, i) => (
                       <div
                         key={i}
-                        className="flex items-start justify-between gap-2 bg-white border border-brand-light rounded-lg px-3 py-2"
+                        className="flex items-start justify-between gap-2 bg-surface border border-brand-light rounded-lg px-3 py-2"
                       >
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-gray-800">
+                          <p className="text-sm font-semibold text-text-primary">
                             Phase {i + 1}: {phase.name}
                           </p>
                           {phase.description && (
-                            <p className="text-xs text-gray-500 truncate">{phase.description}</p>
+                            <p className="text-xs text-text-muted truncate">{phase.description}</p>
                           )}
                         </div>
                         <button
                           type="button"
                           onClick={() => removePhase(i)}
-                          className="text-gray-400 hover:text-red-500 transition-colors p-1 flex-shrink-0"
+                          className="text-text-muted hover:text-red-500 transition-colors p-1 flex-shrink-0"
                           aria-label={`Remove phase ${i + 1}`}
                         >
                           ×
@@ -286,7 +286,7 @@ export function CreateGoalModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 min-h-[48px] border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                className="flex-1 py-3 min-h-[48px] border border-border-strong rounded-xl text-text-secondary hover:bg-surface-muted transition-colors font-medium"
               >
                 Cancel
               </button>

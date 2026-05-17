@@ -169,7 +169,7 @@ export function TaskMiniCard({
       <div
         ref={setNodeRef}
         style={style}
-        className={`bg-white rounded-xl border-l-4 shadow-sm hover:shadow-md transition-all ${
+        className={`bg-surface rounded-xl border-l-4 shadow-sm hover:shadow-md transition-all ${
           task.status === 'completed'
             ? "border-l-green-500 bg-green-50/50"
             : task.status === 'in_progress'
@@ -184,7 +184,7 @@ export function TaskMiniCard({
             <button
               {...attributes}
               {...(canReorder(task) ? listeners : {})}
-              className="cursor-grab active:cursor-grabbing flex-shrink-0 p-0.5 sm:p-1 text-gray-400 hover:text-gray-600 mt-0.5"
+              className="cursor-grab active:cursor-grabbing flex-shrink-0 p-0.5 sm:p-1 text-text-muted hover:text-text-secondary mt-0.5"
               title="Drag to reorder task"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +203,7 @@ export function TaskMiniCard({
                   ? "bg-green-500 border-green-500 text-white"
                   : task.status === 'in_progress'
                   ? "bg-orange-500 border-orange-500 text-white"
-                  : "border-gray-300 hover:border-green-500 hover:bg-green-50"
+                  : "border-border-strong hover:border-green-500 hover:bg-green-50"
               }`}
             >
               {task.status === 'completed' && (
@@ -212,7 +212,7 @@ export function TaskMiniCard({
                 </svg>
               )}
               {task.status === 'in_progress' && (
-                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full" />
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-surface rounded-full" />
               )}
             </button>
 
@@ -225,7 +225,7 @@ export function TaskMiniCard({
                   </span>
                 )}
                 {getLockLevel(task) === 'soft' && (
-                  <svg className="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Soft locked">
+                  <svg className="w-3 h-3 text-text-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Soft locked">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0v4m-4 8v-4m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                   </svg>
                 )}
@@ -236,7 +236,7 @@ export function TaskMiniCard({
                 )}
                 <h4
                   className={`text-xs sm:text-base font-medium ${
-                    task.status === 'completed' ? "text-gray-500 line-through" : "text-gray-800"
+                    task.status === 'completed' ? "text-text-muted line-through" : "text-text-primary"
                   }`}
                 >
                   {task.title}
@@ -275,7 +275,7 @@ export function TaskMiniCard({
                         ? "bg-red-100 text-red-700"
                         : task.priority === "high"
                         ? "bg-orange-100 text-orange-700"
-                        : "bg-gray-100 text-gray-600"
+                        : "bg-surface-hover text-text-secondary"
                     }`}
                   >
                     {task.priority}
@@ -286,7 +286,7 @@ export function TaskMiniCard({
               {/* Substep Progress Bar */}
               {hasSubsteps && (
                 <div className="mt-2">
-                  <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-1.5 bg-surface-hover rounded-full overflow-hidden">
                     <div
                       className="h-full bg-brand-primary rounded-full transition-all duration-300"
                       style={{ width: `${substepProgress}%` }}
@@ -300,7 +300,7 @@ export function TaskMiniCard({
             <div className="flex items-center gap-0.5 sm:gap-1">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1 sm:p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-1 sm:p-1.5 text-text-muted hover:text-text-secondary hover:bg-surface-hover rounded-lg transition-colors"
                 title={isExpanded ? "Collapse" : "Expand"}
               >
                 <svg
@@ -315,7 +315,7 @@ export function TaskMiniCard({
               <button
                 onClick={handleCopy}
                 className={`p-1 sm:p-1.5 rounded-lg transition-colors ${
-                  copied ? "text-green-500 bg-green-50" : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"
+                  copied ? "text-green-500 bg-green-50" : "text-text-muted hover:text-brand-primary hover:bg-brand-light"
                 }`}
                 title={copied ? "Copied!" : "Copy as Markdown"}
               >
@@ -331,7 +331,7 @@ export function TaskMiniCard({
               </button>
               <button
                 onClick={() => onUpdateLock?.(cycleLock(getLockLevel(task)))}
-                className="p-1 sm:p-1.5 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded-lg transition-colors"
+                className="p-1 sm:p-1.5 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded-lg transition-colors"
                 title={`Lock: ${getLockLevel(task)}`}
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -343,8 +343,8 @@ export function TaskMiniCard({
                 disabled={!canEdit(task)}
                 className={`p-1 sm:p-1.5 rounded-lg transition-colors ${
                   canEdit(task)
-                    ? "text-gray-400 hover:text-brand-primary hover:bg-brand-light"
-                    : "text-gray-400 opacity-40 cursor-not-allowed"
+                    ? "text-text-muted hover:text-brand-primary hover:bg-brand-light"
+                    : "text-text-muted opacity-40 cursor-not-allowed"
                 }`}
                 title={canEdit(task) ? "Edit" : "Locked"}
               >
@@ -357,8 +357,8 @@ export function TaskMiniCard({
                 disabled={!canDelete(task)}
                 className={`p-1 sm:p-1.5 rounded-lg transition-colors ${
                   canDelete(task)
-                    ? "text-gray-400 hover:text-red-500 hover:bg-red-50"
-                    : "text-gray-400 opacity-40 cursor-not-allowed"
+                    ? "text-text-muted hover:text-red-500 hover:bg-red-50"
+                    : "text-text-muted opacity-40 cursor-not-allowed"
                 }`}
                 title={canDelete(task) ? "Delete" : "Locked"}
               >
@@ -372,7 +372,7 @@ export function TaskMiniCard({
 
         {/* Expanded Content */}
         {isExpanded && (
-          <div className="px-2 sm:px-4 pb-2 sm:pb-4 border-t border-gray-100 pt-2 sm:pt-3 space-y-2 sm:space-y-3">
+          <div className="px-2 sm:px-4 pb-2 sm:pb-4 border-t border-border pt-2 sm:pt-3 space-y-2 sm:space-y-3">
             {/* Cost Tracking Section */}
             {hasCost && (
               <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-2 sm:p-3">
@@ -383,24 +383,24 @@ export function TaskMiniCard({
                   </h5>
                 </div>
                 <div className="grid grid-cols-2 gap-1.5 sm:gap-2 text-[10px] sm:text-xs">
-                  <div className="bg-white/60 rounded p-1.5 sm:p-2">
-                    <p className="text-gray-600 mb-0.5">Estimated</p>
+                  <div className="bg-surface/60 rounded p-1.5 sm:p-2">
+                    <p className="text-text-secondary mb-0.5">Estimated</p>
                     <p className="text-emerald-700 font-bold text-sm sm:text-base">
                       {formatCurrency(totalEstimatedCost)}
                     </p>
                   </div>
-                  <div className="bg-white/60 rounded p-1.5 sm:p-2">
-                    <p className="text-gray-600 mb-0.5">Actual Spent</p>
+                  <div className="bg-surface/60 rounded p-1.5 sm:p-2">
+                    <p className="text-text-secondary mb-0.5">Actual Spent</p>
                     <p className="text-emerald-700 font-bold text-sm sm:text-base">
                       {formatCurrency(totalActualCost)}
                     </p>
                   </div>
-                  <div className="bg-white/60 rounded p-1.5 sm:p-2 col-span-2">
-                    <p className="text-gray-600 mb-0.5">Spent on Completed Items</p>
+                  <div className="bg-surface/60 rounded p-1.5 sm:p-2 col-span-2">
+                    <p className="text-text-secondary mb-0.5">Spent on Completed Items</p>
                     <p className="text-brand-primary font-bold text-sm sm:text-base">
                       {formatCurrency(spentSoFar)}
                     </p>
-                    <div className="mt-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="mt-1 h-1.5 bg-surface-hover rounded-full overflow-hidden">
                       <div
                         className="h-full bg-brand-primary rounded-full transition-all"
                         style={{
@@ -432,7 +432,7 @@ export function TaskMiniCard({
             {/* Substeps Section */}
             <div>
               <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-                <h5 className="text-xs sm:text-sm font-semibold text-gray-700">Substeps</h5>
+                <h5 className="text-xs sm:text-sm font-semibold text-text-secondary">Substeps</h5>
                 {canAddChild(task) && (
                   <button
                     onClick={() => setIsAddingSubstep(true)}
@@ -480,7 +480,7 @@ export function TaskMiniCard({
                     value={newSubstepTitle}
                     onChange={(e) => setNewSubstepTitle(e.target.value)}
                     placeholder="Enter substep..."
-                    className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                    className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-border-strong rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleAddSubstep();
@@ -502,7 +502,7 @@ export function TaskMiniCard({
                       setIsAddingSubstep(false);
                       setNewSubstepTitle("");
                     }}
-                    className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
+                    className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-text-secondary hover:bg-surface-hover rounded-lg"
                   >
                     Cancel
                   </button>
@@ -510,7 +510,7 @@ export function TaskMiniCard({
               )}
 
               {substeps.length === 0 && !isAddingSubstep && (
-                <p className="text-xs sm:text-sm text-gray-400 text-center py-1.5 sm:py-2">
+                <p className="text-xs sm:text-sm text-text-muted text-center py-1.5 sm:py-2">
                   No substeps yet. Break this task into smaller steps!
                 </p>
               )}

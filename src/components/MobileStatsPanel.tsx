@@ -63,26 +63,26 @@ export function MobileStatsPanel({
           <div
             data-testid="stats-overlay"
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+            className="fixed inset-0 bg-overlay/50 z-50 lg:hidden"
             aria-hidden="true"
           />
 
           {/* Bottom Sheet Content */}
-          <div className="fixed inset-x-0 bottom-0 z-50 bg-white dark:bg-gray-800 rounded-t-2xl shadow-2xl animate-slide-up max-h-[85vh] overflow-y-auto lg:hidden">
+          <div className="fixed inset-x-0 bottom-0 z-50 bg-surface rounded-t-2xl shadow-2xl animate-slide-up max-h-[85vh] overflow-y-auto lg:hidden">
             {/* Handle Bar */}
             <div className="flex justify-center pt-3 pb-2">
-              <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full" />
+              <div className="w-12 h-1.5 bg-border-strong rounded-full" />
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+              <h2 className="text-xl font-semibold text-text-primary dark:text-white">
                 Your Progress
               </h2>
               <button
                 onClick={() => setIsOpen(false)}
                 aria-label="Close stats"
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                className="text-text-muted hover:text-text-secondary transition-colors"
               >
                 <svg
                   className="w-6 h-6"
@@ -106,51 +106,51 @@ export function MobileStatsPanel({
               <StreakCounter streak={streak} hasCompletedToday={hasCompletedToday} />
 
               {/* Overall Progress */}
-              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                <h3 className="font-bold text-sm text-gray-800 mb-3 flex items-center gap-2">
+              <div className="bg-surface rounded-lg p-4 shadow-sm border border-border">
+                <h3 className="font-bold text-sm text-text-primary mb-3 flex items-center gap-2">
                   <span className="text-lg">📊</span>
                   Overall Progress
                 </h3>
                 <ProgressBar progress={totalProgress} size="md" showPercentage={true} />
-                <div className="mt-3 flex justify-between text-xs text-gray-600">
+                <div className="mt-3 flex justify-between text-xs text-text-secondary">
                   <span>{completedTasks} done</span>
                   <span>{totalTasks - completedTasks} left</span>
                 </div>
               </div>
 
               {/* Quick Stats */}
-              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                <h3 className="font-bold text-sm text-gray-800 mb-3 flex items-center gap-2">
+              <div className="bg-surface rounded-lg p-4 shadow-sm border border-border">
+                <h3 className="font-bold text-sm text-text-primary mb-3 flex items-center gap-2">
                   <span className="text-lg">📈</span>
                   Quick Stats
                 </h3>
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Goals</span>
-                    <span className="font-bold text-gray-800">{goalCount}</span>
+                    <span className="text-text-secondary">Goals</span>
+                    <span className="font-bold text-text-primary">{goalCount}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Tasks</span>
-                    <span className="font-bold text-gray-800">{totalTasks}</span>
+                    <span className="text-text-secondary">Tasks</span>
+                    <span className="font-bold text-text-primary">{totalTasks}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Substeps</span>
+                    <span className="text-text-secondary">Substeps</span>
                     <span className="font-bold text-brand-primary">{totalSubsteps}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Done</span>
+                    <span className="text-text-secondary">Done</span>
                     <span className="font-bold text-green-600">{completedTasks}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Days Active</span>
+                    <span className="text-text-secondary">Days Active</span>
                     <span className="font-bold text-brand-primary">{streak.streakHistory.length}</span>
                   </div>
                 </div>
               </div>
 
               {/* Mini Calendar */}
-              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                <h3 className="font-bold text-sm text-gray-800 mb-3 flex items-center gap-2">
+              <div className="bg-surface rounded-lg p-4 shadow-sm border border-border">
+                <h3 className="font-bold text-sm text-text-primary mb-3 flex items-center gap-2">
                   <span className="text-lg">📅</span>
                   Activity Calendar
                 </h3>

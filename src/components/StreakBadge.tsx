@@ -4,7 +4,7 @@ import { StreakTier } from "@/types";
 
 const tierConfig = {
   bronze: { icon: "\u{1F949}", label: "Bronze Streak", color: "bg-amber-100 text-amber-700" },
-  silver: { icon: "\u{1F948}", label: "Silver Streak", color: "bg-gray-100 text-gray-700" },
+  silver: { icon: "\u{1F948}", label: "Silver Streak", color: "bg-surface-hover text-text-secondary" },
   gold: { icon: "\u{1F947}", label: "Gold Streak", color: "bg-yellow-100 text-yellow-700" },
 };
 

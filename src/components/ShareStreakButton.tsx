@@ -21,7 +21,7 @@ export function ShareStreakButton({ streakCount, tier, goalId, goalTitle }: Shar
       <button
         onClick={() => setIsOpen(true)}
         title="Share your streak"
-        className="inline-flex items-center justify-center w-6 h-6 rounded-full text-gray-400 hover:text-brand-primary hover:bg-brand-light transition-colors"
+        className="inline-flex items-center justify-center w-6 h-6 rounded-full text-text-muted hover:text-brand-primary hover:bg-brand-light transition-colors"
       >
         <svg
           className="w-3.5 h-3.5"

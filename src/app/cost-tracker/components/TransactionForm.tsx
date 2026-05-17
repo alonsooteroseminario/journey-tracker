@@ -78,11 +78,11 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-text-secondary mb-2">
           Amount (CAD)
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-3 text-gray-500">$</span>
+          <span className="absolute left-3 top-3 text-text-muted">$</span>
           <input
             type="number"
             name="amount"
@@ -91,21 +91,21 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
             placeholder="0.00"
             value={formData.amount}
             onChange={handleChange}
-            className="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
+            className="w-full pl-7 pr-4 py-2 border border-border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
             required
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-text-secondary mb-2">
           Category
         </label>
         <select
           name="category"
           value={formData.category}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
+          className="w-full px-4 py-2 border border-border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
         >
           {CATEGORIES.map((cat) => (
             <option key={cat.value} value={cat.value}>
@@ -116,7 +116,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-text-secondary mb-2">
           Description (optional)
         </label>
         <textarea
@@ -125,12 +125,12 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
           value={formData.description}
           onChange={handleChange}
           rows={3}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary resize-none"
+          className="w-full px-4 py-2 border border-border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary resize-none"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-text-secondary mb-2">
           Date
         </label>
         <input
@@ -138,7 +138,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
           name="date"
           value={formData.date}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
+          className="w-full px-4 py-2 border border-border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
           required
         />
       </div>
@@ -154,7 +154,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium transition-all"
+          className="flex-1 px-4 py-2 bg-surface-hover text-text-secondary rounded-lg hover:bg-surface-hover font-medium transition-all"
         >
           Cancel
         </button>

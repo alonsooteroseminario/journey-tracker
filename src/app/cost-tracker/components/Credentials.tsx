@@ -176,8 +176,8 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-800">API Credentials</h2>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h2 className="text-lg font-semibold text-text-primary">API Credentials</h2>
+          <p className="text-sm text-text-muted mt-0.5">
             Keys are encrypted at rest and never returned to the client.
           </p>
         </div>
@@ -193,8 +193,8 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
       </div>
 
       {!hasAnyCredential && (
-        <div className="bg-white rounded-xl border border-dashed border-gray-300 p-8 text-center">
-          <p className="text-gray-400 text-sm">No credentials yet</p>
+        <div className="bg-surface rounded-xl border border-dashed border-border-strong p-8 text-center">
+          <p className="text-text-muted text-sm">No credentials yet</p>
           <button
             onClick={() => openModal()}
             className="mt-3 px-4 py-2 text-sm font-medium text-brand-primary border border-brand-primary/30 rounded-lg hover:bg-brand-light transition-colors"
@@ -211,9 +211,9 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-lg">{p.icon}</span>
-                <span className="text-sm font-semibold text-gray-700">{p.name}</span>
+                <span className="text-sm font-semibold text-text-secondary">{p.name}</span>
                 {!p.syncSupported && !("validateSupported" in p && p.validateSupported) && (
-                  <span className="text-xs text-gray-400 font-normal">
+                  <span className="text-xs text-text-muted font-normal">
                     · Usage logged automatically from AI agent
                   </span>
                 )}
@@ -227,8 +227,8 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
             </div>
 
             {items.length === 0 ? (
-              <div className="bg-white rounded-xl border border-dashed border-gray-200 px-4 py-3">
-                <p className="text-xs text-gray-400">Not connected</p>
+              <div className="bg-surface rounded-xl border border-dashed border-border px-4 py-3">
+                <p className="text-xs text-text-muted">Not connected</p>
               </div>
             ) : (
               <div className="grid gap-2">
@@ -243,25 +243,25 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
                   return (
                     <div
                       key={cred.id}
-                      className="bg-white rounded-xl border border-gray-200 px-4 py-3"
+                      className="bg-surface rounded-xl border border-border px-4 py-3"
                     >
                       <div className="flex items-center justify-between gap-4">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="text-sm font-medium text-gray-800 truncate">{cred.label}</p>
+                            <p className="text-sm font-medium text-text-primary truncate">{cred.label}</p>
                             {cred.keyType && (
                               <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
                                 isAdminKey
                                   ? "bg-amber-100 text-amber-700"
-                                  : "bg-gray-100 text-gray-500"
+                                  : "bg-surface-hover text-text-muted"
                               }`}>
                                 {isAdminKey ? "admin" : "standard"}
                               </span>
                             )}
                           </div>
-                          <p className="text-xs font-mono text-gray-400 mt-0.5">{cred.maskedKey}</p>
+                          <p className="text-xs font-mono text-text-muted mt-0.5">{cred.maskedKey}</p>
                           {cred.lastSyncedAt && (
-                            <p className="text-xs text-gray-400 mt-0.5">
+                            <p className="text-xs text-text-muted mt-0.5">
                               Last synced: {timeAgo(cred.lastSyncedAt)}
                             </p>
                           )}
@@ -307,7 +307,7 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
                             <button
                               onClick={() => handleValidate(cred)}
                               disabled={validating}
-                              className="px-3 py-1.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                              className="px-3 py-1.5 text-xs font-medium bg-surface-hover text-text-secondary rounded-lg hover:bg-surface-hover transition-colors disabled:opacity-50 flex items-center gap-1.5"
                             >
                               {validating ? (
                                 <span className="w-3 h-3 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
@@ -317,7 +317,7 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
                           {/* Edit button */}
                           <button
                             onClick={() => openEditModal(cred)}
-                            className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-1.5"
+                            className="px-3 py-1.5 text-xs font-medium text-text-secondary bg-surface-hover rounded-lg hover:bg-surface-hover transition-colors flex items-center gap-1.5"
                             title="Edit label or replace API key"
                           >
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -361,10 +361,10 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-lg">{CURSOR_PROVIDER.icon}</span>
-            <span className="text-sm font-semibold text-gray-700">{CURSOR_PROVIDER.name}</span>
+            <span className="text-sm font-semibold text-text-secondary">{CURSOR_PROVIDER.name}</span>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 px-4 py-3">
-            <p className="text-xs text-gray-500">
+          <div className="bg-surface rounded-xl border border-border px-4 py-3">
+            <p className="text-xs text-text-muted">
               Subscription service — no public API. Enter costs manually via Add Transaction.
             </p>
           </div>
@@ -373,15 +373,15 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
 
       {/* Add API Key Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-bold text-gray-800">Add API Key</h3>
+        <div className="fixed inset-0 bg-overlay/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-surface rounded-2xl shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h3 className="text-lg font-bold text-text-primary">Add API Key</h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-surface-hover rounded-lg transition-colors"
               >
-                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -389,11 +389,11 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Provider</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1.5">Provider</label>
                 <select
                   value={selectedProvider}
                   onChange={(e) => setSelectedProvider(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
+                  className="w-full px-3 py-2 border border-border-strong rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
                 >
                   {PROVIDERS.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -404,25 +404,25 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Label</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1.5">Label</label>
                 <input
                   type="text"
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
                   placeholder="e.g. Work, Personal, Client A"
                   maxLength={64}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
+                  className="w-full px-3 py-2 border border-border-strong rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">API Key</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1.5">API Key</label>
                 <input
                   type="password"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   placeholder={PROVIDERS.find((p) => p.id === selectedProvider)?.placeholder}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
+                  className="w-full px-3 py-2 border border-border-strong rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
                   onKeyDown={(e) => e.key === "Enter" && handleSave()}
                 />
                 {saveError && <p className="text-xs text-red-500 mt-1.5">{saveError}</p>}
@@ -431,7 +431,7 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 text-sm font-medium border border-border-strong text-text-secondary rounded-xl hover:bg-surface-muted transition-colors"
                 >
                   Cancel
                 </button>
@@ -450,18 +450,18 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
 
       {/* Edit Credential Modal */}
       {editingCred && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="fixed inset-0 bg-overlay/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-surface rounded-2xl shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b border-border">
               <div>
-                <h3 className="text-lg font-bold text-gray-800">Edit Credential</h3>
-                <p className="text-xs text-gray-500 mt-0.5">{editingCred.provider} · {editingCred.maskedKey}</p>
+                <h3 className="text-lg font-bold text-text-primary">Edit Credential</h3>
+                <p className="text-xs text-text-muted mt-0.5">{editingCred.provider} · {editingCred.maskedKey}</p>
               </div>
               <button
                 onClick={() => setEditingCred(null)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-surface-hover rounded-lg transition-colors"
               >
-                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -469,26 +469,26 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Label</label>
+                <label className="block text-sm font-medium text-text-secondary mb-1.5">Label</label>
                 <input
                   type="text"
                   value={editLabel}
                   onChange={(e) => setEditLabel(e.target.value)}
                   maxLength={64}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
+                  className="w-full px-3 py-2 border border-border-strong rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Replace API Key <span className="text-gray-400 font-normal">(leave blank to keep current)</span>
+                <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                  Replace API Key <span className="text-text-muted font-normal">(leave blank to keep current)</span>
                 </label>
                 <input
                   type="password"
                   value={editApiKey}
                   onChange={(e) => setEditApiKey(e.target.value)}
                   placeholder={editingCred.maskedKey}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
+                  className="w-full px-3 py-2 border border-border-strong rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary"
                   onKeyDown={(e) => e.key === "Enter" && handleEdit()}
                 />
                 {editError && <p className="text-xs text-red-500 mt-1.5">{editError}</p>}
@@ -497,7 +497,7 @@ export function Credentials({ credentials, onAdd, onDelete, onSync, onValidate, 
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setEditingCred(null)}
-                  className="flex-1 px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 text-sm font-medium border border-border-strong text-text-secondary rounded-xl hover:bg-surface-muted transition-colors"
                 >
                   Cancel
                 </button>

@@ -11,7 +11,7 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    <div className="bg-surface rounded-xl sm:rounded-2xl shadow-lg border border-border overflow-hidden">
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -21,12 +21,12 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <span className="text-xl sm:text-3xl flex-shrink-0">📅</span>
             <div className="min-w-0">
-              <h3 className="text-sm sm:text-xl font-bold text-gray-800">Timeline Comparison</h3>
-              <p className="text-xs sm:text-sm text-gray-600">Base vs Express Entry BC</p>
+              <h3 className="text-sm sm:text-xl font-bold text-text-primary">Timeline Comparison</h3>
+              <p className="text-xs sm:text-sm text-text-secondary">Base vs Express Entry BC</p>
             </div>
           </div>
           <svg
-            className={`w-6 h-6 text-gray-500 transition-transform ${
+            className={`w-6 h-6 text-text-muted transition-transform ${
               isExpanded ? "rotate-180" : ""
             }`}
             fill="none"
@@ -44,17 +44,17 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
 
         {/* Quick Comparison */}
         <div className="mt-2 sm:mt-4 flex items-center justify-center gap-2 sm:gap-4">
-          <div className="text-center bg-white/60 rounded-lg sm:rounded-xl p-2 sm:p-4 flex-1 min-w-0">
-            <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wide mb-0.5 sm:mb-1">Base BC PNP</p>
+          <div className="text-center bg-surface/60 rounded-lg sm:rounded-xl p-2 sm:p-4 flex-1 min-w-0">
+            <p className="text-[10px] sm:text-xs text-text-muted uppercase tracking-wide mb-0.5 sm:mb-1">Base BC PNP</p>
             <p className="text-base sm:text-2xl font-bold text-brand-primary">{timeline.totalBase}</p>
           </div>
           <div className="flex flex-col items-center flex-shrink-0">
             <span className="text-base sm:text-2xl">⚡</span>
             <span className="text-[10px] sm:text-xs font-bold text-green-600">{timeline.totalTimeSaved}</span>
-            <span className="text-[10px] sm:text-xs text-gray-500">faster</span>
+            <span className="text-[10px] sm:text-xs text-text-muted">faster</span>
           </div>
-          <div className="text-center bg-white/60 rounded-lg sm:rounded-xl p-2 sm:p-4 flex-1 min-w-0">
-            <p className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wide mb-0.5 sm:mb-1">Express Entry</p>
+          <div className="text-center bg-surface/60 rounded-lg sm:rounded-xl p-2 sm:p-4 flex-1 min-w-0">
+            <p className="text-[10px] sm:text-xs text-text-muted uppercase tracking-wide mb-0.5 sm:mb-1">Express Entry</p>
             <p className="text-base sm:text-2xl font-bold text-brand-secondary">{timeline.totalExpress}</p>
           </div>
         </div>
@@ -62,13 +62,13 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
 
       {/* Detailed Breakdown */}
       {isExpanded && (
-        <div className="p-3 sm:p-6 border-t border-gray-100">
+        <div className="p-3 sm:p-6 border-t border-border">
           {/* Timeline Table */}
           <div className="overflow-x-auto -mx-1">
             <table className="w-full text-xs sm:text-sm">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-gray-600">Phase</th>
+                <tr className="border-b border-border">
+                  <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-text-secondary">Phase</th>
                   <th className="text-center py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-brand-primary">Base</th>
                   <th className="text-center py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-brand-secondary">Express</th>
                   <th className="text-center py-2 sm:py-3 px-1 sm:px-2 text-[10px] sm:text-sm font-semibold text-green-600">Saved</th>
@@ -78,17 +78,17 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
                 {timeline.phases.map((phase, index) => (
                   <tr
                     key={index}
-                    className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                    className="border-b border-border hover:bg-surface-muted transition-colors"
                   >
-                    <td className="py-2 sm:py-3 px-1 sm:px-2 font-medium text-gray-800 text-xs sm:text-sm">{phase.phase}</td>
-                    <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-xs sm:text-sm text-gray-600">{phase.baseOption}</td>
-                    <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-xs sm:text-sm text-gray-600">{phase.expressOption}</td>
+                    <td className="py-2 sm:py-3 px-1 sm:px-2 font-medium text-text-primary text-xs sm:text-sm">{phase.phase}</td>
+                    <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-xs sm:text-sm text-text-secondary">{phase.baseOption}</td>
+                    <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-xs sm:text-sm text-text-secondary">{phase.expressOption}</td>
                     <td className="py-2 sm:py-3 px-1 sm:px-2 text-center">
                       <span
                         className={`text-xs sm:text-sm font-medium ${
                           phase.timeSaved !== "Same" && phase.timeSaved !== "N/A"
                             ? "text-green-600"
-                            : "text-gray-400"
+                            : "text-text-muted"
                         }`}
                       >
                         {phase.timeSaved}
@@ -98,8 +98,8 @@ export function TimelineComparison({ timeline }: TimelineComparisonProps) {
                 ))}
               </tbody>
               <tfoot>
-                <tr className="bg-gray-50 font-bold">
-                  <td className="py-2 sm:py-3 px-1 sm:px-2 text-gray-800 text-xs sm:text-sm">TOTAL</td>
+                <tr className="bg-surface-muted font-bold">
+                  <td className="py-2 sm:py-3 px-1 sm:px-2 text-text-primary text-xs sm:text-sm">TOTAL</td>
                   <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-brand-primary text-xs sm:text-sm">{timeline.totalBase}</td>
                   <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-brand-secondary text-xs sm:text-sm">{timeline.totalExpress}</td>
                   <td className="py-2 sm:py-3 px-1 sm:px-2 text-center text-green-600 text-xs sm:text-sm">{timeline.totalTimeSaved}</td>

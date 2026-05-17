@@ -104,20 +104,20 @@ export function ShareGoalStatusModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-overlay/60 flex items-center justify-center z-50 p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between p-4 border-b border-border">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Share goal status</h2>
-            <p className="text-sm text-gray-500">{goalTitle}</p>
+            <h2 className="text-lg font-bold text-text-primary">Share goal status</h2>
+            <p className="text-sm text-text-muted">{goalTitle}</p>
           </div>
           <button
             onClick={onClose}
             title="Close"
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-hover text-text-muted transition-colors"
           >
             ✕
           </button>
@@ -125,7 +125,7 @@ export function ShareGoalStatusModal({
 
         {/* Preview */}
         <div className="p-4">
-          <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-50 aspect-square">
+          <div className="rounded-xl overflow-hidden border border-border bg-surface-muted aspect-square">
             <img
               src={previewUrl}
               alt="Goal status share preview"
@@ -136,25 +136,25 @@ export function ShareGoalStatusModal({
 
         {/* Toggles */}
         <div className="px-4 pb-2 space-y-2">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Customize</p>
+          <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Customize</p>
           <div className="grid grid-cols-2 gap-2">
-            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
               <input type="checkbox" aria-label="Show progress" checked={showProgress} onChange={(e) => setShowProgress(e.target.checked)} className="w-4 h-4 accent-brand-primary" />
               Progress %
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
               <input type="checkbox" aria-label="Show tasks" checked={showTasks} onChange={(e) => setShowTasks(e.target.checked)} className="w-4 h-4 accent-brand-primary" />
               Tasks done
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
               <input type="checkbox" aria-label="Show streak" checked={showStreak} onChange={(e) => setShowStreak(e.target.checked)} className="w-4 h-4 accent-brand-primary" />
               Streak
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
               <input type="checkbox" aria-label="Show tagline" checked={showTagline} onChange={(e) => setShowTagline(e.target.checked)} className="w-4 h-4 accent-brand-primary" />
               Tagline
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
               <input type="checkbox" aria-label="Show app name" checked={showAppName} onChange={(e) => setShowAppName(e.target.checked)} className="w-4 h-4 accent-brand-primary" />
               App name
             </label>
@@ -162,14 +162,14 @@ export function ShareGoalStatusModal({
         </div>
 
         {/* Actions */}
-        <div className="p-4 space-y-2 border-t border-gray-100">
+        <div className="p-4 space-y-2 border-t border-border">
           {xReady ? (
             <div className="rounded-xl bg-brand-light border border-brand-primary/20 p-3 space-y-2">
               <p className="text-xs font-semibold text-brand-dark flex items-center gap-1.5">
                 <span>✅</span> Image copied to clipboard!
               </p>
-              <p className="text-xs text-gray-600">
-                Click below to open X, then press <kbd className="bg-white border border-gray-300 rounded px-1 py-0.5 font-mono text-xs">Ctrl+V</kbd> / <kbd className="bg-white border border-gray-300 rounded px-1 py-0.5 font-mono text-xs">⌘V</kbd> to attach the image to your post.
+              <p className="text-xs text-text-secondary">
+                Click below to open X, then press <kbd className="bg-surface border border-border-strong rounded px-1 py-0.5 font-mono text-xs">Ctrl+V</kbd> / <kbd className="bg-surface border border-border-strong rounded px-1 py-0.5 font-mono text-xs">⌘V</kbd> to attach the image to your post.
               </p>
               <button
                 onClick={handleOpenX}
@@ -208,7 +208,7 @@ export function ShareGoalStatusModal({
           <a
             href={previewUrl}
             download="goal-status.png"
-            className="w-full flex items-center justify-center gap-2 py-2 px-4 border border-gray-200 text-gray-600 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-2 px-4 border border-border text-text-secondary rounded-xl text-sm font-medium hover:bg-surface-muted transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

@@ -37,9 +37,9 @@ const CATEGORY_ICONS: Record<string, string> = {
 export function Breakdown({ data }: BreakdownProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white rounded-xl p-6 border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Spending by Category</h2>
-        <p className="text-gray-500">No transactions yet. Add your first transaction to see breakdown.</p>
+      <div className="bg-surface rounded-xl p-6 border border-border">
+        <h2 className="text-lg font-semibold text-text-primary mb-4">Spending by Category</h2>
+        <p className="text-text-muted">No transactions yet. Add your first transaction to see breakdown.</p>
       </div>
     );
   }
@@ -48,8 +48,8 @@ export function Breakdown({ data }: BreakdownProps) {
   const sorted = [...data].sort((a, b) => b.amount - a.amount);
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-gray-200">
-      <h2 className="text-lg font-semibold text-gray-800 mb-6">Spending by Category</h2>
+    <div className="bg-surface rounded-xl p-6 border border-border">
+      <h2 className="text-lg font-semibold text-text-primary mb-6">Spending by Category</h2>
 
       <div className="space-y-4">
         {sorted.map((item) => {
@@ -59,15 +59,15 @@ export function Breakdown({ data }: BreakdownProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">{CATEGORY_ICONS[item.category] || "📦"}</span>
-                  <span className="font-medium text-gray-800 capitalize">{item.category}</span>
+                  <span className="font-medium text-text-primary capitalize">{item.category}</span>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-800">${item.amount.toFixed(2)}</p>
-                  <p className="text-xs text-gray-500">{percentage.toFixed(1)}%</p>
+                  <p className="font-semibold text-text-primary">${item.amount.toFixed(2)}</p>
+                  <p className="text-xs text-text-muted">{percentage.toFixed(1)}%</p>
                 </div>
               </div>
 
-              <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-surface-hover rounded-full h-2 overflow-hidden">
                 <div
                   className={`h-2 rounded-full transition-all ${CATEGORY_COLORS[item.category] || CATEGORY_COLORS.other}`}
                   style={{ width: `${percentage}%` }}
@@ -78,10 +78,10 @@ export function Breakdown({ data }: BreakdownProps) {
         })}
       </div>
 
-      <div className="border-t border-gray-200 mt-6 pt-4">
+      <div className="border-t border-border mt-6 pt-4">
         <div className="flex items-center justify-between">
-          <p className="font-semibold text-gray-800">Total</p>
-          <p className="text-2xl font-bold text-gray-800">${total.toFixed(2)}</p>
+          <p className="font-semibold text-text-primary">Total</p>
+          <p className="text-2xl font-bold text-text-primary">${total.toFixed(2)}</p>
         </div>
       </div>
     </div>

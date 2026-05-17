@@ -38,7 +38,7 @@ export default function GoalsPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your goals...</p>
+          <p className="text-text-secondary">Loading your goals...</p>
         </div>
       </div>
     );
@@ -47,24 +47,24 @@ export default function GoalsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-surface/80 backdrop-blur-md border-b border-border sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push("/")}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-surface-hover rounded-lg transition-colors"
                 title="Back to Dashboard"
               >
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
               <div className="flex items-center gap-3">
                 <span className="text-3xl">🎯</span>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-800">My Goals</h1>
-                  <p className="text-sm text-gray-500">Track your journey to success</p>
+                  <h1 className="text-2xl font-bold text-text-primary">My Goals</h1>
+                  <p className="text-sm text-text-muted">Track your journey to success</p>
                 </div>
               </div>
             </div>
@@ -85,12 +85,12 @@ export default function GoalsPage() {
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8 pb-24 md:pb-8">
         {/* Goals List */}
         {goals.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-12 text-center">
+          <div className="bg-surface rounded-2xl shadow-lg border border-border p-6 sm:p-12 text-center">
             <div className="text-6xl sm:text-8xl mb-4 sm:mb-6">🎯</div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-3 sm:mb-4">
               No goals yet
             </h2>
-            <p className="text-gray-600 mb-8 text-lg">
+            <p className="text-text-secondary mb-8 text-lg">
               Start your journey by creating your first goal!
             </p>
             <button

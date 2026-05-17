@@ -12,7 +12,7 @@ export default async function AdminLayout({
 
   return (
     <ReduxProvider>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-surface-muted">
         <AdminSidebar />
         <main className="ml-64 p-8">{children}</main>
       </div>

@@ -48,14 +48,14 @@ export function ProgressBar({
       {(label || showPercentage) && (
         <div className="flex justify-between items-center mb-1">
           {label && (
-            <span className={`font-medium text-gray-700 ${textSizes[size]}`}>
+            <span className={`font-medium text-text-secondary ${textSizes[size]}`}>
               {label}
             </span>
           )}
           {showPercentage && (
             <span
               className={`font-bold ${textSizes[size]} ${
-                progress === 100 ? "text-green-600" : "text-gray-600"
+                progress === 100 ? "text-green-600" : "text-text-secondary"
               }`}
             >
               {Math.round(progress)}%
@@ -64,7 +64,7 @@ export function ProgressBar({
         </div>
       )}
       <div
-        className={`w-full bg-gray-200 rounded-full overflow-hidden ${heights[size]}`}
+        className={`w-full bg-surface-hover rounded-full overflow-hidden ${heights[size]}`}
       >
         <div
           className={`${heights[size]} rounded-full transition-all duration-1000 ease-out relative overflow-hidden ${

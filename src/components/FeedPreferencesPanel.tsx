@@ -25,9 +25,9 @@ export function FeedPreferencesPanel() {
 
   if (isLoading || !preferences) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-surface rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-4">Feed Visibility</h2>
-        <p className="text-gray-500">Loading preferences...</p>
+        <p className="text-text-muted">Loading preferences...</p>
       </div>
     );
   }
@@ -84,11 +84,11 @@ export function FeedPreferencesPanel() {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-surface rounded-lg shadow p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-semibold">Feed Visibility</h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-text-muted mt-1">
             Control which types of activities appear in your feed
           </p>
         </div>
@@ -96,7 +96,7 @@ export function FeedPreferencesPanel() {
           <span className="text-sm text-green-600">✓ Saved</span>
         )}
         {saveStatus === "saving" && (
-          <span className="text-sm text-gray-500">Saving...</span>
+          <span className="text-sm text-text-muted">Saving...</span>
         )}
       </div>
 
@@ -104,14 +104,14 @@ export function FeedPreferencesPanel() {
         {feedCategories.map((category) => (
           <div
             key={category.key}
-            className="flex items-start gap-4 p-4 rounded-lg border border-gray-200 hover:border-brand-primary transition-colors"
+            className="flex items-start gap-4 p-4 rounded-lg border border-border hover:border-brand-primary transition-colors"
           >
             <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-brand-light to-brand-light/40 rounded-lg flex items-center justify-center text-xl">
               {category.icon}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
-                <h3 className="font-medium text-gray-900">{category.title}</h3>
+                <h3 className="font-medium text-text-primary">{category.title}</h3>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -119,10 +119,10 @@ export function FeedPreferencesPanel() {
                     onChange={(e) => handleToggle(category.key, e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
+                  <div className="w-11 h-6 bg-surface-hover peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-border-strong after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
                 </label>
               </div>
-              <p className="text-sm text-gray-500">{category.description}</p>
+              <p className="text-sm text-text-muted">{category.description}</p>
             </div>
           </div>
         ))}

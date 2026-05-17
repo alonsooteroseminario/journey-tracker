@@ -26,7 +26,7 @@ export default function FriendProfilePage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading friend profile...</p>
+          <p className="text-text-secondary">Loading friend profile...</p>
         </div>
       </div>
     );
@@ -39,8 +39,8 @@ export default function FriendProfilePage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Friend Not Found</h2>
-          <p className="text-gray-600 mb-6">This friend doesn't exist in your list.</p>
+          <h2 className="text-2xl font-bold text-text-primary mb-2">Friend Not Found</h2>
+          <p className="text-text-secondary mb-6">This friend doesn't exist in your list.</p>
           <button
             onClick={() => router.push("/friends")}
             className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:opacity-90 transition-all font-medium"
@@ -248,21 +248,21 @@ export default function FriendProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-surface/80 backdrop-blur-md border-b border-border sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push("/friends")}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-surface-hover rounded-lg transition-colors"
               title="Back to Friends"
             >
-              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">{friend.name}'s Profile</h1>
-              <p className="text-sm text-gray-500">View their progress and achievements</p>
+              <h1 className="text-2xl font-bold text-text-primary">{friend.name}'s Profile</h1>
+              <p className="text-sm text-text-muted">View their progress and achievements</p>
             </div>
           </div>
         </div>
@@ -270,7 +270,7 @@ export default function FriendProfilePage() {
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-6">
+        <div className="bg-surface rounded-2xl shadow-lg border border-border p-8 mb-6">
           <div className="flex flex-col md:flex-row items-start gap-6">
             {/* Friend Avatar */}
             <div className="flex-shrink-0">
@@ -285,8 +285,8 @@ export default function FriendProfilePage() {
 
             {/* Friend Info */}
             <div className="flex-1">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">{friend.name}</h2>
-              <p className="text-gray-600 mb-4">
+              <h2 className="text-3xl font-bold text-text-primary mb-2">{friend.name}</h2>
+              <p className="text-text-secondary mb-4">
                 Friends since {new Date(friend.addedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
 
@@ -312,64 +312,64 @@ export default function FriendProfilePage() {
         </div>
 
         {/* Stats Comparison */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Stats Comparison</h3>
+        <div className="bg-surface rounded-2xl shadow-sm border border-border p-6 mb-6">
+          <h3 className="text-xl font-bold text-text-primary mb-4">Stats Comparison</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {/* Current Streak */}
-            <div className={`text-center p-4 rounded-xl ${friend.currentStreak > myStats.currentStreak ? 'bg-orange-50 border-2 border-orange-300' : 'bg-gray-50'}`}>
-              <p className="text-xs text-gray-600 mb-2">Current Streak</p>
+            <div className={`text-center p-4 rounded-xl ${friend.currentStreak > myStats.currentStreak ? 'bg-orange-50 border-2 border-orange-300' : 'bg-surface-muted'}`}>
+              <p className="text-xs text-text-secondary mb-2">Current Streak</p>
               <div className="flex items-center justify-center gap-2 mb-1">
-                <p className={`text-2xl font-bold ${friend.currentStreak > myStats.currentStreak ? 'text-orange-600' : 'text-gray-700'}`}>
+                <p className={`text-2xl font-bold ${friend.currentStreak > myStats.currentStreak ? 'text-orange-600' : 'text-text-secondary'}`}>
                   {friend.currentStreak}
                 </p>
-                <span className="text-gray-400 text-sm">vs</span>
-                <p className={`text-2xl font-bold ${friend.currentStreak <= myStats.currentStreak ? 'text-blue-600' : 'text-gray-500'}`}>
+                <span className="text-text-muted text-sm">vs</span>
+                <p className={`text-2xl font-bold ${friend.currentStreak <= myStats.currentStreak ? 'text-blue-600' : 'text-text-muted'}`}>
                   {myStats.currentStreak}
                 </p>
               </div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-text-muted">
                 {friend.currentStreak > myStats.currentStreak ? `${friend.name} is ahead! 🏃` : 
                  friend.currentStreak < myStats.currentStreak ? "You're ahead! 🎉" : "Tied! 🤝"}
               </p>
             </div>
 
             {/* Total Goals */}
-            <div className={`text-center p-4 rounded-xl ${friend.totalGoals > myStats.totalGoals ? 'bg-blue-50 border-2 border-blue-300' : 'bg-gray-50'}`}>
-              <p className="text-xs text-gray-600 mb-2">Total Goals</p>
+            <div className={`text-center p-4 rounded-xl ${friend.totalGoals > myStats.totalGoals ? 'bg-blue-50 border-2 border-blue-300' : 'bg-surface-muted'}`}>
+              <p className="text-xs text-text-secondary mb-2">Total Goals</p>
               <div className="flex items-center justify-center gap-2 mb-1">
-                <p className={`text-2xl font-bold ${friend.totalGoals > myStats.totalGoals ? 'text-orange-600' : 'text-gray-700'}`}>
+                <p className={`text-2xl font-bold ${friend.totalGoals > myStats.totalGoals ? 'text-orange-600' : 'text-text-secondary'}`}>
                   {friend.totalGoals}
                 </p>
-                <span className="text-gray-400 text-sm">vs</span>
-                <p className={`text-2xl font-bold ${friend.totalGoals <= myStats.totalGoals ? 'text-blue-600' : 'text-gray-500'}`}>
+                <span className="text-text-muted text-sm">vs</span>
+                <p className={`text-2xl font-bold ${friend.totalGoals <= myStats.totalGoals ? 'text-blue-600' : 'text-text-muted'}`}>
                   {myStats.totalGoals}
                 </p>
               </div>
             </div>
 
             {/* Completed Goals */}
-            <div className={`text-center p-4 rounded-xl ${friend.completedGoals > myStats.completedGoals ? 'bg-green-50 border-2 border-green-300' : 'bg-gray-50'}`}>
-              <p className="text-xs text-gray-600 mb-2">Completed</p>
+            <div className={`text-center p-4 rounded-xl ${friend.completedGoals > myStats.completedGoals ? 'bg-green-50 border-2 border-green-300' : 'bg-surface-muted'}`}>
+              <p className="text-xs text-text-secondary mb-2">Completed</p>
               <div className="flex items-center justify-center gap-2 mb-1">
-                <p className={`text-2xl font-bold ${friend.completedGoals > myStats.completedGoals ? 'text-orange-600' : 'text-gray-700'}`}>
+                <p className={`text-2xl font-bold ${friend.completedGoals > myStats.completedGoals ? 'text-orange-600' : 'text-text-secondary'}`}>
                   {friend.completedGoals}
                 </p>
-                <span className="text-gray-400 text-sm">vs</span>
-                <p className={`text-2xl font-bold ${friend.completedGoals <= myStats.completedGoals ? 'text-blue-600' : 'text-gray-500'}`}>
+                <span className="text-text-muted text-sm">vs</span>
+                <p className={`text-2xl font-bold ${friend.completedGoals <= myStats.completedGoals ? 'text-blue-600' : 'text-text-muted'}`}>
                   {myStats.completedGoals}
                 </p>
               </div>
             </div>
 
             {/* Longest Streak */}
-            <div className={`text-center p-4 rounded-xl ${friend.longestStreak > myStats.longestStreak ? 'bg-purple-50 border-2 border-purple-300' : 'bg-gray-50'}`}>
-              <p className="text-xs text-gray-600 mb-2">Longest Streak</p>
+            <div className={`text-center p-4 rounded-xl ${friend.longestStreak > myStats.longestStreak ? 'bg-purple-50 border-2 border-purple-300' : 'bg-surface-muted'}`}>
+              <p className="text-xs text-text-secondary mb-2">Longest Streak</p>
               <div className="flex items-center justify-center gap-2 mb-1">
-                <p className={`text-2xl font-bold ${friend.longestStreak > myStats.longestStreak ? 'text-orange-600' : 'text-gray-700'}`}>
+                <p className={`text-2xl font-bold ${friend.longestStreak > myStats.longestStreak ? 'text-orange-600' : 'text-text-secondary'}`}>
                   {friend.longestStreak}
                 </p>
-                <span className="text-gray-400 text-sm">vs</span>
-                <p className={`text-2xl font-bold ${friend.longestStreak <= myStats.longestStreak ? 'text-blue-600' : 'text-gray-500'}`}>
+                <span className="text-text-muted text-sm">vs</span>
+                <p className={`text-2xl font-bold ${friend.longestStreak <= myStats.longestStreak ? 'text-blue-600' : 'text-text-muted'}`}>
                   {myStats.longestStreak}
                 </p>
               </div>
@@ -379,7 +379,7 @@ export default function FriendProfilePage() {
 
         {/* Friend's Streak Calendar */}
         <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-6 border border-orange-100 shadow-lg mb-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <h3 className="text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
             <span>🔥</span>
             {friend.name}'s Streak
           </h3>
@@ -406,12 +406,12 @@ export default function FriendProfilePage() {
                 className={`text-4xl md:text-5xl font-black ${
                   friendStreak.currentStreak > 0
                     ? "text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-yellow-500"
-                    : "text-gray-400"
+                    : "text-text-muted"
                 }`}
               >
                 {friendStreak.currentStreak}
               </div>
-              <div className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+              <div className="text-sm font-semibold text-text-secondary uppercase tracking-wide">
                 Day Streak
               </div>
             </div>
@@ -424,7 +424,7 @@ export default function FriendProfilePage() {
                 ? "bg-green-100 text-green-700"
                 : friendStreak.currentStreak > 0
                 ? "bg-yellow-100 text-yellow-700"
-                : "bg-gray-100 text-gray-600"
+                : "bg-surface-hover text-text-secondary"
             }`}
           >
             {hasCompletedToday ? (
@@ -455,10 +455,10 @@ export default function FriendProfilePage() {
                     ? "bg-orange-100 ring-2 ring-orange-400"
                     : day.hasActivity
                     ? "bg-green-100"
-                    : "bg-gray-100"
+                    : "bg-surface-hover"
                 }`}
               >
-                <span className="text-xs text-gray-500 font-medium">
+                <span className="text-xs text-text-muted font-medium">
                   {day.dayName}
                 </span>
                 
@@ -466,13 +466,13 @@ export default function FriendProfilePage() {
                   className={`w-8 h-8 rounded-full flex items-center justify-center mt-1 ${
                     day.hasActivity
                       ? "bg-gradient-to-br from-orange-400 to-yellow-400"
-                      : "bg-gray-200"
+                      : "bg-surface-hover"
                   }`}
                 >
                   {day.hasActivity ? (
                     <span className="text-base">🔥</span>
                   ) : (
-                    <span className={`text-xs font-medium ${day.isCurrentDay ? "text-orange-600" : "text-gray-400"}`}>
+                    <span className={`text-xs font-medium ${day.isCurrentDay ? "text-orange-600" : "text-text-muted"}`}>
                       {day.dateNum}
                     </span>
                   )}
@@ -483,7 +483,7 @@ export default function FriendProfilePage() {
 
           {/* Longest Streak */}
           <div className="flex justify-between items-center text-sm border-t border-orange-100 pt-4">
-            <span className="text-gray-600">Longest Streak</span>
+            <span className="text-text-secondary">Longest Streak</span>
             <span className="font-bold text-orange-600 flex items-center gap-1">
               <span>🏆</span>
               <span>{friendStreak.longestStreak} days</span>
@@ -492,7 +492,7 @@ export default function FriendProfilePage() {
 
           {/* Motivational Message */}
           {friendStreak.currentStreak > 0 && (
-            <div className="mt-4 text-center text-sm text-gray-600 italic">
+            <div className="mt-4 text-center text-sm text-text-secondary italic">
               {friendStreak.currentStreak >= 30
                 ? `${friend.name} is unstoppable! 🎉`
                 : friendStreak.currentStreak >= 14
@@ -507,8 +507,8 @@ export default function FriendProfilePage() {
         </div>
 
         {/* Their Goals */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div className="bg-surface rounded-2xl shadow-sm border border-border p-6 mb-6">
+          <h3 className="text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
             <span>🎯</span>
             {friend.name}'s Goals
           </h3>
@@ -526,17 +526,17 @@ export default function FriendProfilePage() {
               };
 
               return (
-                <div key={index} className="border border-gray-200 rounded-lg hover:border-purple-300 transition-colors overflow-hidden">
+                <div key={index} className="border border-border rounded-lg hover:border-purple-300 transition-colors overflow-hidden">
                   {/* Goal Header - Clickable */}
                   <div 
-                    className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="p-4 cursor-pointer hover:bg-surface-muted transition-colors"
                     onClick={toggleExpand}
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 flex items-center gap-2">
-                        <h4 className="font-semibold text-gray-800">{goal.title}</h4>
+                        <h4 className="font-semibold text-text-primary">{goal.title}</h4>
                         <button
-                          className="text-gray-400 hover:text-gray-600 transition-transform"
+                          className="text-text-muted hover:text-text-secondary transition-transform"
                           style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -552,10 +552,10 @@ export default function FriendProfilePage() {
                         {goal.progress}%
                       </span>
                     </div>
-                    <p className="text-sm text-gray-500 mb-2">{goal.category}</p>
-                    <p className="text-sm text-gray-600 mb-3">{goal.description}</p>
+                    <p className="text-sm text-text-muted mb-2">{goal.category}</p>
+                    <p className="text-sm text-text-secondary mb-3">{goal.description}</p>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between text-xs text-gray-500">
+                      <div className="flex items-center justify-between text-xs text-text-muted">
                         <span>{goal.completedTasks}/{goal.totalTasks} tasks completed</span>
                         <span className="text-purple-600 font-medium">
                           {isExpanded ? 'Click to collapse' : 'Click to view tasks'}
@@ -567,8 +567,8 @@ export default function FriendProfilePage() {
 
                   {/* Expandable Task List */}
                   {isExpanded && goal.tasks && (
-                    <div className="border-t border-gray-200 bg-gray-50 p-4">
-                      <h5 className="text-sm font-semibold text-gray-700 mb-3">Tasks:</h5>
+                    <div className="border-t border-border bg-surface-muted p-4">
+                      <h5 className="text-sm font-semibold text-text-secondary mb-3">Tasks:</h5>
                       <div className="space-y-2">
                         {goal.tasks.map((task: any, taskIndex: number) => (
                           <div 
@@ -576,13 +576,13 @@ export default function FriendProfilePage() {
                             className={`flex items-start gap-3 p-3 rounded-lg border ${
                               task.completed 
                                 ? 'bg-green-50 border-green-200' 
-                                : 'bg-white border-gray-200'
+                                : 'bg-surface border-border'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
                               task.completed 
                                 ? 'bg-green-500 text-white' 
-                                : 'bg-gray-200 text-gray-400'
+                                : 'bg-surface-hover text-text-muted'
                             }`}>
                               {task.completed ? (
                                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -594,8 +594,8 @@ export default function FriendProfilePage() {
                             </div>
                             <span className={`flex-1 text-sm ${
                               task.completed 
-                                ? 'text-gray-600 line-through' 
-                                : 'text-gray-800'
+                                ? 'text-text-secondary line-through' 
+                                : 'text-text-primary'
                             }`}>
                               {task.title}
                             </span>
@@ -612,8 +612,8 @@ export default function FriendProfilePage() {
 
         {/* Shared Templates */}
         {friendTemplates.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
-            <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+          <div className="bg-surface rounded-2xl shadow-sm border border-border p-4 sm:p-6 mb-6">
+            <h3 className="text-lg sm:text-xl font-bold text-text-primary mb-3 sm:mb-4 flex items-center gap-2">
               <span>📋</span>
               {friend.name}'s Shared Templates
             </h3>
@@ -630,18 +630,18 @@ export default function FriendProfilePage() {
         )}
 
         {/* Recent Activity */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div className="bg-surface rounded-2xl shadow-sm border border-border p-6">
+          <h3 className="text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
             <span>⚡</span>
             Recent Activity
           </h3>
           <div className="space-y-3">
             {friendMockActivity.map((activity, index) => (
-              <div key={index} className="flex items-start gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+              <div key={index} className="flex items-start gap-3 p-3 hover:bg-surface-muted rounded-lg transition-colors">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                 <div className="flex-1">
-                  <p className="text-gray-800">{activity.action}</p>
-                  <p className="text-xs text-gray-500">{activity.date}</p>
+                  <p className="text-text-primary">{activity.action}</p>
+                  <p className="text-xs text-text-muted">{activity.date}</p>
                 </div>
               </div>
             ))}

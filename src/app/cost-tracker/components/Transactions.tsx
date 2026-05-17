@@ -23,13 +23,13 @@ interface TransactionsProps {
 const CATEGORY_COLORS: Record<string, string> = {
   claude: "bg-blue-100 text-blue-800",
   elevenlabs: "bg-purple-100 text-purple-800",
-  vercel: "bg-gray-100 text-gray-800",
+  vercel: "bg-surface-hover text-text-primary",
   railway: "bg-brand-light text-brand-primary",
   mongodb: "bg-brand-light text-brand-primary",
   cloudflare: "bg-orange-100 text-orange-800",
   discord: "bg-indigo-100 text-indigo-800",
   cursor: "bg-cyan-100 text-cyan-800",
-  other: "bg-gray-100 text-gray-800",
+  other: "bg-surface-hover text-text-primary",
 };
 
 export function Transactions({ transactions, onDelete, onAddTransaction, isLoading }: TransactionsProps) {
@@ -53,11 +53,11 @@ export function Transactions({ transactions, onDelete, onAddTransaction, isLoadi
   return (
     <div className="space-y-4">
       {/* One-Time Charge Card */}
-      <div className="bg-white rounded-xl border border-dashed border-brand-primary/30 p-5">
+      <div className="bg-surface rounded-xl border border-dashed border-brand-primary/30 p-5">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-gray-800">Log a One-Time Charge</h3>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <h3 className="text-sm font-semibold text-text-primary">Log a One-Time Charge</h3>
+            <p className="text-xs text-text-muted mt-0.5">
               Record an ad-hoc spend — overage, one-off purchase, or anything not auto-synced.
             </p>
           </div>
@@ -74,32 +74,32 @@ export function Transactions({ transactions, onDelete, onAddTransaction, isLoadi
       </div>
 
       {/* Transactions Table */}
-      <div className="bg-white rounded-xl p-6 border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="bg-surface rounded-xl p-6 border border-border">
+        <h2 className="text-lg font-semibold text-text-primary mb-4">
           Transactions {transactions && transactions.length > 0 ? `(${transactions.length})` : ""}
         </h2>
 
         {(!transactions || transactions.length === 0) ? (
-          <p className="text-gray-500 text-sm">No transactions yet. Add your first charge above.</p>
+          <p className="text-text-muted text-sm">No transactions yet. Add your first charge above.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-semibold text-gray-600">Date</th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-600">Category</th>
-                  <th className="text-left py-3 px-4 font-semibold text-gray-600">Description</th>
-                  <th className="text-right py-3 px-4 font-semibold text-gray-600">Amount</th>
-                  <th className="text-center py-3 px-4 font-semibold text-gray-600">Action</th>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 font-semibold text-text-secondary">Date</th>
+                  <th className="text-left py-3 px-4 font-semibold text-text-secondary">Category</th>
+                  <th className="text-left py-3 px-4 font-semibold text-text-secondary">Description</th>
+                  <th className="text-right py-3 px-4 font-semibold text-text-secondary">Amount</th>
+                  <th className="text-center py-3 px-4 font-semibold text-text-secondary">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {[...transactions]
                   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                   .map((tx) => (
-                    <tr key={tx.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <tr key={tx.id} className="border-b border-border hover:bg-surface-muted transition-colors">
                       <td className="py-3 px-4">
-                        <span className="text-gray-600">
+                        <span className="text-text-secondary">
                           {new Date(tx.date).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
@@ -112,15 +112,15 @@ export function Transactions({ transactions, onDelete, onAddTransaction, isLoadi
                           {tx.category}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-gray-700">{tx.description || "-"}</td>
-                      <td className="py-3 px-4 text-right font-semibold text-gray-800">
+                      <td className="py-3 px-4 text-text-secondary">{tx.description || "-"}</td>
+                      <td className="py-3 px-4 text-right font-semibold text-text-primary">
                         ${tx.amount.toFixed(2)}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <button
                           onClick={() => handleDelete(tx.id)}
                           disabled={deletingId === tx.id || isLoading}
-                          className="text-red-500 hover:text-red-700 disabled:text-gray-400 transition-colors text-xs font-medium"
+                          className="text-red-500 hover:text-red-700 disabled:text-text-muted transition-colors text-xs font-medium"
                         >
                           {deletingId === tx.id ? "Deleting..." : "Delete"}
                         </button>
@@ -135,15 +135,15 @@ export function Transactions({ transactions, onDelete, onAddTransaction, isLoadi
 
       {/* Add Charge Modal */}
       {showChargeForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
-              <h2 className="text-xl font-bold text-gray-800">Log One-Time Charge</h2>
+        <div className="fixed inset-0 bg-overlay/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-surface rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-surface">
+              <h2 className="text-xl font-bold text-text-primary">Log One-Time Charge</h2>
               <button
                 onClick={() => setShowChargeForm(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-surface-hover rounded-lg transition-colors"
               >
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>

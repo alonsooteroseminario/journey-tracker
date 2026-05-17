@@ -87,18 +87,18 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
           type="text"
           value={editTitle}
           onChange={(e) => setEditTitle(e.target.value)}
-          className="w-full px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+          className="w-full px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-border-strong rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
           placeholder="Substep title"
           autoFocus
         />
         <div className="flex gap-1.5 sm:gap-2">
           <div className="relative flex-1">
-            <span className="absolute left-2 top-1 sm:top-1.5 text-gray-500 text-xs sm:text-sm">$</span>
+            <span className="absolute left-2 top-1 sm:top-1.5 text-text-muted text-xs sm:text-sm">$</span>
             <input
               type="number"
               value={editCost}
               onChange={(e) => setEditCost(e.target.value)}
-              className="w-full pl-5 sm:pl-6 pr-2 sm:pr-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+              className="w-full pl-5 sm:pl-6 pr-2 sm:pr-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-border-strong rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
               placeholder="Cost"
             />
           </div>
@@ -106,13 +106,13 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
             type="text"
             value={editNotes}
             onChange={(e) => setEditNotes(e.target.value)}
-            className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+            className="flex-1 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-border-strong rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
             placeholder="Notes"
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Status <span className="text-gray-400">(Optional)</span>
+          <label className="block text-xs font-medium text-text-secondary mb-1">
+            Status <span className="text-text-muted">(Optional)</span>
           </label>
           <div className="flex gap-1 sm:gap-1.5">
             {(["not_started", "in_progress", "completed"] as const).map((s) => {
@@ -128,8 +128,8 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
                         ? "bg-green-100 text-green-700 border border-green-300"
                         : s === "in_progress"
                         ? "bg-orange-100 text-orange-700 border border-orange-300"
-                        : "bg-gray-100 text-gray-700 border border-gray-300"
-                      : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50"
+                        : "bg-surface-hover text-text-secondary border border-border-strong"
+                      : "bg-surface text-text-muted border border-border hover:bg-surface-muted"
                   }`}
                 >
                   <span className="text-xs">{config.icon}</span>
@@ -149,7 +149,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
           </button>
           <button
             onClick={handleCancel}
-            className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm text-gray-600 hover:bg-gray-200 rounded-md"
+            className="px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm text-text-secondary hover:bg-surface-hover rounded-md"
           >
             Cancel
           </button>
@@ -167,14 +167,14 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
           ? "bg-green-50 border border-green-200"
           : substep.status === 'in_progress'
           ? "bg-orange-50 border border-orange-200"
-          : "bg-gray-50 border border-gray-100 hover:bg-gray-100"
+          : "bg-surface-muted border border-border hover:bg-surface-hover"
       }`}
     >
       {/* Drag Handle */}
       <button
         {...attributes}
         {...(reorderAllowed ? listeners : {})}
-        className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="cursor-grab active:cursor-grabbing p-1 text-text-muted hover:text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity"
         title="Drag to reorder"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,7 +192,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
             ? "bg-green-500 border-green-500 text-white"
             : substep.status === 'in_progress'
             ? "bg-orange-500 border-orange-500 text-white"
-            : "border-gray-300 hover:border-green-500"
+            : "border-border-strong hover:border-green-500"
         }`}
       >
         {substep.status === 'completed' && (
@@ -201,7 +201,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
           </svg>
         )}
         {substep.status === 'in_progress' && (
-          <div className="w-1.5 h-1.5 bg-white rounded-full" />
+          <div className="w-1.5 h-1.5 bg-surface rounded-full" />
         )}
       </button>
 
@@ -211,7 +211,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
           {/* Lock badge */}
           {lockLevel === 'soft' && (
             <svg
-              className="w-3 h-3 text-gray-400 flex-shrink-0"
+              className="w-3 h-3 text-text-muted flex-shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -232,7 +232,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
           )}
           <p
             className={`text-xs sm:text-sm ${
-              substep.status === 'completed' ? "text-gray-500 line-through" : "text-gray-700"
+              substep.status === 'completed' ? "text-text-muted line-through" : "text-text-secondary"
             }`}
           >
             {substep.title}
@@ -245,7 +245,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
             </span>
           )}
           {substep.notes && (
-            <span className="text-[10px] sm:text-xs text-gray-400 truncate max-w-24" title={substep.notes}>
+            <span className="text-[10px] sm:text-xs text-text-muted truncate max-w-24" title={substep.notes}>
               {substep.notes}
             </span>
           )}
@@ -259,7 +259,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
           className={`p-1 rounded transition-colors ${
             copied
               ? "text-green-500 bg-green-50"
-              : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"
+              : "text-text-muted hover:text-brand-primary hover:bg-brand-light"
           }`}
           title={copied ? "Copied!" : "Copy"}
         >
@@ -278,8 +278,8 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
           disabled={editDisabled}
           className={`p-1 rounded transition-colors ${
             editDisabled
-              ? "text-gray-300 opacity-40 cursor-not-allowed"
-              : "text-gray-400 hover:text-brand-primary hover:bg-brand-light"
+              ? "text-text-muted opacity-40 cursor-not-allowed"
+              : "text-text-muted hover:text-brand-primary hover:bg-brand-light"
           }`}
           title={editDisabled ? "Locked" : "Edit"}
         >
@@ -290,7 +290,7 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
         {/* Lock button */}
         <button
           onClick={() => onUpdateLock?.(cycleLock(lockLevel))}
-          className="p-1 text-gray-400 hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
+          className="p-1 text-text-muted hover:text-brand-primary hover:bg-brand-light rounded transition-colors"
           title={`Lock: ${lockLevel}`}
         >
           {lockLevel === 'hard' ? (
@@ -310,8 +310,8 @@ export function SubstepCard({ substep, onToggle, onUpdate, onDelete, onUpdateLoc
           disabled={deleteDisabled}
           className={`p-1 rounded transition-colors ${
             deleteDisabled
-              ? "text-gray-300 opacity-40 cursor-not-allowed"
-              : "text-gray-400 hover:text-red-500 hover:bg-red-50"
+              ? "text-text-muted opacity-40 cursor-not-allowed"
+              : "text-text-muted hover:text-red-500 hover:bg-red-50"
           }`}
           title={deleteDisabled ? "Locked" : "Delete"}
         >

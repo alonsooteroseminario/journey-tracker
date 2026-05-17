@@ -19,7 +19,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
   const [hoveredResource, setHoveredResource] = useState<string | null>(null);
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    <div className="bg-surface rounded-2xl shadow-lg border border-border overflow-hidden">
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -29,12 +29,12 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
           <div className="flex items-center gap-2 sm:gap-3">
             <span className="text-xl sm:text-3xl">🔗</span>
             <div>
-              <h3 className="text-sm sm:text-xl font-bold text-gray-800">Official Resources</h3>
-              <p className="text-[10px] sm:text-sm text-gray-600">{resources.length} categories of helpful links</p>
+              <h3 className="text-sm sm:text-xl font-bold text-text-primary">Official Resources</h3>
+              <p className="text-[10px] sm:text-sm text-text-secondary">{resources.length} categories of helpful links</p>
             </div>
           </div>
           <svg
-            className={`w-4 h-4 sm:w-6 sm:h-6 text-gray-500 transition-transform ${
+            className={`w-4 h-4 sm:w-6 sm:h-6 text-text-muted transition-transform ${
               isExpanded ? "rotate-180" : ""
             }`}
             fill="none"
@@ -55,7 +55,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
           {resources.slice(0, 5).map((cat) => (
             <span
               key={cat.category}
-              className="px-2 sm:px-3 py-0.5 sm:py-1 bg-white/60 rounded-full text-[10px] sm:text-xs font-medium text-gray-600"
+              className="px-2 sm:px-3 py-0.5 sm:py-1 bg-surface/60 rounded-full text-[10px] sm:text-xs font-medium text-text-secondary"
             >
               {cat.category}
             </span>
@@ -70,7 +70,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
 
       {/* Resources Content */}
       {isExpanded && (
-        <div className="p-3 sm:p-6 border-t border-gray-100">
+        <div className="p-3 sm:p-6 border-t border-border">
           {/* Category Navigation */}
           <div className="flex gap-1 sm:gap-2 mb-3 sm:mb-4 flex-wrap">
             <button
@@ -78,7 +78,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
               className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-sm font-medium transition-colors ${
                 activeCategory === null
                   ? "bg-brand-primary text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
               }`}
             >
               All
@@ -90,7 +90,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
                 className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-sm font-medium transition-colors ${
                   activeCategory === cat.category
                     ? "bg-brand-primary text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
                 }`}
               >
                 {cat.category}
@@ -104,7 +104,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
               .filter((cat) => !activeCategory || cat.category === activeCategory)
               .map((category) => (
                 <div key={category.category}>
-                  <h4 className="text-[10px] sm:text-sm font-bold text-gray-700 uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
+                  <h4 className="text-[10px] sm:text-sm font-bold text-text-secondary uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
                     <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand-primary rounded-full"></span>
                     {category.category}
                   </h4>
@@ -120,7 +120,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
                           href={resource.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-brand-light hover:border-brand-light border border-transparent transition-all"
+                          className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-surface-muted rounded-lg hover:bg-brand-light hover:border-brand-light border border-transparent transition-all"
                         >
                           <div className="w-6 h-6 sm:w-8 sm:h-8 bg-brand-light rounded-lg flex items-center justify-center text-brand-primary group-hover:bg-brand-light transition-colors">
                             <svg
@@ -138,13 +138,13 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
                             </svg>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-xs sm:text-base text-gray-800 group-hover:text-brand-primary transition-colors">
+                            <p className="font-medium text-xs sm:text-base text-text-primary group-hover:text-brand-primary transition-colors">
                               {resource.name}
                             </p>
-                            <p className="text-[10px] sm:text-xs text-gray-500 truncate">{resource.url}</p>
+                            <p className="text-[10px] sm:text-xs text-text-muted truncate">{resource.url}</p>
                           </div>
                           <svg
-                            className="w-5 h-5 text-gray-300 group-hover:text-brand-primary transition-colors"
+                            className="w-5 h-5 text-text-muted group-hover:text-brand-primary transition-colors"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -184,7 +184,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
               {!isAdding ? (
                 <button
                   onClick={() => setIsAdding(true)}
-                  className="w-full p-2 sm:p-3 border-2 border-dashed border-gray-300 rounded-lg text-xs sm:text-sm text-gray-600 hover:border-brand-primary hover:text-brand-primary hover:bg-brand-light transition-all"
+                  className="w-full p-2 sm:p-3 border-2 border-dashed border-border-strong rounded-lg text-xs sm:text-sm text-text-secondary hover:border-brand-primary hover:text-brand-primary hover:bg-brand-light transition-all"
                 >
                   + Add Resource
                 </button>
@@ -196,14 +196,14 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
                       placeholder="Resource name"
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                      className="w-full px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm border border-border-strong rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                     />
                     <input
                       type="url"
                       placeholder="https://example.com"
                       value={newUrl}
                       onChange={(e) => setNewUrl(e.target.value)}
-                      className="w-full px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                      className="w-full px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm border border-border-strong rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                     />
                     <div className="relative">
                       <input
@@ -212,7 +212,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
                         value={newCategory}
                         onChange={(e) => setNewCategory(e.target.value)}
                         list="resource-categories"
-                        className="w-full px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                        className="w-full px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm border border-border-strong rounded-md focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                       />
                       <datalist id="resource-categories">
                         {resources.map((cat) => (
@@ -232,7 +232,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
                           }
                         }}
                         disabled={!newName.trim() || !newUrl.trim() || !newCategory.trim()}
-                        className="flex-1 px-2 sm:px-3 py-1 sm:py-2 bg-brand-primary text-white text-xs sm:text-sm rounded-md hover:bg-brand-secondary disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                        className="flex-1 px-2 sm:px-3 py-1 sm:py-2 bg-brand-primary text-white text-xs sm:text-sm rounded-md hover:bg-brand-secondary disabled:bg-surface-hover disabled:cursor-not-allowed transition-colors"
                       >
                         Add
                       </button>
@@ -243,7 +243,7 @@ export function ResourcesPanel({ resources, onAddResource, onDeleteResource }: R
                           setNewCategory("");
                           setIsAdding(false);
                         }}
-                        className="flex-1 px-2 sm:px-3 py-1 sm:py-2 bg-gray-200 text-gray-700 text-xs sm:text-sm rounded-md hover:bg-gray-300 transition-colors"
+                        className="flex-1 px-2 sm:px-3 py-1 sm:py-2 bg-surface-hover text-text-secondary text-xs sm:text-sm rounded-md hover:bg-surface-hover transition-colors"
                       >
                         Cancel
                       </button>

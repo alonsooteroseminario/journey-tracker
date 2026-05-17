@@ -15,12 +15,12 @@ export default function ProfileError({
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 max-w-md w-full text-center">
+      <div className="bg-surface rounded-2xl shadow-lg border border-border p-8 max-w-md w-full text-center">
         <div className="text-5xl mb-4">😕</div>
-        <h2 className="text-xl font-bold text-gray-800 mb-2">
+        <h2 className="text-xl font-bold text-text-primary mb-2">
           Failed to load your profile
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className="text-text-secondary mb-6">
           Something went wrong while loading your profile. Please try again.
         </p>
         <button

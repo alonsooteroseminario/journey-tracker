@@ -66,7 +66,7 @@ export default function CostTrackerPage() {
 
   if (isLoading && !overview) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-surface-muted">
         <Header
           totalProgress={totalProgress}
           currentStreak={streak.currentStreak}
@@ -75,7 +75,7 @@ export default function CostTrackerPage() {
         <div className="flex items-center justify-center py-32">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading your costs...</p>
+            <p className="text-text-secondary">Loading your costs...</p>
           </div>
         </div>
       </div>
@@ -83,7 +83,7 @@ export default function CostTrackerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-surface-muted">
       <Header
         totalProgress={totalProgress}
         currentStreak={streak.currentStreak}
@@ -96,8 +96,8 @@ export default function CostTrackerPage() {
           <div className="flex items-center gap-3">
             <span className="text-4xl">💰</span>
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">Cost Tracker</h1>
-              <p className="text-sm text-gray-500">Monitor your spending across all tools</p>
+              <h1 className="text-3xl font-bold text-text-primary">Cost Tracker</h1>
+              <p className="text-sm text-text-muted">Monitor your spending across all tools</p>
             </div>
           </div>
 
@@ -113,13 +113,13 @@ export default function CostTrackerPage() {
         </div>
 
         {/* Tabs Navigation */}
-        <div className="flex gap-2 border-b border-gray-200 mb-8">
+        <div className="flex gap-2 border-b border-border mb-8">
           <button
             onClick={() => setActiveTab("overview")}
             className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
               activeTab === "overview"
                 ? "border-brand-primary text-brand-primary"
-                : "border-transparent text-gray-600 hover:text-gray-900"
+                : "border-transparent text-text-secondary hover:text-text-primary"
             }`}
           >
             📊 Overview
@@ -129,7 +129,7 @@ export default function CostTrackerPage() {
             className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
               activeTab === "breakdown"
                 ? "border-brand-primary text-brand-primary"
-                : "border-transparent text-gray-600 hover:text-gray-900"
+                : "border-transparent text-text-secondary hover:text-text-primary"
             }`}
           >
             📈 Breakdown
@@ -139,7 +139,7 @@ export default function CostTrackerPage() {
             className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
               activeTab === "transactions"
                 ? "border-brand-primary text-brand-primary"
-                : "border-transparent text-gray-600 hover:text-gray-900"
+                : "border-transparent text-text-secondary hover:text-text-primary"
             }`}
           >
             📝 Transactions
@@ -149,7 +149,7 @@ export default function CostTrackerPage() {
             className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
               activeTab === "alerts"
                 ? "border-brand-primary text-brand-primary"
-                : "border-transparent text-gray-600 hover:text-gray-900"
+                : "border-transparent text-text-secondary hover:text-text-primary"
             }`}
           >
             🚨 Alerts
@@ -159,7 +159,7 @@ export default function CostTrackerPage() {
             className={`px-4 py-3 border-b-2 font-medium text-sm transition-colors ${
               activeTab === "credentials"
                 ? "border-brand-primary text-brand-primary"
-                : "border-transparent text-gray-600 hover:text-gray-900"
+                : "border-transparent text-text-secondary hover:text-text-primary"
             }`}
           >
             🔑 Credentials
@@ -186,7 +186,7 @@ export default function CostTrackerPage() {
                     const timeLabel =
                       mins < 1 ? "just now" : mins < 60 ? `${mins}m ago` : `${Math.floor(mins / 60)}h ago`;
                     return (
-                      <span key={c.id} className="text-xs px-2 py-1 bg-gray-100 text-gray-500 rounded-full">
+                      <span key={c.id} className="text-xs px-2 py-1 bg-surface-hover text-text-muted rounded-full">
                         {c.provider} · {c.label} synced {timeLabel}
                       </span>
                     );
@@ -262,15 +262,15 @@ export default function CostTrackerPage() {
 
       {/* Transaction Form Modal */}
       {isFormOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
-              <h2 className="text-xl font-bold text-gray-800">Add Transaction</h2>
+        <div className="fixed inset-0 bg-overlay/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-surface rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-surface">
+              <h2 className="text-xl font-bold text-text-primary">Add Transaction</h2>
               <button
                 onClick={() => setIsFormOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-surface-hover rounded-lg transition-colors"
               >
-                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>

@@ -35,7 +35,7 @@ export default function ProfilePage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
+          <p className="text-text-secondary">Loading profile...</p>
         </div>
       </div>
     );
@@ -98,7 +98,7 @@ export default function ProfilePage() {
 
       <main className="max-w-4xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8">
         {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-2 sm:p-8 mb-3 sm:mb-6">
+        <div className="bg-surface rounded-2xl shadow-lg border border-border p-2 sm:p-8 mb-3 sm:mb-6">
           <div className="flex flex-col md:flex-row items-start gap-2 sm:gap-6">
             {/* Profile Image */}
             <div className="relative flex-shrink-0">
@@ -116,16 +116,16 @@ export default function ProfilePage() {
               {isEditing ? (
                 <div className="space-y-2 sm:space-y-4">
                   {/* Account Info (Read-only, managed by Clerk) */}
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 sm:p-4">
+                  <div className="bg-surface-muted border border-border rounded-lg p-3 sm:p-4">
                     <div className="mb-2">
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Name</label>
-                      <p className="text-sm sm:text-base text-gray-900">{displayName}</p>
+                      <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1">Name</label>
+                      <p className="text-sm sm:text-base text-text-primary">{displayName}</p>
                     </div>
                     <div className="mb-2">
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email</label>
-                      <p className="text-sm sm:text-base text-gray-900">{displayEmail}</p>
+                      <label className="block text-xs sm:text-sm font-medium text-text-secondary mb-1">Email</label>
+                      <p className="text-sm sm:text-base text-text-primary">{displayEmail}</p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-text-muted mt-2">
                       Name and email are managed through your account settings.{" "}
                       <a
                         href={clerkUser?.organizationMemberships && clerkUser.organizationMemberships.length > 0 ? undefined : "/user"}
@@ -143,33 +143,33 @@ export default function ProfilePage() {
                     </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                    <label className="block text-sm font-medium text-text-secondary mb-1">Bio</label>
                     <textarea
                       value={editedProfile.bio || ""}
                       onChange={(e) => setEditedProfile({ ...editedProfile, bio: e.target.value })}
                       placeholder="Tell us about yourself..."
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      className="w-full px-4 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                    <label className="block text-sm font-medium text-text-secondary mb-1">Location</label>
                     <input
                       type="text"
                       value={editedProfile.location || ""}
                       onChange={(e) => setEditedProfile({ ...editedProfile, location: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-border-strong rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="City, Country"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-text-secondary mb-1">
                       Timezone
                     </label>
                     <select
                       value={editedProfile.timezone || ""}
                       onChange={(e) => setEditedProfile({ ...editedProfile, timezone: e.target.value })}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 text-sm border border-border-strong rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="">Auto-detect</option>
                       {Intl.supportedValuesOf("timeZone").map((tz) => (
@@ -186,7 +186,7 @@ export default function ProfilePage() {
                     </button>
                     <button
                       onClick={handleCancel}
-                      className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                      className="px-6 py-2 bg-surface-hover text-text-secondary rounded-lg hover:bg-surface-hover transition-colors font-medium"
                     >
                       Cancel
                     </button>
@@ -194,9 +194,9 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <div>
-                  <h1 className="text-base sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">{displayName}</h1>
+                  <h1 className="text-base sm:text-2xl font-bold text-text-primary mb-1 sm:mb-2">{displayName}</h1>
                   {displayEmail && (
-                    <p className="text-xs sm:text-sm text-gray-600 mb-2 flex items-center gap-2">
+                    <p className="text-xs sm:text-sm text-text-secondary mb-2 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
@@ -204,10 +204,10 @@ export default function ProfilePage() {
                     </p>
                   )}
                   {profile.bio && (
-                    <p className="text-gray-700 mb-4 italic">"{profile.bio}"</p>
+                    <p className="text-text-secondary mb-4 italic">"{profile.bio}"</p>
                   )}
                   {profile.location && (
-                    <p className="text-gray-600 mb-4 flex items-center gap-2">
+                    <p className="text-text-secondary mb-4 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -237,10 +237,10 @@ export default function ProfilePage() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-3 sm:mb-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-6 text-center">
+          <div className="bg-surface rounded-xl shadow-sm border border-border p-2 sm:p-6 text-center">
             <div className="text-lg sm:text-2xl mb-1 sm:mb-2">📅</div>
-            <p className="text-gray-600 text-[10px] sm:text-sm mb-0.5 sm:mb-1">Member Since</p>
-            <p className="text-xs sm:text-lg font-bold text-gray-900">
+            <p className="text-text-secondary text-[10px] sm:text-sm mb-0.5 sm:mb-1">Member Since</p>
+            <p className="text-xs sm:text-lg font-bold text-text-primary">
               {new Date(profile.joinedDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
             </p>
           </div>
@@ -296,8 +296,8 @@ export default function ProfilePage() {
         </div>
 
         {/* Activity Calendar */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-2 sm:p-6 mb-3 sm:mb-6">
-          <h2 className="text-xs sm:text-lg font-bold text-gray-800 mb-2 sm:mb-4 flex items-center gap-1 sm:gap-2">
+        <div className="bg-surface rounded-2xl shadow-lg border border-border p-2 sm:p-6 mb-3 sm:mb-6">
+          <h2 className="text-xs sm:text-lg font-bold text-text-primary mb-2 sm:mb-4 flex items-center gap-1 sm:gap-2">
             <span className="text-base sm:text-xl">📅</span>
             Activity Calendar
           </h2>
@@ -314,10 +314,10 @@ export default function ProfilePage() {
 
         {/* Task Display Settings */}
         <div className="mb-6">
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Task Display</h3>
+          <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
+            <h3 className="text-lg font-semibold text-text-primary mb-4">Task Display</h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-text-secondary mb-1">
                 Auto-hide completed tasks after
               </label>
               <select
@@ -327,7 +327,7 @@ export default function ProfilePage() {
                   const newVal = val === "" ? null : parseInt(val);
                   updateProfile({ hideCompletedAfterDays: newVal });
                 }}
-                className="w-full sm:w-auto px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full sm:w-auto px-3 py-2 text-sm border border-border-strong rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Never (show all)</option>
                 <option value="1">1 day</option>
@@ -336,7 +336,7 @@ export default function ProfilePage() {
                 <option value="14">14 days</option>
                 <option value="30">30 days</option>
               </select>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-text-muted mt-1">
                 Completed tasks older than this will be hidden from goal cards. They still exist and can be seen by disabling this setting.
               </p>
             </div>
@@ -350,10 +350,10 @@ export default function ProfilePage() {
 
         {/* Share Section */}
         {totalStreakDays > 0 && (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 mb-3 sm:mb-6 flex items-center justify-between">
+          <div className="bg-surface rounded-2xl shadow-lg border border-border p-4 sm:p-6 mb-3 sm:mb-6 flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">Share your streak card</h3>
-              <p className="text-xs text-gray-500 mt-0.5">
+              <h3 className="text-sm font-semibold text-text-primary">Share your streak card</h3>
+              <p className="text-xs text-text-muted mt-0.5">
                 {activeStreaks.length} active goal{activeStreaks.length !== 1 ? 's' : ''} · {totalStreakDays} total days
               </p>
             </div>
@@ -377,7 +377,7 @@ export default function ProfilePage() {
               href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`🔥 ${streak.currentStreak} day streak on Journey Tracker! Join me in achieving your goals! 🎯`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center transition-all"
+              className="bg-surface/20 hover:bg-surface/30 backdrop-blur-sm rounded-lg p-4 text-center transition-all"
             >
               <div className="text-2xl mb-1">𝕏</div>
               <div className="text-sm font-medium">Twitter</div>
@@ -387,7 +387,7 @@ export default function ProfilePage() {
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center transition-all"
+              className="bg-surface/20 hover:bg-surface/30 backdrop-blur-sm rounded-lg p-4 text-center transition-all"
             >
               <div className="text-2xl mb-1">📘</div>
               <div className="text-sm font-medium">Facebook</div>
@@ -397,7 +397,7 @@ export default function ProfilePage() {
               href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center transition-all"
+              className="bg-surface/20 hover:bg-surface/30 backdrop-blur-sm rounded-lg p-4 text-center transition-all"
             >
               <div className="text-2xl mb-1">💼</div>
               <div className="text-sm font-medium">LinkedIn</div>
@@ -408,7 +408,7 @@ export default function ProfilePage() {
                 navigator.clipboard.writeText(typeof window !== 'undefined' ? window.location.origin : '');
                 alert('Link copied to clipboard!');
               }}
-              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center transition-all"
+              className="bg-surface/20 hover:bg-surface/30 backdrop-blur-sm rounded-lg p-4 text-center transition-all"
             >
               <div className="text-2xl mb-1">🔗</div>
               <div className="text-sm font-medium">Copy Link</div>

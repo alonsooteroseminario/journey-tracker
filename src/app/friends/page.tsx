@@ -31,7 +31,7 @@ export default function FriendsPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading friends...</p>
+          <p className="text-text-secondary">Loading friends...</p>
         </div>
       </div>
     );
@@ -114,24 +114,24 @@ export default function FriendsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-surface/80 backdrop-blur-md border-b border-border sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-1.5 sm:px-4 py-1 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 sm:gap-4">
               <button
                 onClick={() => router.push("/")}
-                className="p-1 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-1 sm:p-2 hover:bg-surface-hover rounded-lg transition-colors"
                 title="Back to Dashboard"
               >
-                <svg className="w-4 h-4 sm:w-6 sm:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-6 sm:h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
               <div className="flex items-center gap-1 sm:gap-3">
                 <span className="text-lg sm:text-2xl md:text-3xl">👥</span>
                 <div>
-                  <h1 className="text-sm sm:text-2xl font-bold text-gray-800">Friends Comparison</h1>
-                  <p className="text-[10px] sm:text-sm text-gray-500">Motivate each other to succeed</p>
+                  <h1 className="text-sm sm:text-2xl font-bold text-text-primary">Friends Comparison</h1>
+                  <p className="text-[10px] sm:text-sm text-text-muted">Motivate each other to succeed</p>
                 </div>
               </div>
             </div>
@@ -151,8 +151,8 @@ export default function FriendsPage() {
 
       <main className="max-w-6xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8">
         {/* Add Friend Section */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-2 sm:p-6 mb-3 sm:mb-6">
-          <h2 className="text-sm sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4 flex items-center gap-1 sm:gap-2">
+        <div className="bg-surface rounded-2xl shadow-sm border border-border p-2 sm:p-6 mb-3 sm:mb-6">
+          <h2 className="text-sm sm:text-xl font-bold text-text-primary mb-2 sm:mb-4 flex items-center gap-1 sm:gap-2">
             <span>➕</span>
             Add a Friend
           </h2>
@@ -162,7 +162,7 @@ export default function FriendsPage() {
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
               placeholder="Enter friend's invite code"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 px-4 py-3 border border-border-strong rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               onKeyDown={(e) => e.key === 'Enter' && handleAddFriend()}
             />
             <button
@@ -173,19 +173,19 @@ export default function FriendsPage() {
               Add Friend
             </button>
           </div>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-text-muted mt-2">
             💡 Ask your friend for their invite code, or generate one to share with them!
           </p>
         </div>
 
         {/* Friends List */}
         {friends.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-3 sm:p-6 md:p-12 text-center">
+          <div className="bg-surface rounded-2xl shadow-lg border border-border p-3 sm:p-6 md:p-12 text-center">
             <div className="text-4xl sm:text-6xl md:text-8xl mb-3 sm:mb-6">👥</div>
-            <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2 sm:mb-4">
+            <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-text-primary mb-2 sm:mb-4">
               No friends added yet
             </h2>
-            <p className="text-gray-600 mb-4 sm:mb-8 text-xs sm:text-base md:text-lg">
+            <p className="text-text-secondary mb-4 sm:mb-8 text-xs sm:text-base md:text-lg">
               Add friends to compare your progress and motivate each other!
             </p>
             <button
@@ -211,7 +211,7 @@ export default function FriendsPage() {
               };
 
               return (
-                <div key={friend.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all group">
+                <div key={friend.id} className="bg-surface rounded-2xl shadow-sm border border-border hover:shadow-lg transition-all group">
                   {/* Clickable Header Section */}
                   <Link href={`/friends/${friend.id}`} className="block p-2 sm:p-6 pb-2 sm:pb-4">
                     <div className="flex items-center gap-2 sm:gap-4">
@@ -225,16 +225,16 @@ export default function FriendsPage() {
                       </div>
 
                       <div className="flex-1">
-                        <h3 className="text-sm sm:text-xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
+                        <h3 className="text-sm sm:text-xl font-bold text-text-primary group-hover:text-purple-600 transition-colors">
                           {friend.name}
                         </h3>
-                        <p className="text-gray-600 text-[10px] sm:text-sm">
+                        <p className="text-text-secondary text-[10px] sm:text-sm">
                           Friends since {new Date(friend.addedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
 
                       {/* View Profile Indicator */}
-                      <div className="text-gray-400 group-hover:text-purple-600 transition-colors">
+                      <div className="text-text-muted group-hover:text-purple-600 transition-colors">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -244,81 +244,81 @@ export default function FriendsPage() {
 
                   {/* Non-clickable comparison section */}
                   <div className="px-2 sm:px-6 pb-1 sm:pb-2">
-                    <p className="text-[10px] sm:text-xs text-gray-500 mb-1 sm:mb-2">Click to view full profile</p>
+                    <p className="text-[10px] sm:text-xs text-text-muted mb-1 sm:mb-2">Click to view full profile</p>
                   </div>
 
                   {/* Comparison Grid */}
                   <div className="px-2 sm:px-6 pb-2 sm:pb-6">
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4 mb-2 sm:mb-4">
                     {/* Current Streak */}
-                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.streak ? 'bg-orange-50 border-2 border-orange-300' : 'bg-gray-50'}`}>
-                      <p className="text-[10px] sm:text-xs text-gray-600 mb-1 sm:mb-2">Current Streak</p>
+                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.streak ? 'bg-orange-50 border-2 border-orange-300' : 'bg-surface-muted'}`}>
+                      <p className="text-[10px] sm:text-xs text-text-secondary mb-1 sm:mb-2">Current Streak</p>
                       <div className="flex items-center justify-center gap-1 sm:gap-2 mb-0.5 sm:mb-1">
-                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.streak ? 'text-orange-600' : 'text-gray-700'}`}>
+                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.streak ? 'text-orange-600' : 'text-text-secondary'}`}>
                           {friend.currentStreak}
                         </p>
-                        <span className="text-gray-400 text-[10px] sm:text-sm">vs</span>
-                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.streak ? 'text-blue-600' : 'text-gray-500'}`}>
+                        <span className="text-text-muted text-[10px] sm:text-sm">vs</span>
+                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.streak ? 'text-blue-600' : 'text-text-muted'}`}>
                           {myStats.currentStreak}
                         </p>
                       </div>
-                      <p className="text-[10px] sm:text-xs text-gray-500">
+                      <p className="text-[10px] sm:text-xs text-text-muted">
                         {isAhead.streak ? "They're ahead! 🏃" : 
                          friend.currentStreak < myStats.currentStreak ? "You're ahead! 🎉" : "Tied! 🤝"}
                       </p>
                     </div>
 
                     {/* Total Goals */}
-                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.goals ? 'bg-blue-50 border-2 border-blue-300' : 'bg-gray-50'}`}>
-                      <p className="text-[10px] sm:text-xs text-gray-600 mb-1 sm:mb-2">Total Goals</p>
+                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.goals ? 'bg-blue-50 border-2 border-blue-300' : 'bg-surface-muted'}`}>
+                      <p className="text-[10px] sm:text-xs text-text-secondary mb-1 sm:mb-2">Total Goals</p>
                       <div className="flex items-center justify-center gap-1 sm:gap-2 mb-0.5 sm:mb-1">
-                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.goals ? 'text-orange-600' : 'text-gray-700'}`}>
+                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.goals ? 'text-orange-600' : 'text-text-secondary'}`}>
                           {friend.totalGoals}
                         </p>
-                        <span className="text-gray-400 text-[10px] sm:text-sm">vs</span>
-                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.goals ? 'text-blue-600' : 'text-gray-500'}`}>
+                        <span className="text-text-muted text-[10px] sm:text-sm">vs</span>
+                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.goals ? 'text-blue-600' : 'text-text-muted'}`}>
                           {myStats.totalGoals}
                         </p>
                       </div>
                     </div>
 
                     {/* Completed Goals */}
-                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.completed ? 'bg-green-50 border-2 border-green-300' : 'bg-gray-50'}`}>
-                      <p className="text-[10px] sm:text-xs text-gray-600 mb-1 sm:mb-2">Completed</p>
+                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.completed ? 'bg-green-50 border-2 border-green-300' : 'bg-surface-muted'}`}>
+                      <p className="text-[10px] sm:text-xs text-text-secondary mb-1 sm:mb-2">Completed</p>
                       <div className="flex items-center justify-center gap-1 sm:gap-2 mb-0.5 sm:mb-1">
-                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.completed ? 'text-orange-600' : 'text-gray-700'}`}>
+                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.completed ? 'text-orange-600' : 'text-text-secondary'}`}>
                           {friend.completedGoals}
                         </p>
-                        <span className="text-gray-400 text-[10px] sm:text-sm">vs</span>
-                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.completed ? 'text-blue-600' : 'text-gray-500'}`}>
+                        <span className="text-text-muted text-[10px] sm:text-sm">vs</span>
+                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.completed ? 'text-blue-600' : 'text-text-muted'}`}>
                           {myStats.completedGoals}
                         </p>
                       </div>
                     </div>
 
                     {/* Longest Streak */}
-                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.longest ? 'bg-purple-50 border-2 border-purple-300' : 'bg-gray-50'}`}>
-                      <p className="text-[10px] sm:text-xs text-gray-600 mb-1 sm:mb-2">Longest Streak</p>
+                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.longest ? 'bg-purple-50 border-2 border-purple-300' : 'bg-surface-muted'}`}>
+                      <p className="text-[10px] sm:text-xs text-text-secondary mb-1 sm:mb-2">Longest Streak</p>
                       <div className="flex items-center justify-center gap-1 sm:gap-2 mb-0.5 sm:mb-1">
-                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.longest ? 'text-orange-600' : 'text-gray-700'}`}>
+                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.longest ? 'text-orange-600' : 'text-text-secondary'}`}>
                           {friend.longestStreak}
                         </p>
-                        <span className="text-gray-400 text-[10px] sm:text-sm">vs</span>
-                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.longest ? 'text-blue-600' : 'text-gray-500'}`}>
+                        <span className="text-text-muted text-[10px] sm:text-sm">vs</span>
+                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.longest ? 'text-blue-600' : 'text-text-muted'}`}>
                           {myStats.longestStreak}
                         </p>
                       </div>
                     </div>
 
                     {/* Completion Rate */}
-                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.completionRate ? 'bg-cyan-50 border-2 border-cyan-300' : 'bg-gray-50'}`}>
-                      <p className="text-[10px] sm:text-xs text-gray-600 mb-1 sm:mb-2">Completion Rate</p>
+                    <div className={`text-center p-2 sm:p-4 rounded-xl ${isAhead.completionRate ? 'bg-cyan-50 border-2 border-cyan-300' : 'bg-surface-muted'}`}>
+                      <p className="text-[10px] sm:text-xs text-text-secondary mb-1 sm:mb-2">Completion Rate</p>
                       <div className="flex items-center justify-center gap-1 sm:gap-2 mb-0.5 sm:mb-1">
-                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.completionRate ? 'text-orange-600' : 'text-gray-700'}`}>
+                        <p className={`text-lg sm:text-2xl font-bold ${isAhead.completionRate ? 'text-orange-600' : 'text-text-secondary'}`}>
                           {friendCompletionRate}%
                         </p>
-                        <span className="text-gray-400 text-[10px] sm:text-sm">vs</span>
-                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.completionRate ? 'text-blue-600' : 'text-gray-500'}`}>
+                        <span className="text-text-muted text-[10px] sm:text-sm">vs</span>
+                        <p className={`text-lg sm:text-2xl font-bold ${!isAhead.completionRate ? 'text-blue-600' : 'text-text-muted'}`}>
                           {myStats.completionRate}%
                         </p>
                       </div>
@@ -365,9 +365,9 @@ export default function FriendsPage() {
 
       {/* Invite Modal */}
       {showInviteModal && generatedInvite && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Invite Code</h2>
+        <div className="fixed inset-0 bg-overlay/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-surface rounded-2xl shadow-2xl max-w-md w-full p-8">
+            <h2 className="text-2xl font-bold text-text-primary mb-4">Your Invite Code</h2>
             
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 mb-6 text-center">
               <p className="text-white text-sm mb-2">Share this code with your friend:</p>
@@ -377,7 +377,7 @@ export default function FriendsPage() {
             <div className="space-y-3 mb-6">
               <button
                 onClick={copyInviteCode}
-                className="w-full px-4 py-3 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
+                className="w-full px-4 py-3 bg-surface-hover hover:bg-surface-hover rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
               >
                 <span>📋</span>
                 Copy Invite Code
@@ -407,7 +407,7 @@ export default function FriendsPage() {
 
             <button
               onClick={() => setShowInviteModal(false)}
-              className="w-full px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors font-medium"
+              className="w-full px-4 py-2 text-text-secondary hover:bg-surface-hover rounded-lg transition-colors font-medium"
             >
               Close
             </button>

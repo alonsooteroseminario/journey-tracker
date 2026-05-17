@@ -38,7 +38,7 @@ export default function TemplateDetailPage({
         {/* Back Button */}
         <Link
           href="/marketplace"
-          className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 mb-4 sm:mb-6"
+          className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary mb-4 sm:mb-6"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -59,13 +59,13 @@ export default function TemplateDetailPage({
               <div className="flex gap-2 w-full sm:w-auto">
                 <Link
                   href="/sign-in"
-                  className="flex-1 sm:flex-initial px-4 py-2 text-xs sm:text-sm bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-center font-medium"
+                  className="flex-1 sm:flex-initial px-4 py-2 text-xs sm:text-sm bg-surface/20 hover:bg-surface/30 rounded-lg transition-colors text-center font-medium"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/sign-up"
-                  className="flex-1 sm:flex-initial px-4 py-2 text-xs sm:text-sm bg-white text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors text-center font-medium"
+                  className="flex-1 sm:flex-initial px-4 py-2 text-xs sm:text-sm bg-surface text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors text-center font-medium"
                 >
                   Sign Up
                 </Link>
@@ -78,7 +78,7 @@ export default function TemplateDetailPage({
         {isLoading && (
           <div className="text-center py-12">
             <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-indigo-600 border-r-transparent" />
-            <p className="mt-4 text-gray-600">Loading template...</p>
+            <p className="mt-4 text-text-secondary">Loading template...</p>
           </div>
         )}
 
@@ -86,8 +86,8 @@ export default function TemplateDetailPage({
         {error && (
           <div className="text-center py-12">
             <div className="text-5xl mb-4">404</div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Template not found</h2>
-            <p className="text-gray-600 mb-6">This template may have been removed or is not publicly available.</p>
+            <h2 className="text-xl font-bold text-text-primary mb-2">Template not found</h2>
+            <p className="text-text-secondary mb-6">This template may have been removed or is not publicly available.</p>
             <Link
               href="/marketplace"
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
@@ -101,12 +101,12 @@ export default function TemplateDetailPage({
         {template && (
           <div className="space-y-6">
             {/* Title Section */}
-            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
+            <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
               <div className="flex items-start gap-3 sm:gap-4 mb-4">
                 <span className="text-4xl sm:text-5xl">{template.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
                       {template.title}
                     </h1>
                     {isOwnTemplate && (
@@ -128,7 +128,7 @@ export default function TemplateDetailPage({
                       {template.difficulty}
                     </span>
                     {template.category && (
-                      <span className="px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full text-xs sm:text-sm">
+                      <span className="px-2.5 py-1 bg-surface-hover text-text-secondary rounded-full text-xs sm:text-sm">
                         {template.category}
                       </span>
                     )}
@@ -137,7 +137,7 @@ export default function TemplateDetailPage({
                         {template.estimatedDuration}
                       </span>
                     )}
-                    <span className="px-2.5 py-1 bg-gray-50 text-gray-600 rounded-full text-xs sm:text-sm">
+                    <span className="px-2.5 py-1 bg-surface-muted text-text-secondary rounded-full text-xs sm:text-sm">
                       {template.forkCount} forks
                     </span>
                   </div>
@@ -146,8 +146,8 @@ export default function TemplateDetailPage({
             </div>
 
             {/* Creator Card */}
-            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+            <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
+              <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">
                 Created by
               </h2>
               <div className="flex items-center gap-3">
@@ -155,7 +155,7 @@ export default function TemplateDetailPage({
                   <img
                     src={template.author.profileImage}
                     alt={template.author.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-border"
                   />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
@@ -163,21 +163,21 @@ export default function TemplateDetailPage({
                   </div>
                 )}
                 <div>
-                  <p className="font-semibold text-gray-900">
+                  <p className="font-semibold text-text-primary">
                     {template.author?.name || "Unknown"}
                   </p>
-                  <p className="text-sm text-gray-500">Template Author</p>
+                  <p className="text-sm text-text-muted">Template Author</p>
                 </div>
               </div>
             </div>
 
             {/* Description */}
             {template.description && (
-              <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
+              <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
+                <h2 className="text-base sm:text-lg font-semibold text-text-primary mb-2">
                   Description
                 </h2>
-                <p className="text-sm sm:text-base text-gray-600 whitespace-pre-wrap">
+                <p className="text-sm sm:text-base text-text-secondary whitespace-pre-wrap">
                   {template.description}
                 </p>
               </div>
@@ -187,21 +187,21 @@ export default function TemplateDetailPage({
             {(template.lessonsLearned || template.tips) && (
               <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                 {template.lessonsLearned && (
-                  <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
-                    <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
+                  <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
+                    <h2 className="text-base sm:text-lg font-semibold text-text-primary mb-2">
                       Lessons Learned
                     </h2>
-                    <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                    <p className="text-sm text-text-secondary whitespace-pre-wrap">
                       {template.lessonsLearned}
                     </p>
                   </div>
                 )}
                 {template.tips && (
-                  <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
-                    <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
+                  <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
+                    <h2 className="text-base sm:text-lg font-semibold text-text-primary mb-2">
                       Tips & Advice
                     </h2>
-                    <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                    <p className="text-sm text-text-secondary whitespace-pre-wrap">
                       {template.tips}
                     </p>
                   </div>
@@ -211,8 +211,8 @@ export default function TemplateDetailPage({
 
             {/* Tags */}
             {template.tags && template.tags.length > 0 && (
-              <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
+              <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
+                <h2 className="text-base sm:text-lg font-semibold text-text-primary mb-3">
                   Tags
                 </h2>
                 <div className="flex flex-wrap gap-2">
@@ -230,29 +230,29 @@ export default function TemplateDetailPage({
 
             {/* Tasks — Editor or Read-Only */}
             {isEditing ? (
-              <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
+              <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
                 <TemplateEditor template={template} />
               </div>
             ) : (
               tasks.length > 0 && (
-                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
-                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
+                <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
+                  <h2 className="text-base sm:text-lg font-semibold text-text-primary mb-3">
                     Tasks ({tasks.length})
                   </h2>
                   <div className="space-y-2">
                     {tasks.map((task) => (
                       <div
                         key={task.id}
-                        className="border border-gray-200 rounded-lg p-3"
+                        className="border border-border rounded-lg p-3"
                       >
                         <div className="flex items-start gap-2">
-                          <span className="text-sm text-gray-400 mt-0.5">&#9744;</span>
+                          <span className="text-sm text-text-muted mt-0.5">&#9744;</span>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm font-medium text-text-primary">
                               {task.title}
                             </p>
                             {task.description && (
-                              <p className="text-xs text-gray-500 mt-1">
+                              <p className="text-xs text-text-muted mt-1">
                                 {task.description}
                               </p>
                             )}
@@ -260,8 +260,8 @@ export default function TemplateDetailPage({
                               <div className="mt-2 ml-4 space-y-1">
                                 {task.substeps.map((substep) => (
                                   <div key={substep.id} className="flex items-start gap-2">
-                                    <span className="text-xs text-gray-400">&#9702;</span>
-                                    <p className="text-xs text-gray-600">
+                                    <span className="text-xs text-text-muted">&#9702;</span>
+                                    <p className="text-xs text-text-secondary">
                                       {substep.title}
                                     </p>
                                   </div>
@@ -278,7 +278,7 @@ export default function TemplateDetailPage({
             )}
 
             {/* Action Section */}
-            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
+            <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
               {user && !isOwnTemplate && (
                 <ForkButton
                   templateId={template.id}
@@ -288,7 +288,7 @@ export default function TemplateDetailPage({
               )}
               {user && isOwnTemplate && (
                 <div className="text-center py-2">
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-text-muted">
                     This is your own template
                   </p>
                   {!isEditing && (
@@ -303,7 +303,7 @@ export default function TemplateDetailPage({
               )}
               {!user && (
                 <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-3">
+                  <p className="text-sm text-text-secondary mb-3">
                     Sign in to fork this template and start your own journey
                   </p>
                   <Link

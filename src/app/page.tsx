@@ -47,7 +47,7 @@ function SortableGoalCard(props: React.ComponentProps<typeof GoalCard>) {
     <div ref={setNodeRef} style={style} className="relative pl-6">
       {/* Drag handle — always visible on left edge */}
       <div
-        className="absolute top-0 left-0 bottom-0 w-6 flex items-center justify-center text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing transition-colors"
+        className="absolute top-0 left-0 bottom-0 w-6 flex items-center justify-center text-text-muted hover:text-text-muted cursor-grab active:cursor-grabbing transition-colors"
         {...attributes}
         {...listeners}
       >
@@ -142,7 +142,7 @@ export default function Home() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-text-secondary">Loading...</p>
         </div>
       </div>
     );
@@ -187,10 +187,10 @@ export default function Home() {
         {showGlobalAnalytics && goals.length > 0 && (
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base sm:text-lg font-bold text-gray-800">Global Analytics</h2>
+              <h2 className="text-base sm:text-lg font-bold text-text-primary">Global Analytics</h2>
               <button
                 onClick={() => setShowGlobalAnalytics(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-text-muted hover:text-text-secondary"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -205,8 +205,8 @@ export default function Home() {
         {goals.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">🎯</div>
-            <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">Start Your Journey</h2>
-            <p className="text-gray-600 mb-8 max-w-md mx-auto">
+            <h2 className="text-lg sm:text-xl font-bold text-text-primary mb-2">Start Your Journey</h2>
+            <p className="text-text-secondary mb-8 max-w-md mx-auto">
               Create your first goal and break it down into tasks. Complete at least one task daily to build your streak!
             </p>
             <button
@@ -218,25 +218,25 @@ export default function Home() {
 
             {/* Features Preview */}
             <div className="mt-12 sm:mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
-              <div className="bg-white rounded-xl p-3 sm:p-6 shadow-md border border-gray-100">
+              <div className="bg-surface rounded-xl p-3 sm:p-6 shadow-md border border-border">
                 <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">📝</div>
-                <h3 className="font-bold text-gray-800 mb-1 text-sm sm:text-base">Set Goals</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Define clear objectives</p>
+                <h3 className="font-bold text-text-primary mb-1 text-sm sm:text-base">Set Goals</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">Define clear objectives</p>
               </div>
-              <div className="bg-white rounded-xl p-3 sm:p-6 shadow-md border border-gray-100">
+              <div className="bg-surface rounded-xl p-3 sm:p-6 shadow-md border border-border">
                 <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">✂️</div>
-                <h3 className="font-bold text-gray-800 mb-1 text-sm sm:text-base">Split Tasks</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Break into substeps</p>
+                <h3 className="font-bold text-text-primary mb-1 text-sm sm:text-base">Split Tasks</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">Break into substeps</p>
               </div>
-              <div className="bg-white rounded-xl p-3 sm:p-6 shadow-md border border-gray-100">
+              <div className="bg-surface rounded-xl p-3 sm:p-6 shadow-md border border-border">
                 <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">📊</div>
-                <h3 className="font-bold text-gray-800 mb-1 text-sm sm:text-base">Track Analytics</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Charts & projections</p>
+                <h3 className="font-bold text-text-primary mb-1 text-sm sm:text-base">Track Analytics</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">Charts & projections</p>
               </div>
-              <div className="bg-white rounded-xl p-3 sm:p-6 shadow-md border border-gray-100">
+              <div className="bg-surface rounded-xl p-3 sm:p-6 shadow-md border border-border">
                 <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">🔥</div>
-                <h3 className="font-bold text-gray-800 mb-1 text-sm sm:text-base">Build Streaks</h3>
-                <p className="text-xs sm:text-sm text-gray-600">Stay motivated daily</p>
+                <h3 className="font-bold text-text-primary mb-1 text-sm sm:text-base">Build Streaks</h3>
+                <p className="text-xs sm:text-sm text-text-secondary">Stay motivated daily</p>
               </div>
             </div>
           </div>
@@ -248,14 +248,14 @@ export default function Home() {
               <StreakCounter streak={streak} hasCompletedToday={hasCompletedTaskToday()} />
 
               {/* Overall Progress */}
-              <div className="bg-white rounded-lg p-2 sm:p-6 shadow-sm border border-gray-100">
-                <h3 className="font-bold text-xs sm:text-base text-gray-800 mb-1 sm:mb-4 flex items-center gap-1 sm:gap-2">
+              <div className="bg-surface rounded-lg p-2 sm:p-6 shadow-sm border border-border">
+                <h3 className="font-bold text-xs sm:text-base text-text-primary mb-1 sm:mb-4 flex items-center gap-1 sm:gap-2">
                   <span className="text-sm sm:text-xl">📊</span>
                   <span className="hidden sm:inline">Overall Progress</span>
                   <span className="sm:hidden">Progress</span>
                 </h3>
                 <ProgressBar progress={totalProgress} size="md" showPercentage={true} />
-                <div className="mt-1 sm:mt-4 flex justify-between text-[10px] sm:text-sm text-gray-600">
+                <div className="mt-1 sm:mt-4 flex justify-between text-[10px] sm:text-sm text-text-secondary">
                   <span>{completedTasks} done</span>
                   <span>{totalTasks - completedTasks} left</span>
                 </div>
@@ -277,34 +277,34 @@ export default function Home() {
               />
 
               {/* Quick Stats */}
-              <div className="bg-white rounded-lg p-2 sm:p-6 shadow-sm border border-gray-100">
-                <h3 className="font-bold text-xs sm:text-base text-gray-800 mb-1 sm:mb-4 flex items-center gap-1 sm:gap-2">
+              <div className="bg-surface rounded-lg p-2 sm:p-6 shadow-sm border border-border">
+                <h3 className="font-bold text-xs sm:text-base text-text-primary mb-1 sm:mb-4 flex items-center gap-1 sm:gap-2">
                   <span className="text-sm sm:text-xl">📈</span>
                   Stats
                 </h3>
                 <div className="space-y-1 sm:space-y-3 text-[10px] sm:text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Goals</span>
-                    <span className="font-bold text-gray-800">{goals.length}</span>
+                    <span className="text-text-secondary">Goals</span>
+                    <span className="font-bold text-text-primary">{goals.length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Tasks</span>
-                    <span className="font-bold text-gray-800">{totalTasks}</span>
+                    <span className="text-text-secondary">Tasks</span>
+                    <span className="font-bold text-text-primary">{totalTasks}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Substeps</span>
+                    <span className="text-text-secondary">Substeps</span>
                     <span className="font-bold text-purple-600">{totalSubsteps}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Done</span>
+                    <span className="text-text-secondary">Done</span>
                     <span className="font-bold text-green-600">{completedTasks}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Days</span>
+                    <span className="text-text-secondary">Days</span>
                     <span className="font-bold text-blue-600">{streak.streakHistory.length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Avg/Day</span>
+                    <span className="text-text-secondary">Avg/Day</span>
                     <span className="font-bold text-amber-600">{globalAnalytics.averageTasksPerDay}</span>
                   </div>
                 </div>
@@ -322,7 +322,7 @@ export default function Home() {
             {/* Main Content - Goals */}
             <div className="lg:col-span-2 space-y-2 sm:space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xs sm:text-lg font-bold text-gray-800">Your Goals</h2>
+                <h2 className="text-xs sm:text-lg font-bold text-text-primary">Your Goals</h2>
                 <button
                   onClick={() => setIsCreateModalOpen(true)}
                   className="text-blue-500 hover:text-blue-600 text-[10px] sm:text-sm font-medium flex items-center gap-0.5 sm:gap-1"

@@ -82,7 +82,7 @@ describe('ProgressBar', () => {
     it('should show gray color for incomplete progress', () => {
       const { container } = render(<ProgressBar progress={50} />);
       const percentageText = screen.getByText('50%');
-      expect(percentageText).toHaveClass('text-gray-600');
+      expect(percentageText).toHaveClass('text-text-secondary');
     });
   });
 

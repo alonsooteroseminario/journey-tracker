@@ -28,7 +28,7 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
   );
 
   const statusColors = {
-    pending: "bg-gray-100 text-gray-600 border-gray-200",
+    pending: "bg-surface-hover text-text-secondary border-border",
     obtained: "bg-yellow-100 text-yellow-700 border-yellow-200",
     submitted: "bg-green-100 text-green-700 border-green-200",
   };
@@ -40,7 +40,7 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    <div className="bg-surface rounded-2xl shadow-lg border border-border overflow-hidden">
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -50,12 +50,12 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
           <div className="flex items-center gap-2 sm:gap-3">
             <span className="text-xl sm:text-3xl">📋</span>
             <div>
-              <h3 className="text-sm sm:text-xl font-bold text-gray-800">Document Checklist</h3>
-              <p className="text-[10px] sm:text-sm text-gray-600">{documents.length} documents to track</p>
+              <h3 className="text-sm sm:text-xl font-bold text-text-primary">Document Checklist</h3>
+              <p className="text-[10px] sm:text-sm text-text-secondary">{documents.length} documents to track</p>
             </div>
           </div>
           <svg
-            className={`w-4 h-4 sm:w-6 sm:h-6 text-gray-500 transition-transform ${
+            className={`w-4 h-4 sm:w-6 sm:h-6 text-text-muted transition-transform ${
               isExpanded ? "rotate-180" : ""
             }`}
             fill="none"
@@ -74,10 +74,10 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
         {/* Progress Bar */}
         <div className="mt-2 sm:mt-4">
           <div className="flex justify-between text-[10px] sm:text-sm mb-1">
-            <span className="text-gray-600">Documents Ready</span>
+            <span className="text-text-secondary">Documents Ready</span>
             <span className="font-bold text-amber-600">{progress}%</span>
           </div>
-          <div className="h-2 sm:h-3 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-2 sm:h-3 bg-surface-hover rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
@@ -88,23 +88,23 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
         {/* Quick Stats */}
         <div className="mt-2 sm:mt-4 flex gap-2 sm:gap-3">
           <div className="flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-sm">
-            <span className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gray-300"></span>
-            <span className="text-gray-600">{statusCounts.pending} pending</span>
+            <span className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-border-strong"></span>
+            <span className="text-text-secondary">{statusCounts.pending} pending</span>
           </div>
           <div className="flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-sm">
             <span className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-yellow-400"></span>
-            <span className="text-gray-600">{statusCounts.obtained} obtained</span>
+            <span className="text-text-secondary">{statusCounts.obtained} obtained</span>
           </div>
           <div className="flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-sm">
             <span className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500"></span>
-            <span className="text-gray-600">{statusCounts.submitted} submitted</span>
+            <span className="text-text-secondary">{statusCounts.submitted} submitted</span>
           </div>
         </div>
       </button>
 
       {/* Document List */}
       {isExpanded && (
-        <div className="p-3 sm:p-6 border-t border-gray-100">
+        <div className="p-3 sm:p-6 border-t border-border">
           {/* Filter Tabs */}
           <div className="flex gap-1.5 sm:gap-2 mb-3 sm:mb-4 flex-wrap">
             {(["all", "pending", "obtained", "submitted"] as const).map((status) => (
@@ -114,7 +114,7 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
                 className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-sm font-medium transition-colors ${
                   filter === status
                     ? "bg-amber-500 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-surface-hover text-text-secondary hover:bg-surface-hover"
                 }`}
               >
                 {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -132,7 +132,7 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
             {filteredDocs.map((doc) => (
               <div
                 key={doc.id}
-                className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-surface-muted rounded-lg hover:bg-surface-hover transition-colors"
               >
                 {/* Status Selector */}
                 <select
@@ -151,8 +151,8 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
 
                 {/* Document Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-xs sm:text-base text-gray-800 truncate">{doc.name}</p>
-                  <div className="flex gap-1 sm:gap-2 text-[10px] sm:text-xs text-gray-500">
+                  <p className="font-medium text-xs sm:text-base text-text-primary truncate">{doc.name}</p>
+                  <div className="flex gap-1 sm:gap-2 text-[10px] sm:text-xs text-text-muted">
                     <span className="bg-brand-light text-brand-primary px-1.5 sm:px-2 py-0.5 rounded">
                       {doc.requiredFor}
                     </span>
@@ -162,7 +162,7 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
 
                 {/* Notes */}
                 {doc.notes && (
-                  <span className="text-xs text-gray-400 hidden md:block max-w-32 truncate">
+                  <span className="text-xs text-text-muted hidden md:block max-w-32 truncate">
                     {doc.notes}
                   </span>
                 )}
@@ -171,7 +171,7 @@ export function DocumentChecklist({ documents, onUpdateStatus }: DocumentCheckli
           </div>
 
           {filteredDocs.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-text-muted">
               No documents match this filter
             </div>
           )}
