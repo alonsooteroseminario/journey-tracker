@@ -124,6 +124,10 @@ model PromptWallet {
   order       Int           @default(0)
   lockLevel   String?
 
+  // Sharing — null means private; present value is an unguessable capability token.
+  shareToken  String?       @unique
+  sharedAt    DateTime?
+
   groups      PromptGroup[]
 
   createdAt   DateTime      @default(now())
