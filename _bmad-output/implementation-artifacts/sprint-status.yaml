@@ -226,7 +226,15 @@ five_feature_plan_2026_05_16:
       steps: "docs/plans/2026-05-16-f4-wallet-sharing-steps.md"
       branch: "feat/f4-wallet-sharing"
       estimate_days: 2
-      status: planned
+      actual_days: 1
+      status: ready_for_review
+      completed_date: "2026-05-17"
+      verification:
+        build: "✓ Compiled successfully"
+        unit_tests: "1325/1330 pass (5 pre-existing)"
+        e2e: "1/1 wallet-sharing.spec.ts pass"
+        db_push: "npx prisma db push — shareToken index synced"
+      schema_note: "shareToken @unique removed (MongoDB rejects multiple nulls); using @@index + crypto uniqueness"
 
     - id: F5
       title: "MCP REST API (Phase 1 — endpoints only, no custom tools)"
