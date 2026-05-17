@@ -6,7 +6,6 @@ import { useUser } from "@clerk/nextjs";
 import { useGetMarketplaceTemplateByIdQuery } from "@/store/slices/templatesSlice";
 import { ForkButton } from "@/components/templates/ForkButton";
 import { TemplateEditor } from "@/components/templates/TemplateEditor";
-import { Header } from "@/components/Header";
 import type { Task } from "@/types";
 
 const difficultyColors = {
@@ -30,10 +29,6 @@ export default function TemplateDetailPage({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <Header
-        showNewGoalButton={false}
-      />
-
       <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         {/* Back Button */}
         <Link

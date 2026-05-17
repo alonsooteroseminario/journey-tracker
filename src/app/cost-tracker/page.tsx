@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Header } from "@/components/Header";
 import { useGoals } from "@/hooks/useGoals";
 import { Overview } from "./components/Overview";
 import { Breakdown } from "./components/Breakdown";
@@ -67,11 +66,6 @@ export default function CostTrackerPage() {
   if (isLoading && !overview) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header
-          totalProgress={totalProgress}
-          currentStreak={streak.currentStreak}
-          onNewGoalClick={() => {}}
-        />
         <div className="flex items-center justify-center py-32">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -84,11 +78,6 @@ export default function CostTrackerPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header
-        totalProgress={totalProgress}
-        currentStreak={streak.currentStreak}
-        onNewGoalClick={() => {}}
-      />
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Page Header */}

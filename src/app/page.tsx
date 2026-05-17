@@ -27,7 +27,6 @@ import { CreateGoalModal } from "@/components/CreateGoalModal";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { Calendar } from "@/components/Calendar";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
-import { Header } from "@/components/Header";
 import { MobileStatsPanel } from "@/components/MobileStatsPanel";
 import { LandingPage } from "@/components/LandingPage";
 import { GoalGroupFilter } from "@/components/GoalGroupFilter";
@@ -175,12 +174,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen pb-4 md:pb-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <Header
-        totalProgress={totalProgress}
-        currentStreak={streak.currentStreak}
-        onNewGoalClick={() => setIsCreateModalOpen(true)}
-      />
-
       {/* Home view content */}
       <div className="max-w-6xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8 pb-20 md:pb-8">
         {/* Global Analytics (Toggleable) */}

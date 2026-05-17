@@ -7,7 +7,6 @@ import { UserProfile } from "@/types";
 import { Calendar } from "@/components/Calendar";
 import { EmailPreferencesPanel } from "@/components/EmailPreferencesPanel";
 import { FeedPreferencesPanel } from "@/components/FeedPreferencesPanel";
-import { Header } from "@/components/Header";
 import { ShareStreakButton } from "@/components/ShareStreakButton";
 import { useGetGoalStreaksQuery } from "@/store/slices/streaksSlice";
 import { computeGoalTier } from "@/lib/streaks/computeTier";
@@ -90,12 +89,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <Header
-        totalProgress={undefined}
-        currentStreak={streak.currentStreak}
-        showNewGoalButton={false}
-      />
-
       <main className="max-w-4xl mx-auto px-1.5 sm:px-4 py-2 sm:py-8">
         {/* Profile Card */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-2 sm:p-8 mb-3 sm:mb-6">
