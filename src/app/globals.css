@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  /* ── Legacy hex tokens (kept for backwards-compat during F1 migration) ── */
   --background: #f8fafc;
   --foreground: #0f172a;
   --brand-primary: #5B50E8;
@@ -11,6 +12,19 @@
   --brand-dark: #2D1B8E;
   --brand-accent: #F08080;
   --brand-muted: #8B85C1;
+
+  /* ── F1 semantic theme tokens — RGB triplets for Tailwind alpha syntax ── */
+  --bg-app: 248 250 252;            /* #f8fafc */
+  --surface-default: 255 255 255;   /* #ffffff */
+  --surface-elevated: 255 255 255;  /* #ffffff */
+  --surface-hover: 241 245 249;     /* #f1f5f9 */
+  --surface-muted: 248 250 252;     /* #f8fafc */
+  --text-primary: 15 23 42;         /* #0f172a */
+  --text-secondary: 71 85 105;      /* #475569 */
+  --text-muted: 100 116 139;        /* #64748b */
+  --border-default: 226 232 240;    /* #e2e8f0 */
+  --border-strong: 203 213 225;     /* #cbd5e1 */
+  --overlay: 15 23 42;              /* #0f172a — use with /50 etc. for scrim */
 }
 
 html, body {
@@ -154,8 +168,22 @@ p, h1, h2, h3, h4, h5, h6, span, li, td, th, label {
 
 /* Dark mode base */
 html.dark {
+  /* ── Legacy hex tokens (kept for backwards-compat during F1 migration) ── */
   --background: #0e1116;
   --foreground: #e6e6e6;
+
+  /* ── F1 semantic theme tokens — dark overrides ── */
+  --bg-app: 14 17 22;               /* #0e1116 */
+  --surface-default: 22 26 34;      /* #161a22 */
+  --surface-elevated: 30 36 46;     /* #1e242e */
+  --surface-hover: 34 41 54;        /* #222936 */
+  --surface-muted: 26 31 41;        /* #1a1f29 */
+  --text-primary: 230 230 230;      /* #e6e6e6 */
+  --text-secondary: 160 170 184;    /* #a0aab8 */
+  --text-muted: 107 117 133;        /* #6b7585 */
+  --border-default: 38 45 58;       /* #262d3a */
+  --border-strong: 58 66 83;        /* #3a4253 */
+  --overlay: 0 0 0;                 /* #000000 — use with /70 for scrim */
 }
 
 html.dark body {

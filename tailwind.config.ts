@@ -14,6 +14,28 @@ const config: Config = {
         'fold': '600px',  // Foldable devices
       },
       colors: {
+        // ── F1 semantic tokens (light + dark via CSS variables) ─────────────
+        // Components should prefer these over `bg-white`/`bg-gray-*`.
+        // Variable values defined in src/app/globals.css.
+        app: "rgb(var(--bg-app) / <alpha-value>)",
+        surface: {
+          DEFAULT: "rgb(var(--surface-default) / <alpha-value>)",
+          elevated: "rgb(var(--surface-elevated) / <alpha-value>)",
+          hover: "rgb(var(--surface-hover) / <alpha-value>)",
+          muted: "rgb(var(--surface-muted) / <alpha-value>)",
+        },
+        text: {
+          primary: "rgb(var(--text-primary) / <alpha-value>)",
+          secondary: "rgb(var(--text-secondary) / <alpha-value>)",
+          muted: "rgb(var(--text-muted) / <alpha-value>)",
+        },
+        border: {
+          DEFAULT: "rgb(var(--border-default) / <alpha-value>)",
+          strong: "rgb(var(--border-strong) / <alpha-value>)",
+        },
+        overlay: "rgb(var(--overlay) / <alpha-value>)",
+
+        // ── Brand identity (literal in both themes) ─────────────────────────
         brand: {
           primary: "#5B50E8",
           secondary: "#7B6FFF",
