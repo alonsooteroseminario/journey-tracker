@@ -124,12 +124,19 @@ model PromptWallet {
   order       Int           @default(0)
   lockLevel   String?
 
+  // Sharing — null means private; present value is an unguessable capability token.
+  // Not @unique because MongoDB unique indexes reject multiple null values.
+  // Uniqueness is guaranteed by generateShareToken() (128-bit crypto random).
+  shareToken  String?
+  sharedAt    DateTime?
+
   groups      PromptGroup[]
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
   @@index([userId])
+  @@index([shareToken])
   @@map("prompt_wallets")
 }
 

@@ -104,6 +104,22 @@ export const promptsApi = createApi({
       query: (snapshot) => ({ url: '/prompt-chunks/restore', method: 'POST', body: snapshot }),
       invalidatesTags: ['PromptWallet', 'PromptGroup', 'PromptChunk'],
     }),
+
+    // ── Wallet sharing ────────────────────────────────────────────────────
+    shareWallet: builder.mutation<{ shareToken: string; shareUrl: string }, string>({
+      query: (id) => ({ url: `/prompt-wallets/${id}/share`, method: 'POST' }),
+      invalidatesTags: ['PromptWallet'],
+    }),
+
+    unshareWallet: builder.mutation<void, string>({
+      query: (id) => ({ url: `/prompt-wallets/${id}/share`, method: 'DELETE' }),
+      invalidatesTags: ['PromptWallet'],
+    }),
+
+    rotateShareToken: builder.mutation<{ shareToken: string; shareUrl: string }, string>({
+      query: (id) => ({ url: `/prompt-wallets/${id}/share/rotate`, method: 'POST' }),
+      invalidatesTags: ['PromptWallet'],
+    }),
   }),
 });
 
@@ -127,4 +143,7 @@ export const {
   useDuplicateChunkMutation,
   useReorderChunksMutation,
   useRestoreChunkMutation,
+  useShareWalletMutation,
+  useUnshareWalletMutation,
+  useRotateShareTokenMutation,
 } = promptsApi;
