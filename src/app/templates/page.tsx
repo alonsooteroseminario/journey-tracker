@@ -5,15 +5,12 @@ import { useGetTemplatesQuery } from "@/store/slices/templatesSlice";
 import { TemplateCard } from "@/components/templates/TemplateCard";
 import { TemplateDetailModal } from "@/components/templates/TemplateDetailModal";
 import { ForkRequestsPanel } from "@/components/templates/ForkRequestsPanel";
-import { Header } from "@/components/Header";
-import { useGoals } from "@/hooks/useGoals";
 import type { GoalTemplate } from "@/types";
 
 export default function TemplatesPage() {
   const { data: templates, isLoading } = useGetTemplatesQuery({ includeOwn: true, visibility: "all" });
   const [selectedTemplate, setSelectedTemplate] = useState<GoalTemplate | null>(null);
   const [filter, setFilter] = useState<"all" | "own" | "friends">("all");
-  const { profile, streak } = useGoals();
 
   const filteredTemplates = templates?.filter((template) => {
     if (filter === "own") return template.authorId === templates.find(t => t.authorId)?.authorId;
@@ -23,10 +20,6 @@ export default function TemplatesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <Header
-        currentStreak={streak.currentStreak}
-        showNewGoalButton={false}
-      />
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         {/* Page Title */}
         <div className="mb-4 sm:mb-6 lg:mb-8">

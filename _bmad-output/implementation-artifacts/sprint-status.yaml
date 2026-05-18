@@ -250,7 +250,13 @@ five_feature_plan_2026_05_16:
       steps: "docs/plans/2026-05-16-f3-header-in-appshell-steps.md"
       branch: "feat/f3-header-in-appshell"
       estimate_days: 1
-      status: planned
+      actual_days: 0.5
+      status: ready_for_review
+      completed_date: "2026-05-17"
+      verification:
+        build: "✓ Compiled successfully"
+        unit_tests: "1310/1315 pass (5 pre-existing)"
+        e2e: "4/4 wallet-with-header.spec.ts pass"
 
     - id: F4
       title: "Shareable Wallet URLs (unlisted link, view-only)"

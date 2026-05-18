@@ -7,7 +7,6 @@ import { useGetMarketplaceTemplatesQuery } from "@/store/slices/templatesSlice";
 import { MarketplaceSearch } from "@/components/marketplace/MarketplaceSearch";
 import { CategoryFilter } from "@/components/marketplace/CategoryFilter";
 import { MarketplaceGrid } from "@/components/marketplace/MarketplaceGrid";
-import { Header } from "@/components/Header";
 
 export default function MarketplacePage() {
   const { user } = useUser();
@@ -29,10 +28,6 @@ export default function MarketplacePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <Header
-        currentStreak={0}
-        showNewGoalButton={false}
-      />
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         {/* Page Title */}
         <div className="mb-6 sm:mb-8">
