@@ -184,29 +184,32 @@ p, h1, h2, h3, h4, h5, h6, span, li, td, th, label {
   --overlay: 15 23 42;
 }
 
-/* Dark mode base */
+/* Dark mode base — warm dark slate palette, softer contrast */
 html.dark {
-  /* ── Legacy hex tokens (kept for backwards-compat during F1 migration) ── */
-  --background: #0e1116;
-  --foreground: #e6e6e6;
+  /* ── Legacy hex tokens ── */
+  --background: #1c1f2e;
+  --foreground: #c8ccd8;
 
-  /* ── F1 semantic theme tokens — dark overrides ── */
-  --bg-app: 14 17 22;               /* #0e1116 */
-  --surface-default: 22 26 34;      /* #161a22 */
-  --surface-elevated: 30 36 46;     /* #1e242e */
-  --surface-hover: 34 41 54;        /* #222936 */
-  --surface-muted: 26 31 41;        /* #1a1f29 */
-  --text-primary: 230 230 230;      /* #e6e6e6 */
-  --text-secondary: 160 170 184;    /* #a0aab8 */
-  --text-muted: 107 117 133;        /* #6b7585 */
-  --border-default: 38 45 58;       /* #262d3a */
-  --border-strong: 58 66 83;        /* #3a4253 */
-  --overlay: 0 0 0;                 /* #000000 — use with /70 for scrim */
+  /* ── F1 semantic theme tokens — softened dark overrides ──
+     Philosophy: backgrounds use a warm dark-slate with a subtle indigo
+     undertone that matches the brand; text is off-white not pure white,
+     so the contrast is pleasant rather than harsh (~8:1 vs the old ~14:1).  */
+  --bg-app: 28 31 46;               /* #1c1f2e — dark slate, not pitch black */
+  --surface-default: 36 41 62;      /* #24293e — warmer surface */
+  --surface-elevated: 46 52 78;     /* #2e344e — elevated panels */
+  --surface-hover: 56 62 90;        /* #383e5a — hover/active */
+  --surface-muted: 32 36 54;        /* #202436 — subtle fills */
+  --text-primary: 200 204 216;      /* #c8ccd8 — soft off-white (≈8:1 contrast) */
+  --text-secondary: 142 152 174;    /* #8e98ae — readable secondary */
+  --text-muted: 96 108 130;         /* #606c82 — captions/placeholders */
+  --border-default: 52 60 86;       /* #343c56 — subtle border */
+  --border-strong: 74 84 118;       /* #4a5476 — prominent border */
+  --overlay: 10 12 22;              /* #0a0c16 — dark scrim, use with /60 */
 }
 
 html.dark body {
-  background-color: #0e1116;
-  color: #e6e6e6;
+  background-color: #1c1f2e;
+  color: #c8ccd8;
 }
 
 html.dark ::selection {
