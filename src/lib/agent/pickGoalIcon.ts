@@ -25,10 +25,13 @@ export const DEFAULT_ICON = '🎯';
 export async function pickGoalIcon(
   title: string,
   description?: string | null,
-  hint?: string
+  hint?: string,
+  userApiKey?: string | null
 ): Promise<string> {
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
+    const resolvedKey = userApiKey || process.env.ANTHROPIC_API_KEY || '';
+    if (!resolvedKey) return DEFAULT_ICON;
+    const client = new Anthropic({ apiKey: resolvedKey });
 
     const context = hint
       ? `The user wants an icon that represents: ${hint}`
