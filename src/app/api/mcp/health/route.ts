@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
-import { getMCPServer } from "@/lib/mcp/server";
+
+/** Public health check — no auth required. */
+export const dynamic = "force-dynamic";
 
 export async function GET() {
+  // Lazy import to avoid module-level side effects in dev mode.
+  const { getMCPServer } = await import("@/lib/mcp/server");
   const server = getMCPServer();
   return NextResponse.json({
     status: "ok",
