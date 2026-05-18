@@ -280,4 +280,13 @@ five_feature_plan_2026_05_16:
       steps: "docs/plans/2026-05-16-f5-mcp-rest-api-steps.md"
       branch: "feat/f5-mcp-rest-api"
       estimate_days: 3
-      status: planned
+      actual_days: 1
+      status: ready_for_review
+      completed_date: "2026-05-17"
+      verification:
+        build: "✓ Compiled successfully"
+        unit_tests: "1313/1318 pass (5 pre-existing)"
+        e2e: "5/5 mcp-rest.spec.ts pass"
+      middleware_fix: "src/proxy.ts updated to add /api/mcp/health and /wallet/share/* as public routes"
+      tools_count: 34
+      skills_count: 3
