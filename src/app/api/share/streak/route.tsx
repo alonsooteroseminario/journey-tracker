@@ -186,7 +186,7 @@ export async function GET(req: NextRequest) {
             }}
           >
             <div style={{ display: "flex", fontSize: "32px", color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
-              {"Journey Tracker"}
+              {"Cadence"}
             </div>
           </div>
         )}

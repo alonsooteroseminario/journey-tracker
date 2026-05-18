@@ -22,7 +22,7 @@ export function AdminSidebar() {
       {/* Header */}
       <div className="p-6 border-b border-gray-800">
         <h1 className="text-xl font-bold">Admin Dashboard</h1>
-        <p className="text-sm text-text-muted mt-1">Journey Tracker</p>
+        <p className="text-sm text-text-muted mt-1">Cadence</p>
       </div>
 
       {/* Navigation */}

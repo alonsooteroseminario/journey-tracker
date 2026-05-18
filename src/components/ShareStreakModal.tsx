@@ -30,7 +30,7 @@ function buildPreviewUrl(params: {
 function buildTweetText(streakCount: number, goalTitle?: string): string {
   const base = goalTitle
     ? `I'm on a ${streakCount}-day streak working towards "${goalTitle}" 🔥`
-    : `I'm on a ${streakCount}-day streak on Journey Tracker 🔥`;
+    : `I'm on a ${streakCount}-day streak on Cadence 🔥`;
   return encodeURIComponent(`${base}\n\n#JourneyTracker #Goals #Consistency`);
 }
 

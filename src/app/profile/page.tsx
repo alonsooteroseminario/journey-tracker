@@ -367,7 +367,7 @@ export default function ProfilePage() {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`🔥 ${streak.currentStreak} day streak on Journey Tracker! Join me in achieving your goals! 🎯`)}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`🔥 ${streak.currentStreak} day streak on Cadence! Join me in achieving your goals! 🎯`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-surface/20 hover:bg-surface/30 backdrop-blur-sm rounded-lg p-4 text-center transition-all"

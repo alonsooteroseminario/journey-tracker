@@ -38,12 +38,12 @@ export function Navigation({ profile, currentStreak }: NavigationProps) {
             <Link href="/" className="flex items-center gap-1.5 sm:gap-2 min-h-[48px]">
               <img
                 src="/brand-icon.png"
-                alt="Journey Tracker"
+                alt="Cadence"
                 className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl object-contain"
               />
               <div className="hidden sm:block">
                 <h1 className="text-xl font-bold text-brand-primary">
-                  Journey Tracker
+                  Cadence
                 </h1>
               </div>
             </Link>

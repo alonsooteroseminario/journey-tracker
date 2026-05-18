@@ -56,12 +56,12 @@ export function Header({
             >
               <img
                 src="/brand-icon.png"
-                alt="Journey Tracker"
+                alt="Cadence"
                 className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl object-contain"
               />
               <h1 className="text-sm sm:text-xl font-bold text-brand-primary">
-                <span className="hidden sm:inline">Journey Tracker</span>
-                <span className="sm:hidden">Journey</span>
+                <span className="hidden sm:inline">Cadence</span>
+                <span className="sm:hidden">Cadence</span>
               </h1>
             </Link>
           </div>

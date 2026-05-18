@@ -149,7 +149,7 @@ export async function GET(req: NextRequest) {
         {/* Branding */}
         {showAppName && (
           <div style={{ display: "flex", position: "absolute", bottom: 48, fontSize: "28px", color: "rgba(255,255,255,0.45)", fontWeight: 600 }}>
-            {"Journey Tracker"}
+            {"Cadence"}
           </div>
         )}
       </div>

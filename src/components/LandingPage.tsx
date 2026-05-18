@@ -67,8 +67,8 @@ export function LandingPage() {
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <img src="/brand-icon.png" alt="Journey Tracker" className="w-8 h-8 rounded-lg object-contain" />
-            <span className="text-lg font-bold text-brand-primary tracking-tight">Journey Tracker</span>
+            <img src="/brand-icon.png" alt="Cadence" className="w-8 h-8 rounded-lg object-contain" />
+            <span className="text-lg font-bold text-brand-primary tracking-tight">Cadence</span>
           </div>
           <div className="flex items-center gap-2">
             <Link href="/sign-in" className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">
@@ -211,14 +211,14 @@ export function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
           <div className="flex items-center gap-2 font-semibold text-gray-700">
             <img src="/brand-icon.png" alt="" className="w-5 h-5 rounded" />
-            Journey Tracker
+            Cadence
           </div>
           <div className="flex items-center gap-6">
             <Link href="/marketplace" className="hover:text-gray-700 transition-colors">Templates</Link>
             <Link href="/sign-in" className="hover:text-gray-700 transition-colors">Sign in</Link>
             <Link href="/sign-up" className="hover:text-gray-700 transition-colors">Sign up</Link>
           </div>
-          <span>© 2026 Journey Tracker</span>
+          <span>© 2026 Cadence</span>
         </div>
       </footer>
     </div>

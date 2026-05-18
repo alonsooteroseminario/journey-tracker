@@ -46,7 +46,7 @@ export default function TemplateDetailPage({
           <div className="mb-4 sm:mb-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-4 sm:p-6 text-white shadow-lg">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
               <div>
-                <h3 className="font-semibold text-base sm:text-lg mb-1">Join Journey Tracker</h3>
+                <h3 className="font-semibold text-base sm:text-lg mb-1">Join Cadence</h3>
                 <p className="text-xs sm:text-sm text-indigo-100">
                   Sign up to fork this template and start tracking your goals
                 </p>

@@ -77,7 +77,7 @@ export default function FriendsPage() {
   const handleShareInvite = (platform: string) => {
     if (!generatedInvite) return;
     
-    const message = `Join me on Journey Tracker! Use code: ${generatedInvite}`;
+    const message = `Join me on Cadence! Use code: ${generatedInvite}`;
     const url = typeof window !== 'undefined' ? window.location.origin : '';
 
     addSocialShare(platform as any, message);

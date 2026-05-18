@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { AgentKeyForm } from "@/components/settings/AgentKeyForm";
 import { AgentUsageStats } from "@/components/settings/AgentUsageStats";
 
-export const metadata = { title: "AI Settings — Journey Tracker" };
+export const metadata = { title: "AI Settings — Cadence" };
 
 export default async function AiKeyPage() {
   const user = await getCurrentUser();

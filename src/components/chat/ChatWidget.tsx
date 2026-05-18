@@ -75,7 +75,7 @@ export function ChatWidget() {
     >
       {/* panel header */}
       <div className="flex items-center justify-between px-4 py-3 bg-brand-primary text-white rounded-t-lg flex-shrink-0">
-        <h3 className="font-semibold text-sm sm:text-base">Journey Tracker Assistant</h3>
+        <h3 className="font-semibold text-sm sm:text-base">Cadence Assistant</h3>
         <div className="flex gap-1">
           {/* view mode toggle */}
           <button
@@ -127,7 +127,7 @@ export function ChatWidget() {
       <div className="flex-1 overflow-y-auto p-4">
         {messages.length === 0 && (
           <div className="text-center text-text-muted mt-8">
-            <p className="mb-4">Hi! I&apos;m your Journey Tracker assistant.</p>
+            <p className="mb-4">Hi! I&apos;m your Cadence assistant.</p>
             <p className="text-sm">Ask me about your goals, tasks, or streaks!</p>
           </div>
         )}

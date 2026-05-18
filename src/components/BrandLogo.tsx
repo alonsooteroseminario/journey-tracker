@@ -16,12 +16,12 @@ export function BrandLogo({ size = 'md', showText = true, className = '' }: Bran
     <div className={`flex items-center gap-2 ${className}`}>
       <img
         src="/brand-icon.png"
-        alt="Journey Tracker"
+        alt="Cadence"
         className={`${s.icon} rounded-xl object-contain`}
       />
       {showText && (
         <span className={`${s.text} font-bold text-brand-primary`}>
-          Journey Tracker
+          Cadence
         </span>
       )}
     </div>
