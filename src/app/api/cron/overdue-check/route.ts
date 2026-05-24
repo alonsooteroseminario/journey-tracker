@@ -16,13 +16,15 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // MongoDB doesn't support relational where filters — query prefs first
+    const eligiblePrefs = await prisma.emailPreferences.findMany({
+      where: { enabled: true, overdueAlert: true },
+      select: { userId: true },
+    });
+    const eligibleIds = eligiblePrefs.map((p) => p.userId);
+
     const users = await prisma.user.findMany({
-      where: {
-        emailPreferences: {
-          enabled: true,
-          overdueAlert: true,
-        },
-      },
+      where: { id: { in: eligibleIds } },
       select: {
         id: true,
         clerkId: true,
