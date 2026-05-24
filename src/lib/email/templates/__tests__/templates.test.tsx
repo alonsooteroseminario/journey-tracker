@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { MorningDigestEmail } from "../morning-digest";
+import { OverdueAlertEmail } from "../overdue-alert";
 import { WelcomeEmail } from "../welcome";
 import { ProfileChangedEmail } from "../profile-changed";
 import { GoalCreatedEmail } from "../goal-created";
@@ -14,6 +16,63 @@ import { GoalForkedEmail } from "../goal-forked";
 import * as React from "react";
 
 describe("Email Templates", () => {
+  it("renders MorningDigestEmail without AI paragraph", () => {
+    expect(() =>
+      React.createElement(MorningDigestEmail, {
+        userName: "Alice",
+        overdueCount: 2,
+        todayTaskCount: 3,
+        streakCount: 7,
+      })
+    ).not.toThrow();
+  });
+
+  it("renders MorningDigestEmail with AI paragraph", () => {
+    expect(() =>
+      React.createElement(MorningDigestEmail, {
+        userName: "Alice",
+        overdueCount: 0,
+        todayTaskCount: 1,
+        streakCount: 14,
+        aiParagraph: "You're on track with Learn Spanish. Two tasks today can push you to B1.",
+      })
+    ).not.toThrow();
+  });
+
+  it("renders MorningDigestEmail with Cadence branding", () => {
+    const element = React.createElement(MorningDigestEmail, {
+      userName: "Bob",
+      overdueCount: 0,
+      todayTaskCount: 0,
+      streakCount: 1,
+    });
+    const str = JSON.stringify(element);
+    expect(str).not.toContain("Journey Tracker");
+  });
+
+  it("renders OverdueAlertEmail without errors", () => {
+    expect(() =>
+      React.createElement(OverdueAlertEmail, {
+        userName: "Carol",
+        taskTitle: "Write project proposal",
+        goalTitle: "Get promotion",
+        daysOverdue: 2,
+      })
+    ).not.toThrow();
+  });
+
+  it("renders OverdueAlertEmail with AI context", () => {
+    expect(() =>
+      React.createElement(OverdueAlertEmail, {
+        userName: "Carol",
+        taskTitle: "Write project proposal",
+        goalTitle: "Get promotion",
+        daysOverdue: 1,
+        aiContext: "This task is the critical blocker for your promotion goal.",
+      })
+    ).not.toThrow();
+  });
+
   it("renders WelcomeEmail without errors", () => {
     expect(() =>
       React.createElement(WelcomeEmail, { userName: "John Doe" })

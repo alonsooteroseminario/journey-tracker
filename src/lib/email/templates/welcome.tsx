@@ -8,11 +8,11 @@ interface WelcomeEmailProps {
 
 export function WelcomeEmail({ userName }: WelcomeEmailProps) {
   return (
-    <BaseLayout preview="Welcome to Journey Tracker!">
-      <Heading style={heading}>Welcome to Journey Tracker!</Heading>
+    <BaseLayout preview="Welcome to Cadence!">
+      <Heading style={heading}>Welcome to Cadence!</Heading>
       <Text style={paragraph}>Hi {userName},</Text>
       <Text style={paragraph}>
-        We're excited to have you on board! Journey Tracker helps you break down your goals into actionable tasks,
+        We're excited to have you on board! Cadence helps you break down your goals into actionable tasks,
         track your progress, and stay motivated with daily streaks.
       </Text>
       <Text style={paragraph}>
@@ -23,13 +23,13 @@ export function WelcomeEmail({ userName }: WelcomeEmailProps) {
       <Text style={listItem}>👥 Connect with friends and share your progress</Text>
       <Text style={listItem}>🤖 Use the AI assistant to help plan and manage your goals</Text>
       <Text style={paragraph}>
-        <Link href={process.env.NEXT_PUBLIC_APP_URL || "https://journeytracker.app"} style={button}>
+        <Link href={process.env.NEXT_PUBLIC_APP_URL || "https://buildcadence.co"} style={button}>
           Get Started
         </Link>
       </Text>
       <Text style={paragraph}>
         Happy goal tracking!<br />
-        The Journey Tracker Team
+        The Cadence Team
       </Text>
     </BaseLayout>
   );

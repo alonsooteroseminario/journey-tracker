@@ -12,10 +12,10 @@ export function FriendInvitationEmail({ userName, invitationCode }: FriendInvita
 
   return (
     <BaseLayout preview="Friend invitation code created">
-      <Heading style={heading}>Share Journey Tracker with Friends!</Heading>
+      <Heading style={heading}>Share Cadence with Friends!</Heading>
       <Text style={paragraph}>Hi {userName},</Text>
       <Text style={paragraph}>
-        You've created a friend invitation code. Share this with someone you'd like to connect with on Journey Tracker:
+        You've created a friend invitation code. Share this with someone you'd like to connect with on Cadence:
       </Text>
       <Text style={codeBlock}>
         <span style={code}>{invitationCode}</span>

@@ -16,6 +16,8 @@ import { GoalForkedEmail } from "./templates/goal-forked";
 import { StreakMilestoneEmail } from "./templates/streak-milestone";
 import { StreakReminderEmail } from "./templates/streak-reminder";
 import { FriendStreakReminderEmail } from "./templates/friend-streak-reminder";
+import { MorningDigestEmail } from "./templates/morning-digest";
+import { OverdueAlertEmail } from "./templates/overdue-alert";
 
 interface NotificationData {
   // Welcome
@@ -43,6 +45,16 @@ interface NotificationData {
   // Fork
   forkerName?: string;
   totalForks?: number;
+
+  // Morning digest
+  overdueCount?: number;
+  todayTaskCount?: number;
+  aiParagraph?: string;
+
+  // Overdue alert
+  taskTitle?: string;
+  daysOverdue?: number;
+  aiContext?: string;
 }
 
 /**
@@ -125,7 +137,7 @@ function generateEmailTemplate(
   switch (type) {
     case "welcomeEmail":
       return {
-        subject: "Welcome to Journey Tracker!",
+        subject: "Welcome to Cadence!",
         template: React.createElement(WelcomeEmail, {
           userName: data.userName || "User",
         }),
@@ -226,6 +238,30 @@ function generateEmailTemplate(
           userName: data.userName || "User",
           friendName: data.friendName || "A friend",
           friendStreak: data.friendStreak || 0,
+        }),
+      };
+
+    case "morningDigest":
+      return {
+        subject: `Good morning — your Cadence digest`,
+        template: React.createElement(MorningDigestEmail, {
+          userName: data.userName || "User",
+          overdueCount: data.overdueCount ?? 0,
+          todayTaskCount: data.todayTaskCount ?? 0,
+          streakCount: data.streakCount ?? 0,
+          aiParagraph: data.aiParagraph,
+        }),
+      };
+
+    case "overdueAlert":
+      return {
+        subject: `Task overdue: ${data.taskTitle || "A task"}`,
+        template: React.createElement(OverdueAlertEmail, {
+          userName: data.userName || "User",
+          taskTitle: data.taskTitle || "A task",
+          goalTitle: data.goalTitle || "Your goal",
+          daysOverdue: data.daysOverdue ?? 1,
+          aiContext: data.aiContext,
         }),
       };
 

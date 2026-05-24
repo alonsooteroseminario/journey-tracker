@@ -22,7 +22,7 @@ export function StreakMilestoneEmail({ userName, streakCount }: StreakMilestoneE
       <Heading style={heading}>{getMessage(streakCount)}</Heading>
       <Text style={paragraph}>Hi {userName},</Text>
       <Text style={paragraph}>
-        Congratulations! You've reached a <strong>{streakCount}-day streak</strong> on Journey Tracker! 🎉
+        Congratulations! You've reached a <strong>{streakCount}-day streak</strong> on Cadence! 🎉
       </Text>
       <Text style={paragraph}>
         Your consistency is paying off. Every day you show up is another step toward your goals.

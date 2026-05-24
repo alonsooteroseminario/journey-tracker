@@ -150,7 +150,7 @@ describe("notify", () => {
 
     expect(mockSendEmail).toHaveBeenCalledWith({
       to: "test@example.com",
-      subject: "Welcome to Journey Tracker!",
+      subject: "Welcome to Cadence!",
       react: expect.anything(),
     });
     expect(result.success).toBe(true);

@@ -1,7 +1,7 @@
 import { resend } from "./resend";
 import type { ReactElement } from "react";
 
-const FROM_EMAIL = process.env.ADMIN_EMAIL || "Journey Tracker <noreply@journeytracker.app>";
+const FROM_EMAIL = process.env.FROM_EMAIL ?? "Cadence <noreply@buildcadence.co>";
 
 export interface SendEmailOptions {
   to: string;

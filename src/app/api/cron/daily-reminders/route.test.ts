@@ -1,12 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterAll } from "vitest";
 import { GET } from "./route";
-import { prisma } from "@/lib/prisma";
-import * as notifications from "@/lib/email/notifications";
-import { getTodayInTimezone } from "@/lib/dateUtils";
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
-    streakData: {
+    user: {
       findMany: vi.fn(),
     },
   },
@@ -16,15 +13,35 @@ vi.mock("@/lib/email/notifications", () => ({
   notify: vi.fn(),
 }));
 
-const mockFindMany = prisma.streakData.findMany as ReturnType<typeof vi.fn>;
-const mockNotify = notifications.notify as ReturnType<typeof vi.fn>;
+vi.mock("@/lib/email/generateAiContext", () => ({
+  generateAiContext: vi.fn().mockResolvedValue(null),
+}));
 
-describe("GET /api/cron/daily-reminders", () => {
+vi.mock("@/lib/dateUtils", () => ({
+  getTodayInTimezone: vi.fn().mockReturnValue("2026-05-23"),
+}));
+
+import { prisma } from "@/lib/prisma";
+import * as notifications from "@/lib/email/notifications";
+import * as aiContext from "@/lib/email/generateAiContext";
+
+const mockFindMany = prisma.user.findMany as ReturnType<typeof vi.fn>;
+const mockNotify = notifications.notify as ReturnType<typeof vi.fn>;
+const mockGenerateAiContext = aiContext.generateAiContext as ReturnType<typeof vi.fn>;
+
+const authedRequest = () =>
+  new Request("http://localhost/api/cron/daily-reminders", {
+    headers: { Authorization: "Bearer test-secret" },
+  });
+
+describe("GET /api/cron/daily-reminders (morning digest)", () => {
   const originalEnv = process.env.CRON_SECRET;
 
   beforeEach(() => {
     vi.clearAllMocks();
     process.env.CRON_SECRET = "test-secret";
+    mockGenerateAiContext.mockResolvedValue(null);
+    mockNotify.mockResolvedValue({ success: true });
   });
 
   afterAll(() => {
@@ -32,91 +49,187 @@ describe("GET /api/cron/daily-reminders", () => {
   });
 
   it("returns 401 without valid auth header", async () => {
-    const request = new Request("http://localhost/api/cron/daily-reminders");
-    const response = await GET(request);
+    const response = await GET(new Request("http://localhost/api/cron/daily-reminders"));
     const data = await response.json();
-
     expect(response.status).toBe(401);
     expect(data.error).toBe("Unauthorized");
   });
 
-  it("processes users with streaks but no activity today", async () => {
-    const today = getTodayInTimezone(null);
-
+  it("skips users with no overdue or today tasks", async () => {
     mockFindMany.mockResolvedValue([
       {
-        userId: "user-1",
-        currentStreak: 5,
-        streakHistory: ["2024-01-01"], // No activity today
-        user: { id: "user-1", name: "Alice", timezone: null },
-      },
-      {
-        userId: "user-2",
-        currentStreak: 10,
-        streakHistory: [today], // Already has activity today
-        user: { id: "user-2", name: "Bob", timezone: null },
+        id: "u1",
+        clerkId: "clerk_1",
+        name: "Alice",
+        timezone: null,
+        goals: [
+          {
+            title: "Learn Spanish",
+            tasks: [{ id: "t1", title: "Vocab", status: "not_started", order: 0 }],
+          },
+        ],
+        streakData: { currentStreak: 5 },
       },
     ]);
 
-    mockNotify.mockResolvedValue({ success: true });
-
-    const request = new Request("http://localhost/api/cron/daily-reminders", {
-      headers: { Authorization: "Bearer test-secret" },
-    });
-
-    const response = await GET(request);
+    const response = await GET(authedRequest());
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.success).toBe(true);
-    expect(data.stats.usersChecked).toBe(2);
-    expect(data.stats.remindersToSend).toBe(1);
-    expect(data.stats.sent).toBe(1);
-
-    // Should only send to user-1 (no activity today)
-    expect(mockNotify).toHaveBeenCalledTimes(1);
-    expect(mockNotify).toHaveBeenCalledWith("user-1", "streakReminder", {
-      userName: "Alice",
-      currentStreak: 5,
-    });
-  });
-
-  it("handles no users with active streaks", async () => {
-    mockFindMany.mockResolvedValue([]);
-
-    const request = new Request("http://localhost/api/cron/daily-reminders", {
-      headers: { Authorization: "Bearer test-secret" },
-    });
-
-    const response = await GET(request);
-    const data = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(data.stats.remindersToSend).toBe(0);
+    expect(data.stats.usersChecked).toBe(1);
+    expect(data.stats.sent).toBe(0);
     expect(mockNotify).not.toHaveBeenCalled();
   });
 
-  it("handles notification failures gracefully", async () => {
+  it("sends digest when user has overdue tasks", async () => {
     mockFindMany.mockResolvedValue([
       {
-        userId: "user-1",
-        currentStreak: 3,
-        streakHistory: [],
-        user: { id: "user-1", name: "Charlie", timezone: null },
+        id: "u1",
+        clerkId: "clerk_1",
+        name: "Alice",
+        timezone: null,
+        goals: [
+          {
+            title: "Learn Spanish",
+            tasks: [
+              { id: "t1", title: "Vocab", status: "not_started", order: 0, dueDate: "2026-05-22" },
+            ],
+          },
+        ],
+        streakData: { currentStreak: 7 },
       },
     ]);
 
-    mockNotify.mockRejectedValue(new Error("Email service down"));
-
-    const request = new Request("http://localhost/api/cron/daily-reminders", {
-      headers: { Authorization: "Bearer test-secret" },
-    });
-
-    const response = await GET(request);
+    const response = await GET(authedRequest());
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.stats.remindersToSend).toBe(1);
+    expect(data.stats.sent).toBe(1);
+    expect(mockNotify).toHaveBeenCalledWith("u1", "morningDigest", {
+      userName: "Alice",
+      overdueCount: 1,
+      todayTaskCount: 0,
+      streakCount: 7,
+      aiParagraph: undefined,
+    });
+  });
+
+  it("counts today tasks separately from overdue", async () => {
+    mockFindMany.mockResolvedValue([
+      {
+        id: "u2",
+        clerkId: "clerk_2",
+        name: "Bob",
+        timezone: null,
+        goals: [
+          {
+            title: "Fitness",
+            tasks: [
+              { id: "t1", title: "Run", status: "not_started", order: 0, dueDate: "2026-05-23" },
+              { id: "t2", title: "Stretch", status: "not_started", order: 1, dueDate: "2026-05-21" },
+              { id: "t3", title: "Done", status: "completed", order: 2, dueDate: "2026-05-23" },
+            ],
+          },
+        ],
+        streakData: null,
+      },
+    ]);
+
+    await GET(authedRequest());
+
+    expect(mockNotify).toHaveBeenCalledWith("u2", "morningDigest", {
+      userName: "Bob",
+      overdueCount: 1,
+      todayTaskCount: 1,
+      streakCount: 0,
+      aiParagraph: undefined,
+    });
+  });
+
+  it("includes AI paragraph when generateAiContext returns one", async () => {
+    mockGenerateAiContext.mockResolvedValue("You're on a great streak!");
+    mockFindMany.mockResolvedValue([
+      {
+        id: "u3",
+        clerkId: "clerk_3",
+        name: "Carol",
+        timezone: null,
+        goals: [
+          {
+            title: "Write Novel",
+            tasks: [{ id: "t1", title: "Chapter 1", status: "not_started", order: 0, dueDate: "2026-05-23" }],
+          },
+        ],
+        streakData: { currentStreak: 14 },
+      },
+    ]);
+
+    await GET(authedRequest());
+
+    expect(mockNotify).toHaveBeenCalledWith("u3", "morningDigest", expect.objectContaining({
+      aiParagraph: "You're on a great streak!",
+    }));
+  });
+
+  it("skips archived and completed tasks", async () => {
+    mockFindMany.mockResolvedValue([
+      {
+        id: "u4",
+        clerkId: "clerk_4",
+        name: "Dave",
+        timezone: null,
+        goals: [
+          {
+            title: "Goal",
+            tasks: [
+              { id: "t1", status: "completed", order: 0, dueDate: "2026-05-22" },
+              { id: "t2", status: "not_started", order: 1, dueDate: "2026-05-22", isArchived: true },
+            ],
+          },
+        ],
+        streakData: null,
+      },
+    ]);
+
+    const response = await GET(authedRequest());
+    const data = await response.json();
+    expect(data.stats.sent).toBe(0);
+    expect(mockNotify).not.toHaveBeenCalled();
+  });
+
+  it("handles notification failure gracefully", async () => {
+    mockNotify.mockRejectedValue(new Error("Email service down"));
+    mockFindMany.mockResolvedValue([
+      {
+        id: "u5",
+        clerkId: "clerk_5",
+        name: "Eve",
+        timezone: null,
+        goals: [
+          {
+            title: "Goal",
+            tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, dueDate: "2026-05-22" }],
+          },
+        ],
+        streakData: null,
+      },
+    ]);
+
+    const response = await GET(authedRequest());
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
     expect(data.stats.failed).toBe(1);
+    expect(data.stats.sent).toBe(0);
+  });
+
+  it("returns 500 on database error", async () => {
+    mockFindMany.mockRejectedValue(new Error("DB connection failed"));
+
+    const response = await GET(authedRequest());
+    const data = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(data.error).toBe("Failed to process morning digest");
   });
 });

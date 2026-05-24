@@ -17,7 +17,7 @@ export function GoalPublishedEmail({ userName, goalTitle, goalIcon }: GoalPublis
       </Heading>
       <Text style={paragraph}>Hi {userName},</Text>
       <Text style={paragraph}>
-        Your goal template "<strong>{goalTitle}</strong>" has been published to the Journey Tracker Marketplace!
+        Your goal template "<strong>{goalTitle}</strong>" has been published to the Cadence Marketplace!
       </Text>
       <Text style={paragraph}>
         Others can now discover and fork your template to follow the same journey you've mapped out.

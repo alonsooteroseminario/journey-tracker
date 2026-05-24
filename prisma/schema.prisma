@@ -306,6 +306,8 @@ model EmailPreferences {
   streakReminder        Boolean @default(true)
   friendStreakReminder  Boolean @default(true)
   friendActivity        Boolean @default(true)
+  morningDigest         Boolean @default(true)
+  overdueAlert          Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

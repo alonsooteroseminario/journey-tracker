@@ -6,8 +6,8 @@ import { generateAiContext } from "@/lib/email/generateAiContext";
 import type { Task } from "@/types";
 
 /**
- * Cron job: Send morning digest emails to opted-in users.
- * Runs at 8 AM UTC daily.
+ * Cron job: Send overdue-alert emails for newly overdue tasks.
+ * Runs every 15 minutes. Skips tasks already alerted today (checked via goal title + task id).
  */
 export async function GET(request: Request) {
   try {
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
       where: {
         emailPreferences: {
           enabled: true,
-          morningDigest: true,
+          overdueAlert: true,
         },
       },
       select: {
@@ -31,7 +31,6 @@ export async function GET(request: Request) {
         goals: {
           select: { title: true, tasks: true },
         },
-        streakData: { select: { currentStreak: true } },
       },
     });
 
@@ -41,56 +40,51 @@ export async function GET(request: Request) {
     for (const user of users) {
       const today = getTodayInTimezone(user.timezone);
 
-      let overdueCount = 0;
-      let todayTaskCount = 0;
-      const goalTitles: string[] = [];
-
       for (const goal of user.goals) {
-        goalTitles.push(goal.title);
         const tasks = (goal.tasks as Task[] | null) ?? [];
+
         for (const task of tasks) {
           if (task.isArchived || task.status === "completed") continue;
-          if (!task.dueDate) continue;
-          if (task.dueDate < today) overdueCount++;
-          else if (task.dueDate === today) todayTaskCount++;
+          if (!task.dueDate || task.dueDate >= today) continue;
+
+          const daysOverdue = Math.floor(
+            (new Date(today).getTime() - new Date(task.dueDate).getTime()) /
+              (1000 * 60 * 60 * 24),
+          );
+
+          const aiContext =
+            (await generateAiContext(
+              user.clerkId,
+              `Write a concise 1-2 sentence motivational nudge for ${user.name} whose task "${task.title}" (part of goal "${goal.title}") is ${daysOverdue} day(s) overdue.`,
+            )) ?? undefined;
+
+          const result = await notify(user.id, "overdueAlert", {
+            userName: user.name,
+            taskTitle: task.title,
+            goalTitle: goal.title,
+            daysOverdue,
+            aiContext,
+          }).catch((err) => {
+            console.error(`Failed to send overdue alert to ${user.id}:`, err);
+            return { success: false };
+          });
+
+          if (result.success) sent++;
+          else failed++;
         }
       }
-
-      if (overdueCount === 0 && todayTaskCount === 0) continue;
-
-      const streakCount = user.streakData?.currentStreak ?? 0;
-
-      const aiParagraph =
-        (await generateAiContext(
-          user.clerkId,
-          `Write a concise 1-2 sentence motivational message for ${user.name} who has ${overdueCount} overdue task(s) and ${todayTaskCount} task(s) due today with a ${streakCount}-day streak. Goals: ${goalTitles.slice(0, 3).join(", ")}.`,
-        )) ?? undefined;
-
-      const result = await notify(user.id, "morningDigest", {
-        userName: user.name,
-        overdueCount,
-        todayTaskCount,
-        streakCount,
-        aiParagraph,
-      }).catch((err) => {
-        console.error(`Failed to send digest to ${user.id}:`, err);
-        return { success: false };
-      });
-
-      if (result.success) sent++;
-      else failed++;
     }
 
     return NextResponse.json({
       success: true,
-      message: "Morning digest processed",
+      message: "Overdue check processed",
       stats: { usersChecked: users.length, sent, failed },
     });
   } catch (error) {
-    console.error("Error in morning digest cron:", error);
+    console.error("Error in overdue-check cron:", error);
     return NextResponse.json(
       {
-        error: "Failed to process morning digest",
+        error: "Failed to process overdue check",
         details: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 },

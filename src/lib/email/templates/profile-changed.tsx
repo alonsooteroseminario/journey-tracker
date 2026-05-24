@@ -13,7 +13,7 @@ export function ProfileChangedEmail({ userName, changedFields }: ProfileChangedE
       <Heading style={heading}>Profile Updated</Heading>
       <Text style={paragraph}>Hi {userName},</Text>
       <Text style={paragraph}>
-        Your Journey Tracker profile has been successfully updated.
+        Your Cadence profile has been successfully updated.
       </Text>
       <Text style={paragraph}>
         <strong>Changes made:</strong>

@@ -23,7 +23,7 @@ export function BaseLayout({ preview, children }: BaseLayoutProps) {
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Text style={logo}>Journey Tracker</Text>
+            <Text style={logo}>Cadence</Text>
           </Section>
           <Section style={content}>
             {children}
@@ -31,7 +31,7 @@ export function BaseLayout({ preview, children }: BaseLayoutProps) {
           <Hr style={hr} />
           <Section style={footer}>
             <Text style={footerText}>
-              You received this email because you have an account on Journey Tracker.
+              You received this email because you have an account on Cadence.
               Manage your notification preferences in your profile settings.
             </Text>
           </Section>

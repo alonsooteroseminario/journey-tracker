@@ -5,10 +5,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://buildcadence.co"),
   title: "Cadence — Set your daily cadence",
   description:
     "Break goals into daily actions, build streaks with your AI coach, manage your prompt library, and stay accountable with friends. Set your cadence.",
   keywords: ["goal tracker", "habit tracker", "streak", "productivity", "AI coach", "prompts wallet", "cadence"],
+  alternates: { canonical: "/" },
   icons: {
     icon: "/brand-icon.png",
     apple: "/brand-icon.png",

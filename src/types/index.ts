@@ -356,6 +356,8 @@ export interface EmailPreferences {
   streakReminder: boolean;
   friendStreakReminder: boolean;
   friendActivity: boolean;
+  morningDigest: boolean;
+  overdueAlert: boolean;
 }
 
 export type NotificationType = keyof Omit<EmailPreferences, 'id' | 'enabled' | 'frequency'>;
