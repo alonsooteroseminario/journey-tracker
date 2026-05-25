@@ -1,7 +1,7 @@
 ---
-project_name: 'Journey Tracker'
+project_name: 'Cadence (formerly Journey Tracker)'
 user_name: 'Alonsooteroseminario'
-date: '2026-02-21'
+date: '2026-05-24'
 sections_completed: ['technology_stack', 'language_rules', 'framework_rules', 'data_layer_rules', 'mcp_rules', 'testing_rules', 'code_quality_rules']
 status: 'complete'
 rule_count: 62
@@ -403,4 +403,56 @@ describe('ModuleName', () => {
 - Update when technology versions change or new patterns are established
 - Review after each sprint for outdated or unnecessary rules
 
-_Last Updated: 2026-02-21_
+_Last Updated: 2026-05-24_
+
+---
+
+## Project State Summary (2026-05-24)
+
+**App name**: Cadence (renamed from Journey Tracker, April 2026)
+
+All original sprint stories complete + 20+ unplanned features shipped. See `docs/sprint-status.yaml` for the full inventory.
+
+**New systems since Feb 2026 that agents must know:**
+
+### BYOK Agent Key
+- `src/lib/agent/getUserAgentKey.ts` — `clerkId` → `LLMCredential` → decrypted Anthropic key
+- `src/lib/email/generateAiContext.ts` — Haiku call (max 200 tokens, 5s timeout), `string | null`
+- `LLMCredential` Prisma model: one per user, AES-encrypted
+
+### Dark Mode (Semantic Token System)
+- **Never use raw color classes** (`bg-white`, `text-gray-900`) — always semantic tokens
+- Tokens: `bg-surface-primary`, `bg-surface-secondary`, `text-primary`, `text-secondary`, `border-subtle`, etc.
+- Defined in `tailwind.config.ts` → `theme.extend.colors` with `.dark:` CSS-variable variants
+- `ThemeToggle` in Header; `LandingPage` pinned to light via `data-theme="light"`
+
+### Prompts Wallet (/wallet)
+- Models: `PromptWallet` → `PromptGroup` → `PromptChunk` (3 separate collections, not JSON)
+- `src/store/slices/promptsSlice.ts` — 19-endpoint RTK Query API
+- `src/store/slices/composeSlice.ts` — client-only compose drawer (7 actions)
+- Components: `src/components/prompts/`
+- Public sharing via `shareToken` field + `/share/[token]` route
+
+### Lock / Undo / Copy
+- `src/lib/locks/lockGuards.ts` — `canEdit`, `canDelete`, `cycleLock`
+- `src/components/undo/UndoToastProvider.tsx` — **always mock in component tests**:
+  ```ts
+  vi.mock('@/components/undo/UndoToastProvider', () => ({
+    useUndoToast: () => ({ showUndoToast: vi.fn() }),
+    UndoToastProvider: ({ children }: any) => <>{children}</>,
+  }));
+  ```
+
+### Email Cron System (3 crons)
+- `src/app/api/cron/task-reminders/` — 2hr interval, `reminderStartTime`, 15-min retry dedup
+- `src/app/api/cron/streak-protect/` — hourly, `streakProtectTime`, daily dedup
+- `src/app/api/cron/daily-reminders/` — morning digest (legacy)
+- All require `Authorization: Bearer CRON_SECRET`; `?force=true` for manual testing
+- Both reminder templates accept `aiContext?: string` → italic paragraph before CTA
+
+### MCP REST API
+- `POST /api/mcp/tools` — list + execute tools externally
+- `POST /api/mcp/skills` — list + execute skills externally
+- `GET /api/mcp/health` — health check
+
+**Test state**: 1444 total, 1429 passing, 15 pre-existing failures (agent/chat, wallet validation, daily-reminders cron, ChatWidget).

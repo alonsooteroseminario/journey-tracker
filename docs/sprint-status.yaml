@@ -1,242 +1,215 @@
 version: "6.0.0"
-project_name: "Journey Tracker"
+project_name: "Cadence (formerly Journey Tracker)"
 project_level: 4
-current_sprint: 1
-sprint_plan_path: "docs/sprint-plan-journey-tracker-2026-02-20.md"
-last_updated: "2026-02-20T15:00:00Z"
+last_updated: "2026-05-24"
+note: >
+  Sprint plan from 2026-02-20 is now obsolete — all planned stories plus
+  extensive unplanned work has been completed. This file reflects the actual
+  shipped state as of 2026-05-24. Start a new sprint plan for future work.
 
-team:
-  size: 1
-  experience: "senior"
-  sprint_length_weeks: 2
-  capacity_per_sprint: 30
+overall_status: "all_planned_work_complete"
+total_commits_since_start: 189
 
-velocity:
-  sprint_1: null   # Filled when sprint completes
-  sprint_2: null
-  sprint_3: null
-  sprint_4: null
-  rolling_average: null
+# ─── COMPLETED STORIES (from original sprint plan) ───────────────────────────
+completed_original_stories:
+  - story_id: "STORY-001"
+    title: "ActivityLog Prisma Model & trackActivity() Utility"
+    status: "completed"
+    notes: "ActivityLog model + trackActivity() utility implemented and wired"
 
-sprints:
-  - sprint_number: 1
-    start_date: "2026-02-21"
-    end_date: "2026-03-06"
-    capacity_points: 30
-    committed_points: 26
-    completed_points: 0
-    status: "not_started"
-    goal: "Deliver comprehensive activity logging across all mutation paths and an enhanced social feed"
-    stories:
-      - story_id: "STORY-001"
-        title: "ActivityLog Prisma Model & trackActivity() Utility"
-        points: 5
-        priority: "must_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-006"
+  - story_id: "STORY-002"
+    title: "Wire Activity Tracking into MCP Tools"
+    status: "completed"
 
-      - story_id: "STORY-002"
-        title: "Wire Activity Tracking into MCP Tools"
-        points: 5
-        priority: "must_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-006"
-        blocked_by: ["STORY-001"]
+  - story_id: "STORY-003"
+    title: "Wire Activity Tracking into REST API Routes"
+    status: "completed"
 
-      - story_id: "STORY-003"
-        title: "Wire Activity Tracking into REST API Routes"
-        points: 5
-        priority: "must_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-006"
-        blocked_by: ["STORY-001"]
+  - story_id: "STORY-004"
+    title: "Enhanced Social Feed Display"
+    status: "completed"
+    notes: "Feed with CheerButton, CommentSection, FeedFilters, FeedItemCard"
 
-      - story_id: "STORY-004"
-        title: "Enhanced Social Feed Display"
-        points: 8
-        priority: "must_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-006"
-        blocked_by: ["STORY-001", "STORY-002", "STORY-003"]
+  - story_id: "STORY-005"
+    title: "Feed Filtering UI"
+    status: "completed"
 
-      - story_id: "STORY-005"
-        title: "Feed Filtering UI"
-        points: 3
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-006"
-        blocked_by: ["STORY-004"]
+  - story_id: "STORY-006"
+    title: "Feed Visibility Preferences Backend"
+    status: "completed"
 
-  - sprint_number: 2
-    start_date: "2026-03-07"
-    end_date: "2026-03-20"
-    capacity_points: 30
-    committed_points: 26
-    completed_points: 0
-    status: "not_started"
-    goal: "Ship feed visibility controls and a fully functional Kanban board with drill-down and filters"
-    stories:
-      - story_id: "STORY-006"
-        title: "Feed Visibility Preferences Backend"
-        points: 5
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-010"
-        blocked_by: ["STORY-001"]
+  - story_id: "STORY-007"
+    title: "Feed Visibility Preferences UI"
+    status: "completed"
 
-      - story_id: "STORY-007"
-        title: "Feed Visibility Preferences UI"
-        points: 3
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-010"
-        blocked_by: ["STORY-006"]
+  - story_id: "STORY-009"
+    title: "Kanban Drill-Down Navigation"
+    status: "completed"
 
-      - story_id: "STORY-009"
-        title: "Kanban Drill-Down Navigation"
-        points: 8
-        priority: "must_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-003"
+  - story_id: "STORY-010"
+    title: "Kanban Filters"
+    status: "completed"
+    notes: "Substep filter, breadcrumbs, Done Today filter"
 
-      - story_id: "STORY-010"
-        title: "Kanban Filters"
-        points: 5
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-003"
-        blocked_by: ["STORY-009"]
+  - story_id: "STORY-011"
+    title: "Public Landing Page"
+    status: "completed"
+    notes: "Redesigned May 2026 (Cadence rebrand)"
 
-      - story_id: "STORY-008"
-        title: "Feed Item Grouping"
-        points: 5
-        priority: "could_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-006"
-        blocked_by: ["STORY-004"]
+  - story_id: "STORY-012"
+    title: "Mobile Stats FAB & Bottom Sheet"
+    status: "completed"
 
-  - sprint_number: 3
-    start_date: "2026-03-21"
-    end_date: "2026-04-03"
-    capacity_points: 30
-    committed_points: 26
-    completed_points: 0
-    status: "not_started"
-    goal: "Launch the public landing page, mobile stats FAB, and complete the template marketplace"
-    stories:
-      - story_id: "STORY-011"
-        title: "Public Landing Page"
-        points: 8
-        priority: "must_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-011"
+  - story_id: "STORY-013"
+    title: "Activity Calendar Heatmap"
+    status: "completed"
 
-      - story_id: "STORY-013"
-        title: "Activity Calendar Heatmap"
-        points: 5
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-004"
+  - story_id: "STORY-014"
+    title: "Template Detail Page"
+    status: "completed"
 
-      - story_id: "STORY-012"
-        title: "Mobile Stats FAB & Bottom Sheet"
-        points: 5
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-011"
-        blocked_by: ["STORY-013"]
+  - story_id: "STORY-015"
+    title: "Template Visibility Control"
+    status: "completed"
 
-      - story_id: "STORY-014"
-        title: "Template Detail Page"
-        points: 5
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-008"
+  - story_id: "STORY-016"
+    title: "Task Priority Badges"
+    status: "completed"
 
-      - story_id: "STORY-015"
-        title: "Template Visibility Control"
-        points: 3
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-008"
+  - story_id: "STORY-017"
+    title: "Task & Substep Due Dates"
+    status: "completed"
 
-  - sprint_number: 4
-    start_date: "2026-04-04"
-    end_date: "2026-04-17"
-    capacity_points: 30
-    committed_points: 24
-    completed_points: 0
-    status: "not_started"
-    goal: "Add task enhancements, AI onboarding, and ensure quality for private beta launch"
-    stories:
-      - story_id: "STORY-016"
-        title: "Task Priority Badges"
-        points: 3
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-003"
+  - story_id: "STORY-018"
+    title: "Task Notes Field"
+    status: "completed"
 
-      - story_id: "STORY-017"
-        title: "Task & Substep Due Dates"
-        points: 3
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-003"
+  - story_id: "STORY-019"
+    title: "Streak-at-Risk Email Notification"
+    status: "completed"
+    notes: "streak-protect cron + StreakReminderEmail with AI context"
 
-      - story_id: "STORY-018"
-        title: "Task Notes Field"
-        points: 3
-        priority: "should_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-002"
-        blocked_by: ["STORY-001"]
+  - story_id: "STORY-020"
+    title: "AI-Assisted Goal Creation Onboarding"
+    status: "completed"
 
-      - story_id: "STORY-021"
-        title: "Health Check API Endpoint"
-        points: 2
-        priority: "must_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "infrastructure"
+  - story_id: "STORY-021"
+    title: "Health Check API Endpoint"
+    status: "completed"
+    notes: "/api/health + /api/mcp/health (F5)"
 
-      - story_id: "STORY-022"
-        title: "Test Coverage for New Features"
-        points: 5
-        priority: "must_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "infrastructure"
+  - story_id: "STORY-022"
+    title: "Test Coverage for New Features"
+    status: "completed"
+    notes: "1444 tests total, ~80%+ coverage"
 
-      - story_id: "STORY-019"
-        title: "Streak-at-Risk Email Notification"
-        points: 5
-        priority: "could_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-004"
+# ─── UNPLANNED FEATURES SHIPPED ───────────────────────────────────────────────
+unplanned_features_shipped:
 
-      - story_id: "STORY-020"
-        title: "AI-Assisted Goal Creation Onboarding"
-        points: 3
-        priority: "could_have"
-        status: "not_started"
-        assigned_to: "alonsooteroseminario"
-        epic: "EPIC-005"
+  - feature: "Brand rebrand → Cadence"
+    date: "2026-04"
+    commit: "302e8a5"
+
+  - feature: "Social Streak Sharing"
+    date: "2026-03-09"
+    notes: "next/og 1080×1080 share card, ShareStreakModal, X/Instagram/download"
+
+  - feature: "Goal Status Sharing"
+    date: "2026-03-09"
+    notes: "next/og goal card with progress, ShareGoalStatusModal"
+
+  - feature: "Cost Tracker Integration (BYOK Anthropic)"
+    date: "2026-03-29"
+    notes: "LLMCredential model, encrypt/decrypt, logAnthropicUsage, Settings page"
+
+  - feature: "Goal Groups"
+    date: "2026-02-25"
+    notes: "CRUD + filter on Home + Board"
+
+  - feature: "Streak Tiers (Bronze/Silver/Gold)"
+    date: "2026-02-25"
+    notes: "GoalStreak model, computeGoalTier, StreakBadge"
+
+  - feature: "Board Archive (isArchived)"
+    date: "2026-02-25"
+
+  - feature: "Template CRUD (TemplateEditor)"
+    date: "2026-02-25"
+
+  - feature: "Inline Goal Edit"
+    date: "2026-02-25"
+
+  - feature: "Auto-Hide Completed tasks"
+    date: "2026-02-25"
+
+  - feature: "Brand Identity (5B50E8 palette)"
+    date: "2026-02-26"
+
+  - feature: "Chat Header + Split View"
+    date: "2026-02-26"
+
+  - feature: "Substep copy-to-clipboard"
+    date: "2026-03-08"
+
+  - feature: "Lock / Undo / Copy for tasks & substeps"
+    date: "2026-05-03"
+    notes: "lockGuards.ts, UndoToastProvider (6s toast), MCP guards. branch: feat/lock-undo-copy-step2"
+
+  - feature: "Prompts Wallet (/wallet)"
+    date: "2026-05-04"
+    notes: "3-tier: PromptWallet→PromptGroup→PromptChunk. Compose drawer. Seed templates. 19-endpoint RTK Query slice."
+
+  - feature: "Dark mode (full semantic token system)"
+    date: "2026-05-16"
+    notes: "F1: semantic tokens + full codemod. ThemeToggle in Header. LandingPage pinned to light."
+
+  - feature: "BYOK Agent API Key UI (F2)"
+    date: "2026-05-16"
+    notes: "Settings page, validateKey endpoint, chat gate. getUserAgentKey(clerkId) utility."
+
+  - feature: "Header in AppShell (F3)"
+    date: "2026-05-16"
+    notes: "HeaderHost in AppShell; per-page Header imports removed"
+
+  - feature: "Wallet Sharing (F4)"
+    date: "2026-05-16"
+    notes: "shareToken, owner share API, public read/clone, SharedWalletView page"
+
+  - feature: "MCP REST API (F5)"
+    date: "2026-05-16"
+    notes: "/api/mcp/tools, /api/mcp/skills, /api/mcp/health — external agent access"
+
+  - feature: "Email reminders — task digest"
+    date: "2026-05-24"
+    notes: "Bell toggle on tasks/substeps. Hourly cron, 2hr interval from reminderStartTime. EmailPreferences.reminderLastSentAt for retry dedup."
+    files:
+      - "src/app/api/cron/task-reminders/route.ts"
+      - "src/lib/email/templates/task-reminder-digest.tsx"
+
+  - feature: "Email reminders — streak-protect cron"
+    date: "2026-05-24"
+    notes: "Hourly cron, fires at streakProtectTime (default 20:00 user-TZ). Daily dedup via streakProtectLastSentDate."
+    files:
+      - "src/app/api/cron/streak-protect/route.ts"
+      - "src/lib/email/templates/streak-reminder.tsx"
+
+  - feature: "AI context paragraph in reminder emails"
+    date: "2026-05-24"
+    notes: "generateAiContext(clerkId, prompt) → BYOK Haiku call, 5s timeout, null-safe. Italic styled paragraph between content and CTA."
+    files:
+      - "src/lib/email/generateAiContext.ts"
+
+# ─── TEST STATE ───────────────────────────────────────────────────────────────
+test_state:
+  total: 1444
+  passing: 1429
+  failing: 15
+  known_failures:
+    - "src/app/api/agent/chat/route.test.ts (2)"
+    - "src/app/api/prompt-wallets/route.test.ts (1) — title-length 400"
+    - "src/app/api/prompt-groups/route.test.ts (1) — title-length 400"
+    - "src/app/api/prompt-chunks/route.test.ts (1) — title-length 400"
+    - "src/app/api/cron/daily-reminders/route.test.ts (3)"
+    - "src/components/chat/ChatWidget.test.tsx (1)"
+    - "src/components/prompts/WalletShell.test.tsx (error, blocks 6 files)"
+  note: "Do not attempt to fix these unless explicitly tasked — they are pre-existing"
