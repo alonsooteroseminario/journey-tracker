@@ -24,18 +24,6 @@ export function EmailPreferencesPanel() {
     }
   };
 
-  const handleReminderTimeChange = async (time: string) => {
-    setSaveStatus("saving");
-    try {
-      await updatePreferences({ reminderTime: time }).unwrap();
-      setSaveStatus("saved");
-      setTimeout(() => setSaveStatus("idle"), 2000);
-    } catch (error) {
-      console.error("Failed to update reminder time:", error);
-      setSaveStatus("idle");
-    }
-  };
-
   const handleFrequencyChange = async (frequency: "immediate" | "daily" | "weekly") => {
     setSaveStatus("saving");
     try {
@@ -100,7 +88,7 @@ export function EmailPreferencesPanel() {
       items: [
         { key: "morningDigest" as const, label: "Morning digest (tasks due today + overdue)" },
         { key: "overdueAlert" as const, label: "Overdue task alerts (daily at 9am)" },
-        { key: "reminderDigest" as const, label: "Daily task reminder digest" },
+        { key: "reminderDigest" as const, label: "Repeat reminders every 2 hours (until tasks are done)" },
       ],
     },
   ];
@@ -221,21 +209,9 @@ export function EmailPreferencesPanel() {
                       />
                     </label>
                     {item.key === "reminderDigest" && preferences.reminderDigest && (
-                      <div className="mt-2 ml-0 flex items-center gap-3">
-                        <label className="text-xs text-text-muted">Remind me at</label>
-                        <select
-                          value={preferences.reminderTime ?? "09:00"}
-                          onChange={(e) => handleReminderTimeChange(e.target.value)}
-                          className="text-xs border border-border-strong rounded-md px-2 py-1 bg-surface focus:ring-2 focus:ring-brand-primary focus:border-transparent"
-                        >
-                          {["08:00","09:00","10:00","12:00","14:00","15:00","17:00","18:00","20:00"].map((t) => (
-                            <option key={t} value={t}>{
-                              new Date(`2000-01-01T${t}:00`).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
-                            }</option>
-                          ))}
-                        </select>
-                        <span className="text-xs text-text-muted">daily (your local time)</span>
-                      </div>
+                      <p className="mt-1 text-xs text-text-muted">
+                        Emails fire every 2 hours until all bell-flagged tasks are complete.
+                      </p>
                     )}
                   </div>
                 ))}
