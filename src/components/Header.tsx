@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useClerk } from "@clerk/nextjs";
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { toggleChat } from '@/store/slices/chatSlice';
 import { ThemeToggle } from "./theme/ThemeToggle";
@@ -30,6 +30,7 @@ export function Header({
 }: HeaderProps) {
   const pathname = usePathname();
   const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -164,6 +165,29 @@ export function Header({
                     {profileName}
                   </span>
                 </Link>
+
+                {/* Log Out */}
+                <button
+                  onClick={() => signOut({ redirectUrl: "/" })}
+                  title="Log out"
+                  aria-label="Log out"
+                  className="p-1 sm:p-2 rounded-lg text-text-secondary hover:bg-surface-hover hover:text-red-500 transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-5 h-5"
+                  >
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                </button>
 
                 {/* New Goal Button */}
                 {showNewGoalButton && onNewGoalClick && pathname === "/" && (

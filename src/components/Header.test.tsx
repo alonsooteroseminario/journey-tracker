@@ -7,6 +7,7 @@ vi.mock('@clerk/nextjs', () => ({
     user: { fullName: 'Test User', firstName: 'Test', imageUrl: null },
     isLoaded: true,
   }),
+  useClerk: () => ({ signOut: vi.fn() }),
 }));
 
 vi.mock('next/navigation', () => ({ usePathname: () => '/' }));
