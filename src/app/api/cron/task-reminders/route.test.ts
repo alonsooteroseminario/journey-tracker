@@ -21,13 +21,19 @@ vi.mock("@/lib/email/templates/task-reminder-digest", () => ({
   TaskReminderDigestEmail: vi.fn().mockReturnValue(null),
 }));
 
+vi.mock("@/lib/email/generateAiContext", () => ({
+  generateAiContext: vi.fn().mockResolvedValue(null),
+}));
+
 import { prisma } from "@/lib/prisma";
 import * as emailSend from "@/lib/email/send";
+import * as generateAiContextModule from "@/lib/email/generateAiContext";
 
 const mockFindManyPrefs = prisma.emailPreferences.findMany as ReturnType<typeof vi.fn>;
 const mockFindManyUsers = prisma.user.findMany as ReturnType<typeof vi.fn>;
 const mockUpdatePrefs = prisma.emailPreferences.update as ReturnType<typeof vi.fn>;
 const mockSendEmail = emailSend.sendEmail as ReturnType<typeof vi.fn>;
+const mockGenerateAiContext = generateAiContextModule.generateAiContext as ReturnType<typeof vi.fn>;
 
 const SECRET = "test-secret";
 
@@ -38,11 +44,13 @@ const authedRequest = () =>
 
 function makeUser(overrides: {
   id?: string;
+  clerkId?: string;
   timezone?: string | null;
   tasks?: object[];
 } = {}) {
   return {
     id: overrides.id ?? "u1",
+    clerkId: overrides.clerkId ?? "clerk_u1",
     email: "user@example.com",
     name: "Alice",
     timezone: overrides.timezone ?? "UTC",
@@ -361,6 +369,46 @@ describe("GET /api/cron/task-reminders", () => {
 
     expect(res.status).toBe(500);
     expect(data.error).toBe("Failed to process task reminders");
+  });
+
+  it("passes aiContext to template when generateAiContext returns a string", async () => {
+    mockGenerateAiContext.mockResolvedValue("Every step forward counts.");
+    mockFindManyPrefs.mockResolvedValue([makePrefs()]);
+    mockFindManyUsers.mockResolvedValue([
+      makeUser({
+        tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
+      }),
+    ]);
+
+    await GET(authedRequest());
+
+    expect(mockSendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        react: expect.objectContaining({
+          props: expect.objectContaining({ aiContext: "Every step forward counts." }),
+        }),
+      }),
+    );
+  });
+
+  it("omits aiContext from template when generateAiContext returns null", async () => {
+    mockGenerateAiContext.mockResolvedValue(null);
+    mockFindManyPrefs.mockResolvedValue([makePrefs()]);
+    mockFindManyUsers.mockResolvedValue([
+      makeUser({
+        tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
+      }),
+    ]);
+
+    await GET(authedRequest());
+
+    expect(mockSendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        react: expect.objectContaining({
+          props: expect.objectContaining({ aiContext: undefined }),
+        }),
+      }),
+    );
   });
 
   it("processes multiple users independently by start time", async () => {

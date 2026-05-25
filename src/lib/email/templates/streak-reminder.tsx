@@ -5,9 +5,10 @@ import { BaseLayout } from "./base-layout";
 interface StreakReminderEmailProps {
   userName: string;
   currentStreak: number;
+  aiContext?: string;
 }
 
-export function StreakReminderEmail({ userName, currentStreak }: StreakReminderEmailProps) {
+export function StreakReminderEmail({ userName, currentStreak, aiContext }: StreakReminderEmailProps) {
   return (
     <BaseLayout preview="Don't break your streak!">
       <Heading style={heading}>🔥 Keep Your Streak Alive!</Heading>
@@ -18,6 +19,7 @@ export function StreakReminderEmail({ userName, currentStreak }: StreakReminderE
       <Text style={paragraph}>
         Complete at least one task or substep to keep your streak alive. Even small progress counts!
       </Text>
+      {aiContext && <Text style={aiContextStyle}>{aiContext}</Text>}
       <Text style={paragraph}>
         <Link href={process.env.NEXT_PUBLIC_APP_URL} style={button}>
           Complete a Task
@@ -34,6 +36,17 @@ export function StreakReminderEmail({ userName, currentStreak }: StreakReminderE
     </BaseLayout>
   );
 }
+
+const aiContextStyle = {
+  fontSize: "14px",
+  lineHeight: "22px",
+  color: "#525f7f",
+  fontStyle: "italic" as const,
+  borderTop: "1px solid #eae8ff",
+  paddingTop: "16px",
+  marginTop: "0",
+  marginBottom: "16px",
+};
 
 const heading = {
   fontSize: "24px",

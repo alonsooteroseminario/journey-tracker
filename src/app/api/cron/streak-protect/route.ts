@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email/send";
 import { StreakReminderEmail } from "@/lib/email/templates/streak-reminder";
 import { getCurrentHourInTimezone, getTodayInTimezone } from "@/lib/dateUtils";
+import { generateAiContext } from "@/lib/email/generateAiContext";
 import * as React from "react";
 
 /**
@@ -34,6 +35,7 @@ export async function GET(request: Request) {
       where: { id: { in: eligibleIds } },
       select: {
         id: true,
+        clerkId: true,
         email: true,
         name: true,
         timezone: true,
@@ -77,12 +79,18 @@ export async function GET(request: Request) {
         continue;
       }
 
+      const aiContext = await generateAiContext(
+        user.clerkId,
+        `You are a brief, encouraging coach. The user has a ${streak.currentStreak}-day streak they haven't protected yet today. Write one short motivational sentence (max 30 words) to help them take action before it resets. No greetings, no sign-off.`,
+      );
+
       const result = await sendEmail({
         to: user.email,
         subject: `Don't lose your ${streak.currentStreak}-day streak, ${user.name}!`,
         react: React.createElement(StreakReminderEmail, {
           userName: user.name,
           currentStreak: streak.currentStreak,
+          aiContext: aiContext ?? undefined,
         }),
       }).catch((err) => {
         console.error(`Failed to send streak warning to ${user.id}:`, err);

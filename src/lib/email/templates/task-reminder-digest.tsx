@@ -11,11 +11,13 @@ export interface ReminderTask {
 interface TaskReminderDigestEmailProps {
   userName: string;
   tasks: ReminderTask[];
+  aiContext?: string;
 }
 
 export function TaskReminderDigestEmail({
   userName,
   tasks,
+  aiContext,
 }: TaskReminderDigestEmailProps) {
   return (
     <BaseLayout preview={`Your daily reminder — ${tasks.length} task${tasks.length !== 1 ? "s" : ""} waiting`}>
@@ -31,6 +33,8 @@ export function TaskReminderDigestEmail({
           <Text style={goalLabel}>{task.goalTitle}{task.dueDate ? ` · due ${new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` : ""}</Text>
         </div>
       ))}
+
+      {aiContext && <Text style={aiContextStyle}>{aiContext}</Text>}
 
       <Text style={footer}>
         <Link href={process.env.NEXT_PUBLIC_APP_URL || "https://buildcadence.co"} style={button}>
@@ -81,6 +85,17 @@ const goalLabel = {
   fontSize: "13px",
   color: "#888",
   margin: "0",
+};
+
+const aiContextStyle = {
+  fontSize: "14px",
+  lineHeight: "22px",
+  color: "#525f7f",
+  fontStyle: "italic" as const,
+  borderTop: "1px solid #eae8ff",
+  paddingTop: "16px",
+  marginTop: "16px",
+  marginBottom: "0",
 };
 
 const footer = {
