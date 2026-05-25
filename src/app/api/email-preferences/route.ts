@@ -21,6 +21,7 @@ const updatePreferencesSchema = z.object({
   morningDigest: z.boolean().optional(),
   overdueAlert: z.boolean().optional(),
   reminderDigest: z.boolean().optional(),
+  reminderStartTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
 });
 
 /**

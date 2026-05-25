@@ -309,6 +309,7 @@ model EmailPreferences {
   morningDigest         Boolean @default(true)
   overdueAlert          Boolean @default(true)
   reminderDigest        Boolean @default(false)
+  reminderStartTime     String? // HH:MM in user's local timezone; reminders only fire at or after this hour
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

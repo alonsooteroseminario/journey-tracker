@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterAll } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from "vitest";
 import { GET } from "./route";
 
 vi.mock("@/lib/prisma", () => ({
@@ -36,12 +36,14 @@ const authedRequest = () =>
 
 function makeUser(overrides: {
   id?: string;
+  timezone?: string | null;
   tasks?: object[];
 } = {}) {
   return {
     id: overrides.id ?? "u1",
     email: "user@example.com",
     name: "Alice",
+    timezone: overrides.timezone ?? "UTC",
     goals: [
       {
         title: "My Goal",
@@ -51,8 +53,14 @@ function makeUser(overrides: {
   };
 }
 
-function makePrefs(overrides: { userId?: string } = {}) {
-  return { userId: overrides.userId ?? "u1" };
+function makePrefs(overrides: {
+  userId?: string;
+  reminderStartTime?: string;
+} = {}) {
+  return {
+    userId: overrides.userId ?? "u1",
+    reminderStartTime: overrides.reminderStartTime ?? "09:00",
+  };
 }
 
 describe("GET /api/cron/task-reminders", () => {
@@ -62,6 +70,12 @@ describe("GET /api/cron/task-reminders", () => {
     vi.clearAllMocks();
     process.env.CRON_SECRET = SECRET;
     mockSendEmail.mockResolvedValue({ success: true });
+    // Default: 3pm UTC so hour=15
+    vi.setSystemTime(new Date("2026-05-24T15:00:00Z"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   afterAll(() => {
@@ -88,6 +102,72 @@ describe("GET /api/cron/task-reminders", () => {
     expect(mockSendEmail).not.toHaveBeenCalled();
   });
 
+  it("skips user when current hour is before their start time", async () => {
+    // System time is 15:00 UTC; user wants reminders to start at 17:00
+    mockFindManyPrefs.mockResolvedValue([makePrefs({ reminderStartTime: "17:00" })]);
+    mockFindManyUsers.mockResolvedValue([
+      makeUser({
+        tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
+      }),
+    ]);
+
+    const res = await GET(authedRequest());
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.stats.sent).toBe(0);
+    expect(data.stats.skipped).toBe(1);
+    expect(mockSendEmail).not.toHaveBeenCalled();
+  });
+
+  it("sends when current hour matches start time exactly", async () => {
+    // System time is 15:00 UTC; start time is 15:00 — boundary condition
+    mockFindManyPrefs.mockResolvedValue([makePrefs({ reminderStartTime: "15:00" })]);
+    mockFindManyUsers.mockResolvedValue([
+      makeUser({
+        tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
+      }),
+    ]);
+
+    const res = await GET(authedRequest());
+    const data = await res.json();
+
+    expect(data.stats.sent).toBe(1);
+    expect(mockSendEmail).toHaveBeenCalledOnce();
+  });
+
+  it("sends when current hour is past the start time", async () => {
+    // System time is 15:00; start time is 09:00 → already past start
+    mockFindManyPrefs.mockResolvedValue([makePrefs({ reminderStartTime: "09:00" })]);
+    mockFindManyUsers.mockResolvedValue([
+      makeUser({
+        tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
+      }),
+    ]);
+
+    const res = await GET(authedRequest());
+    const data = await res.json();
+
+    expect(data.stats.sent).toBe(1);
+    expect(mockSendEmail).toHaveBeenCalledOnce();
+  });
+
+  it("defaults to 09:00 start when reminderStartTime is null", async () => {
+    // System time is 10:00 UTC → past default 09:00 start
+    vi.setSystemTime(new Date("2026-05-24T10:00:00Z"));
+    mockFindManyPrefs.mockResolvedValue([{ userId: "u1", reminderStartTime: null }]);
+    mockFindManyUsers.mockResolvedValue([
+      makeUser({
+        tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
+      }),
+    ]);
+
+    const res = await GET(authedRequest());
+    const data = await res.json();
+
+    expect(data.stats.sent).toBe(1);
+  });
+
   it("skips user with no reminder-enabled tasks", async () => {
     mockFindManyPrefs.mockResolvedValue([makePrefs()]);
     mockFindManyUsers.mockResolvedValue([
@@ -107,39 +187,14 @@ describe("GET /api/cron/task-reminders", () => {
     expect(mockSendEmail).not.toHaveBeenCalled();
   });
 
-  it("sends email when user has reminder-enabled tasks", async () => {
-    mockFindManyPrefs.mockResolvedValue([makePrefs()]);
-    mockFindManyUsers.mockResolvedValue([
-      makeUser({
-        tasks: [
-          { id: "t1", title: "Finish API", status: "not_started", order: 0, reminderEnabled: true },
-        ],
-      }),
-    ]);
-
-    const res = await GET(authedRequest());
-    const data = await res.json();
-
-    expect(res.status).toBe(200);
-    expect(data.stats.sent).toBe(1);
-    expect(mockSendEmail).toHaveBeenCalledOnce();
-    expect(mockSendEmail).toHaveBeenCalledWith(
-      expect.objectContaining({
-        to: "user@example.com",
-        subject: expect.stringContaining("1 task"),
-      }),
-    );
-  });
-
-  it("sends every time cron fires (no daily dedup)", async () => {
-    mockFindManyPrefs.mockResolvedValue([makePrefs()]);
+  it("sends every time cron fires after start time (no dedup)", async () => {
+    mockFindManyPrefs.mockResolvedValue([makePrefs({ reminderStartTime: "09:00" })]);
     mockFindManyUsers.mockResolvedValue([
       makeUser({
         tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
       }),
     ]);
 
-    // Fire the cron twice — both should send
     await GET(authedRequest());
     await GET(authedRequest());
 
@@ -168,7 +223,7 @@ describe("GET /api/cron/task-reminders", () => {
 
     await GET(authedRequest());
 
-    // subject should say "2 tasks" (task + 1 non-completed substep)
+    // subject: task + 1 incomplete substep = 2 tasks
     expect(mockSendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         subject: expect.stringContaining("2 tasks"),
@@ -193,23 +248,6 @@ describe("GET /api/cron/task-reminders", () => {
     expect(data.stats.sent).toBe(0);
     expect(data.stats.skipped).toBe(1);
     expect(mockSendEmail).not.toHaveBeenCalled();
-  });
-
-  it("does not update prefs after sending (no dedup state)", async () => {
-    const mockUpdate = vi.fn();
-    // @ts-ignore
-    prisma.emailPreferences.update = mockUpdate;
-
-    mockFindManyPrefs.mockResolvedValue([makePrefs()]);
-    mockFindManyUsers.mockResolvedValue([
-      makeUser({
-        tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
-      }),
-    ]);
-
-    await GET(authedRequest());
-
-    expect(mockUpdate).not.toHaveBeenCalled();
   });
 
   it("counts failed when sendEmail returns success: false", async () => {
@@ -255,10 +293,12 @@ describe("GET /api/cron/task-reminders", () => {
     expect(data.error).toBe("Failed to process task reminders");
   });
 
-  it("processes multiple users independently", async () => {
+  it("processes multiple users independently by start time", async () => {
+    // u1: start 09:00, current 15:00 → past start → sends
+    // u2: start 17:00, current 15:00 → before start → skips
     mockFindManyPrefs.mockResolvedValue([
-      makePrefs({ userId: "u1" }),
-      makePrefs({ userId: "u2" }),
+      makePrefs({ userId: "u1", reminderStartTime: "09:00" }),
+      makePrefs({ userId: "u2", reminderStartTime: "17:00" }),
     ]);
     mockFindManyUsers.mockResolvedValue([
       makeUser({
@@ -267,14 +307,13 @@ describe("GET /api/cron/task-reminders", () => {
       }),
       makeUser({
         id: "u2",
-        tasks: [{ id: "t2", title: "Task B", status: "not_started", order: 0 }],
+        tasks: [{ id: "t2", title: "Task B", status: "not_started", order: 0, reminderEnabled: true }],
       }),
     ]);
 
     const res = await GET(authedRequest());
     const data = await res.json();
 
-    // u1 sends, u2 has no bell-flagged tasks → skips
     expect(data.stats.sent).toBe(1);
     expect(data.stats.skipped).toBe(1);
     expect(mockSendEmail).toHaveBeenCalledOnce();

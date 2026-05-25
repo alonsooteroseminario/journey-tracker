@@ -24,6 +24,18 @@ export function EmailPreferencesPanel() {
     }
   };
 
+  const handleStartTimeChange = async (time: string) => {
+    setSaveStatus("saving");
+    try {
+      await updatePreferences({ reminderStartTime: time }).unwrap();
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch (error) {
+      console.error("Failed to update reminder start time:", error);
+      setSaveStatus("idle");
+    }
+  };
+
   const handleFrequencyChange = async (frequency: "immediate" | "daily" | "weekly") => {
     setSaveStatus("saving");
     try {
@@ -209,9 +221,21 @@ export function EmailPreferencesPanel() {
                       />
                     </label>
                     {item.key === "reminderDigest" && preferences.reminderDigest && (
-                      <p className="mt-1 text-xs text-text-muted">
-                        Emails fire every 2 hours until all bell-flagged tasks are complete.
-                      </p>
+                      <div className="mt-2 flex items-center gap-3">
+                        <label className="text-xs text-text-muted whitespace-nowrap">Start at</label>
+                        <select
+                          value={preferences.reminderStartTime ?? "09:00"}
+                          onChange={(e) => handleStartTimeChange(e.target.value)}
+                          className="text-xs border border-border-strong rounded-md px-2 py-1 bg-surface focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                        >
+                          {["06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"].map((t) => (
+                            <option key={t} value={t}>
+                              {new Date(`2000-01-01T${t}:00`).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="text-xs text-text-muted">then every 2 hrs (your local time)</span>
+                      </div>
                     )}
                   </div>
                 ))}
