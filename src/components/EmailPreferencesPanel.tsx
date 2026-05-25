@@ -24,6 +24,18 @@ export function EmailPreferencesPanel() {
     }
   };
 
+  const handleReminderTimeChange = async (time: string) => {
+    setSaveStatus("saving");
+    try {
+      await updatePreferences({ reminderTime: time }).unwrap();
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch (error) {
+      console.error("Failed to update reminder time:", error);
+      setSaveStatus("idle");
+    }
+  };
+
   const handleFrequencyChange = async (frequency: "immediate" | "daily" | "weekly") => {
     setSaveStatus("saving");
     try {
@@ -81,6 +93,14 @@ export function EmailPreferencesPanel() {
         { key: "goalPublished" as const, label: "Template published" },
         { key: "goalShared" as const, label: "Template shared with friends" },
         { key: "goalForked" as const, label: "Someone forked your template" },
+      ],
+    },
+    {
+      title: "Digests & Reminders",
+      items: [
+        { key: "morningDigest" as const, label: "Morning digest (tasks due today + overdue)" },
+        { key: "overdueAlert" as const, label: "Overdue task alerts (daily at 9am)" },
+        { key: "reminderDigest" as const, label: "Daily task reminder digest" },
       ],
     },
   ];
@@ -190,18 +210,34 @@ export function EmailPreferencesPanel() {
               </h3>
               <div className="space-y-3">
                 {group.items.map((item) => (
-                  <label
-                    key={item.key}
-                    className="flex items-center justify-between cursor-pointer"
-                  >
-                    <span className="text-sm text-text-primary">{item.label}</span>
-                    <input
-                      type="checkbox"
-                      checked={preferences[item.key]}
-                      onChange={(e) => handleToggle(item.key, e.target.checked)}
-                      className="w-4 h-4 text-brand-primary rounded focus:ring-2 focus:ring-brand-primary"
-                    />
-                  </label>
+                  <div key={item.key}>
+                    <label className="flex items-center justify-between cursor-pointer">
+                      <span className="text-sm text-text-primary">{item.label}</span>
+                      <input
+                        type="checkbox"
+                        checked={preferences[item.key]}
+                        onChange={(e) => handleToggle(item.key, e.target.checked)}
+                        className="w-4 h-4 text-brand-primary rounded focus:ring-2 focus:ring-brand-primary"
+                      />
+                    </label>
+                    {item.key === "reminderDigest" && preferences.reminderDigest && (
+                      <div className="mt-2 ml-0 flex items-center gap-3">
+                        <label className="text-xs text-text-muted">Remind me at</label>
+                        <select
+                          value={preferences.reminderTime ?? "09:00"}
+                          onChange={(e) => handleReminderTimeChange(e.target.value)}
+                          className="text-xs border border-border-strong rounded-md px-2 py-1 bg-surface focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                        >
+                          {["08:00","09:00","10:00","12:00","14:00","15:00","17:00","18:00","20:00"].map((t) => (
+                            <option key={t} value={t}>{
+                              new Date(`2000-01-01T${t}:00`).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
+                            }</option>
+                          ))}
+                        </select>
+                        <span className="text-xs text-text-muted">daily (your local time)</span>
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>

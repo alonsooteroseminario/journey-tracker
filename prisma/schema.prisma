@@ -308,6 +308,9 @@ model EmailPreferences {
   friendActivity        Boolean @default(true)
   morningDigest         Boolean @default(true)
   overdueAlert          Boolean @default(true)
+  reminderDigest        Boolean @default(false)
+  reminderTime          String?
+  reminderLastSentDate  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

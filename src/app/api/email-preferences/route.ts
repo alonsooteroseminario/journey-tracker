@@ -16,7 +16,12 @@ const updatePreferencesSchema = z.object({
   goalForked: z.boolean().optional(),
   streakMilestone: z.boolean().optional(),
   streakReminder: z.boolean().optional(),
+  friendStreakReminder: z.boolean().optional(),
   friendActivity: z.boolean().optional(),
+  morningDigest: z.boolean().optional(),
+  overdueAlert: z.boolean().optional(),
+  reminderDigest: z.boolean().optional(),
+  reminderTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
 });
 
 /**

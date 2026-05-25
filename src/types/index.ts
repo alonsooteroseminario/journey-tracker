@@ -34,6 +34,7 @@ export interface Substep {
   archivedAt?: string;
   lockLevel?: 'none' | 'soft' | 'hard';
   lockedAt?: string; // ISO date — set when lockLevel is changed from 'none'
+  reminderEnabled?: boolean;
 }
 
 export interface Task {
@@ -60,6 +61,7 @@ export interface Task {
   archivedAt?: string;
   lockLevel?: 'none' | 'soft' | 'hard';
   lockedAt?: string; // ISO date — set when lockLevel is changed from 'none'
+  reminderEnabled?: boolean;
 }
 
 export interface Goal {
@@ -358,6 +360,8 @@ export interface EmailPreferences {
   friendActivity: boolean;
   morningDigest: boolean;
   overdueAlert: boolean;
+  reminderDigest: boolean;
+  reminderTime?: string;
 }
 
 export type NotificationType = keyof Omit<EmailPreferences, 'id' | 'enabled' | 'frequency'>;

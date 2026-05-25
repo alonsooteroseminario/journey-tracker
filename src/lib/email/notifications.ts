@@ -18,6 +18,7 @@ import { StreakReminderEmail } from "./templates/streak-reminder";
 import { FriendStreakReminderEmail } from "./templates/friend-streak-reminder";
 import { MorningDigestEmail } from "./templates/morning-digest";
 import { OverdueAlertEmail } from "./templates/overdue-alert";
+import { TaskReminderDigestEmail, type ReminderTask } from "./templates/task-reminder-digest";
 
 interface NotificationData {
   // Welcome
@@ -55,6 +56,9 @@ interface NotificationData {
   taskTitle?: string;
   daysOverdue?: number;
   aiContext?: string;
+
+  // Task reminder digest
+  reminderTasks?: ReminderTask[];
 }
 
 /**
@@ -262,6 +266,15 @@ function generateEmailTemplate(
           goalTitle: data.goalTitle || "Your goal",
           daysOverdue: data.daysOverdue ?? 1,
           aiContext: data.aiContext,
+        }),
+      };
+
+    case "reminderDigest":
+      return {
+        subject: `Your daily reminder — ${(data.reminderTasks ?? []).length} task${(data.reminderTasks ?? []).length !== 1 ? "s" : ""} waiting`,
+        template: React.createElement(TaskReminderDigestEmail, {
+          userName: data.userName || "User",
+          tasks: data.reminderTasks ?? [],
         }),
       };
 
