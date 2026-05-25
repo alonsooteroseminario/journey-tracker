@@ -4,6 +4,7 @@ import { sendEmail } from "@/lib/email/send";
 import { StreakReminderEmail } from "@/lib/email/templates/streak-reminder";
 import { getCurrentHourInTimezone, getTodayInTimezone } from "@/lib/dateUtils";
 import { generateAiContext } from "@/lib/email/generateAiContext";
+import { sendDiscordMessage, buildStreakReminderEmbed } from "@/lib/discord/send";
 import * as React from "react";
 
 /**
@@ -103,6 +104,13 @@ export async function GET(request: Request) {
           data: { streakProtectLastSentDate: today },
         });
         sent++;
+
+        const discordWebhookUrl = process.env.WEBHOOK_DISCORD_BOT;
+        if (discordWebhookUrl) {
+          sendDiscordMessage(discordWebhookUrl, {
+            embeds: [buildStreakReminderEmbed(user.name, streak.currentStreak, aiContext)],
+          }).catch(() => {});
+        }
       } else {
         failed++;
       }

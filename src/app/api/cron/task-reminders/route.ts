@@ -4,6 +4,7 @@ import { sendEmail } from "@/lib/email/send";
 import { TaskReminderDigestEmail, type ReminderTask } from "@/lib/email/templates/task-reminder-digest";
 import { getCurrentHourInTimezone } from "@/lib/dateUtils";
 import { generateAiContext } from "@/lib/email/generateAiContext";
+import { sendDiscordMessage, buildTaskReminderEmbed } from "@/lib/discord/send";
 import type { Task, Substep } from "@/types";
 import * as React from "react";
 
@@ -117,6 +118,13 @@ export async function GET(request: Request) {
           data: { reminderLastSentAt: nowUtc },
         });
         sent++;
+
+        const discordWebhookUrl = process.env.WEBHOOK_DISCORD_BOT;
+        if (discordWebhookUrl) {
+          sendDiscordMessage(discordWebhookUrl, {
+            embeds: [buildTaskReminderEmbed(user.name, reminderTasks, aiContext)],
+          }).catch(() => {});
+        }
       } else {
         failed++;
       }
