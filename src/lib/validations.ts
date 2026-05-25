@@ -28,6 +28,11 @@ const SubstepSchema = z.object({
   dueDate: isoDateString.optional(),
   notes: z.string().max(2000, "Notes too long").optional(),
   order: z.number().int().min(0, "Order must be non-negative"),
+  reminderEnabled: z.boolean().optional(),
+  isArchived: z.boolean().optional(),
+  archivedAt: isoDateTimeString.optional(),
+  lockLevel: z.enum(["none", "soft", "hard"]).optional(),
+  lockedAt: isoDateTimeString.optional(),
 });
 
 const TaskSchema = z.object({
@@ -51,6 +56,11 @@ const TaskSchema = z.object({
   substeps: z.array(SubstepSchema).optional(),
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
   tags: z.array(z.string().max(50)).max(20, "Too many tags").optional(),
+  reminderEnabled: z.boolean().optional(),
+  isArchived: z.boolean().optional(),
+  archivedAt: isoDateTimeString.optional(),
+  lockLevel: z.enum(["none", "soft", "hard"]).optional(),
+  lockedAt: isoDateTimeString.optional(),
 });
 
 export const CreateGoalSchema = z.object({
@@ -110,6 +120,11 @@ export const UpdateTaskSchema = z.object({
   substeps: z.array(SubstepSchema).optional(),
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
   tags: z.array(z.string().max(50)).max(20).optional(),
+  reminderEnabled: z.boolean().optional(),
+  isArchived: z.boolean().optional(),
+  archivedAt: isoDateString.nullable().optional(),
+  lockLevel: z.enum(["none", "soft", "hard"]).optional(),
+  lockedAt: isoDateString.nullable().optional(),
 }).strict(); // Reject any extra fields (prevents 'id' injection)
 
 // ==========================================

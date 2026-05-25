@@ -19,6 +19,8 @@ export async function GET(request: Request) {
     }
 
     const nowUtc = new Date();
+    // ?force=true bypasses hour-matching and dedup — for manual testing only
+    const force = new URL(request.url).searchParams.get("force") === "true";
 
     // Two-step query: find eligible prefs first (MongoDB can't filter across relations)
     const eligiblePrefs = await prisma.emailPreferences.findMany({
@@ -51,14 +53,14 @@ export async function GET(request: Request) {
 
       // Check if current hour in user's timezone matches their chosen reminder hour
       const currentHour = getCurrentHourInTimezone(user.timezone, nowUtc);
-      if (currentHour !== reminderHour) {
+      if (!force && currentHour !== reminderHour) {
         skipped++;
         continue;
       }
 
       // Dedup: skip if already sent today
       const today = getTodayInTimezone(user.timezone);
-      if (prefs.reminderLastSentDate === today) {
+      if (!force && prefs.reminderLastSentDate === today) {
         skipped++;
         continue;
       }
