@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     // Two-step query: find eligible prefs first (MongoDB can't filter across relations)
     const eligiblePrefs = await prisma.emailPreferences.findMany({
       where: { enabled: true, reminderDigest: true },
-      select: { userId: true, reminderStartTime: true, reminderLastSentAt: true },
+      select: { userId: true, reminderStartTime: true, reminderLastSentAt: true, discordWebhookUrl: true },
     });
 
     const eligibleIds = eligiblePrefs.map((p) => p.userId);
@@ -119,9 +119,9 @@ export async function GET(request: Request) {
         });
         sent++;
 
-        const discordWebhookUrl = process.env.WEBHOOK_DISCORD_BOT;
-        if (discordWebhookUrl) {
-          sendDiscordMessage(discordWebhookUrl, {
+        const discordUrl = prefs.discordWebhookUrl ?? process.env.WEBHOOK_DISCORD_BOT;
+        if (discordUrl) {
+          sendDiscordMessage(discordUrl, {
             embeds: [buildTaskReminderEmbed(user.name, reminderTasks, aiContext)],
           }).catch(() => {});
         }

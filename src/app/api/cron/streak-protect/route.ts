@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     // Two-step query: find prefs with streak reminder enabled
     const eligiblePrefs = await prisma.emailPreferences.findMany({
       where: { enabled: true, streakReminder: true },
-      select: { userId: true, streakProtectTime: true, streakProtectLastSentDate: true },
+      select: { userId: true, streakProtectTime: true, streakProtectLastSentDate: true, discordWebhookUrl: true },
     });
 
     const eligibleIds = eligiblePrefs.map((p) => p.userId);
@@ -105,9 +105,9 @@ export async function GET(request: Request) {
         });
         sent++;
 
-        const discordWebhookUrl = process.env.WEBHOOK_DISCORD_BOT;
-        if (discordWebhookUrl) {
-          sendDiscordMessage(discordWebhookUrl, {
+        const discordUrl = prefs.discordWebhookUrl ?? process.env.WEBHOOK_DISCORD_BOT;
+        if (discordUrl) {
+          sendDiscordMessage(discordUrl, {
             embeds: [buildStreakReminderEmbed(user.name, streak.currentStreak, aiContext)],
           }).catch(() => {});
         }

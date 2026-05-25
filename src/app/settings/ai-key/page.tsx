@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AgentKeyForm } from "@/components/settings/AgentKeyForm";
 import { AgentUsageStats } from "@/components/settings/AgentUsageStats";
+import { DiscordWebhookForm } from "@/components/settings/DiscordWebhookForm";
 
 export const metadata = { title: "AI Settings — Cadence" };
 
@@ -13,6 +14,11 @@ export default async function AiKeyPage() {
   const cred = await prisma.lLMCredential.findFirst({
     where: { userId: user.id, provider: "anthropic" },
     orderBy: { updatedAt: "desc" },
+  });
+
+  const emailPrefs = await prisma.emailPreferences.findUnique({
+    where: { userId: user.id },
+    select: { discordWebhookUrl: true },
   });
 
   // Quick summary from the last 30 days for the server-rendered header
@@ -79,6 +85,24 @@ export default async function AiKeyPage() {
 
       {/* Live usage stats (client-rendered, auto-refresh) */}
       <AgentUsageStats />
+
+      {/* Discord webhook configuration */}
+      <div className="bg-surface-elevated rounded-2xl border border-border p-6 shadow-sm mt-6">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-lg">🔔</span>
+          <h2 className="text-base font-semibold text-text-primary">Discord Notifications</h2>
+          {emailPrefs?.discordWebhookUrl && (
+            <span className="ml-auto text-xs px-2 py-0.5 bg-green-500/15 text-green-400 rounded-full border border-green-500/30">
+              Connected
+            </span>
+          )}
+        </div>
+        <p className="text-sm text-text-secondary mb-4">
+          Mirror your task and streak reminders to a Discord channel. Each reminder email will also
+          post a rich embed to your chosen channel.
+        </p>
+        <DiscordWebhookForm initialUrl={emailPrefs?.discordWebhookUrl ?? null} />
+      </div>
     </div>
   );
 }

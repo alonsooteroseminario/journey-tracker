@@ -37,6 +37,17 @@ const updatePreferencesSchema = z.object({
       { message: "streakProtectTime must be between 15:00 and 22:00" },
     )
     .optional(),
+  discordWebhookUrl: z
+    .string()
+    .url()
+    .refine(
+      (v) =>
+        v.startsWith("https://discord.com/api/webhooks/") ||
+        v.startsWith("https://discordapp.com/api/webhooks/"),
+      { message: "Must be a valid Discord webhook URL" },
+    )
+    .nullable()
+    .optional(),
 });
 
 /**

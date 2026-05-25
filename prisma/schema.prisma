@@ -313,6 +313,7 @@ model EmailPreferences {
   reminderLastSentAt    DateTime? // UTC timestamp of last task-reminder send; prevents retry duplicates within 15 min
   streakProtectTime         String?   // HH:MM when to send the streak-at-risk warning (default 20:00)
   streakProtectLastSentDate String?   // YYYY-MM-DD (user's timezone) — dedup, one warning per day
+  discordWebhookUrl         String?   // Discord channel webhook URL for mirror notifications
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
