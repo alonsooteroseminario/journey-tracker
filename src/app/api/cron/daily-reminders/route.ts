@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/email/notifications";
 import { getTodayInTimezone } from "@/lib/dateUtils";
 import { generateAiContext } from "@/lib/email/generateAiContext";
+import { sendDiscordMessage, buildMorningDigestEmbed } from "@/lib/discord/send";
 import type { Task } from "@/types";
 
 /**
@@ -19,9 +20,10 @@ export async function GET(request: Request) {
     // MongoDB doesn't support relational where filters — query prefs first
     const eligiblePrefs = await prisma.emailPreferences.findMany({
       where: { enabled: true, morningDigest: true },
-      select: { userId: true },
+      select: { userId: true, discordWebhookUrl: true },
     });
     const eligibleIds = eligiblePrefs.map((p) => p.userId);
+    const prefsByUserId = Object.fromEntries(eligiblePrefs.map((p) => [p.userId, p]));
 
     const users = await prisma.user.findMany({
       where: { id: { in: eligibleIds } },
@@ -79,8 +81,17 @@ export async function GET(request: Request) {
         return { success: false };
       });
 
-      if (result.success) sent++;
-      else failed++;
+      if (result.success) {
+        sent++;
+        const discordUrl = prefsByUserId[user.id]?.discordWebhookUrl ?? process.env.WEBHOOK_DISCORD_BOT;
+        if (discordUrl) {
+          sendDiscordMessage(discordUrl, {
+            embeds: [buildMorningDigestEmbed(user.name, overdueCount, todayTaskCount, streakCount, aiParagraph)],
+          }).catch(() => {});
+        }
+      } else {
+        failed++;
+      }
     }
 
     return NextResponse.json({

@@ -61,6 +61,27 @@ export function buildTaskReminderEmbed(
   };
 }
 
+/** Build a morning digest Discord embed. */
+export function buildMorningDigestEmbed(
+  userName: string,
+  overdueCount: number,
+  todayTaskCount: number,
+  streakCount: number,
+  aiContext?: string | null,
+): DiscordEmbed {
+  const parts: string[] = [];
+  if (overdueCount > 0) parts.push(`⚠️ **${overdueCount}** overdue task${overdueCount !== 1 ? "s" : ""}`);
+  if (todayTaskCount > 0) parts.push(`📅 **${todayTaskCount}** due today`);
+  if (streakCount > 0) parts.push(`🔥 ${streakCount}-day streak`);
+
+  return {
+    title: `☀️ Morning digest for ${userName}`,
+    description: `${parts.join("  ·  ")}${aiContext ? `\n\n_${aiContext}_` : ""}`,
+    color: CADENCE_BLUE,
+    footer: { text: "Cadence · morning digest" },
+  };
+}
+
 /** Build a streak-at-risk Discord embed. */
 export function buildStreakReminderEmbed(
   userName: string,

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { sendDiscordMessage, buildTaskReminderEmbed, buildStreakReminderEmbed } from "./send";
+import { sendDiscordMessage, buildTaskReminderEmbed, buildStreakReminderEmbed, buildMorningDigestEmbed } from "./send";
 
 const WEBHOOK = "https://discord.com/api/webhooks/test/token";
 
@@ -102,6 +102,45 @@ describe("buildStreakReminderEmbed", () => {
 
   it("omits aiContext block when null", () => {
     const embed = buildStreakReminderEmbed("Alice", 5, null);
+    expect(embed.description).not.toContain("_");
+  });
+});
+
+describe("buildMorningDigestEmbed", () => {
+  it("includes user name in title", () => {
+    const embed = buildMorningDigestEmbed("Alice", 2, 1, 5);
+    expect(embed.title).toContain("Alice");
+  });
+
+  it("shows overdue count in description", () => {
+    const embed = buildMorningDigestEmbed("Alice", 3, 0, 0);
+    expect(embed.description).toContain("3");
+    expect(embed.description).toContain("overdue");
+  });
+
+  it("shows today task count in description", () => {
+    const embed = buildMorningDigestEmbed("Alice", 0, 2, 0);
+    expect(embed.description).toContain("2");
+    expect(embed.description).toContain("due today");
+  });
+
+  it("shows streak count when > 0", () => {
+    const embed = buildMorningDigestEmbed("Alice", 1, 0, 7);
+    expect(embed.description).toContain("7-day streak");
+  });
+
+  it("omits streak when 0", () => {
+    const embed = buildMorningDigestEmbed("Alice", 1, 0, 0);
+    expect(embed.description).not.toContain("streak");
+  });
+
+  it("appends aiContext as italic when provided", () => {
+    const embed = buildMorningDigestEmbed("Alice", 1, 0, 0, "Make it count!");
+    expect(embed.description).toContain("_Make it count!_");
+  });
+
+  it("omits aiContext block when null", () => {
+    const embed = buildMorningDigestEmbed("Alice", 1, 0, 0, null);
     expect(embed.description).not.toContain("_");
   });
 });
