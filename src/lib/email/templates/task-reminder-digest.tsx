@@ -39,7 +39,10 @@ export function TaskReminderDigestEmail({
       </Text>
 
       <Text style={unsubscribeNote}>
-        To stop these reminders, click the bell icon on each task or turn off "Daily task reminder digest" in your profile notifications.
+        To stop these reminders, click the bell icon on each task or{" "}
+        <Link href={`${process.env.NEXT_PUBLIC_APP_URL || "https://buildcadence.co"}/settings/notifications`} style={unsubscribeLink}>
+          manage your email preferences
+        </Link>.
       </Text>
     </BaseLayout>
   );
@@ -102,4 +105,9 @@ const unsubscribeNote = {
   color: "#aaa",
   marginTop: "20px",
   lineHeight: "18px",
+};
+
+const unsubscribeLink = {
+  color: "#888",
+  textDecoration: "underline",
 };

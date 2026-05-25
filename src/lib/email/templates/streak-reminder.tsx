@@ -26,6 +26,11 @@ export function StreakReminderEmail({ userName, currentStreak }: StreakReminderE
       <Text style={paragraph}>
         You've got this! 💪
       </Text>
+      <Text style={unsubscribeNote}>
+        <Link href={`${process.env.NEXT_PUBLIC_APP_URL || "https://buildcadence.co"}/settings/notifications`} style={unsubscribeLink}>
+          Manage email preferences
+        </Link>
+      </Text>
     </BaseLayout>
   );
 }
@@ -46,8 +51,20 @@ const paragraph = {
   marginBottom: "16px",
 };
 
+const unsubscribeNote = {
+  fontSize: "12px",
+  color: "#aaa",
+  marginTop: "20px",
+  lineHeight: "18px",
+};
+
+const unsubscribeLink = {
+  color: "#888",
+  textDecoration: "underline",
+};
+
 const button = {
-  backgroundColor: "#4f46e5",
+  backgroundColor: "#5B50E8",
   borderRadius: "6px",
   color: "#fff",
   fontSize: "16px",

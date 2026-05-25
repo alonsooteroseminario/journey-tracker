@@ -21,8 +21,22 @@ const updatePreferencesSchema = z.object({
   morningDigest: z.boolean().optional(),
   overdueAlert: z.boolean().optional(),
   reminderDigest: z.boolean().optional(),
-  reminderStartTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
-  streakProtectTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+  reminderStartTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/)
+    .refine(
+      (v) => ["06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"].includes(v),
+      { message: "reminderStartTime must be between 06:00 and 18:00" },
+    )
+    .optional(),
+  streakProtectTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/)
+    .refine(
+      (v) => ["15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00"].includes(v),
+      { message: "streakProtectTime must be between 15:00 and 22:00" },
+    )
+    .optional(),
 });
 
 /**

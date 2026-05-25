@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     // Two-step query: find eligible prefs first (MongoDB can't filter across relations)
     const eligiblePrefs = await prisma.emailPreferences.findMany({
       where: { enabled: true, reminderDigest: true },
-      select: { userId: true, reminderStartTime: true },
+      select: { userId: true, reminderStartTime: true, reminderLastSentAt: true },
     });
 
     const eligibleIds = eligiblePrefs.map((p) => p.userId);
@@ -55,6 +55,13 @@ export async function GET(request: Request) {
       // Only send at or after the user's chosen start hour in their timezone
       const currentHour = getCurrentHourInTimezone(user.timezone, nowUtc);
       if (!force && currentHour < startHour) {
+        skipped++;
+        continue;
+      }
+
+      // 15-minute cooldown — prevents retry duplicates if Vercel re-fires a failed cron run
+      const lastSent = prefs.reminderLastSentAt;
+      if (!force && lastSent && nowUtc.getTime() - lastSent.getTime() < 15 * 60 * 1000) {
         skipped++;
         continue;
       }
@@ -96,6 +103,10 @@ export async function GET(request: Request) {
       });
 
       if (result.success) {
+        await prisma.emailPreferences.update({
+          where: { userId: user.id },
+          data: { reminderLastSentAt: nowUtc },
+        });
         sent++;
       } else {
         failed++;
