@@ -24,6 +24,18 @@ export function EmailPreferencesPanel() {
     }
   };
 
+  const handleStreakProtectTimeChange = async (time: string) => {
+    setSaveStatus("saving");
+    try {
+      await updatePreferences({ streakProtectTime: time }).unwrap();
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    } catch (error) {
+      console.error("Failed to update streak protect time:", error);
+      setSaveStatus("idle");
+    }
+  };
+
   const handleStartTimeChange = async (time: string) => {
     setSaveStatus("saving");
     try {
@@ -83,7 +95,7 @@ export function EmailPreferencesPanel() {
       title: "Streaks",
       items: [
         { key: "streakMilestone" as const, label: "Streak milestones" },
-        { key: "streakReminder" as const, label: "Daily streak reminders" },
+        { key: "streakReminder" as const, label: "Warn me before I lose my streak" },
         { key: "friendStreakReminder" as const, label: "Friend streak alerts" },
       ],
     },
@@ -220,6 +232,23 @@ export function EmailPreferencesPanel() {
                         className="w-4 h-4 text-brand-primary rounded focus:ring-2 focus:ring-brand-primary"
                       />
                     </label>
+                    {item.key === "streakReminder" && preferences.streakReminder && (
+                      <div className="mt-2 flex items-center gap-3">
+                        <label className="text-xs text-text-muted whitespace-nowrap">Warn me at</label>
+                        <select
+                          value={preferences.streakProtectTime ?? "20:00"}
+                          onChange={(e) => handleStreakProtectTimeChange(e.target.value)}
+                          className="text-xs border border-border-strong rounded-md px-2 py-1 bg-surface focus:ring-2 focus:ring-brand-primary focus:border-transparent"
+                        >
+                          {["15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00"].map((t) => (
+                            <option key={t} value={t}>
+                              {new Date(`2000-01-01T${t}:00`).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="text-xs text-text-muted">if no tasks done yet (your local time)</span>
+                      </div>
+                    )}
                     {item.key === "reminderDigest" && preferences.reminderDigest && (
                       <div className="mt-2 flex items-center gap-3">
                         <label className="text-xs text-text-muted whitespace-nowrap">Start at</label>

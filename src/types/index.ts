@@ -362,6 +362,7 @@ export interface EmailPreferences {
   overdueAlert: boolean;
   reminderDigest: boolean;
   reminderStartTime?: string;
+  streakProtectTime?: string;
 }
 
 export type NotificationType = keyof Omit<EmailPreferences, 'id' | 'enabled' | 'frequency'>;
