@@ -21,9 +21,9 @@ vi.mock("@/lib/email/templates/streak-reminder", () => ({
   StreakReminderEmail: vi.fn().mockReturnValue(null),
 }));
 
-vi.mock("@/lib/dateUtils", () => ({
-  getTodayInTimezone: vi.fn().mockReturnValue("2026-05-24"),
-}));
+// No mock for @/lib/dateUtils — real implementations use vi.setSystemTime correctly:
+// getTodayInTimezone(timezone) reads new Date() → faked by vi.setSystemTime
+// getCurrentHourInTimezone(timezone, now) receives the nowUtc passed explicitly
 
 import { prisma } from "@/lib/prisma";
 import * as emailSend from "@/lib/email/send";

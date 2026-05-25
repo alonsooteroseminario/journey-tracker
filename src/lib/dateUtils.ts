@@ -31,6 +31,22 @@ export function isYesterdayInTimezone(
   return dateString === formatDateInTimezone(yesterday, timezone);
 }
 
+/** Return the current hour (0-23) in the given timezone. Handles Intl midnight edge case. */
+export function getCurrentHourInTimezone(timezone: string | null | undefined, now: Date): number {
+  const tz = timezone || "UTC";
+  try {
+    const formatted = new Intl.DateTimeFormat("en-US", {
+      timeZone: tz,
+      hour: "numeric",
+      hour12: false,
+    }).format(now);
+    const hour = parseInt(formatted, 10);
+    return hour === 24 ? 0 : hour;
+  } catch {
+    return now.getUTCHours();
+  }
+}
+
 /** Format a Date as YYYY-MM-DD in the given timezone. */
 function formatDateInTimezone(date: Date, timezone?: string | null): string {
   const tz = timezone || undefined; // let Intl use runtime default when undefined

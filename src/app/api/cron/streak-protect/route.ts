@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email/send";
 import { StreakReminderEmail } from "@/lib/email/templates/streak-reminder";
-import { getTodayInTimezone } from "@/lib/dateUtils";
+import { getCurrentHourInTimezone, getTodayInTimezone } from "@/lib/dateUtils";
 import * as React from "react";
 
 /**
@@ -117,17 +117,3 @@ export async function GET(request: Request) {
   }
 }
 
-function getCurrentHourInTimezone(timezone: string | null | undefined, now: Date): number {
-  const tz = timezone || "UTC";
-  try {
-    const formatted = new Intl.DateTimeFormat("en-US", {
-      timeZone: tz,
-      hour: "numeric",
-      hour12: false,
-    }).format(now);
-    const hour = parseInt(formatted, 10);
-    return hour === 24 ? 0 : hour;
-  } catch {
-    return now.getUTCHours();
-  }
-}
