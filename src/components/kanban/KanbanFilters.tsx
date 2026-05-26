@@ -17,6 +17,8 @@ interface KanbanFiltersProps {
   onDoneTodayChange: (val: boolean) => void;
   showArchived?: boolean;
   onShowArchivedChange?: (val: boolean) => void;
+  reminderOnly: boolean;
+  onReminderOnlyChange: (val: boolean) => void;
 }
 
 export function KanbanFilters({
@@ -34,6 +36,8 @@ export function KanbanFilters({
   onDoneTodayChange,
   showArchived,
   onShowArchivedChange,
+  reminderOnly,
+  onReminderOnlyChange,
 }: KanbanFiltersProps) {
   return (
     <div className="bg-surface rounded-xl border border-border p-2 sm:p-4">
@@ -99,6 +103,19 @@ export function KanbanFilters({
           <span className="hidden sm:inline">Done Today</span>
         </button>
 
+        {/* Reminders filter chip */}
+        <button
+          onClick={() => onReminderOnlyChange(!reminderOnly)}
+          className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors whitespace-nowrap ${
+            reminderOnly
+              ? "bg-brand-light text-brand-primary border-brand-primary/40"
+              : "bg-surface text-text-secondary border-border hover:border-border-strong"
+          }`}
+        >
+          <span className="sm:hidden">🔔</span>
+          <span className="hidden sm:inline">🔔 Reminders</span>
+        </button>
+
         {/* Date Filter */}
         {showDateFilter && (
           <div className="flex items-center gap-2">
@@ -135,13 +152,14 @@ export function KanbanFilters({
         )}
 
         {/* Clear Filters */}
-        {(searchTerm || dateFilter !== "all" || priorityFilter !== "all" || doneToday) && (
+        {(searchTerm || dateFilter !== "all" || priorityFilter !== "all" || doneToday || reminderOnly) && (
           <button
             onClick={() => {
               onSearchChange("");
               onDateFilterChange("all");
               onPriorityFilterChange("all");
               onDoneTodayChange(false);
+              onReminderOnlyChange(false);
             }}
             className="px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded-lg transition-colors"
           >

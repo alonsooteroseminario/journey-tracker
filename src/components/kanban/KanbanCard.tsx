@@ -282,6 +282,13 @@ export function KanbanCard({ item, level, columnStatus, onDrillDown, onArchive }
             {tag}
           </span>
         ))}
+
+        {/* Task/Substep: Show reminder indicator */}
+        {(level === "tasks" || level === "substeps") && (item as any).reminderEnabled && (
+          <span className="px-1.5 sm:px-2 py-0.5 bg-brand-light text-brand-primary rounded-full">
+            🔔
+          </span>
+        )}
       </div>
 
       {/* Task: Documents needed */}

@@ -29,6 +29,7 @@ export function KanbanBoard() {
   const [dateFilter, setDateFilter] = useState<"all" | "overdue" | "today" | "week">("all");
   const [priorityFilter, setPriorityFilter] = useState<"all" | "low" | "medium" | "high" | "critical">("all");
   const [doneToday, setDoneToday] = useState(false);
+  const [reminderOnly, setReminderOnly] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [showArchived, setShowArchived] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
@@ -171,8 +172,24 @@ export function KanbanBoard() {
       });
     }
 
+    // Reminder filter
+    if (reminderOnly) {
+      if (effectiveLevel === "goals") {
+        data = data.filter((item: any) =>
+          (item.tasks as Task[] | null)?.some(
+            (t) =>
+              (t.reminderEnabled || t.substeps?.some((s) => s.reminderEnabled)) &&
+              t.status !== "completed" &&
+              !t.isArchived
+          ) ?? false
+        );
+      } else {
+        data = data.filter((item: any) => item.reminderEnabled);
+      }
+    }
+
     return data;
-  }, [viewData, searchTerm, dateFilter, priorityFilter, effectiveLevel, doneToday, showArchived]);
+  }, [viewData, searchTerm, dateFilter, priorityFilter, effectiveLevel, doneToday, showArchived, reminderOnly]);
 
   // Group by status
   const columns = useMemo(() => {
@@ -330,6 +347,8 @@ export function KanbanBoard() {
         onDoneTodayChange={setDoneToday}
         showArchived={showArchived}
         onShowArchivedChange={setShowArchived}
+        reminderOnly={reminderOnly}
+        onReminderOnlyChange={setReminderOnly}
       />
 
       {/* Kanban Columns */}
@@ -384,7 +403,7 @@ export function KanbanBoard() {
           <div className="text-4xl mb-2">📋</div>
           <p className="text-text-secondary">No items found</p>
           <p className="text-sm text-text-muted mt-1">
-            {searchTerm || dateFilter !== "all" || priorityFilter !== "all" || doneToday
+            {searchTerm || dateFilter !== "all" || priorityFilter !== "all" || doneToday || reminderOnly
               ? "Try adjusting your filters"
               : effectiveLevel === "goals"
               ? "Create a goal to get started"
