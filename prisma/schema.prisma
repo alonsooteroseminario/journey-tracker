@@ -310,6 +310,7 @@ model EmailPreferences {
   overdueAlert          Boolean @default(true)
   reminderDigest        Boolean @default(false)
   reminderStartTime     String?   // HH:MM in user's local timezone; reminders only fire at or after this hour
+  reminderStopTime      String?   // HH:MM in user's local timezone; quiet after this hour (no notifications)
   reminderLastSentAt    DateTime? // UTC timestamp of last task-reminder send; prevents retry duplicates within 15 min
   streakProtectTime         String?   // HH:MM when to send the streak-at-risk warning (default 20:00)
   streakProtectLastSentDate String?   // YYYY-MM-DD (user's timezone) — dedup, one warning per day

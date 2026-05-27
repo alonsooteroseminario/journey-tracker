@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email/send";
 import { TaskReminderDigestEmail, type ReminderTask } from "@/lib/email/templates/task-reminder-digest";
-import { getCurrentHourInTimezone } from "@/lib/dateUtils";
+import { getCurrentHourInTimezone, isInReminderWindow } from "@/lib/dateUtils";
 import { generateAiContext } from "@/lib/email/generateAiContext";
 import { sendDiscordMessage, buildTaskReminderEmbed } from "@/lib/discord/send";
 import type { Task, Substep } from "@/types";
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     // Two-step query: find eligible prefs first (MongoDB can't filter across relations)
     const eligiblePrefs = await prisma.emailPreferences.findMany({
       where: { enabled: true, reminderDigest: true },
-      select: { userId: true, reminderStartTime: true, reminderLastSentAt: true, discordWebhookUrl: true },
+      select: { userId: true, reminderStartTime: true, reminderLastSentAt: true, discordWebhookUrl: true, reminderStopTime: true },
     });
 
     const eligibleIds = eligiblePrefs.map((p) => p.userId);
@@ -53,11 +53,10 @@ export async function GET(request: Request) {
     for (const user of users) {
       const prefs = prefsByUserId[user.id];
       const startTime = prefs.reminderStartTime ?? "09:00";
-      const startHour = parseInt(startTime.split(":")[0], 10);
 
-      // Only send at or after the user's chosen start hour in their timezone
+      // Only send within the user's configured reminder window in their timezone
       const currentHour = getCurrentHourInTimezone(user.timezone, nowUtc);
-      if (!force && currentHour < startHour) {
+      if (!force && !isInReminderWindow(currentHour, startTime, prefs.reminderStopTime)) {
         skipped++;
         continue;
       }

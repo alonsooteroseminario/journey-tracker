@@ -57,3 +57,31 @@ function formatDateInTimezone(date: Date, timezone?: string | null): string {
     day: '2-digit',
   }).format(date);
 }
+
+/**
+ * Returns true when the current hour falls inside the user's configured reminder window.
+ *
+ * Quiet window logic:
+ *   Normal   (stopHour > startHour): active when startHour <= currentHour < stopHour
+ *   Overnight (stopHour < startHour): active when currentHour >= startHour OR currentHour < stopHour
+ *   No stop time: active when currentHour >= startHour
+ *
+ * Minutes are intentionally ignored — the cron fires on whole hours.
+ */
+export function isInReminderWindow(
+  currentHour: number,
+  startTime: string,
+  stopTime: string | null | undefined,
+): boolean {
+  const startHour = parseInt(startTime.split(":")[0], 10);
+  if (!stopTime) return currentHour >= startHour;
+  const stopHour = parseInt(stopTime.split(":")[0], 10);
+  // NaN guard: if either parse fails, fall back to start-time-only behavior
+  if (isNaN(startHour) || isNaN(stopHour)) return currentHour >= (isNaN(startHour) ? 0 : startHour);
+  if (stopHour > startHour) {
+    // Normal daytime window (e.g., start 09:00, stop 23:00)
+    return currentHour >= startHour && currentHour < stopHour;
+  }
+  // Overnight window (e.g., start 22:00, stop 06:00)
+  return currentHour >= startHour || currentHour < stopHour;
+}

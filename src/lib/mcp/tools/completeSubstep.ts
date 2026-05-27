@@ -97,6 +97,7 @@ export async function executeCompleteSubstep(
     if (args.status === 'completed') {
       substep.completedAt = now;
       substep.startedAt = substep.startedAt ?? now;
+      if (substep.reminderEnabled) substep.reminderEnabled = false;
     } else if (args.status === 'in_progress') {
       substep.startedAt = substep.startedAt ?? now;
       substep.completedAt = undefined;

@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     // Two-step query: find prefs with streak reminder enabled
     const eligiblePrefs = await prisma.emailPreferences.findMany({
       where: { enabled: true, streakReminder: true },
-      select: { userId: true, streakProtectTime: true, streakProtectLastSentDate: true, discordWebhookUrl: true },
+      select: { userId: true, streakProtectTime: true, streakProtectLastSentDate: true, discordWebhookUrl: true, reminderStopTime: true },
     });
 
     const eligibleIds = eligiblePrefs.map((p) => p.userId);
@@ -65,6 +65,15 @@ export async function GET(request: Request) {
       if (!force && currentHour < protectHour) {
         skipped++;
         continue;
+      }
+
+      // Stop sending if we're past the user's quiet-window stop time
+      if (!force && prefs.reminderStopTime) {
+        const stopHour = parseInt(prefs.reminderStopTime.split(":")[0], 10);
+        if (!isNaN(stopHour) && currentHour >= stopHour) {
+          skipped++;
+          continue;
+        }
       }
 
       // Streak is NOT at risk if the user already logged activity today

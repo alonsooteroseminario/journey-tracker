@@ -67,11 +67,14 @@ function makePrefs(overrides: {
   userId?: string;
   reminderStartTime?: string;
   reminderLastSentAt?: Date | null;
+  reminderStopTime?: string | null;
 } = {}) {
   return {
     userId: overrides.userId ?? "u1",
     reminderStartTime: overrides.reminderStartTime ?? "09:00",
     reminderLastSentAt: overrides.reminderLastSentAt !== undefined ? overrides.reminderLastSentAt : null,
+    reminderStopTime: overrides.reminderStopTime ?? null,
+    discordWebhookUrl: null,
   };
 }
 
@@ -434,6 +437,38 @@ describe("GET /api/cron/task-reminders", () => {
 
     expect(data.stats.sent).toBe(1);
     expect(data.stats.skipped).toBe(1);
+    expect(mockSendEmail).toHaveBeenCalledOnce();
+  });
+
+  it("skips user when current hour is at or past the stop time", async () => {
+    // System time is 15:00 UTC; stop at 14:00 → already past stop
+    mockFindManyPrefs.mockResolvedValue([makePrefs({ reminderStartTime: "09:00", reminderStopTime: "14:00" })]);
+    mockFindManyUsers.mockResolvedValue([
+      makeUser({
+        tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
+      }),
+    ]);
+
+    const res = await GET(authedRequest());
+    const data = await res.json();
+
+    expect(data.stats.skipped).toBe(1);
+    expect(mockSendEmail).not.toHaveBeenCalled();
+  });
+
+  it("sends when current hour is before the stop time", async () => {
+    // System time is 15:00 UTC; stop at 18:00 → still in window
+    mockFindManyPrefs.mockResolvedValue([makePrefs({ reminderStartTime: "09:00", reminderStopTime: "18:00" })]);
+    mockFindManyUsers.mockResolvedValue([
+      makeUser({
+        tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, reminderEnabled: true }],
+      }),
+    ]);
+
+    const res = await GET(authedRequest());
+    const data = await res.json();
+
+    expect(data.stats.sent).toBe(1);
     expect(mockSendEmail).toHaveBeenCalledOnce();
   });
 });

@@ -29,6 +29,15 @@ const updatePreferencesSchema = z.object({
       { message: "reminderStartTime must be between 06:00 and 18:00" },
     )
     .optional(),
+  reminderStopTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/)
+    .refine(
+      (v) => ["18:00","19:00","20:00","21:00","22:00","23:00"].includes(v),
+      { message: "reminderStopTime must be between 18:00 and 23:00" },
+    )
+    .nullable()
+    .optional(),
   streakProtectTime: z
     .string()
     .regex(/^\d{2}:\d{2}$/)

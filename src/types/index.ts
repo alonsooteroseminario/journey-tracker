@@ -362,6 +362,7 @@ export interface EmailPreferences {
   overdueAlert: boolean;
   reminderDigest: boolean;
   reminderStartTime?: string;
+  reminderStopTime?: string | null;
   streakProtectTime?: string;
 }
 

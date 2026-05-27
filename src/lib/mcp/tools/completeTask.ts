@@ -88,6 +88,7 @@ export async function executeCompleteTask(
     if (args.status === 'completed') {
       task.completedAt = now;
       task.startedAt = task.startedAt ?? now;
+      if (task.reminderEnabled) task.reminderEnabled = false;
     } else if (args.status === 'in_progress') {
       task.startedAt = task.startedAt ?? now;
       task.completedAt = undefined;

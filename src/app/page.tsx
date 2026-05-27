@@ -30,6 +30,7 @@ import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { MobileStatsPanel } from "@/components/MobileStatsPanel";
 import { LandingPage } from "@/components/LandingPage";
 import { GoalGroupFilter } from "@/components/GoalGroupFilter";
+import { RemindersPanel } from "@/components/RemindersPanel";
 
 function SortableGoalCard(props: React.ComponentProps<typeof GoalCard>) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -268,6 +269,9 @@ export default function Home() {
                 onEnable={enableNotifications}
                 onDisable={disableNotifications}
               />
+
+              {/* Reminders */}
+              <RemindersPanel />
 
               {/* Quick Stats */}
               <div className="bg-surface rounded-lg p-2 sm:p-6 shadow-sm border border-border">
