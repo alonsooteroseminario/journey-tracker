@@ -159,9 +159,15 @@ export function useGoalsCRUD(
       const goal = goals.find((g) => g.id === goalId);
       if (!goal) return;
 
+      const finalUpdates = { ...updates };
+      if (finalUpdates.status === 'completed') {
+        const task = goal.tasks.find((t) => t.id === taskId);
+        if (task?.reminderEnabled) finalUpdates.reminderEnabled = false;
+      }
+
       const updatedTasks = goal.tasks.map((task) => {
         if (task.id !== taskId) return task;
-        return { ...task, ...updates };
+        return { ...task, ...finalUpdates };
       });
 
       updateGoalMutation({
@@ -209,6 +215,7 @@ export function useGoalsCRUD(
           status: newStatus,
           completedAt: newStatus === 'completed' ? now : undefined,
           startedAt: newStatus === 'completed' ? (t.startedAt || now) : undefined,
+          ...(newStatus === 'completed' && t.reminderEnabled ? { reminderEnabled: false } : {}),
         };
       });
 
@@ -291,7 +298,11 @@ export function useGoalsCRUD(
           ...task,
           substeps: task.substeps?.map((substep) => {
             if (substep.id !== substepId) return substep;
-            return { ...substep, ...updates };
+            const finalUpdates = { ...updates };
+            if (finalUpdates.status === 'completed' && substep.reminderEnabled) {
+              finalUpdates.reminderEnabled = false;
+            }
+            return { ...substep, ...finalUpdates };
           }),
         };
       });
@@ -332,6 +343,7 @@ export function useGoalsCRUD(
               status: newStatus,
               completedAt: newStatus === 'completed' ? now : undefined,
               startedAt: newStatus === 'completed' ? (s.startedAt || now) : undefined,
+              ...(newStatus === 'completed' && s.reminderEnabled ? { reminderEnabled: false } : {}),
             };
           }),
         };
