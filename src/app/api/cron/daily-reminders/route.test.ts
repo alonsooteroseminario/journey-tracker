@@ -3,6 +3,9 @@ import { GET } from "./route";
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
+    emailPreferences: {
+      findMany: vi.fn(),
+    },
     user: {
       findMany: vi.fn(),
     },
@@ -19,20 +22,34 @@ vi.mock("@/lib/email/generateAiContext", () => ({
 
 vi.mock("@/lib/dateUtils", () => ({
   getTodayInTimezone: vi.fn().mockReturnValue("2026-05-23"),
+  getCurrentHourInTimezone: vi.fn().mockReturnValue(9),
+  isInReminderWindow: vi.fn().mockReturnValue(true),
 }));
 
 import { prisma } from "@/lib/prisma";
 import * as notifications from "@/lib/email/notifications";
 import * as aiContext from "@/lib/email/generateAiContext";
+import * as dateUtils from "@/lib/dateUtils";
 
 const mockFindMany = prisma.user.findMany as ReturnType<typeof vi.fn>;
+const mockFindManyPrefs = prisma.emailPreferences.findMany as ReturnType<typeof vi.fn>;
 const mockNotify = notifications.notify as ReturnType<typeof vi.fn>;
 const mockGenerateAiContext = aiContext.generateAiContext as ReturnType<typeof vi.fn>;
+const mockIsInReminderWindow = dateUtils.isInReminderWindow as ReturnType<typeof vi.fn>;
 
 const authedRequest = () =>
   new Request("http://localhost/api/cron/daily-reminders", {
     headers: { Authorization: "Bearer test-secret" },
   });
+
+function makePrefs(userId: string, overrides: { reminderStartTime?: string; reminderStopTime?: string | null } = {}) {
+  return {
+    userId,
+    discordWebhookUrl: null,
+    reminderStartTime: overrides.reminderStartTime ?? "09:00",
+    reminderStopTime: overrides.reminderStopTime ?? null,
+  };
+}
 
 describe("GET /api/cron/daily-reminders (morning digest)", () => {
   const originalEnv = process.env.CRON_SECRET;
@@ -42,6 +59,9 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
     process.env.CRON_SECRET = "test-secret";
     mockGenerateAiContext.mockResolvedValue(null);
     mockNotify.mockResolvedValue({ success: true });
+    mockFindManyPrefs.mockResolvedValue([]);
+    // Re-apply defaults cleared by vi.clearAllMocks
+    mockIsInReminderWindow.mockReturnValue(true);
   });
 
   afterAll(() => {
@@ -56,6 +76,7 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
   });
 
   it("skips users with no overdue or today tasks", async () => {
+    mockFindManyPrefs.mockResolvedValue([makePrefs("u1")]);
     mockFindMany.mockResolvedValue([
       {
         id: "u1",
@@ -82,6 +103,7 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
   });
 
   it("sends digest when user has overdue tasks", async () => {
+    mockFindManyPrefs.mockResolvedValue([makePrefs("u1")]);
     mockFindMany.mockResolvedValue([
       {
         id: "u1",
@@ -115,6 +137,7 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
   });
 
   it("counts today tasks separately from overdue", async () => {
+    mockFindManyPrefs.mockResolvedValue([makePrefs("u2")]);
     mockFindMany.mockResolvedValue([
       {
         id: "u2",
@@ -148,6 +171,7 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
 
   it("includes AI paragraph when generateAiContext returns one", async () => {
     mockGenerateAiContext.mockResolvedValue("You're on a great streak!");
+    mockFindManyPrefs.mockResolvedValue([makePrefs("u3")]);
     mockFindMany.mockResolvedValue([
       {
         id: "u3",
@@ -172,6 +196,7 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
   });
 
   it("skips archived and completed tasks", async () => {
+    mockFindManyPrefs.mockResolvedValue([makePrefs("u4")]);
     mockFindMany.mockResolvedValue([
       {
         id: "u4",
@@ -199,6 +224,7 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
 
   it("handles notification failure gracefully", async () => {
     mockNotify.mockRejectedValue(new Error("Email service down"));
+    mockFindManyPrefs.mockResolvedValue([makePrefs("u5")]);
     mockFindMany.mockResolvedValue([
       {
         id: "u5",
@@ -224,12 +250,39 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
   });
 
   it("returns 500 on database error", async () => {
-    mockFindMany.mockRejectedValue(new Error("DB connection failed"));
+    mockFindManyPrefs.mockRejectedValue(new Error("DB connection failed"));
 
     const response = await GET(authedRequest());
     const data = await response.json();
 
     expect(response.status).toBe(500);
     expect(data.error).toBe("Failed to process morning digest");
+  });
+
+  it("skips user when outside reminder window (stop time configured)", async () => {
+    mockIsInReminderWindow.mockReturnValueOnce(false);
+
+    mockFindManyPrefs.mockResolvedValue([makePrefs("u1", { reminderStopTime: "21:00" })]);
+    mockFindMany.mockResolvedValue([
+      {
+        id: "u1",
+        clerkId: "clerk_1",
+        name: "Alice",
+        timezone: null,
+        goals: [
+          {
+            title: "Goal",
+            tasks: [{ id: "t1", title: "Task", status: "not_started", order: 0, dueDate: "2026-05-22" }],
+          },
+        ],
+        streakData: { currentStreak: 5 },
+      },
+    ]);
+
+    const response = await GET(authedRequest());
+    const data = await response.json();
+
+    expect(data.stats.sent).toBe(0);
+    expect(mockNotify).not.toHaveBeenCalled();
   });
 });

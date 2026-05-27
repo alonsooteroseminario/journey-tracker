@@ -70,11 +70,14 @@ function makePrefs(overrides: {
   userId?: string;
   streakProtectTime?: string;
   streakProtectLastSentDate?: string | null;
+  reminderStopTime?: string | null;
 } = {}) {
   return {
     userId: overrides.userId ?? "u1",
     streakProtectTime: overrides.streakProtectTime ?? "20:00",
     streakProtectLastSentDate: overrides.streakProtectLastSentDate ?? null,
+    reminderStopTime: overrides.reminderStopTime ?? null,
+    discordWebhookUrl: null,
   };
 }
 
@@ -304,6 +307,30 @@ describe("GET /api/cron/streak-protect", () => {
 
     expect(data.stats.sent).toBe(1);
     expect(data.stats.skipped).toBe(2);
+    expect(mockSendEmail).toHaveBeenCalledOnce();
+  });
+
+  it("skips user when current hour is at or past the reminder stop time", async () => {
+    // System time is 20:00 UTC (matches protectTime, normally would send)
+    // But stop time is 20:00 → currentHour (20) >= stopHour (20) → skip
+    mockFindManyPrefs.mockResolvedValue([makePrefs({ reminderStopTime: "20:00" })]);
+    mockFindManyUsers.mockResolvedValue([makeUser({ currentStreak: 5 })]);
+
+    const res = await GET(authedRequest());
+    const data = await res.json();
+
+    expect(data.stats.skipped).toBe(1);
+    expect(mockSendEmail).not.toHaveBeenCalled();
+  });
+
+  it("sends when no stop time is configured (backwards compatible)", async () => {
+    mockFindManyPrefs.mockResolvedValue([makePrefs({ reminderStopTime: null })]);
+    mockFindManyUsers.mockResolvedValue([makeUser({ currentStreak: 5 })]);
+
+    const res = await GET(authedRequest());
+    const data = await res.json();
+
+    expect(data.stats.sent).toBe(1);
     expect(mockSendEmail).toHaveBeenCalledOnce();
   });
 });
