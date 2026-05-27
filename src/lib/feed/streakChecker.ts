@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/email/notifications";
-import { getTodayInTimezone } from "@/lib/dateUtils";
+import { getTodayInTimezone, getCurrentHourInTimezone } from "@/lib/dateUtils";
 
 interface AtRiskUser {
   userId: string;
@@ -13,20 +13,11 @@ interface AtRiskUser {
  * Finds users whose streaks are at risk (active streak but no activity today)
  */
 export async function findAtRiskUsers(): Promise<AtRiskUser[]> {
-  // Find all users with active streaks
   const streakData = await prisma.streakData.findMany({
-    where: {
-      currentStreak: {
-        gte: 1,
-      },
-    },
+    where: { currentStreak: { gte: 1 } },
     include: {
       user: {
-        select: {
-          id: true,
-          name: true,
-          timezone: true,
-        },
+        select: { id: true, name: true, timezone: true },
       },
     },
   });
@@ -38,15 +29,12 @@ export async function findAtRiskUsers(): Promise<AtRiskUser[]> {
     const streakHistory = data.streakHistory || [];
     const hasActivityToday = streakHistory.includes(today);
 
-    // Only consider users who haven't completed activity today
     if (!hasActivityToday && data.currentStreak > 0) {
-      // Get user's friends
       const friendships = await prisma.friendship.findMany({
         where: { userId: data.userId },
         select: { friendId: true },
       });
 
-      // Also get reverse friendships (people who added this user)
       const reverseFriendships = await prisma.friendship.findMany({
         where: { friendId: data.userId },
         select: { userId: true },
@@ -57,7 +45,6 @@ export async function findAtRiskUsers(): Promise<AtRiskUser[]> {
         ...reverseFriendships.map((f) => f.userId),
       ];
 
-      // Remove duplicates
       const uniqueFriendIds = Array.from(new Set(friendIds));
 
       if (uniqueFriendIds.length > 0) {
@@ -75,23 +62,48 @@ export async function findAtRiskUsers(): Promise<AtRiskUser[]> {
 }
 
 /**
- * Creates feed items and sends notifications for at-risk users
+ * Creates feed items and sends notifications for at-risk users.
+ * Skips friends who are currently past their configured reminderStopTime.
  */
 export async function notifyFriendsOfAtRiskStreaks(): Promise<{
   usersChecked: number;
   atRiskUsers: number;
   feedItemsCreated: number;
   notificationsSent: number;
+  notificationsSkipped: number;
   errors: number;
 }> {
   const atRiskUsers = await findAtRiskUsers();
   let feedItemsCreated = 0;
   let notificationsSent = 0;
+  let notificationsSkipped = 0;
   let errors = 0;
+
+  // Batch-fetch timezone + stop time for all friends involved
+  const allFriendIds = Array.from(new Set(atRiskUsers.flatMap((u) => u.friendIds)));
+  const nowUtc = new Date();
+
+  const friendUsers = await prisma.user.findMany({
+    where: { id: { in: allFriendIds } },
+    select: {
+      id: true,
+      timezone: true,
+      emailPreferences: { select: { reminderStopTime: true } },
+    },
+  });
+
+  const friendInfoMap = new Map(
+    friendUsers.map((u) => [
+      u.id,
+      {
+        timezone: u.timezone,
+        reminderStopTime: u.emailPreferences?.reminderStopTime ?? null,
+      },
+    ])
+  );
 
   for (const user of atRiskUsers) {
     try {
-      // Create feed item visible to friends
       await prisma.feedItem.create({
         data: {
           userId: user.userId,
@@ -103,8 +115,18 @@ export async function notifyFriendsOfAtRiskStreaks(): Promise<{
       });
       feedItemsCreated++;
 
-      // Send email notifications to friends
       for (const friendId of user.friendIds) {
+        // Skip friend if they are past their configured quiet-window stop time
+        const friendInfo = friendInfoMap.get(friendId);
+        if (friendInfo?.reminderStopTime) {
+          const stopHour = parseInt(friendInfo.reminderStopTime.split(":")[0], 10);
+          const friendHour = getCurrentHourInTimezone(friendInfo.timezone, nowUtc);
+          if (!isNaN(stopHour) && friendHour >= stopHour) {
+            notificationsSkipped++;
+            continue;
+          }
+        }
+
         try {
           await notify(friendId, "friendStreakReminder", {
             userName: user.userName,
@@ -112,18 +134,12 @@ export async function notifyFriendsOfAtRiskStreaks(): Promise<{
           });
           notificationsSent++;
         } catch (error) {
-          console.error(
-            `Failed to send notification to friend ${friendId}:`,
-            error
-          );
+          console.error(`Failed to send notification to friend ${friendId}:`, error);
           errors++;
         }
       }
     } catch (error) {
-      console.error(
-        `Failed to create feed item for user ${user.userId}:`,
-        error
-      );
+      console.error(`Failed to create feed item for user ${user.userId}:`, error);
       errors++;
     }
   }
@@ -133,6 +149,7 @@ export async function notifyFriendsOfAtRiskStreaks(): Promise<{
     atRiskUsers: atRiskUsers.length,
     feedItemsCreated,
     notificationsSent,
+    notificationsSkipped,
     errors,
   };
 }

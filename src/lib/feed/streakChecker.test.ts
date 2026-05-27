@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { findAtRiskUsers, notifyFriendsOfAtRiskStreaks } from "./streakChecker";
 import { prisma } from "@/lib/prisma";
 import * as notifications from "@/lib/email/notifications";
+import * as dateUtils from "@/lib/dateUtils";
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
@@ -14,6 +15,9 @@ vi.mock("@/lib/prisma", () => ({
     feedItem: {
       create: vi.fn(),
     },
+    user: {
+      findMany: vi.fn(),
+    },
   },
 }));
 
@@ -21,18 +25,24 @@ vi.mock("@/lib/email/notifications", () => ({
   notify: vi.fn(),
 }));
 
-const mockFindManyStreakData = prisma.streakData.findMany as ReturnType<
-  typeof vi.fn
->;
-const mockFindManyFriendship = prisma.friendship.findMany as ReturnType<
-  typeof vi.fn
->;
+vi.mock("@/lib/dateUtils", () => ({
+  // Preserve real-date behavior so existing findAtRiskUsers tests are unaffected
+  getTodayInTimezone: vi.fn().mockImplementation(() => new Date().toISOString().split("T")[0]),
+  getCurrentHourInTimezone: vi.fn().mockReturnValue(14), // default: 2 PM
+}));
+
+const mockFindManyStreakData = prisma.streakData.findMany as ReturnType<typeof vi.fn>;
+const mockFindManyFriendship = prisma.friendship.findMany as ReturnType<typeof vi.fn>;
 const mockCreateFeedItem = prisma.feedItem.create as ReturnType<typeof vi.fn>;
+const mockFindManyUser = prisma.user.findMany as ReturnType<typeof vi.fn>;
 const mockNotify = notifications.notify as ReturnType<typeof vi.fn>;
+const mockGetCurrentHour = dateUtils.getCurrentHourInTimezone as ReturnType<typeof vi.fn>;
 
 describe("streakChecker", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockFindManyUser.mockResolvedValue([]);
+    mockGetCurrentHour.mockReturnValue(14);
   });
 
   describe("findAtRiskUsers", () => {
@@ -175,6 +185,107 @@ describe("streakChecker", () => {
       expect(results.feedItemsCreated).toBe(1);
       expect(results.notificationsSent).toBe(0);
       expect(results.errors).toBe(1);
+    });
+
+    it("skips notification for a friend who is past their stop time", async () => {
+      mockFindManyStreakData.mockResolvedValue([
+        {
+          userId: "user-1",
+          currentStreak: 7,
+          streakHistory: [],
+          user: { id: "user-1", name: "Alice", timezone: "UTC" },
+        },
+      ]);
+
+      mockFindManyFriendship.mockImplementation(async (query) => {
+        if (query.where.userId === "user-1") return [{ friendId: "friend-1" }];
+        return [];
+      });
+
+      mockFindManyUser.mockResolvedValue([
+        {
+          id: "friend-1",
+          timezone: "America/New_York",
+          emailPreferences: { reminderStopTime: "22:00" },
+        },
+      ]);
+      mockGetCurrentHour.mockReturnValue(22);
+
+      mockCreateFeedItem.mockResolvedValue({});
+      mockNotify.mockResolvedValue({ success: true });
+
+      const results = await notifyFriendsOfAtRiskStreaks();
+
+      expect(results.notificationsSent).toBe(0);
+      expect(results.notificationsSkipped).toBe(1);
+      expect(mockNotify).not.toHaveBeenCalled();
+    });
+
+    it("sends notification for a friend before their stop time", async () => {
+      mockFindManyStreakData.mockResolvedValue([
+        {
+          userId: "user-1",
+          currentStreak: 5,
+          streakHistory: [],
+          user: { id: "user-1", name: "Alice", timezone: "UTC" },
+        },
+      ]);
+
+      mockFindManyFriendship.mockImplementation(async (query) => {
+        if (query.where.userId === "user-1") return [{ friendId: "friend-1" }];
+        return [];
+      });
+
+      mockFindManyUser.mockResolvedValue([
+        {
+          id: "friend-1",
+          timezone: "Europe/Berlin",
+          emailPreferences: { reminderStopTime: "23:00" },
+        },
+      ]);
+      mockGetCurrentHour.mockReturnValue(20);
+
+      mockCreateFeedItem.mockResolvedValue({});
+      mockNotify.mockResolvedValue({ success: true });
+
+      const results = await notifyFriendsOfAtRiskStreaks();
+
+      expect(results.notificationsSent).toBe(1);
+      expect(results.notificationsSkipped).toBe(0);
+      expect(mockNotify).toHaveBeenCalledOnce();
+    });
+
+    it("sends notification for a friend with no stop time configured", async () => {
+      mockFindManyStreakData.mockResolvedValue([
+        {
+          userId: "user-1",
+          currentStreak: 3,
+          streakHistory: [],
+          user: { id: "user-1", name: "Alice", timezone: "UTC" },
+        },
+      ]);
+
+      mockFindManyFriendship.mockImplementation(async (query) => {
+        if (query.where.userId === "user-1") return [{ friendId: "friend-1" }];
+        return [];
+      });
+
+      mockFindManyUser.mockResolvedValue([
+        {
+          id: "friend-1",
+          timezone: "Asia/Tokyo",
+          emailPreferences: null,
+        },
+      ]);
+      mockGetCurrentHour.mockReturnValue(23);
+
+      mockCreateFeedItem.mockResolvedValue({});
+      mockNotify.mockResolvedValue({ success: true });
+
+      const results = await notifyFriendsOfAtRiskStreaks();
+
+      expect(results.notificationsSent).toBe(1);
+      expect(results.notificationsSkipped).toBe(0);
     });
   });
 });
