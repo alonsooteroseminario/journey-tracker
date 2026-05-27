@@ -147,4 +147,62 @@ describe("EmailPreferencesPanel", () => {
     expect(screen.getByText("Streaks")).toBeInTheDocument();
     expect(screen.getByText("Templates & Marketplace")).toBeInTheDocument();
   });
+
+  it("renders start-time picker when reminderDigest is enabled", () => {
+    mockUseGetEmailPreferencesQuery.mockReturnValue({
+      data: {
+        enabled: true,
+        frequency: "daily",
+        reminderDigest: true,
+        reminderStartTime: "09:00",
+      },
+      isLoading: false,
+    });
+    mockUseUpdateEmailPreferencesMutation.mockReturnValue([vi.fn()]);
+
+    render(<EmailPreferencesPanel />);
+    expect(screen.getByRole("option", { name: "9:00 AM" })).toBeInTheDocument();
+  });
+
+  it("renders stop-time picker when reminderDigest is enabled", () => {
+    mockUseGetEmailPreferencesQuery.mockReturnValue({
+      data: {
+        enabled: true,
+        frequency: "daily",
+        reminderDigest: true,
+        reminderStopTime: null,
+      },
+      isLoading: false,
+    });
+    mockUseUpdateEmailPreferencesMutation.mockReturnValue([vi.fn()]);
+
+    render(<EmailPreferencesPanel />);
+    expect(screen.getByText("No stop time")).toBeInTheDocument();
+    expect(screen.getByText("quiet until next start")).toBeInTheDocument();
+  });
+
+  it("calls update mutation with null when stop time cleared", async () => {
+    const mockUpdate = vi.fn().mockResolvedValue({ unwrap: () => Promise.resolve({}) });
+    mockUseGetEmailPreferencesQuery.mockReturnValue({
+      data: {
+        enabled: true,
+        frequency: "daily",
+        reminderDigest: true,
+        reminderStopTime: "22:00",
+      },
+      isLoading: false,
+    });
+    mockUseUpdateEmailPreferencesMutation.mockReturnValue([mockUpdate]);
+
+    render(<EmailPreferencesPanel />);
+
+    const stopSelect = screen.getAllByRole("combobox").find(
+      (el) => (el as HTMLSelectElement).value === "22:00"
+    ) as HTMLSelectElement;
+    fireEvent.change(stopSelect!, { target: { value: "" } });
+
+    await waitFor(() => {
+      expect(mockUpdate).toHaveBeenCalledWith({ reminderStopTime: null });
+    });
+  });
 });
