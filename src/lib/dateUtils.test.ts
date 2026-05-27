@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { getTodayInTimezone, isTodayInTimezone, isYesterdayInTimezone } from './dateUtils';
+import { getTodayInTimezone, isTodayInTimezone, isYesterdayInTimezone, isInReminderWindow } from './dateUtils';
 
 describe('dateUtils', () => {
   afterEach(() => {
@@ -106,6 +106,52 @@ describe('dateUtils', () => {
       // In Vancouver: today is Jan 14, yesterday is Jan 13
       expect(isYesterdayInTimezone('2025-01-13', 'America/Vancouver')).toBe(true);
       expect(isYesterdayInTimezone('2025-01-14', 'America/Vancouver')).toBe(false);
+    });
+  });
+
+  describe('isInReminderWindow', () => {
+    it('returns true when no stop time and current hour >= start hour', () => {
+      expect(isInReminderWindow(10, '09:00', null)).toBe(true);
+      expect(isInReminderWindow(9, '09:00', undefined)).toBe(true);
+    });
+
+    it('returns false when no stop time and current hour < start hour', () => {
+      expect(isInReminderWindow(8, '09:00', null)).toBe(false);
+    });
+
+    it('normal daytime window: active when startHour <= hour < stopHour', () => {
+      expect(isInReminderWindow(9, '09:00', '22:00')).toBe(true);
+      expect(isInReminderWindow(15, '09:00', '22:00')).toBe(true);
+      expect(isInReminderWindow(21, '09:00', '22:00')).toBe(true);
+    });
+
+    it('normal daytime window: inactive outside window', () => {
+      expect(isInReminderWindow(8, '09:00', '22:00')).toBe(false);
+      expect(isInReminderWindow(22, '09:00', '22:00')).toBe(false);
+      expect(isInReminderWindow(23, '09:00', '22:00')).toBe(false);
+    });
+
+    it('overnight window: active when hour >= startHour or hour < stopHour', () => {
+      expect(isInReminderWindow(22, '22:00', '06:00')).toBe(true);
+      expect(isInReminderWindow(23, '22:00', '06:00')).toBe(true);
+      expect(isInReminderWindow(0, '22:00', '06:00')).toBe(true);
+      expect(isInReminderWindow(5, '22:00', '06:00')).toBe(true);
+    });
+
+    it('overnight window: inactive inside quiet period', () => {
+      expect(isInReminderWindow(6, '22:00', '06:00')).toBe(false);
+      expect(isInReminderWindow(10, '22:00', '06:00')).toBe(false);
+      expect(isInReminderWindow(21, '22:00', '06:00')).toBe(false);
+    });
+
+    it('NaN guard: malformed startTime falls back to always active (>= 0)', () => {
+      expect(isInReminderWindow(5, 'bad', '22:00')).toBe(true);
+      expect(isInReminderWindow(0, 'bad', '22:00')).toBe(true);
+    });
+
+    it('NaN guard: malformed stopTime falls back to start-only check', () => {
+      expect(isInReminderWindow(10, '09:00', 'bad')).toBe(true);   // >= 09:00
+      expect(isInReminderWindow(8, '09:00', 'bad')).toBe(false);   // < 09:00
     });
   });
 });
