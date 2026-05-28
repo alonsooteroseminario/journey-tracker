@@ -235,6 +235,7 @@ function generateEmailTemplate(
         }),
       };
 
+    case "friendStreakReminder":
     case "friendActivity":
       return {
         subject: `${data.friendName || "A friend"} needs encouragement!`,

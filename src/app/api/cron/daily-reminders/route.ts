@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/email/notifications";
-import { getTodayInTimezone, getCurrentHourInTimezone, isInReminderWindow } from "@/lib/dateUtils";
+import { getTodayInTimezone } from "@/lib/dateUtils";
 import { generateAiContext } from "@/lib/email/generateAiContext";
 import { sendDiscordMessage, buildMorningDigestEmbed } from "@/lib/discord/send";
 import type { Task } from "@/types";
@@ -17,13 +17,10 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ?force=true bypasses reminder window check — for manual testing only
-    const force = new URL(request.url).searchParams.get("force") === "true";
-
     // MongoDB doesn't support relational where filters — query prefs first
     const eligiblePrefs = await prisma.emailPreferences.findMany({
       where: { enabled: true, morningDigest: true },
-      select: { userId: true, discordWebhookUrl: true, reminderStartTime: true, reminderStopTime: true },
+      select: { userId: true, discordWebhookUrl: true },
     });
     const eligibleIds = eligiblePrefs.map((p) => p.userId);
     const prefsByUserId = Object.fromEntries(eligiblePrefs.map((p) => [p.userId, p]));
@@ -45,13 +42,8 @@ export async function GET(request: Request) {
     let sent = 0;
     let failed = 0;
 
-    const nowUtc = new Date();
     for (const user of users) {
       const today = getTodayInTimezone(user.timezone);
-      const prefs = prefsByUserId[user.id];
-      const startTime = prefs?.reminderStartTime ?? "09:00";
-      const currentHour = getCurrentHourInTimezone(user.timezone, nowUtc);
-      if (!force && !isInReminderWindow(currentHour, startTime, prefs?.reminderStopTime)) continue;
 
       let overdueCount = 0;
       let todayTaskCount = 0;
