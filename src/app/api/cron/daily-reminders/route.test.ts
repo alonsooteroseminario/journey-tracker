@@ -16,21 +16,15 @@ vi.mock("@/lib/email/notifications", () => ({
   notify: vi.fn(),
 }));
 
-vi.mock("@/lib/email/generateAiContext", () => ({
-  generateAiContext: vi.fn().mockResolvedValue(null),
-}));
-
 vi.mock("@/lib/dateUtils", () => ({
   getTodayInTimezone: vi.fn().mockReturnValue("2026-05-23"),
 }));
 
 import { prisma } from "@/lib/prisma";
 import * as notifications from "@/lib/email/notifications";
-import * as aiContext from "@/lib/email/generateAiContext";
 const mockFindMany = prisma.user.findMany as ReturnType<typeof vi.fn>;
 const mockFindManyPrefs = prisma.emailPreferences.findMany as ReturnType<typeof vi.fn>;
 const mockNotify = notifications.notify as ReturnType<typeof vi.fn>;
-const mockGenerateAiContext = aiContext.generateAiContext as ReturnType<typeof vi.fn>;
 
 const authedRequest = () =>
   new Request("http://localhost/api/cron/daily-reminders", {
@@ -50,7 +44,6 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env.CRON_SECRET = "test-secret";
-    mockGenerateAiContext.mockResolvedValue(null);
     mockNotify.mockResolvedValue({ success: true });
     mockFindManyPrefs.mockResolvedValue([]);
   });
@@ -71,7 +64,6 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
     mockFindMany.mockResolvedValue([
       {
         id: "u1",
-        clerkId: "clerk_1",
         name: "Alice",
         timezone: null,
         goals: [
@@ -98,7 +90,6 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
     mockFindMany.mockResolvedValue([
       {
         id: "u1",
-        clerkId: "clerk_1",
         name: "Alice",
         timezone: null,
         goals: [
@@ -132,7 +123,6 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
     mockFindMany.mockResolvedValue([
       {
         id: "u2",
-        clerkId: "clerk_2",
         name: "Bob",
         timezone: null,
         goals: [
@@ -160,38 +150,11 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
     });
   });
 
-  it("includes AI paragraph when generateAiContext returns one", async () => {
-    mockGenerateAiContext.mockResolvedValue("You're on a great streak!");
-    mockFindManyPrefs.mockResolvedValue([makePrefs("u3")]);
-    mockFindMany.mockResolvedValue([
-      {
-        id: "u3",
-        clerkId: "clerk_3",
-        name: "Carol",
-        timezone: null,
-        goals: [
-          {
-            title: "Write Novel",
-            tasks: [{ id: "t1", title: "Chapter 1", status: "not_started", order: 0, dueDate: "2026-05-23" }],
-          },
-        ],
-        streakData: { currentStreak: 14 },
-      },
-    ]);
-
-    await GET(authedRequest());
-
-    expect(mockNotify).toHaveBeenCalledWith("u3", "morningDigest", expect.objectContaining({
-      aiParagraph: "You're on a great streak!",
-    }));
-  });
-
   it("skips archived and completed tasks", async () => {
     mockFindManyPrefs.mockResolvedValue([makePrefs("u4")]);
     mockFindMany.mockResolvedValue([
       {
         id: "u4",
-        clerkId: "clerk_4",
         name: "Dave",
         timezone: null,
         goals: [
@@ -219,7 +182,6 @@ describe("GET /api/cron/daily-reminders (morning digest)", () => {
     mockFindMany.mockResolvedValue([
       {
         id: "u5",
-        clerkId: "clerk_5",
         name: "Eve",
         timezone: null,
         goals: [

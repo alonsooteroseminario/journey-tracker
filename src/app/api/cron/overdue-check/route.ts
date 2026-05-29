@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/email/notifications";
 import { getTodayInTimezone } from "@/lib/dateUtils";
-import { generateAiContext } from "@/lib/email/generateAiContext";
 import type { Task } from "@/types";
 
 /**
@@ -27,7 +26,6 @@ export async function GET(request: Request) {
       where: { id: { in: eligibleIds } },
       select: {
         id: true,
-        clerkId: true,
         name: true,
         timezone: true,
         goals: {
@@ -54,18 +52,12 @@ export async function GET(request: Request) {
               (1000 * 60 * 60 * 24),
           );
 
-          const aiContext =
-            (await generateAiContext(
-              user.clerkId,
-              `Write a concise 1-2 sentence motivational nudge for ${user.name} whose task "${task.title}" (part of goal "${goal.title}") is ${daysOverdue} day(s) overdue.`,
-            )) ?? undefined;
-
           const result = await notify(user.id, "overdueAlert", {
             userName: user.name,
             taskTitle: task.title,
             goalTitle: goal.title,
             daysOverdue,
-            aiContext,
+            aiContext: undefined,
           }).catch((err) => {
             console.error(`Failed to send overdue alert to ${user.id}:`, err);
             return { success: false };

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/email/notifications";
 import { getTodayInTimezone } from "@/lib/dateUtils";
-import { generateAiContext } from "@/lib/email/generateAiContext";
 import { sendDiscordMessage, buildMorningDigestEmbed } from "@/lib/discord/send";
 import type { Task } from "@/types";
 
@@ -29,7 +28,6 @@ export async function GET(request: Request) {
       where: { id: { in: eligibleIds } },
       select: {
         id: true,
-        clerkId: true,
         name: true,
         timezone: true,
         goals: {
@@ -47,10 +45,8 @@ export async function GET(request: Request) {
 
       let overdueCount = 0;
       let todayTaskCount = 0;
-      const goalTitles: string[] = [];
 
       for (const goal of user.goals) {
-        goalTitles.push(goal.title);
         const tasks = (goal.tasks as Task[] | null) ?? [];
         for (const task of tasks) {
           if (task.isArchived || task.status === "completed") continue;
@@ -64,18 +60,12 @@ export async function GET(request: Request) {
 
       const streakCount = user.streakData?.currentStreak ?? 0;
 
-      const aiParagraph =
-        (await generateAiContext(
-          user.clerkId,
-          `Write a concise 1-2 sentence motivational message for ${user.name} who has ${overdueCount} overdue task(s) and ${todayTaskCount} task(s) due today with a ${streakCount}-day streak. Goals: ${goalTitles.slice(0, 3).join(", ")}.`,
-        )) ?? undefined;
-
       const result = await notify(user.id, "morningDigest", {
         userName: user.name,
         overdueCount,
         todayTaskCount,
         streakCount,
-        aiParagraph,
+        aiParagraph: undefined,
       }).catch((err) => {
         console.error(`Failed to send digest to ${user.id}:`, err);
         return { success: false };
@@ -86,7 +76,7 @@ export async function GET(request: Request) {
         const discordUrl = prefsByUserId[user.id]?.discordWebhookUrl ?? process.env.WEBHOOK_DISCORD_BOT;
         if (discordUrl) {
           sendDiscordMessage(discordUrl, {
-            embeds: [buildMorningDigestEmbed(user.name, overdueCount, todayTaskCount, streakCount, aiParagraph)],
+            embeds: [buildMorningDigestEmbed(user.name, overdueCount, todayTaskCount, streakCount, undefined)],
           }).catch(() => {});
         }
       } else {

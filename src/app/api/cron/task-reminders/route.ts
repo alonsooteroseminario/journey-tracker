@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email/send";
 import { TaskReminderDigestEmail, type ReminderTask } from "@/lib/email/templates/task-reminder-digest";
 import { getCurrentHourInTimezone, isInReminderWindow } from "@/lib/dateUtils";
-import { generateAiContext } from "@/lib/email/generateAiContext";
 import { sendDiscordMessage, buildTaskReminderEmbed } from "@/lib/discord/send";
 import type { Task, Substep } from "@/types";
 import * as React from "react";
@@ -38,7 +37,6 @@ export async function GET(request: Request) {
       where: { id: { in: eligibleIds } },
       select: {
         id: true,
-        clerkId: true,
         email: true,
         name: true,
         timezone: true,
@@ -92,19 +90,12 @@ export async function GET(request: Request) {
         continue;
       }
 
-      const taskTitles = reminderTasks.map((t) => `- ${t.title} (${t.goalTitle})`).join("\n");
-      const aiContext = await generateAiContext(
-        user.clerkId,
-        `You are a brief, encouraging coach. The user has ${reminderTasks.length} task${reminderTasks.length !== 1 ? "s" : ""} waiting:\n${taskTitles}\n\nWrite one short motivational sentence (max 30 words) to help them get started today. No greetings, no sign-off.`,
-      );
-
       const result = await sendEmail({
         to: user.email,
         subject: `Still waiting — ${reminderTasks.length} task${reminderTasks.length !== 1 ? "s" : ""} need your attention`,
         react: React.createElement(TaskReminderDigestEmail, {
           userName: user.name,
           tasks: reminderTasks,
-          aiContext: aiContext ?? undefined,
         }),
       }).catch((err) => {
         console.error(`Failed to send reminder to ${user.id}:`, err);
@@ -121,7 +112,7 @@ export async function GET(request: Request) {
         const discordUrl = prefs.discordWebhookUrl ?? process.env.WEBHOOK_DISCORD_BOT;
         if (discordUrl) {
           sendDiscordMessage(discordUrl, {
-            embeds: [buildTaskReminderEmbed(user.name, reminderTasks, aiContext)],
+            embeds: [buildTaskReminderEmbed(user.name, reminderTasks, undefined)],
           }).catch(() => {});
         }
       } else {

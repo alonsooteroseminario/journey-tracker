@@ -21,23 +21,17 @@ vi.mock("@/lib/email/templates/streak-reminder", () => ({
   StreakReminderEmail: vi.fn().mockReturnValue(null),
 }));
 
-vi.mock("@/lib/email/generateAiContext", () => ({
-  generateAiContext: vi.fn().mockResolvedValue(null),
-}));
-
 // No mock for @/lib/dateUtils — real implementations use vi.setSystemTime correctly:
 // getTodayInTimezone(timezone) reads new Date() → faked by vi.setSystemTime
 // getCurrentHourInTimezone(timezone, now) receives the nowUtc passed explicitly
 
 import { prisma } from "@/lib/prisma";
 import * as emailSend from "@/lib/email/send";
-import * as generateAiContextModule from "@/lib/email/generateAiContext";
 
 const mockFindManyPrefs = prisma.emailPreferences.findMany as ReturnType<typeof vi.fn>;
 const mockFindManyUsers = prisma.user.findMany as ReturnType<typeof vi.fn>;
 const mockUpdatePrefs = prisma.emailPreferences.update as ReturnType<typeof vi.fn>;
 const mockSendEmail = emailSend.sendEmail as ReturnType<typeof vi.fn>;
-const mockGenerateAiContext = generateAiContextModule.generateAiContext as ReturnType<typeof vi.fn>;
 
 const SECRET = "test-secret";
 
@@ -48,14 +42,12 @@ const authedRequest = () =>
 
 function makeUser(overrides: {
   id?: string;
-  clerkId?: string;
   timezone?: string | null;
   currentStreak?: number;
   streakHistory?: string[];
 } = {}) {
   return {
     id: overrides.id ?? "u1",
-    clerkId: overrides.clerkId ?? "clerk_u1",
     email: "user@example.com",
     name: "Alice",
     timezone: overrides.timezone ?? "UTC",
@@ -253,38 +245,6 @@ describe("GET /api/cron/streak-protect", () => {
 
     expect(res.status).toBe(500);
     expect(data.error).toBe("Failed to check streaks");
-  });
-
-  it("passes aiContext to template when generateAiContext returns a string", async () => {
-    mockGenerateAiContext.mockResolvedValue("Your streak is your superpower — protect it!");
-    mockFindManyPrefs.mockResolvedValue([makePrefs()]);
-    mockFindManyUsers.mockResolvedValue([makeUser({ currentStreak: 5 })]);
-
-    await GET(authedRequest());
-
-    expect(mockSendEmail).toHaveBeenCalledWith(
-      expect.objectContaining({
-        react: expect.objectContaining({
-          props: expect.objectContaining({ aiContext: "Your streak is your superpower — protect it!" }),
-        }),
-      }),
-    );
-  });
-
-  it("omits aiContext from template when generateAiContext returns null", async () => {
-    mockGenerateAiContext.mockResolvedValue(null);
-    mockFindManyPrefs.mockResolvedValue([makePrefs()]);
-    mockFindManyUsers.mockResolvedValue([makeUser({ currentStreak: 5 })]);
-
-    await GET(authedRequest());
-
-    expect(mockSendEmail).toHaveBeenCalledWith(
-      expect.objectContaining({
-        react: expect.objectContaining({
-          props: expect.objectContaining({ aiContext: undefined }),
-        }),
-      }),
-    );
   });
 
   it("processes multiple users independently", async () => {
