@@ -87,3 +87,22 @@ The in-app AI chat is powered by an agent loop in `src/app/api/agent/chat/route.
 - Unused variables/imports should be removed, not renamed to `_var`.
 - The `Goal.tasks` JSON field is the trickiest part of the data model. When writing MCP tools that modify tasks or substeps, always fetch the full goal first, mutate the in-memory array, then write it back in a single Prisma `update`.
 - `postinstall` runs `prisma generate` automatically, so after `npm install` the client is ready.
+
+## Skill routing
+
+When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.
+
+Key routing rules:
+- Product ideas/brainstorming → invoke /office-hours
+- Strategy/scope → invoke /plan-ceo-review
+- Architecture → invoke /plan-eng-review
+- Design system/plan review → invoke /design-consultation or /plan-design-review
+- Full review pipeline → invoke /autoplan
+- Bugs/errors → invoke /investigate
+- QA/testing site behavior → invoke /qa or /qa-only
+- Code review/diff check → invoke /review
+- Visual polish → invoke /design-review
+- Ship/deploy/PR → invoke /ship or /land-and-deploy
+- Save progress → invoke /context-save
+- Resume context → invoke /context-restore
+- Author a backlog-ready spec/issue → invoke /spec
