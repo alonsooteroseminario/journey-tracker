@@ -2,7 +2,7 @@
 
 > This file is the **living index** of all plans and implementation status.
 > Use it as memory between sessions — update status as work completes.
-> Last updated: 2026-05-24
+> Last updated: 2026-05-31
 
 ---
 
@@ -12,18 +12,17 @@ Each session: read this file first to orient yourself. Check **Status** and **No
 
 ---
 
-## Current Project State (2026-05-24)
+## Current Project State (2026-05-31)
 
 - **App name**: Cadence (renamed from Journey Tracker)
 - **Branch**: `main` — all features merged
-- **Tests**: 1444 total, ~1429 passing (15 pre-existing failures in agent/chat route, prompt-wallet title-length validation, daily-reminders cron)
+- **Tests**: 1507 total, ~1501 passing (6 pre-existing failures)
 - **Coverage**: ~80%+ statements on src/lib/ and src/app/api/
 - **Deployment**: Vercel, auto-deploys from main
 
 ### Known Pre-Existing Test Failures (do not fix unless tasked)
 - `src/app/api/agent/chat/route.test.ts` — 2 tests
-- `src/app/api/prompt-wallets/route.test.ts`, `prompt-groups/`, `prompt-chunks/` — title-length 400 tests
-- `src/app/api/cron/daily-reminders/route.test.ts` — 3 tests
+- `src/app/api/prompt-wallets/route.test.ts`, `prompt-groups/`, `prompt-chunks/` — title-length 400 tests (3 total)
 - `src/components/chat/ChatWidget.test.tsx` — 1 test
 
 ---
@@ -68,12 +67,14 @@ Each session: read this file first to orient yourself. Check **Status** and **No
 | `2026-05-16-f5-mcp-rest-api-steps.md` | MCP REST API (F5) | ✅ Done | External MCP endpoints: /api/mcp/tools, /api/mcp/skills, /api/mcp/health. Shared Zod handler |
 | _(no plan file)_ | Email reminders — task digest | ✅ Done | Bell toggle on tasks/substeps, hourly cron, 2hr interval per `reminderStartTime`. `src/app/api/cron/task-reminders/` |
 | _(no plan file)_ | Email reminders — streak-protect | ✅ Done | Hourly cron warns before streak loss, daily dedup via `streakProtectLastSentDate`. `src/app/api/cron/streak-protect/` |
-| _(no plan file)_ | AI context in reminder emails | ✅ Done | `generateAiContext()` (BYOK Haiku) inserts personalized motivational sentence into both reminder emails |
+| _(no plan file)_ | AI context in reminder emails | ✅ Removed | `generateAiContext()` was built and later **removed from all 4 cron routes** (commit `e6e7f21`). File still exists at `src/lib/email/generateAiContext.ts` but is no longer called by any cron. BYOK key is now reserved exclusively for MCP agent chat. |
 | _(no plan file)_ | App renamed Cadence | ✅ Done | Journey Tracker → Cadence (commit 302e8a5). Landing page redesigned. |
+
+| _(no plan file)_ | Remove AI context from all cron jobs | ✅ Done | Removed `generateAiContext` import/call from `task-reminders`, `streak-protect`, `daily-reminders`, `overdue-check` crons. BYOK API key now ONLY used by `/api/agent/chat`. Root cause: 2-hour unexpected API charges traced to `task-reminders` cron (schedule `0 */2 * * *`). Commit: `e6e7f21`. |
 
 ### Nothing Pending
 
-All planned and tracked work is complete as of 2026-05-24. Next features should start from a new plan.
+All planned and tracked work is complete as of 2026-05-31. Next features should start from a new plan.
 
 ---
 
@@ -106,7 +107,7 @@ src/app/api/cron/streak-protect/      ← Hourly streak-at-risk warning cron
 src/app/api/cron/daily-reminders/     ← Morning digest cron (overdue tasks)
 src/app/api/mcp/                      ← External MCP REST API (tools, skills, health)
 src/lib/auth.ts                       ← getCurrentUser() — Clerk→Prisma sync
-src/lib/email/generateAiContext.ts    ← BYOK Haiku call for email personalization
+src/lib/email/generateAiContext.ts    ← BYOK Haiku call — EXISTS but NOT called by any cron (removed 2026-05-31)
 src/lib/email/templates/              ← React Email templates
 src/lib/mcp/                          ← AI agent tools and skills
 src/lib/locks/lockGuards.ts           ← Lock/canEdit/canDelete guards for tasks+substeps
@@ -126,14 +127,15 @@ src/store/slices/composeSlice.ts      ← Client-only compose drawer state
 - `?force=true` bypasses time/dedup checks for manual testing
 - `reminderLastSentAt` (EmailPreferences) — 15-min cooldown prevents Vercel retry duplicates
 - `streakProtectLastSentDate` (EmailPreferences) — daily dedup for streak warnings
-- `generateAiContext(clerkId, prompt)` — uses BYOK key → Haiku, 5s timeout, returns `null` on failure; email still sends without it
+- **BYOK API key is NOT used by any cron** — crons send emails/Discord without any Claude API calls (removed 2026-05-31, commit `e6e7f21`)
 
 ### BYOK Agent Key Flow
 ```
 Settings page → POST /api/agent/settings → encrypt → LLMCredential (Prisma)
                                                           ↓
-Agent chat route / cron → getUserAgentKey(clerkId) → decrypt → Anthropic client
+Agent chat route ONLY → getUserAgentKey(clerkId) → decrypt → Anthropic client
 ```
+**Note:** Cron jobs do NOT use the BYOK key. Only `/api/agent/chat` calls Claude.
 
 ### Test Patterns
 ```ts
@@ -156,10 +158,7 @@ vi.mock('@dnd-kit/sortable', () => ({
   useSortable: () => ({ attributes: {}, listeners: {}, setNodeRef: () => {}, transform: null, transition: null, isDragging: false }),
 }));
 
-// generateAiContext mock (for cron route tests)
-vi.mock('@/lib/email/generateAiContext', () => ({
-  generateAiContext: vi.fn().mockResolvedValue(null),
-}));
+// generateAiContext is NO LONGER imported by cron routes — do not mock it in cron tests
 ```
 
 ### API Route Pattern
