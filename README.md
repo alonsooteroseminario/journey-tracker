@@ -8,9 +8,47 @@
 
 Break any goal into daily tasks, keep the streak.
 
-[buildcadence.co](https://buildcadence.co) · [@buildcadence on Instagram](https://instagram.com/buildcadence)
+[buildcadence.co](https://buildcadence.co) · [@buildcadence.co on Instagram](https://www.instagram.com/buildcadence.co/?hl=es-la)
 
 </div>
+
+---
+
+## Project description
+
+Copy/paste for a GitHub About field, a directory listing, or a deck.
+
+**One line (118 chars):**
+
+```
+Cadence turns big goals into daily momentum — break any goal into daily tasks, keep the streak, and let AI do the rest.
+```
+
+**Short paragraph:**
+
+```
+Cadence is a personal goal achievement platform that turns ambitious long-term goals into
+structured, daily-actionable work. Goals break down into tasks and substeps, every completion
+feeds a daily streak, and an embedded Claude-powered agent can read, create and analyze your
+entire goal graph in natural language. Friends, a shared activity feed and a template
+marketplace add the accountability layer that habit trackers and to-do lists leave out.
+Built with Next.js, Clerk, Prisma + MongoDB, and Redux Toolkit.
+```
+
+**Full paragraph:**
+
+```
+Most goals don't die in week 1 — they die in week 3, when motivation runs out and no structure
+has replaced it. Cadence is the space between "I want to" and "I did." It breaks any ambitious
+goal into a hierarchy of tasks and substeps, turns every completion into a daily streak with
+Bronze/Silver/Gold tiers, and surrounds it with the accountability layer most productivity tools
+skip: friends, a shared activity feed with cheers and comments, and a marketplace of proven goal
+templates you can fork. An embedded Claude-powered AI agent — 34 MCP tools and 3 composite
+skills — can create, update, analyze and report on your entire goal graph in plain language.
+Cadence is a Next.js 16 App Router application using Clerk for auth, Prisma + MongoDB for data,
+Redux Toolkit with RTK Query for state, and Tailwind CSS with a semantic token system for
+theming. It ships with roughly 1,500 unit tests, Playwright E2E coverage, and deploys to Vercel.
+```
 
 ---
 
@@ -216,7 +254,7 @@ Two happy-dom quirks worth knowing before you write a component test: `fireEvent
 ## Links
 
 - **Product:** [buildcadence.co](https://buildcadence.co)
-- **Instagram:** [@buildcadence](https://instagram.com/buildcadence)
+- **Instagram:** [@buildcadence.co](https://www.instagram.com/buildcadence.co/?hl=es-la)
 - **Repo:** [github.com/alonsooteroseminario/journey-tracker](https://github.com/alonsooteroseminario/journey-tracker)
 
 ---
