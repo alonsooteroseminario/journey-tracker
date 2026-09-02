@@ -28,10 +28,7 @@ describe('errorHandler — Anthropic snake_case error slugs', () => {
     );
     expect(info.type).toBe(ErrorType.RATE_LIMIT);
     expect(info.userMessage).toBe('Too many requests. Please wait a moment and try again.');
-    // Note: `retryable` is false here. The plain-Error branch (line 32) only
-    // marks NETWORK/API_ERROR retryable, while isRetryable() on the AgentError
-    // branch also includes RATE_LIMIT. Pre-existing inconsistency, unused by
-    // the chat UI — left alone rather than widened into this fix.
+    expect(info.retryable).toBe(true);
   });
 
   it('classifies authentication_error as AUTHENTICATION', () => {

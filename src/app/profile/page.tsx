@@ -29,6 +29,11 @@ export default function ProfilePage() {
     setEditedProfile(profile);
   }, [profile]);
 
+  // Must stay above the early return below — calling it after would change the
+  // hook count between the loading render and the loaded render, which throws
+  // "Rendered more hooks than during the previous render".
+  const { data: goalStreaks } = useGetGoalStreaksQuery();
+
   if (!isLoaded || !clerkLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -75,7 +80,6 @@ export default function ProfilePage() {
   const activeDays = streak.streakHistory.length;
 
   // Global streak share data
-  const { data: goalStreaks } = useGetGoalStreaksQuery();
   const activeStreaks = (goalStreaks ?? []).filter((s) => s.currentStreak > 0);
   const totalStreakDays = activeStreaks.reduce((sum, s) => sum + s.currentStreak, 0);
   const activeTiers = activeStreaks.map((s) => computeGoalTier(s.currentStreak));

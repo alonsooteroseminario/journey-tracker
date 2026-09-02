@@ -16,6 +16,7 @@ import { Message, ChatRequest } from '@/types/agent';
 import { logAnthropicUsage } from '@/lib/cost-tracking/anthropic';
 import { getUserAgentKey } from '@/lib/agent/getUserAgentKey';
 import { AGENT_MODEL } from '@/lib/agent/model';
+import { trimMessages } from '@/lib/agent/trimMessages';
 
 // Lazy Anthropic client — accepts a user-supplied key; falls back to env for admin routes.
 function getAnthropicClient(apiKey: string): Anthropic {
@@ -332,14 +333,9 @@ async function runAgentLoop(
     }
 
     // Trim intermediate tool messages to prevent context bloat during bulk
-    // operations.  Keep the original user message (index 0) plus the most
-    // recent 12 messages (6 assistant+user round-trips).
-    if (currentMessages.length > 14) {
-      currentMessages = [
-        currentMessages[0],
-        ...currentMessages.slice(-12),
-      ];
-    }
+    // operations.  Keeps the original user message (index 0) plus the most
+    // recent round-trips, snapping the cut so it never orphans a tool_result.
+    currentMessages = trimMessages(currentMessages);
 
     // Call Claude — use user-supplied key or env fallback (admin routes only)
     const resolvedKey = apiKey || process.env.ANTHROPIC_API_KEY || '';

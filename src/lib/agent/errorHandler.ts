@@ -29,7 +29,12 @@ class AgentErrorHandler {
         message: error.message,
         userMessage: this.formatUserMessageFromType(type, error.message),
         recoverable: type !== ErrorType.AUTHENTICATION,
-        retryable: type === ErrorType.NETWORK || type === ErrorType.API_ERROR,
+        // Matches isRetryable() on the AgentError branch, which has always
+        // included RATE_LIMIT. The two branches used to disagree.
+        retryable:
+          type === ErrorType.NETWORK ||
+          type === ErrorType.API_ERROR ||
+          type === ErrorType.RATE_LIMIT,
         details: { message: error.message, name: error.name, stack: error.stack },
       };
     }

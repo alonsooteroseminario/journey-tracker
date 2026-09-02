@@ -10,6 +10,18 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // `next lint` was removed in Next 16, so `npm run lint` calls eslint directly
+  // and these ignores are no longer supplied for us.
+  {
+    ignores: [
+      ".next/**",
+      "out/**",
+      "build/**",
+      "coverage/**",
+      "node_modules/**",
+      "next-env.d.ts",
+    ],
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
@@ -31,6 +43,11 @@ const eslintConfig = [
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
     },
+  },
+  {
+    // Standalone CommonJS scripts run via `node scripts/x.js` — require() is correct here.
+    files: ["scripts/**/*.js"],
+    rules: { "@typescript-eslint/no-require-imports": "off" },
   },
 ];
 

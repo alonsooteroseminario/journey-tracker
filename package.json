@@ -7,7 +7,7 @@
         "dev": "next dev --webpack",
         "build": "prisma generate && next build --webpack",
         "start": "next start",
-        "lint": "next lint",
+        "lint": "eslint .",
         "test": "vitest",
         "test:watch": "vitest --watch",
         "test:coverage": "vitest run --coverage",

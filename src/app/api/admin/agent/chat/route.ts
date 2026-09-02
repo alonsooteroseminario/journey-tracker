@@ -13,6 +13,7 @@ import { errorHandler } from "@/lib/agent/errorHandler";
 import { auditLogger } from "@/lib/agent/auditLog";
 import { Message, ChatRequest } from "@/types/agent";
 import { AGENT_MODEL } from "@/lib/agent/model";
+import { trimMessages } from "@/lib/agent/trimMessages";
 
 // Lazy Anthropic client
 function getAnthropicClient(): Anthropic {
@@ -232,10 +233,9 @@ async function runAdminAgentLoop(
       throw new Error("Request aborted by client");
     }
 
-    // Trim messages to prevent context bloat
-    if (currentMessages.length > 14) {
-      currentMessages = [currentMessages[0], ...currentMessages.slice(-12)];
-    }
+    // Trim messages to prevent context bloat, snapping the cut so it never
+    // orphans a tool_result (the API 400s on that shape).
+    currentMessages = trimMessages(currentMessages);
 
     // Call Claude with admin system prompt
     const response = await getAnthropicClient().messages.create({
