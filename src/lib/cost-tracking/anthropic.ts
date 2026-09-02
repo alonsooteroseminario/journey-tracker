@@ -10,6 +10,9 @@ interface UsageParams {
 
 // Prices per 1M tokens in USD (as of 2026-Q1)
 const MODEL_PRICES: Record<string, { input: number; output: number }> = {
+  // Claude 5.x
+  "claude-opus-5": { input: 15, output: 75 },
+  "claude-sonnet-5": { input: 3, output: 15 },
   // Claude 4.x
   "claude-opus-4-6": { input: 15, output: 75 },
   "claude-opus-4-20250514": { input: 15, output: 75 },

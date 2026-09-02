@@ -5,6 +5,7 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk';
+import { AGENT_MODEL } from './model';
 
 export const EMOJI_SET = [
   '🎯', '🏃', '📚', '💼', '🏠', '💰', '🎨', '🏋️', '🌱', '🚀',
@@ -38,7 +39,7 @@ export async function pickGoalIcon(
       : `Goal title: "${title}"${description ? `\nGoal description: "${description}"` : ''}`;
 
     const response = await client.messages.create({
-      model: process.env.AGENT_MODEL || 'claude-sonnet-4-20250514',
+      model: AGENT_MODEL,
       max_tokens: 5,
       messages: [
         {

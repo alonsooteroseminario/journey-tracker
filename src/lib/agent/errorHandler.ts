@@ -66,7 +66,11 @@ class AgentErrorHandler {
    * Infer error type from Error instance
    */
   private inferErrorType(error: Error): ErrorType {
-    const message = error.message.toLowerCase();
+    // Anthropic API errors carry snake_case type slugs (not_found_error,
+    // rate_limit_error, ...) inside the serialized JSON body. Normalizing
+    // underscores to spaces lets the keyword checks below match them —
+    // without this, a 404 for a retired model fell through to UNKNOWN.
+    const message = error.message.toLowerCase().replace(/_/g, ' ');
 
     if (message.includes('unauthorized') || message.includes('authentication')) {
       return ErrorType.AUTHENTICATION;

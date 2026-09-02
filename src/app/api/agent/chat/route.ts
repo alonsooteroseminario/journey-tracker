@@ -15,15 +15,16 @@ import { conversationStore } from '@/lib/agent/conversationStore';
 import { Message, ChatRequest } from '@/types/agent';
 import { logAnthropicUsage } from '@/lib/cost-tracking/anthropic';
 import { getUserAgentKey } from '@/lib/agent/getUserAgentKey';
+import { AGENT_MODEL } from '@/lib/agent/model';
 
 // Lazy Anthropic client — accepts a user-supplied key; falls back to env for admin routes.
 function getAnthropicClient(apiKey: string): Anthropic {
   return new Anthropic({ apiKey });
 }
 
-const AGENT_MODEL = process.env.AGENT_MODEL || 'claude-sonnet-4-20250514';
 const AGENT_MAX_TOKENS = parseInt(process.env.AGENT_MAX_TOKENS || '4096', 10);
-const AGENT_TEMPERATURE = parseFloat(process.env.AGENT_TEMPERATURE || '0.7');
+// No `temperature`: it is deprecated on current Claude models and passing it
+// at all returns 400 `invalid_request_error`.
 
 // System prompt for the agent
 const SYSTEM_PROMPT = `You are a helpful assistant for Journey Tracker, a goal-tracking application.
@@ -345,7 +346,6 @@ async function runAgentLoop(
     const response = await getAnthropicClient(resolvedKey).messages.create({
       model: AGENT_MODEL,
       max_tokens: AGENT_MAX_TOKENS,
-      temperature: AGENT_TEMPERATURE,
       system: SYSTEM_PROMPT,
       messages: currentMessages,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

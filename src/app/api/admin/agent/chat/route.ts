@@ -12,6 +12,7 @@ import { securityGuard } from "@/lib/agent/security";
 import { errorHandler } from "@/lib/agent/errorHandler";
 import { auditLogger } from "@/lib/agent/auditLog";
 import { Message, ChatRequest } from "@/types/agent";
+import { AGENT_MODEL } from "@/lib/agent/model";
 
 // Lazy Anthropic client
 function getAnthropicClient(): Anthropic {
@@ -20,9 +21,8 @@ function getAnthropicClient(): Anthropic {
   });
 }
 
-const AGENT_MODEL = process.env.AGENT_MODEL || "claude-sonnet-4-20250514";
 const AGENT_MAX_TOKENS = parseInt(process.env.AGENT_MAX_TOKENS || "4096", 10);
-const AGENT_TEMPERATURE = parseFloat(process.env.AGENT_TEMPERATURE || "0.7");
+// No `temperature`: deprecated on current Claude models, returns 400 if sent.
 const MAX_TOOL_ITERATIONS = 25;
 
 /**
@@ -241,7 +241,6 @@ async function runAdminAgentLoop(
     const response = await getAnthropicClient().messages.create({
       model: AGENT_MODEL,
       max_tokens: AGENT_MAX_TOKENS,
-      temperature: AGENT_TEMPERATURE,
       system: getAdminSystemPrompt(),
       messages: currentMessages,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
