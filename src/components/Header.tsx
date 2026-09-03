@@ -6,6 +6,7 @@ import { useUser, useClerk } from "@clerk/nextjs";
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { toggleChat } from '@/store/slices/chatSlice';
 import { ThemeToggle } from "./theme/ThemeToggle";
+import { useFullAccess } from "./AccessProvider";
 
 interface HeaderProps {
   totalProgress?: number;
@@ -29,6 +30,7 @@ export function Header({
   showNewGoalButton = true,
 }: HeaderProps) {
   const pathname = usePathname();
+  const fullAccess = useFullAccess();
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
 
@@ -52,17 +54,16 @@ export function Header({
           {/* Left: Logo */}
           <div className="flex items-center gap-1 sm:gap-2">
             <Link
-              href="/"
+              href={fullAccess ? "/" : "/wallet"}
               className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity"
             >
               <img
                 src="/brand-icon.png"
-                alt="Cadence"
+                alt={fullAccess ? "Cadence" : "Prompt Wallet"}
                 className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl object-contain"
               />
               <h1 className="text-sm sm:text-xl font-bold text-brand-primary">
-                <span className="hidden sm:inline">Cadence</span>
-                <span className="sm:hidden">Cadence</span>
+                {fullAccess ? "Cadence" : "Prompt Wallet"}
               </h1>
             </Link>
           </div>
@@ -70,7 +71,7 @@ export function Header({
           {/* Right: Stats & Actions */}
           <div className="flex items-center gap-1 sm:gap-3">
             {/* Progress & Streak */}
-            {isAuthenticated && totalProgress !== undefined && (
+            {fullAccess && isAuthenticated && totalProgress !== undefined && (
               <div className="hidden md:flex items-center gap-3 sm:gap-4">
                 <div className="text-center">
                   <div className="text-sm sm:text-base font-bold text-brand-primary">
@@ -91,58 +92,62 @@ export function Header({
             {isAuthenticated ? (
               <>
                 {/* Friends Button */}
-                <Link
-                  href="/friends"
-                  className="p-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded hover:opacity-90 transition-all font-medium flex items-center gap-1"
-                >
-                  <svg
-                    className="w-3 h-3 sm:w-4 sm:h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                {fullAccess && (
+                  <Link
+                    href="/friends"
+                    className="p-1 sm:px-3 sm:py-2 text-[10px] sm:text-sm bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded hover:opacity-90 transition-all font-medium flex items-center gap-1"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                  <span className="hidden sm:inline">Friends</span>
-                </Link>
+                    <svg
+                      className="w-3 h-3 sm:w-4 sm:h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                    <span className="hidden sm:inline">Friends</span>
+                  </Link>
+                )}
 
                 {/* Theme toggle */}
                 <ThemeToggle />
 
                 {/* Chat toggle */}
-                <button
-                  onClick={() => dispatch(toggleChat())}
-                  aria-label={isChatOpen ? 'Close chat' : 'Open chat'}
-                  title="AI Assistant"
-                  className={`p-1 sm:p-2 rounded-lg transition-colors ${
-                    isChatOpen
-                      ? 'bg-brand-primary text-white'
-                      : 'text-text-secondary hover:bg-surface-hover hover:text-brand-primary'
-                  }`}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-5 h-5 sm:w-6 sm:h-6"
+                {fullAccess && (
+                  <button
+                    onClick={() => dispatch(toggleChat())}
+                    aria-label={isChatOpen ? 'Close chat' : 'Open chat'}
+                    title="AI Assistant"
+                    className={`p-1 sm:p-2 rounded-lg transition-colors ${
+                      isChatOpen
+                        ? 'bg-brand-primary text-white'
+                        : 'text-text-secondary hover:bg-surface-hover hover:text-brand-primary'
+                    }`}
                   >
-                    <circle cx="12" cy="1.2" r="1" fill="currentColor" stroke="none" />
-                    <line x1="12" y1="2.2" x2="12" y2="4.2" />
-                    <rect x="3" y="4.2" width="18" height="11.5" rx="4" />
-                    <circle cx="8.5" cy="9.8" r="1.2" fill="currentColor" stroke="none" />
-                    <circle cx="15.5" cy="9.8" r="1.2" fill="currentColor" stroke="none" />
-                    <path d="M8.5 12.8Q12 14.8 15.5 12.8" />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-5 h-5 sm:w-6 sm:h-6"
+                    >
+                      <circle cx="12" cy="1.2" r="1" fill="currentColor" stroke="none" />
+                      <line x1="12" y1="2.2" x2="12" y2="4.2" />
+                      <rect x="3" y="4.2" width="18" height="11.5" rx="4" />
+                      <circle cx="8.5" cy="9.8" r="1.2" fill="currentColor" stroke="none" />
+                      <circle cx="15.5" cy="9.8" r="1.2" fill="currentColor" stroke="none" />
+                      <path d="M8.5 12.8Q12 14.8 15.5 12.8" />
+                    </svg>
+                  </button>
+                )}
 
                 {/* Profile */}
                 <Link
@@ -233,25 +238,27 @@ export function Header({
         </div>
 
         {/* Always-Visible Tab Bar — icons only on mobile, labels on sm+ */}
-        <div className="mt-2 sm:mt-3 border-t border-border pt-2 sm:pt-3">
-          <div className="flex gap-1 sm:gap-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                title={item.label}
-                className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
-                  isActive(item.href)
-                    ? "bg-brand-light text-brand-primary shadow-sm"
-                    : "bg-surface-muted text-text-secondary hover:bg-surface-hover"
-                }`}
-              >
-                <span className="text-lg sm:text-lg">{item.icon}</span>
-                <span className="hidden sm:inline">{item.label}</span>
-              </Link>
-            ))}
+        {fullAccess && (
+          <div className="mt-2 sm:mt-3 border-t border-border pt-2 sm:pt-3">
+            <div className="flex gap-1 sm:gap-2">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  title={item.label}
+                  className={`flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                    isActive(item.href)
+                      ? "bg-brand-light text-brand-primary shadow-sm"
+                      : "bg-surface-muted text-text-secondary hover:bg-surface-hover"
+                  }`}
+                >
+                  <span className="text-lg sm:text-lg">{item.icon}</span>
+                  <span className="hidden sm:inline">{item.label}</span>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </header>
   );
