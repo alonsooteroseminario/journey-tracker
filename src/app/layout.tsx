@@ -1,6 +1,8 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { AppShell } from "@/components/AppShell";
 import { themeScript } from "@/components/theme/themeScript";
+import { getCurrentUser } from "@/lib/auth";
+import { hasFullAccess } from "@/lib/admin/auth";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -17,11 +19,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const fullAccess = hasFullAccess(await getCurrentUser());
+
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
@@ -32,7 +36,7 @@ export default function RootLayout({
           className="antialiased min-h-screen bg-gradient-to-br from-white via-brand-light/30 to-indigo-50/60 dark:bg-none dark:bg-app"
           suppressHydrationWarning
         >
-          <AppShell>
+          <AppShell fullAccess={fullAccess}>
             {children}
           </AppShell>
         </body>
