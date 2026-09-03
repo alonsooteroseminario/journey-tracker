@@ -10,10 +10,31 @@ import { FeedPreferencesPanel } from "@/components/FeedPreferencesPanel";
 import { ShareStreakButton } from "@/components/ShareStreakButton";
 import { useGetGoalStreaksQuery } from "@/store/slices/streaksSlice";
 import { computeGoalTier } from "@/lib/streaks/computeTier";
+import { useFullAccess } from "@/components/AccessProvider";
+import { useProfileData } from "@/hooks/useProfileData";
+import { useListWalletsQuery } from "@/store/slices/promptsSlice";
 
 export default function ProfilePage() {
   const { user: clerkUser, isLoaded: clerkLoaded } = useUser();
-  const { profile, streak, goals, isLoaded, updateProfile, activityLog } = useGoals();
+  const fullAccess = useFullAccess();
+
+  // Free users never need goals/friends/streaks. useGoals is a composition hook
+  // that fetches all of them; useProfileData is the narrow one its own docblock
+  // tells new code to prefer.
+  const { profile: soloProfile, profileLoading, updateProfile: soloUpdate } = useProfileData();
+  const {
+    profile: goalsProfile,
+    streak,
+    goals,
+    isLoaded: goalsLoaded,
+    updateProfile: goalsUpdate,
+    activityLog,
+  } = useGoals();
+  const { data: wallets } = useListWalletsQuery();
+
+  const profile = fullAccess ? goalsProfile : soloProfile;
+  const updateProfile = fullAccess ? goalsUpdate : soloUpdate;
+  const isLoaded = fullAccess ? goalsLoaded : !profileLoading;
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
@@ -90,6 +111,14 @@ export default function ProfilePage() {
     : activeStreaks.length > 0
     ? 'bronze'
     : null;
+
+  const walletCount = wallets?.length ?? 0;
+  const groupCount = wallets?.reduce((n, w) => n + w.groups.length, 0) ?? 0;
+  const chunkCount =
+    wallets?.reduce(
+      (n, w) => n + w.groups.reduce((m, g) => m + g.chunks.length, 0),
+      0
+    ) ?? 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-none dark:bg-app">
@@ -233,6 +262,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Stats Grid */}
+        {fullAccess && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-3 sm:mb-6">
           <div className="bg-surface rounded-xl shadow-sm border border-border p-2 sm:p-6 text-center">
             <div className="text-lg sm:text-2xl mb-1 sm:mb-2">📅</div>
@@ -291,8 +321,25 @@ export default function ProfilePage() {
             <p className="text-[10px] sm:text-xs text-amber-100">total</p>
           </div>
         </div>
+        )}
+
+        {!fullAccess && (
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-3 sm:mb-6">
+            {[
+              { label: "Wallets", value: walletCount },
+              { label: "Groups", value: groupCount },
+              { label: "Chunks", value: chunkCount },
+            ].map((s) => (
+              <div key={s.label} className="bg-surface rounded-lg p-3 sm:p-4 text-center">
+                <div className="text-xl sm:text-2xl font-bold text-brand-primary">{s.value}</div>
+                <div className="text-xs sm:text-sm text-text-secondary">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Activity Calendar */}
+        {fullAccess && (
         <div className="bg-surface rounded-2xl shadow-lg border border-border p-2 sm:p-6 mb-3 sm:mb-6">
           <h2 className="text-xs sm:text-lg font-bold text-text-primary mb-2 sm:mb-4 flex items-center gap-1 sm:gap-2">
             <span className="text-base sm:text-xl">📅</span>
@@ -303,13 +350,15 @@ export default function ProfilePage() {
             activityLog={activityLog}
           />
         </div>
+        )}
 
         {/* Email Preferences */}
         <div className="mb-6">
-          <EmailPreferencesPanel />
+          <EmailPreferencesPanel accountOnly={!fullAccess} />
         </div>
 
         {/* Task Display Settings */}
+        {fullAccess && (
         <div className="mb-6">
           <div className="bg-surface rounded-xl p-4 sm:p-6 shadow-sm border border-border">
             <h3 className="text-lg font-semibold text-text-primary mb-4">Task Display</h3>
@@ -339,14 +388,17 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+        )}
 
         {/* Feed Visibility Preferences */}
+        {fullAccess && (
         <div className="mb-6">
           <FeedPreferencesPanel />
         </div>
+        )}
 
         {/* Share Section */}
-        {totalStreakDays > 0 && (
+        {fullAccess && totalStreakDays > 0 && (
           <div className="bg-surface rounded-2xl shadow-lg border border-border p-4 sm:p-6 mb-3 sm:mb-6 flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold text-text-primary">Share your streak card</h3>
@@ -361,6 +413,7 @@ export default function ProfilePage() {
           </div>
         )}
 
+        {fullAccess && (
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg p-3 sm:p-8 text-white">
           <div className="text-center mb-3 sm:mb-6">
             <h2 className="text-xs sm:text-xl font-bold mb-1 sm:mb-2">Share Your Progress 🚀</h2>
@@ -368,7 +421,7 @@ export default function ProfilePage() {
               Show your friends your amazing {streak.currentStreak} day streak and motivate them!
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <a
               href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`🔥 ${streak.currentStreak} day streak on Cadence! Join me in achieving your goals! 🎯`)}`}
@@ -416,6 +469,7 @@ export default function ProfilePage() {
             Sharing your progress helps you stay accountable and inspires others! 💪
           </p>
         </div>
+        )}
       </main>
     </div>
   );
