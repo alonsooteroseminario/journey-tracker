@@ -24,7 +24,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const fullAccess = hasFullAccess(await getCurrentUser());
+  const fullAccess = hasFullAccess(await getCurrentUser().catch(() => null));
 
   return (
     <ClerkProvider>

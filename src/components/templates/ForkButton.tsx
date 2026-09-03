@@ -7,6 +7,7 @@ import {
   useCreateForkRequestMutation,
   useGetForkRequestStatusQuery,
 } from "@/store/slices/templatesSlice";
+import { useFullAccess } from "@/components/AccessProvider";
 
 interface ForkButtonProps {
   templateId: string;
@@ -16,6 +17,7 @@ interface ForkButtonProps {
 
 export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkButtonProps) {
   const router = useRouter();
+  const fullAccess = useFullAccess();
   const [forkTemplate, { isLoading: isForking }] = useForkTemplateMutation();
   const [createForkRequest, { isLoading: isRequesting }] = useCreateForkRequestMutation();
   const { data: existingRequest } = useGetForkRequestStatusQuery(templateId, {
@@ -24,6 +26,10 @@ export function ForkButton({ templateId, templateTitle, isPublic = true }: ForkB
   const [showConfirm, setShowConfirm] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
   const [message, setMessage] = useState("");
+
+  // Free users can't own goals — forking would succeed then strand them on
+  // /wallet with nothing to show for it. Hide the affordance entirely.
+  if (!fullAccess) return null;
 
   // Friends-only: show request status if one exists
   if (!isPublic && existingRequest) {

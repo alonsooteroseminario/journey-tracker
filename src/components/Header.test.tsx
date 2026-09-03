@@ -55,7 +55,7 @@ describe('Header — free (wallet-only) user', () => {
     );
     return render(
       <AccessProvider value={false}>
-        <Header />
+        <Header totalProgress={42} currentStreak={3} />
       </AccessProvider>
     );
   };
@@ -87,6 +87,13 @@ describe('Header — free (wallet-only) user', () => {
     expect(screen.queryByText('Friends')).toBeNull();
   });
 
+  it('hides progress/streak stats even when passed', () => {
+    renderFree();
+    expect(screen.queryByText('Progress')).toBeNull();
+    expect(screen.queryByText('Streak')).toBeNull();
+    expect(screen.queryByText('42%')).toBeNull();
+  });
+
   it('points the logo at /wallet', () => {
     const { container } = renderFree();
     const logo = container.querySelector('a[href="/wallet"]');
@@ -109,5 +116,16 @@ describe('Header — full-access user', () => {
     render(<Header />);
     expect(screen.getByText('Board')).toBeTruthy();
     expect(screen.getByLabelText('Open chat')).toBeTruthy();
+  });
+
+  it('shows progress/streak stats when passed', () => {
+    mockSelector.mockImplementation(
+      (selector: (s: { chat: { isOpen: boolean } }) => unknown) =>
+        selector({ chat: { isOpen: false } })
+    );
+    render(<Header totalProgress={42} currentStreak={3} />);
+    expect(screen.getByText('Progress')).toBeTruthy();
+    expect(screen.getByText('Streak')).toBeTruthy();
+    expect(screen.getByText('42%')).toBeTruthy();
   });
 });

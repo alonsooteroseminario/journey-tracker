@@ -4,9 +4,21 @@ import { usePathname } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { Header } from "./Header";
 import { useHeaderStats } from "@/hooks/useHeaderStats";
+import { useFullAccess } from "./AccessProvider";
 
 /** Routes where the app header is intentionally absent. */
 const NO_HEADER_PREFIXES = ["/sign-in", "/sign-up", "/wallet/share"];
+
+/**
+ * Full-access users get the stats (progress/streak) fetched via
+ * `useHeaderStats`, which pulls goals/friends/streaks/activity/profile data.
+ * Free users never see those numbers, so this is only mounted when
+ * `fullAccess` is true — keeping that fetch off every free-user navigation.
+ */
+function HeaderWithStats() {
+  const stats = useHeaderStats();
+  return <Header totalProgress={stats.progress} currentStreak={stats.streak} />;
+}
 
 /**
  * Renders `<Header>` exactly once inside `AppShell`, so every
@@ -21,11 +33,11 @@ const NO_HEADER_PREFIXES = ["/sign-in", "/sign-up", "/wallet/share"];
 export function HeaderHost() {
   const pathname = usePathname();
   const { isSignedIn, isLoaded } = useUser();
-  const stats = useHeaderStats();
+  const fullAccess = useFullAccess();
 
   if (!isLoaded) return null;
   if (pathname === "/" && !isSignedIn) return null;
   if (NO_HEADER_PREFIXES.some((p) => pathname?.startsWith(p))) return null;
 
-  return <Header totalProgress={stats.progress} currentStreak={stats.streak} />;
+  return fullAccess ? <HeaderWithStats /> : <Header />;
 }

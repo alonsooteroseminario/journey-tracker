@@ -151,7 +151,9 @@ export function EmailPreferencesPanel({ accountOnly = false }: { accountOnly?: b
           <div>
             <span className="font-medium text-text-primary">Enable email notifications</span>
             <p className="text-sm text-text-muted">
-              Receive email updates about your goals and activity
+              {accountOnly
+                ? "Receive email updates about your account"
+                : "Receive email updates about your goals and activity"}
             </p>
           </div>
           <input
