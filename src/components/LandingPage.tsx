@@ -171,6 +171,41 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* ── Free Prompt Wallet Tier ── */}
+      <section className="py-16 px-6 bg-brand-light/40">
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wide uppercase bg-brand-primary text-white rounded-full">
+            Free
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+            Prompt Wallet — free for everyone
+          </h2>
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            Keep your prompts organized in wallets, group them into reusable blocks,
+            and compose them into a finished prompt in seconds. No credit card, no trial.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-6 mb-10 text-left">
+            {[
+              { icon: "💼", title: "Wallets", body: "One wallet per project or client. Reorder, duplicate, archive." },
+              { icon: "🧩", title: "Reusable blocks", body: "Break prompts into chunks and recombine them however you need." },
+              { icon: "🔗", title: "Shareable", body: "Share a read-only link to any wallet with a single click." },
+            ].map((f) => (
+              <div key={f.title} className="bg-white rounded-xl p-5 shadow-sm">
+                <div className="text-2xl mb-2">{f.icon}</div>
+                <h3 className="font-semibold text-gray-900 mb-1">{f.title}</h3>
+                <p className="text-sm text-gray-600">{f.body}</p>
+              </div>
+            ))}
+          </div>
+          <Link
+            href="/sign-up"
+            className="inline-block px-6 py-3 bg-gradient-to-r from-brand-primary to-brand-secondary text-white rounded-lg font-medium hover:opacity-90 transition-all"
+          >
+            Start free with Prompt Wallet
+          </Link>
+        </div>
+      </section>
+
       {/* ── Features grid ── */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
         <div className="text-center mb-12">
