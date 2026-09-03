@@ -187,7 +187,7 @@ nothing in a wallet for them to act on.
 
 Wallet stats need **no new endpoint**. `GET /api/prompt-wallets` already returns wallets
 with `groups` and nested `chunks` included, so counts derive client-side from the existing
-`useGetWalletsQuery`.
+`useListWalletsQuery`.
 
 **Data fetching.** The free variant uses `useProfileData()` — which returns exactly
 `{ profile, profileLoading, updateProfile }` — instead of `useGoals()`. The page currently
