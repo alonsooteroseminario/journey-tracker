@@ -189,13 +189,24 @@ Wallet stats need **no new endpoint**. `GET /api/prompt-wallets` already returns
 with `groups` and nested `chunks` included, so counts derive client-side from the existing
 `useListWalletsQuery`.
 
-**Data fetching.** The free variant uses `useProfileData()` — which returns exactly
-`{ profile, profileLoading, updateProfile }` — instead of `useGoals()`. The page currently
-calls `useGoals()`, a composition hook that also pulls goals, friends, streaks, and the
-activity log, all dead weight for a wallet-only user. `useGoals`'s own docblock directs new
-code to the domain hooks "to avoid fetching data that the page doesn't need", so this
-follows an existing convention rather than inventing one. `useGetGoalStreaksQuery` is also
-dropped from the free path.
+**Data fetching.** The free variant reads `profile`, `updateProfile`, and its
+loading flag from `useProfileData()` — which returns exactly
+`{ profile, profileLoading, updateProfile }` — selected by a ternary against the
+`useGoals()` equivalents.
+
+Note what this does **not** achieve. React forbids conditional hooks, so
+`useProfileData()`, `useGoals()`, and `useGetGoalStreaksQuery()` all execute for
+every user regardless of access level; only the *selection* branches. A free
+user therefore still fetches goals, friends, streaks, and the activity log, and
+then displays none of it. The original intent — that free users skip those
+requests entirely — is not met by this design and cannot be met while all three
+hooks live in one component.
+
+Eliminating the waste requires splitting the page into `<FullProfile>` and
+`<WalletProfile>` so each hook set sits in a component that only mounts for the
+user who needs it. That is a larger refactor than this release warrants, and it
+is recorded as follow-up 6 below rather than smuggled in here. This paragraph
+describes what the code does, not what would be ideal.
 
 **Email toggles kept for free users:** `enabled` (master), `welcomeEmail`,
 `profileChanges`. Every other field on `EmailPreferences` is goal, streak, friend, feed,
@@ -255,7 +266,19 @@ Deliberately out of scope, recorded so they are not lost:
 4. **`/marketplace`.** Public goal-template surface, reachable by free users who have a
    direct link. Left alone; revisit if it becomes confusing.
 5. **`src/components/Navigation.tsx` is dead code.** Nothing imports it. Delete during
-   implementation.
+   implementation. *(Done — commit `c24d075`.)*
+6. **Free profile over-fetches.** React forbids conditional hooks, so the profile page
+   runs `useGoals()` and `useGetGoalStreaksQuery()` for free users and discards the
+   results. Fixing it means splitting the page into `<FullProfile>` / `<WalletProfile>`
+   so each hook set mounts only for the user who needs it. Wasted requests only — no
+   correctness or security impact. See the Data fetching note in section 6.
+7. **`/admin` double redirect.** A free user hitting `/admin` gets `requireAdmin`'s
+   redirect to `/`, and the new `/` shell then redirects to `/wallet`. Correct
+   destination, two hops. Fixing it means changing `requireAdmin`'s redirect target — a
+   guard this branch deliberately left alone.
+8. **Free wallet header fetches nothing it shows.** Addressed during the final review
+   fix wave; retained here as the general lesson that `useFullAccess()` gates rendering,
+   not fetching — any hook above a gate still runs.
 
 ---
 

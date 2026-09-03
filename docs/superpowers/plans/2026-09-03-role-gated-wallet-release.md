@@ -20,8 +20,13 @@
 - ESLint: no `console.log` (only `warn`/`error`), no explicit `any`. Remove unused imports rather than prefixing with `_`.
 - Exact env var names: `OWNER_ADMIN_EMAIL` (exists), `FULL_ACCESS_EMAILS` (new, optional).
 - Exact user-facing copy: header title for free users is `Prompt Wallet` (not "Prompts Wallet" — the nav tab label keeps its existing "Prompts Wallet" text).
+- `npx tsc --noEmit`: **count only `src/` errors** — pipe through `grep -v '^\.next/'`. Entries under `.next/dev/types/` are stale generated route types from an old dev-server run (they still name pre-move paths like `app/board/page.ts`) and their count drifts between 0 and ~14 depending on whether a dev server or build ran last. They are build artifacts, not source, and are NOT a regression. After excluding them the repo reports **~133 pre-existing errors**, all in test files (vitest globals absent from tsconfig, plus Prisma `User` type drift — e.g. `src/lib/admin/auth.test.ts(19,9)` predates this branch). Do NOT try to fix them. Verification means no NEW errors and none naming a file your task touched.
 - Do not touch `src/middleware.ts`.
 - Do not add API-route enforcement. That is an explicit out-of-scope follow-up in the spec.
+- **Never run `git add -A` or `git add .`** The working tree carries unrelated
+  uncommitted work (a social-assets/Instagram feature, remotion marketing
+  components, brand docs). Stage only the files your task names, and run
+  `git status --short` before every commit to confirm nothing else is staged.
 
 ---
 
@@ -361,7 +366,7 @@ export function AppShell({
 - [ ] **Step 3: Typecheck and build**
 
 Run: `npx tsc --noEmit`
-Expected: no errors.
+Expected: **~133 pre-existing errors and no more** (see Global Constraints; the exact count varies slightly with measurement method, so do not treat 133 vs 134 as a regression). Confirm none of them name a file this task touched. The binding check is that no error names a file your task touched.
 
 Run: `npm run build`
 Expected: build succeeds. If it fails with a Clerk/`auth()` error, confirm `getCurrentUser()` is only reached during a request render and not at module scope.
@@ -607,7 +612,7 @@ export default async function FullAccessLayout({
 - [ ] **Step 3: Verify nothing broke**
 
 Run: `npx tsc --noEmit`
-Expected: no errors. The only relative imports in the moved tree are internal to `cost-tracker/` (`../hooks/useCostTracker`, `./TransactionForm`) and survive the move intact.
+Expected: **~133 pre-existing errors and no more** (see Global Constraints; the exact count varies slightly with measurement method, so do not treat 133 vs 134 as a regression). Confirm none of them name a file this task touched. The binding check is that no error names a file your task touched. The only relative imports in the moved tree are internal to `cost-tracker/` (`../hooks/useCostTracker`, `./TransactionForm`) and survive the move intact.
 
 Run: `npm run build`
 Expected: success. Confirm the build output still lists routes as `/board`, `/goals`, `/feed`, `/friends`, `/templates`, `/cost-tracker`, `/settings/ai-key` — **not** `/(full)/board`. Route groups are path-invisible; if a `(full)` segment appears in a URL, something is wrong.
@@ -619,8 +624,14 @@ Expected: same 6 pre-existing failures, no new ones.
 
 - [ ] **Step 5: Commit**
 
+`git mv` has already staged every move, so stage only the new guard file.
+**Never `git add -A` in this repo** — the working tree carries unrelated
+in-progress work (a social-assets/Instagram feature under `src/app/api/`, remotion
+marketing files, brand docs) that must not land on this branch.
+
 ```bash
-git add -A "src/app/(full)" src/app
+git add "src/app/(full)/layout.tsx"
+git status --short          # confirm ONLY the moves + the new layout are staged
 git commit -m "feat(access): gate full-app routes behind a (full) route group"
 ```
 
@@ -695,7 +706,7 @@ export default async function HomePage() {
 - [ ] **Step 3: Typecheck and build**
 
 Run: `npx tsc --noEmit`
-Expected: no errors. If anything still imports `@/app/page`, repoint it at `@/components/HomeDashboard`.
+Expected: **~133 pre-existing errors and no more** (see Global Constraints; the exact count varies slightly with measurement method, so do not treat 133 vs 134 as a regression). Confirm none of them name a file this task touched. The binding check is that no error names a file your task touched. If anything still imports `@/app/page`, repoint it at `@/components/HomeDashboard`.
 
 Run: `npm run build`
 Expected: success, `/` still listed as a route.
@@ -805,7 +816,25 @@ const visibleGroups = accountOnly
 
 In the JSX, change the notification-type map to iterate `visibleGroups` instead of `notificationGroups`.
 
-Also hide the frequency selector and the reminder/streak-protect time pickers when `accountOnly` is true — they configure goal digests and streak warnings that a wallet-only user never receives. Wrap each of those blocks in `{!accountOnly && ( ... )}`. Leave the master `enabled` toggle visible in both modes.
+Then gate the **frequency selector only**. It begins at the `{/* Frequency selector */}`
+comment (around line 162) and ends just before the `{/* Notification type toggles */}`
+comment (around line 227). Wrap that one block:
+
+```tsx
+{!accountOnly && (
+  {/* Frequency selector ... existing block unchanged ... */}
+)}
+```
+
+**Do NOT hunt for the time pickers separately.** Verified: all three
+(`streakProtectTime`, `reminderStartTime`, `reminderStopTime`) render *inside*
+`group.items.map`, guarded by `item.key === "streakReminder"` and
+`item.key === "reminderDigest"`. Those items belong to the "Streaks" and
+"Digests & Reminders" groups, which `visibleGroups` already filters out under
+`accountOnly` — so the pickers disappear on their own. Adding separate gates for
+them would be dead code.
+
+Leave the master `enabled` toggle visible in both modes.
 
 - [ ] **Step 4: Run tests to verify they pass**
 
@@ -1013,7 +1042,20 @@ Render the free stat row where the goal stat row currently sits:
 )}
 ```
 
-Wrap each of these in `{fullAccess && ( ... )}`: the goal stats row, the Activity Calendar block, the Task Display block, `<FeedPreferencesPanel />`, the "Share your streak card" block with `<ShareStreakButton>`, and the "Share Your Progress 🚀" block.
+Wrap each of these in `{fullAccess && ( ... )}`. Their exact locations, verified
+against the current file — each has a `{/* ... */}` marker except the last:
+
+| Section | Marker | Approx. line | Note |
+|---|---|---|---|
+| Goal stats row | `{/* Stats Grid */}` | 235 | the `grid-cols-2 md:grid-cols-4` div |
+| Activity Calendar | `{/* Activity Calendar */}` | 295 | |
+| Task Display | `{/* Task Display Settings */}` | 312 | the `hideCompletedAfterDays` control |
+| Feed prefs | `{/* Feed Visibility Preferences */}` | 343 | `<FeedPreferencesPanel />` |
+| Share streak card | `{/* Share Section */}` | 348 | **already** wrapped in `{totalStreakDays > 0 && (...)}` — combine, do not nest a second guard: `{fullAccess && totalStreakDays > 0 && (...)}` |
+| Share Your Progress 🚀 | **none** | ~364-418 | a sibling `<div className="bg-gradient-to-r from-blue-500 to-purple-600 ...">`, closing just before `</main>`. It has NO comment marker and NO existing conditional — find it by its gradient className. |
+
+The last two are siblings, not one nested region. Gating only the `{/* Share Section */}`
+block would leave the gradient "Share Your Progress" panel visible to free users.
 
 Pass the new prop through:
 
@@ -1046,7 +1088,7 @@ git commit -m "feat(profile): wallet-only profile variant for free users"
 
 - [ ] **Step 1: Add the section**
 
-Insert between the existing "How it works" section and the "Everything in one place" section (around line 177). Match the surrounding section markup — the page is pinned light, so use the same literal gray/brand colors the neighbouring sections use rather than semantic dark-mode tokens:
+Insert between the existing "How it works" section and the "Everything in one place" section. Match the surrounding section markup — the page is pinned light, so use the same literal gray/brand colors the neighbouring sections use rather than semantic dark-mode tokens:
 
 ```tsx
 <section className="py-16 px-6 bg-brand-light/40">
@@ -1084,7 +1126,11 @@ Insert between the existing "How it works" section and the "Everything in one pl
 </section>
 ```
 
-If `Link` is not already imported in that file, add `import Link from "next/link";`. Leave the Cadence headline, wordmark, and footer unchanged.
+`Link` is **already imported** at line 3 of that file — do not add a duplicate import.
+
+Exact insertion point, verified: between the `</section>` that closes "How it works" (line 172) and the `<section>` that opens "Everything in one place" (line 175).
+
+Leave the Cadence headline, wordmark, and footer unchanged.
 
 - [ ] **Step 2: Verify it renders**
 
@@ -1122,7 +1168,7 @@ git rm src/components/Navigation.tsx
 - [ ] **Step 3: Full verification**
 
 Run: `npx tsc --noEmit`
-Expected: no errors.
+Expected: **~133 pre-existing errors and no more** (see Global Constraints; the exact count varies slightly with measurement method, so do not treat 133 vs 134 as a regression). Confirm none of them name a file this task touched. The binding check is that no error names a file your task touched.
 
 Run: `npm run lint`
 Expected: no new warnings or errors.
@@ -1133,29 +1179,45 @@ Expected: the 6 pre-existing failures listed in Global Constraints and nothing e
 Run: `npm run build`
 Expected: success. Confirm the route list contains `/board`, `/feed`, `/goals`, `/friends`, `/templates`, `/cost-tracker`, `/settings/ai-key` with no `(full)` segment in any URL.
 
-- [ ] **Step 4: Manual smoke test**
+- [ ] **Step 4: Hand the manual smoke test to the user — do NOT attempt it**
 
-Run: `npm run dev`
+This step requires a browser and two different authenticated identities. A
+subagent cannot sign in through Clerk, so attempting it produces false
+confidence, not verification. Report it as outstanding and let the user run it.
 
-As the admin (`OWNER_ADMIN_EMAIL` in `.env`):
+**Do not edit `.env` to simulate a free user.** An earlier draft of this plan
+said to comment out `OWNER_ADMIN_EMAIL`; that risks leaving the user's local
+environment broken if anything goes wrong mid-run. Shell variables take
+precedence over `.env` in Next.js, so the free-user pass is a one-liner that
+touches nothing on disk:
+
+```bash
+npm run dev                          # admin pass — .env untouched
+OWNER_ADMIN_EMAIL= FULL_ACCESS_EMAILS= npm run dev   # free-user pass
+```
+
+Checks for the user to run.
+
+As the admin (`npm run dev`):
 - `/` shows the goal dashboard; header reads "Cadence" with the full tab bar; chat button present.
 - `/board`, `/feed`, `/settings/ai-key` all load.
 - `/profile` shows goal stats, Activity Calendar, feed prefs, streak sharing.
 
-Then temporarily comment out `OWNER_ADMIN_EMAIL` in `.env`, restart the dev server, and confirm as a free user:
+As a free user (`OWNER_ADMIN_EMAIL= FULL_ACCESS_EMAILS= npm run dev`):
 - `/` redirects to `/wallet`.
 - Header reads "Prompt Wallet", no tab bar, no chat button, no Friends button.
-- `/board`, `/feed`, `/goals`, `/friends`, `/templates`, `/cost-tracker`, `/settings/ai-key` each redirect to `/wallet`.
+- `/board`, `/goals`, `/feed`, `/friends`, `/templates`, `/cost-tracker`, `/settings/ai-key` each redirect to `/wallet`.
 - `/profile` shows wallet counts and identity fields only.
 - `/wallet` works normally.
 - Signed out, `/` shows the landing page with the new free-tier section.
 
-**Restore `OWNER_ADMIN_EMAIL` in `.env` when done.**
-
 - [ ] **Step 5: Commit**
 
+`git rm` has already staged the deletion. Do **not** use `git add -A` — the
+working tree carries unrelated in-progress work that must not land on this branch.
+
 ```bash
-git add -A
+git status --short          # confirm ONLY the Navigation.tsx deletion is staged
 git commit -m "chore: remove unused Navigation component"
 ```
 
