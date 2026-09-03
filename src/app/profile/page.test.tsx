@@ -57,10 +57,12 @@ vi.mock('@/store/slices/promptsSlice', () => ({
 }));
 
 vi.mock('@/components/EmailPreferencesPanel', () => ({
-  EmailPreferencesPanel: () => <div>email-prefs</div>,
+  EmailPreferencesPanel: ({ accountOnly }: { accountOnly?: boolean }) => (
+    <div>email-prefs:{String(accountOnly)}</div>
+  ),
 }));
 vi.mock('@/components/FeedPreferencesPanel', () => ({
-  FeedPreferencesPanel: () => null,
+  FeedPreferencesPanel: () => <div>feed-prefs</div>,
 }));
 vi.mock('@/components/Calendar', () => ({ Calendar: () => null }));
 vi.mock('@/components/ShareStreakButton', () => ({ ShareStreakButton: () => null }));
@@ -84,10 +86,47 @@ describe('ProfilePage — free user', () => {
     expect(screen.queryByText('Activity Calendar')).toBeNull();
     expect(screen.queryByText('Share your streak card')).toBeNull();
     expect(screen.queryByText('Task Display')).toBeNull();
+    expect(screen.queryByText('feed-prefs')).toBeNull();
+  });
+
+  it('hides the Share Your Progress gradient panel', () => {
+    renderFree();
+    expect(screen.queryByText('Share Your Progress 🚀')).toBeNull();
+  });
+
+  it('passes accountOnly=true to EmailPreferencesPanel', () => {
+    renderFree();
+    expect(screen.getByText('email-prefs:true')).toBeTruthy();
   });
 
   it('keeps identity fields', () => {
     renderFree();
     expect(screen.getByText('Test User')).toBeTruthy();
+  });
+});
+
+describe('ProfilePage — full-access user', () => {
+  // No AccessProvider wrapper: AccessContext defaults to true, so this
+  // exercises the real full-access path (goalsProfile/goalsLoaded/goalsUpdate).
+  const renderFullAccess = () => render(<ProfilePage />);
+
+  it('shows goal sections and hides wallet counts', () => {
+    renderFullAccess();
+    expect(screen.getByText('Activity Calendar')).toBeTruthy();
+    expect(screen.getByText('Task Display')).toBeTruthy();
+    expect(screen.queryByText('Wallets')).toBeNull();
+    expect(screen.queryByText('Groups')).toBeNull();
+    expect(screen.queryByText('Chunks')).toBeNull();
+  });
+
+  it('shows the Share Your Progress gradient panel and feed prefs', () => {
+    renderFullAccess();
+    expect(screen.getByText('Share Your Progress 🚀')).toBeTruthy();
+    expect(screen.getByText('feed-prefs')).toBeTruthy();
+  });
+
+  it('passes accountOnly=false to EmailPreferencesPanel', () => {
+    renderFullAccess();
+    expect(screen.getByText('email-prefs:false')).toBeTruthy();
   });
 });
