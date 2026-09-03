@@ -206,3 +206,50 @@ describe("EmailPreferencesPanel", () => {
     });
   });
 });
+
+describe("EmailPreferencesPanel — accountOnly", () => {
+  const seed = () => {
+    mockUseGetEmailPreferencesQuery.mockReturnValue({
+      data: {
+        enabled: true,
+        frequency: "daily",
+        welcomeEmail: true,
+        profileChanges: true,
+        goalCreated: true,
+        goalDeleted: true,
+        friendInvitation: true,
+        friendActivity: true,
+        streakMilestone: true,
+        streakReminder: true,
+        friendStreakReminder: true,
+        goalPublished: true,
+        goalShared: true,
+        goalForked: true,
+        morningDigest: true,
+        overdueAlert: true,
+        reminderDigest: false,
+      },
+      isLoading: false,
+    });
+    mockUseUpdateEmailPreferencesMutation.mockReturnValue([vi.fn()]);
+  };
+
+  it("shows only the Account group when accountOnly", () => {
+    seed();
+    render(<EmailPreferencesPanel accountOnly />);
+    expect(screen.getByText("Account")).toBeInTheDocument();
+    expect(screen.queryByText("Goals")).toBeNull();
+    expect(screen.queryByText("Friends")).toBeNull();
+    expect(screen.queryByText("Streaks")).toBeNull();
+    expect(screen.queryByText("Templates & Marketplace")).toBeNull();
+    expect(screen.queryByText("Digests & Reminders")).toBeNull();
+  });
+
+  it("shows every group by default", () => {
+    seed();
+    render(<EmailPreferencesPanel />);
+    expect(screen.getByText("Account")).toBeInTheDocument();
+    expect(screen.getByText("Goals")).toBeInTheDocument();
+    expect(screen.getByText("Digests & Reminders")).toBeInTheDocument();
+  });
+});

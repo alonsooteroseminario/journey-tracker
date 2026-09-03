@@ -7,7 +7,7 @@ import {
 } from "@/store/slices/profileSlice";
 import type { NotificationType } from "@/types";
 
-export function EmailPreferencesPanel() {
+export function EmailPreferencesPanel({ accountOnly = false }: { accountOnly?: boolean }) {
   const { data: preferences, isLoading } = useGetEmailPreferencesQuery();
   const [updatePreferences] = useUpdateEmailPreferencesMutation();
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
@@ -129,6 +129,10 @@ export function EmailPreferencesPanel() {
     },
   ];
 
+  const visibleGroups = accountOnly
+    ? notificationGroups.filter((g) => g.title === "Account")
+    : notificationGroups;
+
   return (
     <div className="bg-surface rounded-lg shadow p-6">
       <div className="flex items-center justify-between mb-6">
@@ -160,7 +164,7 @@ export function EmailPreferencesPanel() {
       </div>
 
       {/* Frequency selector */}
-      {preferences.enabled && (
+      {!accountOnly && preferences.enabled && (
         <div className="mb-6 pb-6 border-b border-border">
           <label className="block font-medium text-text-primary mb-3">
             Email frequency
@@ -227,7 +231,7 @@ export function EmailPreferencesPanel() {
       {/* Notification type toggles */}
       {preferences.enabled && (
         <div className="space-y-6">
-          {notificationGroups.map((group) => (
+          {visibleGroups.map((group) => (
             <div key={group.title}>
               <h3 className="text-sm font-semibold text-text-secondary mb-3">
                 {group.title}
