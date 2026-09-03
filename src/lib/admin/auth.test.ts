@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { isAdmin, requireAdmin } from "./auth";
+import { isAdmin, requireAdmin, hasFullAccess, requireFullAccess } from "./auth";
 import type { User } from "@prisma/client";
 
 vi.mock("@/lib/auth", () => ({
@@ -89,5 +89,83 @@ describe("requireAdmin", () => {
     mockGetCurrentUser.mockResolvedValue(mockUser);
     const result = await requireAdmin();
     expect(result).toBe(mockUser);
+  });
+});
+
+describe("hasFullAccess", () => {
+  const mockUser = {
+    id: "u1", clerkId: "clerk_123", email: "person@example.com", name: "Person",
+  } as unknown as User;
+
+  beforeEach(() => {
+    delete process.env.OWNER_ADMIN_EMAIL;
+    delete process.env.FULL_ACCESS_EMAILS;
+  });
+
+  it("returns false for a null user", () => {
+    process.env.FULL_ACCESS_EMAILS = "person@example.com";
+    expect(hasFullAccess(null)).toBe(false);
+  });
+
+  it("returns true for the admin even when the allowlist is unset", () => {
+    process.env.OWNER_ADMIN_EMAIL = "person@example.com";
+    expect(hasFullAccess(mockUser)).toBe(true);
+  });
+
+  it("returns false when neither env var is configured", () => {
+    expect(hasFullAccess(mockUser)).toBe(false);
+  });
+
+  it("returns true when the email is on the allowlist", () => {
+    process.env.FULL_ACCESS_EMAILS = "person@example.com";
+    expect(hasFullAccess(mockUser)).toBe(true);
+  });
+
+  it("matches the allowlist case-insensitively", () => {
+    process.env.FULL_ACCESS_EMAILS = "PERSON@EXAMPLE.COM";
+    expect(hasFullAccess(mockUser)).toBe(true);
+  });
+
+  it("tolerates whitespace and empty entries in the list", () => {
+    process.env.FULL_ACCESS_EMAILS = " ,  person@example.com , ";
+    expect(hasFullAccess(mockUser)).toBe(true);
+  });
+
+  it("returns false for an email not on the allowlist", () => {
+    process.env.FULL_ACCESS_EMAILS = "someone@example.com,other@example.com";
+    expect(hasFullAccess(mockUser)).toBe(false);
+  });
+
+  it("does not treat an empty allowlist as matching everyone", () => {
+    process.env.FULL_ACCESS_EMAILS = "";
+    expect(hasFullAccess(mockUser)).toBe(false);
+  });
+});
+
+describe("requireFullAccess", () => {
+  const mockUser = {
+    id: "u1", clerkId: "clerk_123", email: "person@example.com", name: "Person",
+  } as unknown as User;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    delete process.env.OWNER_ADMIN_EMAIL;
+    delete process.env.FULL_ACCESS_EMAILS;
+  });
+
+  it("redirects to /sign-in when not authenticated", async () => {
+    mockGetCurrentUser.mockResolvedValue(null);
+    await expect(requireFullAccess()).rejects.toThrow("REDIRECT:/sign-in");
+  });
+
+  it("redirects to /wallet when the user lacks full access", async () => {
+    mockGetCurrentUser.mockResolvedValue(mockUser);
+    await expect(requireFullAccess()).rejects.toThrow("REDIRECT:/wallet");
+  });
+
+  it("returns the user when they have full access", async () => {
+    process.env.FULL_ACCESS_EMAILS = "person@example.com";
+    mockGetCurrentUser.mockResolvedValue(mockUser);
+    expect(await requireFullAccess()).toBe(mockUser);
   });
 });
