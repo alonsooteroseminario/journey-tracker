@@ -7,9 +7,13 @@ const isPublicRoute = createRouteMatcher([
   "/api/webhooks(.*)",
   "/api/cron(.*)",
   "/api/health",
+  // Instagram's Graph API fetches image_url unauthenticated
+  "/api/social-assets/(.*)",
   "/api/mcp/health",
   "/api/prompt-wallets/shared/(.*)",
   "/wallet/share/(.*)",
+  // Signed-out visitors get the landing page here, not a sign-in redirect
+  "/wallet",
   "/marketplace(.*)",
   "/api/marketplace(.*)",
 ]);

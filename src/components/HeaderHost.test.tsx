@@ -72,6 +72,13 @@ describe("HeaderHost", () => {
     expect(container.firstChild).toBeNull();
   });
 
+  it("renders nothing for signed-out users on /wallet (landing page renders there)", () => {
+    signedOut();
+    mockUsePathname.mockReturnValue("/wallet");
+    const { container } = render(<HeaderHost />);
+    expect(container.firstChild).toBeNull();
+  });
+
   it("renders nothing on /sign-in", () => {
     signedIn();
     mockUsePathname.mockReturnValue("/sign-in");

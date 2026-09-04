@@ -9,6 +9,9 @@ import { useFullAccess } from "./AccessProvider";
 /** Routes where the app header is intentionally absent. */
 const NO_HEADER_PREFIXES = ["/sign-in", "/sign-up", "/wallet/share"];
 
+/** Routes that render `<LandingPage>` when signed out. It has its own nav. */
+const LANDING_ROUTES = ["/", "/wallet"];
+
 /**
  * Full-access users get the stats (progress/streak) fetched via
  * `useHeaderStats`, which pulls goals/friends/streaks/activity/profile data.
@@ -27,7 +30,7 @@ function HeaderWithStats() {
  *
  * Returns null for:
  * - Clerk not yet loaded (avoids SSR mismatch)
- * - Signed-out user on the landing page (marketing surface)
+ * - Signed-out user on a route that renders the landing page (marketing surface)
  * - Auth pages and public share pages (see NO_HEADER_PREFIXES)
  */
 export function HeaderHost() {
@@ -36,7 +39,7 @@ export function HeaderHost() {
   const fullAccess = useFullAccess();
 
   if (!isLoaded) return null;
-  if (pathname === "/" && !isSignedIn) return null;
+  if (!isSignedIn && LANDING_ROUTES.includes(pathname ?? "")) return null;
   if (NO_HEADER_PREFIXES.some((p) => pathname?.startsWith(p))) return null;
 
   return fullAccess ? <HeaderWithStats /> : <Header />;
