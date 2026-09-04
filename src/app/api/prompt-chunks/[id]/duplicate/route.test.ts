@@ -26,7 +26,7 @@ const sourceChunk = {
 describe('POST /api/prompt-chunks/[id]/duplicate', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertChunkOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertChunkOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it('returns 401 when unauthenticated', async () => {

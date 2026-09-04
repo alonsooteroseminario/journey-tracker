@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { assertWalletOwnership, OwnershipError } from "@/lib/prompts/ownership";
+import {
+  assertWalletOwnership,
+  OwnershipError,
+  LockedError,
+  assertCanEdit,
+  assertCanDelete,
+} from "@/lib/prompts/ownership";
 import {
   serializePromptWallet,
   validateOptionalDescription,
@@ -29,9 +35,12 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    await assertWalletOwnership(id, user.id);
+    const { lockLevel } = await assertWalletOwnership(id, user.id);
 
     const body = await req.json();
+    // A PATCH that only changes lockLevel must pass even on a hard lock,
+    // otherwise hard-locking an item would brick it permanently.
+    assertCanEdit(lockLevel, Object.keys(body).length === 1 && body.lockLevel !== undefined);
     const data: Prisma.PromptWalletUpdateInput = {};
 
     if (body.title !== undefined) {
@@ -113,6 +122,9 @@ export async function PATCH(
     if (error instanceof OwnershipError) {
       return NextResponse.json({ error: error.message }, { status: 404 });
     }
+    if (error instanceof LockedError) {
+      return NextResponse.json({ error: error.message }, { status: 409 });
+    }
     console.error("PATCH /api/prompt-wallets/[id] error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
@@ -133,7 +145,8 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await assertWalletOwnership(id, user.id);
+    const { lockLevel } = await assertWalletOwnership(id, user.id);
+    assertCanDelete(lockLevel);
 
     await prisma.promptWallet.delete({ where: { id } });
 
@@ -141,6 +154,9 @@ export async function DELETE(
   } catch (error) {
     if (error instanceof OwnershipError) {
       return NextResponse.json({ error: error.message }, { status: 404 });
+    }
+    if (error instanceof LockedError) {
+      return NextResponse.json({ error: error.message }, { status: 409 });
     }
     console.error("DELETE /api/prompt-wallets/[id] error:", error);
     return NextResponse.json(

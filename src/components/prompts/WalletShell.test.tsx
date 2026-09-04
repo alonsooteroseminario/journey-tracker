@@ -6,7 +6,13 @@ import type { PromptWallet } from '@/types';
 const mockCreateWallet = vi.fn();
 const mockCreateGroup = vi.fn();
 const mockCreateChunk = vi.fn();
-const mockUseListWalletsQuery = vi.fn(() => ({ data: [] as PromptWallet[], isLoading: false }));
+const mockRefetch = vi.fn();
+const mockUseListWalletsQuery = vi.fn(() => ({
+  data: [] as PromptWallet[],
+  isLoading: false,
+  isError: false,
+  refetch: mockRefetch,
+}));
 
 vi.mock('@/store/slices/promptsSlice', () => ({
   useListWalletsQuery: (...args: unknown[]) => mockUseListWalletsQuery(...args),
@@ -56,13 +62,20 @@ const TWO_WALLETS: PromptWallet[] = [
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockUseListWalletsQuery.mockReturnValue({ data: [], isLoading: false });
+  mockUseListWalletsQuery.mockReturnValue({
+    data: [],
+    isLoading: false,
+    isError: false,
+    refetch: mockRefetch,
+  });
   mockCreateWallet.mockResolvedValue({ data: { id: 'w-new' } });
+  mockCreateGroup.mockResolvedValue({ data: { id: 'g-new' } });
+  mockCreateChunk.mockResolvedValue({ data: { id: 'c-new' } });
 });
 
 describe('WalletShell', () => {
   it('shows loading spinner when isLoading', () => {
-    mockUseListWalletsQuery.mockReturnValue({ data: [], isLoading: true });
+    mockUseListWalletsQuery.mockReturnValue({ data: [], isLoading: true, isError: false, refetch: mockRefetch });
     render(<WalletShell />);
     expect(screen.getByText('Loading wallets…')).toBeInTheDocument();
   });
@@ -83,8 +96,28 @@ describe('WalletShell', () => {
     );
   });
 
+  it('shows an error state — not the empty state — when the query fails', () => {
+    mockUseListWalletsQuery.mockReturnValue({
+      data: [], isLoading: false, isError: true, refetch: mockRefetch,
+    });
+    render(<WalletShell />);
+    expect(screen.getByText('Could not load your wallets')).toBeInTheDocument();
+    // The regression this guards: falling through to the empty state would tell
+    // an existing user their wallets are gone and invite a duplicate.
+    expect(screen.queryByText('Create your first wallet')).toBeNull();
+  });
+
+  it('retries the query from the error state', () => {
+    mockUseListWalletsQuery.mockReturnValue({
+      data: [], isLoading: false, isError: true, refetch: mockRefetch,
+    });
+    render(<WalletShell />);
+    fireEvent.click(screen.getByText('Try again'));
+    expect(mockRefetch).toHaveBeenCalled();
+  });
+
   it('renders sidebar, detail, and compose when wallets exist', () => {
-    mockUseListWalletsQuery.mockReturnValue({ data: TWO_WALLETS, isLoading: false });
+    mockUseListWalletsQuery.mockReturnValue({ data: TWO_WALLETS, isLoading: false, isError: false, refetch: mockRefetch });
     render(<WalletShell />);
     // Both desktop + mobile panes render in happy-dom (no CSS breakpoints)
     expect(screen.getAllByTestId('wallet-sidebar').length).toBeGreaterThan(0);
@@ -93,13 +126,13 @@ describe('WalletShell', () => {
   });
 
   it('auto-selects the first wallet on load', () => {
-    mockUseListWalletsQuery.mockReturnValue({ data: TWO_WALLETS, isLoading: false });
+    mockUseListWalletsQuery.mockReturnValue({ data: TWO_WALLETS, isLoading: false, isError: false, refetch: mockRefetch });
     render(<WalletShell />);
     expect(screen.getAllByTestId('wallet-detail')[0]).toHaveTextContent('Alpha');
   });
 
   it('clicking a different wallet in sidebar updates detail pane', () => {
-    mockUseListWalletsQuery.mockReturnValue({ data: TWO_WALLETS, isLoading: false });
+    mockUseListWalletsQuery.mockReturnValue({ data: TWO_WALLETS, isLoading: false, isError: false, refetch: mockRefetch });
     render(<WalletShell />);
     fireEvent.click(screen.getAllByText('Beta')[0]);
     expect(screen.getAllByTestId('wallet-detail')[0]).toHaveTextContent('Beta');

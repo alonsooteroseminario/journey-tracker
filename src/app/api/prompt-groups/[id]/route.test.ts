@@ -35,7 +35,7 @@ function patchReq(body: unknown) {
 describe('PATCH /api/prompt-groups/[id]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertGroupOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertGroupOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it('returns 401 when unauthenticated', async () => {
@@ -109,7 +109,7 @@ describe('PATCH /api/prompt-groups/[id]', () => {
 describe('DELETE /api/prompt-groups/[id]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertGroupOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertGroupOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it('returns 401 when unauthenticated', async () => {

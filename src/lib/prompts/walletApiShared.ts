@@ -115,6 +115,8 @@ export function serializePromptWallet(w: {
   description: string | null;
   order: number;
   lockLevel: string | null;
+  shareToken?: string | null;
+  sharedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
   groups: Array<Parameters<typeof serializePromptGroup>[0]>;
@@ -129,6 +131,10 @@ export function serializePromptWallet(w: {
     ...(w.lockLevel != null && w.lockLevel !== ''
       ? { lockLevel: w.lockLevel as LockLevel }
       : {}),
+    // Share state is owner-only surface: these are never returned by the public
+    // shared-wallet route, which strips them explicitly.
+    shareToken: w.shareToken ?? null,
+    sharedAt: w.sharedAt ? w.sharedAt.toISOString() : null,
     groups: w.groups.map(serializePromptGroup),
     createdAt: w.createdAt.toISOString(),
     updatedAt: w.updatedAt.toISOString(),

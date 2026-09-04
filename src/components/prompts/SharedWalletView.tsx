@@ -36,9 +36,22 @@ export function SharedWalletView({ wallet, ownerName, shareToken }: Props) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [cloning, setCloning] = useState(false);
   const [cloned, setCloned] = useState(false);
+  const [cloneError, setCloneError] = useState<string | null>(null);
 
   const handleCopy = async (chunk: SharedChunk) => {
-    await navigator.clipboard.writeText(chunk.content);
+    // Matches the fallback used elsewhere in this feature: clipboard.writeText
+    // rejects on an insecure context or a denied permission, and copying is the
+    // whole point of this page.
+    try {
+      await navigator.clipboard.writeText(chunk.content);
+    } catch {
+      const el = document.createElement("textarea");
+      el.value = chunk.content;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
     setCopiedId(chunk.id);
     setTimeout(() => setCopiedId(null), 1500);
   };
@@ -46,11 +59,18 @@ export function SharedWalletView({ wallet, ownerName, shareToken }: Props) {
   const handleClone = async () => {
     if (!shareToken) return;
     setCloning(true);
+    setCloneError(null);
     try {
       const res = await fetch(`/api/prompt-wallets/shared/${shareToken}/clone`, { method: "POST" });
       if (res.ok) {
         setCloned(true);
+      } else if (res.status === 401) {
+        setCloneError("Your session expired. Sign in again to save this wallet.");
+      } else {
+        setCloneError("Could not save this wallet. Please try again.");
       }
+    } catch {
+      setCloneError("Could not save this wallet. Please try again.");
     } finally {
       setCloning(false);
     }
@@ -69,6 +89,9 @@ export function SharedWalletView({ wallet, ownerName, shareToken }: Props) {
             <p className="text-text-secondary text-sm">{wallet.description}</p>
           )}
           <p className="text-text-muted text-xs">Shared by {ownerName} · Read-only</p>
+          {cloneError && (
+            <p className="text-red-600 text-xs" role="alert">{cloneError}</p>
+          )}
         </div>
 
         {/* Clone / Sign-in CTA */}

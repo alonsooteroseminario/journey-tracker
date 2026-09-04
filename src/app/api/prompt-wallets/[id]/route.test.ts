@@ -31,7 +31,7 @@ const emptyWallet = {
 describe("PATCH /api/prompt-wallets/[id]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertWalletOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertWalletOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it("returns 401 when unauthenticated", async () => {
@@ -125,7 +125,7 @@ describe("PATCH /api/prompt-wallets/[id]", () => {
 describe("DELETE /api/prompt-wallets/[id]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertWalletOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertWalletOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it("returns 401 when unauthenticated", async () => {

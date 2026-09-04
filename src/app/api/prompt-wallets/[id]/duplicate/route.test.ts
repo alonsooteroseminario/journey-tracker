@@ -54,7 +54,7 @@ const sourceWallet = {
 describe("POST /api/prompt-wallets/[id]/duplicate", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertWalletOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertWalletOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it("returns 401 when unauthenticated", async () => {

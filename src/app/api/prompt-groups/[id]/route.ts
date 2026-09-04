@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
-import { assertGroupOwnership, OwnershipError } from '@/lib/prompts/ownership';
+import { assertGroupOwnership, OwnershipError, LockedError, assertCanEdit, assertCanDelete } from '@/lib/prompts/ownership';
 import {
   serializePromptGroup,
   validateWalletTitle,
@@ -26,9 +26,12 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    await assertGroupOwnership(id, user.id);
+    const { lockLevel } = await assertGroupOwnership(id, user.id);
 
     const body = await req.json();
+    // A PATCH that only changes lockLevel must pass even on a hard lock,
+    // otherwise hard-locking an item would brick it permanently.
+    assertCanEdit(lockLevel, Object.keys(body).length === 1 && body.lockLevel !== undefined);
     const data: Prisma.PromptGroupUpdateInput = {};
 
     if (body.title !== undefined) {
@@ -82,6 +85,9 @@ export async function PATCH(
     if (error instanceof OwnershipError) {
       return NextResponse.json({ error: error.message }, { status: 404 });
     }
+    if (error instanceof LockedError) {
+      return NextResponse.json({ error: error.message }, { status: 409 });
+    }
     console.error('PATCH /api/prompt-groups/[id] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -99,7 +105,8 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    await assertGroupOwnership(id, user.id);
+    const { lockLevel } = await assertGroupOwnership(id, user.id);
+    assertCanDelete(lockLevel);
 
     await prisma.promptGroup.delete({ where: { id } });
 
@@ -107,6 +114,9 @@ export async function DELETE(
   } catch (error) {
     if (error instanceof OwnershipError) {
       return NextResponse.json({ error: error.message }, { status: 404 });
+    }
+    if (error instanceof LockedError) {
+      return NextResponse.json({ error: error.message }, { status: 409 });
     }
     console.error('DELETE /api/prompt-groups/[id] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

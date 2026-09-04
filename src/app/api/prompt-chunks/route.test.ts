@@ -34,7 +34,7 @@ function req(body: unknown) {
 describe('POST /api/prompt-chunks', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertGroupOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertGroupOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it('returns 401 when unauthenticated', async () => {

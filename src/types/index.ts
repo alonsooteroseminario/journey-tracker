@@ -531,10 +531,15 @@ export interface PromptWallet {
   id: string;
   userId: string;
   title: string;
-  icon?: string;
-  description?: string;
+  /** `null` clears the field; `undefined` leaves it untouched in a PATCH. */
+  icon?: string | null;
+  /** `null` clears the field; `undefined` leaves it untouched in a PATCH. */
+  description?: string | null;
   order: number;
   lockLevel?: LockLevel;
+  /** Present and non-null means the wallet is publicly reachable by capability URL. */
+  shareToken?: string | null;
+  sharedAt?: string | null;
   groups: PromptGroup[];
   createdAt: string;
   updatedAt: string;

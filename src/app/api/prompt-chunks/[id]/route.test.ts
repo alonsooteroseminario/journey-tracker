@@ -34,7 +34,7 @@ function patchReq(body: unknown) {
 describe('PATCH /api/prompt-chunks/[id]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertChunkOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertChunkOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it('returns 401 when unauthenticated', async () => {
@@ -117,7 +117,7 @@ describe('PATCH /api/prompt-chunks/[id]', () => {
 describe('DELETE /api/prompt-chunks/[id]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertChunkOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertChunkOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it('returns 401 when unauthenticated', async () => {

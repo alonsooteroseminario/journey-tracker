@@ -35,7 +35,7 @@ function req(body: unknown) {
 describe('POST /api/prompt-groups', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(assertWalletOwnership).mockResolvedValue(undefined);
+    vi.mocked(assertWalletOwnership).mockResolvedValue({ lockLevel: null });
   });
 
   it('returns 401 when unauthenticated', async () => {
