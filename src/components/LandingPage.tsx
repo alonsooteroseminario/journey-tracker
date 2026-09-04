@@ -9,6 +9,21 @@ const STEPS = [
   { step: "04", icon: "✏️", title: "Compose and copy", desc: "Pick the chunks you need, preview the merged prompt, copy it in one click." },
 ];
 
+/**
+ * The wider Build Cadence product. None of this is released — Prompt Wallet is
+ * the only thing in front of the public — so every entry stays explicitly
+ * labelled as in development. Descriptions match what actually exists behind
+ * the access gate; nothing here is aspirational beyond the ship date.
+ */
+const ROADMAP = [
+  { icon: "🎯", title: "Goals and phases", desc: "Break an ambition into phases, tasks, and substeps until every step is small enough to start." },
+  { icon: "📊", title: "Board", desc: "Move work across Not Started, In Progress, and Done — with your whole plan in one view." },
+  { icon: "🔥", title: "Streaks", desc: "Daily momentum with Bronze, Silver, and Gold tiers. One task a day is the whole rule." },
+  { icon: "🤖", title: "AI coach", desc: "An agent that drafts plans, breaks down goals, and keeps your board current as things change." },
+  { icon: "👥", title: "Accountability", desc: "Follow friends, share progress, and cheer each other through the boring middle." },
+  { icon: "🧩", title: "Templates", desc: "Fork a plan that already worked for someone else, or publish the one that worked for you." },
+];
+
 const FEATURES = [
   { icon: "💼", title: "Wallets", desc: "One per project or client. Reorder, duplicate, or restore anything you delete." },
   { icon: "🧩", title: "Reusable chunks", desc: "Write a piece once, recombine it across every prompt that needs it." },
@@ -33,6 +48,9 @@ export function LandingPage() {
           <div className="flex items-center gap-2.5">
             <img src="/brand-icon.png" alt="Prompt Wallet" className="w-8 h-8 rounded-lg object-contain" />
             <span className="text-lg font-bold text-brand-primary tracking-tight">Prompt Wallet</span>
+            <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide bg-amber-100 text-amber-800 rounded">
+              Beta
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <Link href="/sign-in" className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">
@@ -49,7 +67,7 @@ export function LandingPage() {
       <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-16 text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-light rounded-full text-brand-primary text-sm font-medium mb-6">
           <span className="w-2 h-2 bg-brand-primary rounded-full animate-pulse" />
-          Free — no credit card
+          Public beta · Free — no credit card
         </div>
 
         <h1 className="text-5xl sm:text-7xl font-extrabold text-gray-950 tracking-tight leading-[1.05] mb-6">
@@ -125,6 +143,55 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* ── What we're building (roadmap — nothing here is released) ── */}
+      <section className="bg-gray-50 py-16 sm:py-20 border-t border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-4">
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-semibold">
+              <span className="w-2 h-2 bg-amber-500 rounded-full" />
+              Coming soon
+            </span>
+          </div>
+
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+              Prompt Wallet is the first piece of Build Cadence
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed">
+              Build Cadence is a workspace for turning intent into daily action — a place to plan
+              real work, break it down until it&apos;s startable, and keep showing up. Prompt Wallet
+              is the first module out of the door. Everything below is still in development.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {ROADMAP.map((r) => (
+              <div
+                key={r.title}
+                className="relative rounded-2xl border border-dashed border-gray-300 bg-white/60 p-5"
+              >
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <span className="text-3xl opacity-70">{r.icon}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-gray-200 text-gray-600 whitespace-nowrap">
+                    In development
+                  </span>
+                </div>
+                <h3 className="font-semibold text-gray-700 mb-1">{r.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{r.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-sm text-gray-500 mt-10 max-w-2xl mx-auto">
+            To be clear about what you get today:{" "}
+            <span className="font-semibold text-gray-700">
+              Prompt Wallet is the only part of Build Cadence that&apos;s publicly available
+            </span>
+            , and it&apos;s in beta. Signing up gets you the wallet — nothing above is included yet.
+          </p>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10 pb-20">
         <div className="relative overflow-hidden bg-gradient-to-br from-brand-primary to-brand-dark rounded-3xl px-8 py-14 text-center text-white">
@@ -148,12 +215,13 @@ export function LandingPage() {
           <div className="flex items-center gap-2 font-semibold text-gray-700">
             <img src="/brand-icon.png" alt="" className="w-5 h-5 rounded" />
             Prompt Wallet
+            <span className="font-normal text-gray-400">by Build Cadence</span>
           </div>
           <div className="flex items-center gap-6">
             <Link href="/sign-in" className="hover:text-gray-700 transition-colors">Sign in</Link>
             <Link href="/sign-up" className="hover:text-gray-700 transition-colors">Sign up</Link>
           </div>
-          <span>© 2026 Prompt Wallet</span>
+          <span>© 2026 Build Cadence</span>
         </div>
       </footer>
     </div>
