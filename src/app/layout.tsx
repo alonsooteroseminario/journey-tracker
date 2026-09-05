@@ -14,8 +14,14 @@ export const metadata: Metadata = {
   keywords: ["goal tracker", "habit tracker", "streak", "productivity", "AI coach", "prompts wallet", "cadence"],
   alternates: { canonical: "/" },
   icons: {
-    icon: "/brand-icon.png",
-    apple: "/brand-icon.png",
+    // src/app/icon.svg is the source of truth; favicon.ico is the raster
+    // fallback and is what src/hooks/useNotifications.ts points at.
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "48x48" },
+    ],
+    // iOS ignores transparency, so the home-screen icon ships opaque.
+    apple: "/apple-icon.png",
   },
 };
 
