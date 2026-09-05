@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { EmailCapture } from "@/components/EmailCapture";
 
 const STEPS = [
   { step: "01", icon: "💼", title: "Create a wallet", desc: "One wallet per project, client, or workflow. Keep contexts from bleeding into each other." },
@@ -193,6 +194,25 @@ export function LandingPage() {
       </section>
 
       {/* ── CTA ── */}
+      {/* ── Lead magnet ──
+          Posts 01 to 06 of the launch never name the product, so someone
+          convinced by a post has nowhere to go for a fortnight. This catches
+          that intent without breaking the rule. */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+        <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 sm:p-10">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-950 tracking-tight">
+              Seven prompts you have rewritten more than five times
+            </h2>
+            <p className="mt-3 text-lg text-gray-600">
+              The ones people retype every week. Free, and you can read them without
+              making an account.
+            </p>
+            <EmailCapture source="landing" className="mt-6" />
+          </div>
+        </div>
+      </section>
+
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10 pb-20">
         <div className="relative overflow-hidden bg-gradient-to-br from-brand-primary to-brand-dark rounded-3xl px-8 py-14 text-center text-white">
           {/* subtle grid overlay */}
@@ -220,6 +240,9 @@ export function LandingPage() {
           <div className="flex items-center gap-6">
             <Link href="/sign-in" className="hover:text-gray-700 transition-colors">Sign in</Link>
             <Link href="/sign-up" className="hover:text-gray-700 transition-colors">Sign up</Link>
+            <Link href="/how-to-organize-ai-prompts" className="hover:text-gray-700 transition-colors">Organize your prompts</Link>
+            <Link href="/prompt-library-vs-chat-history" className="hover:text-gray-700 transition-colors">Library vs chat history</Link>
+            <Link href="/prompt-manager-alternatives" className="hover:text-gray-700 transition-colors">Alternatives</Link>
           </div>
           <span>© 2026 Build Cadence</span>
         </div>

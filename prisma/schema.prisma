@@ -699,3 +699,23 @@ model LLMCredential {
   @@index([userId])
   @@map("llm_credentials")
 }
+
+/// Email captured on the marketing site, before any account exists.
+/// Prisma is the source of truth so a signup is never lost when the Resend
+/// audience is unconfigured; the API route syncs to Resend best-effort.
+model EmailSubscriber {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  source       String   @default("landing") // which form: "landing" | "prompt-pack"
+  utmSource    String?
+  utmMedium    String?
+  utmCampaign  String?
+  utmContent   String?
+  referrer     String?
+  syncedToESP  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([createdAt])
+  @@map("email_subscribers")
+}

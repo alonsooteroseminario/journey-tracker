@@ -15,6 +15,14 @@ const isPublicRoute = createRouteMatcher([
   // Signed-out visitors get the landing page here, not a sign-in redirect
   "/wallet",
   "/marketplace(.*)",
+  // Search-surface pages and the lead magnet. Public or they cannot be crawled.
+  "/how-to-organize-ai-prompts",
+  "/prompt-library-vs-chat-history",
+  "/prompt-manager-alternatives",
+  "/prompt-pack",
+  "/api/email-subscribe",
+  "/robots.txt",
+  "/sitemap.xml",
   "/api/marketplace(.*)",
 ]);
 

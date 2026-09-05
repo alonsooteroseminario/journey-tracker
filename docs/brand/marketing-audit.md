@@ -51,7 +51,7 @@ instead — the tracer still follows the literal URL into the bundle.
 
 ---
 
-## P2. Nine posts of reach with nowhere to capture
+## P2. Nine posts of reach with nowhere to capture — FIXED 2026-09-04
 
 **Evidence:** `src/app/api/email-subscribe` does not exist. No lead magnet in
 `docs/brand` or `src/components`. No `utm_` handling anywhere in `src/`. No
@@ -64,21 +64,36 @@ nothing. If reach disappoints after 9 posts, there is nothing to fall back on.
 
 This is the largest strategic gap in the plan and the cheapest to close.
 
-**Fix, in order of value per hour:**
+**Fixed:**
 
-1. **A prompt pack as the lead magnet.** The campaign is literally about prompts
-   and post 02 already ships seven of them as a carousel. Package the same seven
-   plus a handful more as a free download behind an email field. The asset is
-   already written.
-2. **`POST /api/email-subscribe`** using Resend Contacts (`RESEND_API_KEY` is
-   already in `.env`; `RESEND_AUDIENCE_ID` is the only new variable).
-3. **UTM on the bio link.** `?utm_source=instagram&utm_medium=bio`, and a
-   distinct `utm_content` per post when the link is in a story. Without it the
-   metrics sheet can never answer which post drove a signup.
+- **The lead magnet** is post 02's seven prompts, in `src/lib/social/promptPack.ts`
+  so the page, the email and the article never drift apart. Giving them away
+  costs nothing that was not already being given away on 2026-09-07.
+- **`POST /api/email-subscribe`** writes an `EmailSubscriber` row and then, best
+  effort, syncs to a Resend audience and sends the pack. Prisma is the source of
+  truth so a missing `RESEND_AUDIENCE_ID` loses a broadcast contact, never a
+  subscriber; rows are replayable on `syncedToESP: false`.
+- **`EmailCapture`** sits on the landing page above the closing CTA and at the
+  foot of every article. It only claims "check your inbox" when the send
+  actually succeeded, and always links to `/prompt-pack` so nobody gives an
+  address and gets nothing.
+- **UTM capture** in `src/lib/utm.ts`, first-touch, held in `sessionStorage`
+  because visitors land on `/` and subscribe several clicks later.
+
+**Still needs you:** set `RESEND_AUDIENCE_ID` in Vercel (create an audience in
+Resend first). Until then addresses are captured and the pack still sends; they
+just are not on a broadcast list.
+
+**Bio link to use from post 03 onward:**
+
+```
+https://buildcadence.co/?utm_source=instagram&utm_medium=bio
+https://buildcadence.co/?utm_source=instagram&utm_medium=story&utm_content=post-03
+```
 
 ---
 
-## P3. The plan has no search surface at all
+## P3. The plan has no search surface at all — FIXED 2026-09-04
 
 **Evidence:** no `/blog`, `/learn` or `/guides` route. No comparison or
 alternative pages. No `robots.ts`, no `sitemap.ts`.
@@ -91,16 +106,28 @@ library" and "chatgpt prompt template" are all typed by exactly the audience in
 The `seo-audit` framework flags this as the standard SaaS failure: no comparison
 pages, no glossary, no educational content connected to the product.
 
-**Fix:** not a blog. Three pages that already exist as content in this repo:
+**Fixed:** four public pages, all sharing `components/marketing/ArticlePage.tsx`
+and all ending in the same capture form, so search traffic feeds the same list
+the bio link does.
 
-| Page | Source already written |
+| Page | Intent |
 |---|---|
-| `/how-to-organize-ai-prompts` | post 01 script and post 02's seven prompts |
-| `/prompt-library-vs-chat-history` | post 03's premise, "chat history is not storage" |
-| `/prompt-manager-alternatives` | the alternatives named in `about-me.md` |
+| `/how-to-organize-ai-prompts` | informational, top of funnel, the four-part method |
+| `/prompt-library-vs-chat-history` | comparison, the mechanism behind the problem |
+| `/prompt-manager-alternatives` | commercial, five honest options including doing nothing |
+| `/prompt-pack` | the lead magnet, readable without an account |
 
-Plus `robots.ts` and `sitemap.ts`, which are about ten lines each in the App
-Router.
+Plus `robots.ts` (app surface disallowed, sitemap referenced) and `sitemap.ts`
+(`/wallet` deliberately absent, since it canonicals to `/`).
+
+Two things this needed that were not obvious. The routes must be added to
+`isPublicRoute` in `middleware.ts` or Clerk redirects the crawler to sign-in.
+And they must be added to `NO_HEADER_PREFIXES` in `HeaderHost.tsx`, or the app
+header stacks on top of the marketing nav each page already carries.
+
+**Known limitation:** the pages render dynamically (`ƒ`) rather than statically,
+because the root layout calls `getCurrentUser()` on every request. It costs
+TTFB, not indexability. Making them static means restructuring the layout.
 
 ---
 
@@ -165,11 +192,11 @@ without breaking the rule: it captures intent without naming the product.
 
 1. ~~`/wallet` canonical.~~ Done 2026-09-04.
 2. ~~OG image.~~ Done 2026-09-04.
-3. Email capture plus the prompt pack. Closes the strategic gap before the reach
-   arrives, not after.
-4. UTM on the bio link, before post 03 on Wednesday, so attribution starts early.
-5. `robots.ts` and `sitemap.ts`.
-6. The three search pages, one per week, from copy that is already written.
+3. ~~Email capture plus the prompt pack.~~ Done 2026-09-04.
+4. ~~UTM on the bio link.~~ Done 2026-09-04. Start using the tagged link at post 03.
+5. ~~`robots.ts` and `sitemap.ts`.~~ Done 2026-09-04.
+6. ~~The three search pages.~~ Done 2026-09-04.
 
-Items 1, 2, 4 and 5 are a single afternoon. Item 3 is the one that changes the
-shape of the campaign.
+Remaining: P4's seven on-page issues and P5's four plan-level gaps. The sharpest
+of those is the activation gap, since `seedTemplates.ts` already exists and is
+not wired to signup, so every new account still lands in an empty wallet.

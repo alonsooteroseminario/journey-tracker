@@ -7,7 +7,17 @@ import { useHeaderStats } from "@/hooks/useHeaderStats";
 import { useFullAccess } from "./AccessProvider";
 
 /** Routes where the app header is intentionally absent. */
-const NO_HEADER_PREFIXES = ["/sign-in", "/sign-up", "/wallet/share"];
+const NO_HEADER_PREFIXES = [
+  "/sign-in",
+  "/sign-up",
+  "/wallet/share",
+  // Search-surface pages ship their own marketing nav (ArticlePage.tsx);
+  // the app header would stack on top of it.
+  "/how-to-organize-ai-prompts",
+  "/prompt-library-vs-chat-history",
+  "/prompt-manager-alternatives",
+  "/prompt-pack",
+];
 
 /** Routes that render `<LandingPage>` when signed out. It has its own nav. */
 const LANDING_ROUTES = ["/", "/wallet"];

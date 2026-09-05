@@ -93,6 +93,18 @@ describe("HeaderHost", () => {
     expect(container.firstChild).toBeNull();
   });
 
+  it.each([
+    "/how-to-organize-ai-prompts",
+    "/prompt-library-vs-chat-history",
+    "/prompt-manager-alternatives",
+    "/prompt-pack",
+  ])("renders nothing on %s (marketing pages carry their own nav)", (path) => {
+    signedOut();
+    mockUsePathname.mockReturnValue(path);
+    const { container } = render(<HeaderHost />);
+    expect(container.firstChild).toBeNull();
+  });
+
   it("renders nothing on /wallet/share/* (public share view)", () => {
     signedIn();
     mockUsePathname.mockReturnValue("/wallet/share/abc123");
