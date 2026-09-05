@@ -18,7 +18,7 @@ const asset = (p: string) => readFileSync(fileURLToPath(new URL(p, import.meta.u
 export default async function OpengraphImage() {
   let icon: string | undefined;
   try {
-    icon = `data:image/svg+xml;base64,${asset("./icon.svg").toString("base64")}`;
+    icon = `data:image/svg+xml;base64,${asset("../../public/brand-icon-dark.svg").toString("base64")}`;
   } catch {
     // the card is still correct without the mark; never fail the whole image
   }

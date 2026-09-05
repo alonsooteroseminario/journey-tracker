@@ -10,17 +10,36 @@ from PIL import Image, ImageDraw
 
 REPO = "/home/alonsooteroseminario/source/repos/journey-tracker"
 INK, VIOLET, MID, LIGHT = "#171331", "#5B50E8", "#7B6FFF", "#EAE8FF"
+# A tint of MID, needed only in light mode: the outer chunks are LIGHT, which is
+# invisible against a white plate. Same hue, enough step to read at 16px.
+SOFT = "#B6AEFF"
 
-# x, y, w, h, rx, fill, rotation, pivot
-MARK = [
-    (27, 43, 74, 62, 9, LIGHT, -14, (64, 74)),   # outer chunk, left
-    (155, 43, 74, 62, 9, LIGHT, 14, (192, 74)),  # outer chunk, right
-    (86, 26, 84, 88, 11, MID, 0, None),          # the one being pulled out
-    (24, 101, 208, 125, 18, VIOLET, 0, None),    # wallet body
-    (24, 183, 208, 4, 0, LIGHT, 0, None),        # seam, drawn at 22% opacity
-]
+THEMES = {
+    # plate colour, outer-chunk colour, seam colour
+    "dark":  dict(plate=INK,       chunk=LIGHT, seam=LIGHT, seam_op=0.22),
+    "light": dict(plate="#FBFAFF", chunk=SOFT,  seam=LIGHT, seam_op=0.30),
+}
+
+def mark(theme):
+    """Geometry is fixed; only three fills move between themes."""
+    t = THEMES[theme]
+    return [
+        # x, y, w, h, rx, fill, rotation, pivot
+        (27, 43, 74, 62, 9, t["chunk"], -14, (64, 74)),   # outer chunk, left
+        (155, 43, 74, 62, 9, t["chunk"], 14, (192, 74)),  # outer chunk, right
+        (86, 26, 84, 88, 11, MID, 0, None),               # the one being pulled out
+        (24, 101, 208, 125, 18, VIOLET, 0, None),         # wallet body
+        (24, 183, 208, 4, 0, t["seam"], 0, None),         # seam, drawn at low opacity
+    ]
+
+def plate(theme):
+    return (0, 0, 256, 256, 56, THEMES[theme]["plate"], 0, None)
+
+# The bare mark keeps the original fills: it is only ever used on dark or cream
+# surfaces, where the pale chunks read.
+MARK = mark("dark")
 SEAM_OP = 0.22
-PLATE = (0, 0, 256, 256, 56, INK, 0, None)
+PLATE = plate("dark")
 
 # On the plate the mark is inset so it does not crowd the corners. Bare marks
 # carry their own margin already, so they render at 1:1.
@@ -114,18 +133,20 @@ def rocket_pt(x, y, cx, cy, size, angle):
             cy + x * math.sin(a) + y * math.cos(a))
 
 
-def svg(with_plate, rocket=None):
+def svg(with_plate, rocket=None, theme="dark"):
     place = PLACEMENTS[rocket]
+    shapes = mark(theme)
+    seam_op = THEMES[theme]["seam_op"]
     rows = []
     if with_plate:
-        x, y, w, h, rx, f, _, _ = PLATE
+        x, y, w, h, rx, f, _, _ = plate(theme)
         rows.append(f'  <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="{f}"/>')
     scale = place["scale"] if with_plate else 1
-    for i, shape in enumerate(MARK):
+    for i, shape in enumerate(shapes):
         x, y, w, h, rx, f, rot, piv = fit(shape, scale)
         x, y, w, h, rx = (round(v, 1) for v in (x, y, w, h, rx))
         if piv: piv = (round(piv[0], 1), round(piv[1], 1))
-        op = f' opacity="{SEAM_OP}"' if i == len(MARK) - 1 else ""
+        op = f' opacity="{seam_op}"' if i == len(shapes) - 1 else ""
         tr = f' transform="rotate({rot} {piv[0]} {piv[1]})"' if rot else ""
         rx_ = f' rx="{rx}"' if rx else ""
         rows.append(f'  <rect x="{x}" y="{y}" width="{w}" height="{h}"{rx_} fill="{f}"{op}{tr}/>')
@@ -146,18 +167,19 @@ def svg(with_plate, rocket=None):
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" '
             f'role="img" aria-label="Prompt Wallet">\n  <!--\n    {note}\n  -->\n{body}\n</svg>\n')
 
-def render(px, with_plate, rocket=None, ss=8):
+def render(px, with_plate, rocket=None, theme="dark", ss=8):
     place = PLACEMENTS[rocket]
+    seam_op = THEMES[theme]["seam_op"]
     n, k = px * ss, px * ss / 256
     canvas = Image.new("RGBA", (n, n), (0, 0, 0, 0))
     scale = place["scale"] if with_plate else 1
-    shapes = ([PLATE] if with_plate else []) + [fit(m, scale) for m in MARK]
+    shapes = ([plate(theme)] if with_plate else []) + [fit(m, scale) for m in mark(theme)]
     for i, (x, y, w, h, rx, f, rot, piv) in enumerate(shapes):
         layer = Image.new("RGBA", (n, n), (0, 0, 0, 0))
         d = ImageDraw.Draw(layer)
         fill = Image.new("RGB", (1, 1), f).getpixel((0, 0))
         is_seam = (i == len(shapes) - 1)
-        fill = fill + (int(255 * (SEAM_OP if is_seam else 1)),)
+        fill = fill + (int(255 * (seam_op if is_seam else 1)),)
         d.rounded_rectangle([x*k, y*k, (x+w)*k, (y+h)*k], radius=rx*k, fill=fill)
         if rot:
             layer = layer.rotate(-rot, resample=Image.BICUBIC, center=(piv[0]*k, piv[1]*k))
@@ -186,15 +208,21 @@ def flat(im, bg):
 
 if __name__ == "__main__":
     R = ROCKET_AT
-    open(f"{REPO}/src/app/icon.svg", "w").write(svg(True, R))
+    # Light is the shipped theme. The plate all but disappears on a white
+    # browser tab, which is fine because the violet mark carries the shape, and
+    # it gives a clean white tile on dark surfaces where the dark plate merged.
+    open(f"{REPO}/src/app/icon.svg", "w").write(svg(True, R, "light"))
     open(f"{REPO}/public/brand-mark.svg", "w").write(svg(False, R))
+    # Dark plate, kept for the link preview card: that sits on cream, where a
+    # near-white plate washes out.
+    open(f"{REPO}/public/brand-icon-dark.svg", "w").write(svg(True, R, "dark"))
 
-    render(1024, True, R).save(f"{REPO}/public/brand-icon.png")
+    render(1024, True, R, "light").save(f"{REPO}/public/brand-icon.png")
     render(1024, False, R).save(f"{REPO}/public/brand-mark.png")
     # iOS ignores transparency and masks its own corners, so ship it opaque
-    flat(render(180, True, R), (23, 19, 49)).save(f"{REPO}/public/apple-icon.png")
+    flat(render(180, True, R, "light"), (251, 250, 255)).save(f"{REPO}/public/apple-icon.png")
     # referenced by src/hooks/useNotifications.ts, which 404d before this existed
-    render(48, True, R).save(f"{REPO}/public/favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
+    render(48, True, R, "light").save(f"{REPO}/public/favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
 
     # Instagram crops to a circle, so the square plate would lose its corners:
     # the bare mark goes on a full-bleed cream ground instead.
@@ -203,5 +231,6 @@ if __name__ == "__main__":
     prof.paste(m, ((1080 - m.width) // 2, (1080 - m.height) // 2), m)
     prof.save(f"{REPO}/social-assets/pw-profile-1080.png")
 
-    print("wrote icon.svg, brand-mark.svg, brand-icon.png, brand-mark.png,")
-    print("      apple-icon.png, favicon.ico, pw-profile-1080.png")
+    print("light: icon.svg, brand-icon.png, apple-icon.png, favicon.ico")
+    print("dark:  brand-icon-dark.svg (link preview card, which sits on cream)")
+    print("bare:  brand-mark.svg, brand-mark.png, pw-profile-1080.png")

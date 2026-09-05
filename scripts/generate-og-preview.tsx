@@ -14,7 +14,7 @@ const font = (f: string) => fs.readFileSync(path.join(root, "public/fonts", f));
 
 async function main() {
   const icon = `data:image/svg+xml;base64,${fs
-    .readFileSync(path.join(root, "src/app/icon.svg"))
+    .readFileSync(path.join(root, "public/brand-icon-dark.svg"))
     .toString("base64")}`;
 
   const response = new ImageResponse(ogImageElement(icon), {
