@@ -13,6 +13,14 @@ export const metadata: Metadata = {
     "Break goals into daily actions, build streaks with your AI coach, manage your prompt library, and stay accountable with friends. Set your cadence.",
   keywords: ["goal tracker", "habit tracker", "streak", "productivity", "AI coach", "prompts wallet", "cadence"],
   alternates: { canonical: "/" },
+  // src/app/opengraph-image.tsx supplies the image for both. Without an explicit
+  // card type X falls back to a small square thumbnail.
+  openGraph: {
+    type: "website",
+    siteName: "Prompt Wallet",
+    url: "https://buildcadence.co",
+  },
+  twitter: { card: "summary_large_image" },
   icons: {
     // src/app/icon.svg is the source of truth; favicon.ico is the raster
     // fallback and is what src/hooks/useNotifications.ts points at.

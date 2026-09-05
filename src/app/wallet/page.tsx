@@ -4,8 +4,12 @@ import { WalletShell } from "@/components/prompts/WalletShell";
 import { LandingPage } from "@/components/LandingPage";
 
 export const metadata: Metadata = {
-  title: "Prompt Wallet",
-  description: "Organize, compose, and reuse your AI prompts.",
+  title: "Prompt Wallet — Save the prompts that work",
+  description:
+    "Keep every reusable AI prompt in one place, break it into chunks, and compose the one you need in seconds. Free beta, no card needed.",
+  // Signed-out visitors get the same <LandingPage /> as `/`, so without this
+  // Google indexes two URLs with identical HTML and picks the winner itself.
+  alternates: { canonical: "/" },
 };
 
 /**
