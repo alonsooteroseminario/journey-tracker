@@ -7,6 +7,10 @@ import { HeroOverview } from "./marketing/HeroOverview";
 import { StreakStory } from "./marketing/StreakStory";
 import { AIAgent } from "./marketing/AIAgent";
 import { UserJourney } from "./marketing/UserJourney";
+import {
+  Post01BestPromptGone,
+  POST_01_DURATION,
+} from "./marketing/prompt-wallet/Post01BestPromptGone";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -196,6 +200,16 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         defaultProps={{ format: "vertical" as const }}
+      />
+
+      {/* Prompt Wallet launch: Instagram reels, vertical only */}
+      <Composition
+        id="pw-post-01-best-prompt-gone"
+        component={Post01BestPromptGone as any}
+        durationInFrames={POST_01_DURATION}
+        fps={30}
+        width={1080}
+        height={1920}
       />
     </>
   );

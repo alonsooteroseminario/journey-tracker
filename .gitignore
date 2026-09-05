@@ -33,4 +33,16 @@ Thumbs.db
 
 # Rendered marketing videos
 /videos/*.mp4
+/videos/*.jpg
+/videos/*.png
+
+# Rendered post audio, regenerate with scripts/audio/
+/public/audio/
+
+# Generated social media assets
+/social-assets/*.png
 .claude/worktrees/
+
+# Python bytecode from scripts/
+__pycache__/
+*.pyc
